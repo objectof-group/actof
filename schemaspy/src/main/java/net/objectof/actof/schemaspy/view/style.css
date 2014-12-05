@@ -1,0 +1,59 @@
+.button {
+	-fx-padding: 5px;
+}
+
+.tree-view {
+	-fx-background-insets: 0, 0;
+    -fx-padding: 0;
+}
+
+
+
+.schema {
+    -fx-background-insets: 0, 1;
+    -fx-padding: 0 1 1 0;
+}
+
+.schema:focused {
+    -fx-background-color: -fx-box-border, -fx-control-inner-background;
+    -fx-background-insets: 0, 0;
+    -fx-padding: 0;
+    -fx-padding: 0 1 1 0;
+}
+
+
+.schema .column-header {
+    -fx-background-insets: 1 0 0 0, 1 0 1 0;
+    -fx-padding: 0;
+}
+
+.split-pane {
+    -fx-background-insets: 0, 0;
+    -fx-padding: 0;
+}
+
+.scroll-pane {
+    -fx-background-insets: 0, 0;
+    -fx-padding: 0;
+	
+}
+
+.accordion {
+    -fx-background-insets: 0, 0;
+    -fx-padding: 0;
+}
+
+.accordion > .titled-pane > .title {
+    -fx-background-color:
+        -fx-box-border,
+        -fx-inner-border,
+        -fx-body-color;
+    -fx-background-insets: 0 0 0 0, 0 1 1 0, 1 2 2 0;
+    -fx-background-radius: 0, 0, 0;
+}
+
+.accordion > .titled-pane > *.content {
+    /*-fx-background-color:  -fx-box-border*/
+    -fx-background-insets: 0, 0, 0, 0, 0;
+    -fx-padding: 0, 0, 0, 0, 0;
+}

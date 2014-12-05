@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.image.*?>
+<?import org.controlsfx.control.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+		<TableView fx:id="table" editable="true" prefHeight="200.0" BorderPane.alignment="CENTER">
+		 <columns>
+		   <TableColumn fx:id="namespace" minWidth="100.0" prefWidth="100.0" text="Namespace." />
+		   <TableColumn fx:id="name" minWidth="100.0" prefWidth="100.0" text="Name" />
+		   <TableColumn fx:id="value" minWidth="200.0" prefWidth="200.0" text="Value" />
+		 </columns>
+		  <columnResizePolicy>
+		     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+		  </columnResizePolicy>
+		</TableView>
+   </center>
+   <bottom>
+	   <HBox alignment="TOP_RIGHT" spacing="2.0">
+	      <children>
+	         <Button fx:id="add" mnemonicParsing="false" style="-fx-padding: 5;">
+	            <graphic>
+	               <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+	                  <image>
+	                     <Image url="@icons/add.png" />
+	                  </image>
+	               </ImageView>
+	            </graphic>
+	         </Button>
+	         <Button fx:id="remove" mnemonicParsing="false" style="-fx-padding: 5;">
+	            <graphic>
+	               <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+	                  <image>
+	                     <Image url="@icons/remove.png" />
+	                  </image>
+	               </ImageView>
+	            </graphic>
+	         </Button>
+	      </children>
+	      <opaqueInsets>
+	         <Insets />
+	      </opaqueInsets>
+         <padding>
+            <Insets bottom="2.0" top="2.0" />
+         </padding>
+	   </HBox>
+   </bottom>
+</BorderPane>

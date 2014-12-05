@@ -1,0 +1,7 @@
+<?xml version='1.0'?>
+<schema id='example.com:1400/model' version='0.0.1-SNAPSHOT'
+	xmlns:m='ans://objectof.net:1401/facets/model'>
+	<model>
+
+	</model>
+</schema>

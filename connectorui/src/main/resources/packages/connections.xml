@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<schema xmlns:m="ans://objectof.net:1401/facets/model" id="objectof.net:1400/actof/connectorui/beans"
+	version="0.0.1-SNAPSHOT">
+	<model>
+
+		<composed selector="Connection">
+			<mapped selector="parameters">
+				<text selector="parameter" />
+			</mapped>
+			<text selector="name" />
+			<text selector="type" />
+		</composed>
+		<composed selector="Last">
+			<ref m:href="Connection" selector="connection" />
+		</composed>
+		<composed selector="Saved">
+			<indexed selector="connections">
+				<ref m:href="Connection" selector="connection" />
+			</indexed>
+		</composed>
+	</model>
+</schema>
