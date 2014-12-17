@@ -21,6 +21,7 @@ public class PostgresConnector extends AbstractConnector {
 
         super();
 
+        addParameter(Type.STRING, "Domain");
         addParameter(Type.STRING, "Server");
         addParameter(Type.STRING, "Database");
         addParameter(Type.STRING, "Repository");
@@ -51,7 +52,7 @@ public class PostgresConnector extends AbstractConnector {
 
     @Override
     public String getPackageName() {
-        return value("Server") + ":" + value("Version") + "/" + value("Repository");
+        return value("Domain") + ":" + value("Version") + "/" + value("Repository");
     }
 
     @Override

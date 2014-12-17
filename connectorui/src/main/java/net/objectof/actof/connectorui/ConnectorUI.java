@@ -16,12 +16,10 @@ public class ConnectorUI implements Connector {
     private Connector backer;
     private String displayName;
 
-
     public ConnectorUI(Connector backer) {
         this.backer = backer;
         setDisplayName(backer.getName());
     }
-
 
     /**
      * Checks to see if the two connectorUIs are effectively equal. Disregards
@@ -38,6 +36,7 @@ public class ConnectorUI implements Connector {
 
         for (Parameter p : getParameters()) {
             Parameter op = other.getParameter(p.getTitle());
+            if (p.getValue() == null) { return op.getValue() == null; }
             if (!p.getValue().equals(op.getValue())) { return false; }
         }
         return true;
@@ -56,64 +55,49 @@ public class ConnectorUI implements Connector {
         return getDisplayName();
     }
 
-
-
-
     @Override
     public Package getPackage() throws Exception {
         return backer.getPackage();
     }
-
 
     @Override
     public Package createPackage(Document schema) throws Exception {
         return backer.createPackage(schema);
     }
 
-
     @Override
     public Package createPackage(InputStream schema) throws Exception {
         return backer.createPackage(schema);
     }
-
 
     @Override
     public String getPackageName() {
         return backer.getPackageName();
     }
 
-
     @Override
     public List<Parameter> getParameters() {
         return backer.getParameters();
     }
-
 
     @Override
     public Parameter getParameter(String name) {
         return backer.getParameter(name);
     }
 
-
     @Override
     public String getName() {
         return backer.getName();
     }
-
 
     @Override
     public void setName(String name) {
         backer.setName(name);
     }
 
-
     @Override
     public String getType() {
         return backer.getType();
     }
-
-
-
-
 
 }
