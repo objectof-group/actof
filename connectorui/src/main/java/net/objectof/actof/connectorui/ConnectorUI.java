@@ -3,8 +3,10 @@ package net.objectof.actof.connectorui;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
 import net.objectof.connector.Connector;
+import net.objectof.connector.ConnectorException;
 import net.objectof.connector.parameter.Parameter;
 import net.objectof.model.Package;
 
@@ -56,17 +58,17 @@ public class ConnectorUI implements Connector {
     }
 
     @Override
-    public Package getPackage() throws Exception {
+    public Package getPackage() throws ConnectorException {
         return backer.getPackage();
     }
 
     @Override
-    public Package createPackage(Document schema) throws Exception {
+    public Package createPackage(Document schema) throws ConnectorException {
         return backer.createPackage(schema);
     }
 
     @Override
-    public Package createPackage(InputStream schema) throws Exception {
+    public Package createPackage(InputStream schema) throws ConnectorException {
         return backer.createPackage(schema);
     }
 
@@ -98,6 +100,20 @@ public class ConnectorUI implements Connector {
     @Override
     public String getType() {
         return backer.getType();
+    }
+
+    @Override
+    public void setParameter(String parameter, String value) {
+        Parameter p = getParameter(parameter);
+        if (p == null) { return; }
+        p.setValue(value);
+    }
+
+    @Override
+    public void setParameters(Map<String, String> values) {
+        for (String parameter : values.keySet()) {
+            setParameter(parameter, values.get(parameter));
+        }
     }
 
 }
