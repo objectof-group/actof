@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 import net.objectof.actof.common.controller.IActofController;
 import net.objectof.actof.common.controller.change.ChangeController;
-import net.objectof.actof.connector.Connector;
+import net.objectof.connector.Connector;
 import net.objectof.model.Kind;
 import net.objectof.model.Package;
 import net.objectof.model.Resource;

@@ -38,7 +38,6 @@ import net.objectof.actof.common.controller.IActofUIController;
 import net.objectof.actof.common.controller.change.Change;
 import net.objectof.actof.common.controller.repository.RepositoryReplacedChange;
 import net.objectof.actof.common.controller.search.QueryChange;
-import net.objectof.actof.connector.Connector;
 import net.objectof.actof.repospy.RepoSpy;
 import net.objectof.actof.repospy.changes.EntityCreatedChange;
 import net.objectof.actof.repospy.controller.RepoSpyController;
@@ -48,6 +47,7 @@ import net.objectof.actof.repospy.controller.navigator.composite.CompositeTreeTa
 import net.objectof.actof.repospy.controller.navigator.composite.editors.TextEditor;
 import net.objectof.actof.repospy.controller.navigator.kind.KindTreeEntry;
 import net.objectof.actof.repospy.controller.navigator.kind.KindTreeItem;
+import net.objectof.connector.Connector;
 import net.objectof.model.Kind;
 import net.objectof.model.Resource;
 import net.objectof.model.Stereotype;

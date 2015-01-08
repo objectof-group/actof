@@ -3,7 +3,7 @@ package net.objectof.actof.connectorui.parametereditor;
 
 import javafx.scene.Node;
 import javafx.scene.control.PasswordField;
-import net.objectof.actof.connector.parameter.Parameter;
+import net.objectof.connector.parameter.Parameter;
 
 
 public class PasswordParameterEditor extends PasswordField implements ParameterEditor {

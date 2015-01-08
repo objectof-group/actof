@@ -19,9 +19,9 @@ import net.objectof.actof.common.controller.ITopController;
 import net.objectof.actof.common.controller.schema.ISchemaController;
 import net.objectof.actof.common.controller.schema.SchemaController;
 import net.objectof.actof.common.util.FXUtil;
-import net.objectof.actof.connector.Connector;
 import net.objectof.actof.connectorui.ConnectionController;
 import net.objectof.actof.schemaspy.SchemaSpy;
+import net.objectof.connector.Connector;
 
 import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialog;

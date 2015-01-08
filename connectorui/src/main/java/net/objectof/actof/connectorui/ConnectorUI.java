@@ -4,8 +4,8 @@ package net.objectof.actof.connectorui;
 import java.io.InputStream;
 import java.util.List;
 
-import net.objectof.actof.connector.Connector;
-import net.objectof.actof.connector.parameter.Parameter;
+import net.objectof.connector.Connector;
+import net.objectof.connector.parameter.Parameter;
 import net.objectof.model.Package;
 
 import org.w3c.dom.Document;

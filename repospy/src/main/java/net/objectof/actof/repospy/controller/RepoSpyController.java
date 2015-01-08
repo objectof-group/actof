@@ -14,13 +14,13 @@ import net.objectof.actof.common.controller.ITopController;
 import net.objectof.actof.common.controller.repository.RepositoryController;
 import net.objectof.actof.common.controller.search.SearchController;
 import net.objectof.actof.common.util.FXUtil;
-import net.objectof.actof.connector.Connector;
 import net.objectof.actof.connectorui.ConnectionController;
 import net.objectof.actof.repospy.RepoSpy;
 import net.objectof.actof.repospy.changes.EditingChange;
 import net.objectof.actof.repospy.controller.history.HistoryController;
 import net.objectof.actof.repospy.controller.navigator.NavigatorController;
 import net.objectof.actof.repospy.controller.review.ReviewController;
+import net.objectof.connector.Connector;
 import net.objectof.model.query.Query;
 import net.objectof.model.query.parser.QueryBuilder;
 

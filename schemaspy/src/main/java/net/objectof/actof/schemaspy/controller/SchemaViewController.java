@@ -46,10 +46,10 @@ import net.objectof.actof.common.controller.schema.changes.SchemaReplacedChange;
 import net.objectof.actof.common.controller.schema.changes.SchemaStereotypeChange;
 import net.objectof.actof.common.controller.schema.schemaentry.SchemaEntry;
 import net.objectof.actof.common.util.AlphaNumericComparitor;
-import net.objectof.actof.connector.Connector;
 import net.objectof.actof.repospy.controller.RepoSpyController;
 import net.objectof.actof.schemaspy.controller.cards.Card;
 import net.objectof.actof.schemaspy.util.CodeGen;
+import net.objectof.connector.Connector;
 
 import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialog;

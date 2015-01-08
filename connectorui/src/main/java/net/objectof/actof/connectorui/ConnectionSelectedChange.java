@@ -2,7 +2,7 @@ package net.objectof.actof.connectorui;
 
 
 import net.objectof.actof.common.controller.change.Change;
-import net.objectof.actof.connector.Connector;
+import net.objectof.connector.Connector;
 
 
 public class ConnectionSelectedChange extends Change {

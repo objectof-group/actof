@@ -22,13 +22,13 @@ import net.objectof.actof.common.controller.IActofUIController;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.controller.change.IChangeController;
 import net.objectof.actof.common.util.FXUtil;
-import net.objectof.actof.connector.Connector;
-import net.objectof.actof.connector.Connectors;
-import net.objectof.actof.connector.parameter.Parameter;
 import net.objectof.actof.connectorui.parametereditor.FilenameParameterEditor;
 import net.objectof.actof.connectorui.parametereditor.ParameterEditor;
 import net.objectof.actof.connectorui.parametereditor.PasswordParameterEditor;
 import net.objectof.actof.connectorui.parametereditor.TextParameterEditor;
+import net.objectof.connector.Connector;
+import net.objectof.connector.Connectors;
+import net.objectof.connector.parameter.Parameter;
 
 import org.controlsfx.dialog.Dialogs;
 

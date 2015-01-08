@@ -7,13 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.objectof.actof.common.controller.config.Env;
-import net.objectof.actof.connector.Connector;
-import net.objectof.actof.connector.Connectors;
-import net.objectof.actof.connector.SQLiteConnector;
-import net.objectof.actof.connector.parameter.Parameter;
 import net.objectof.actof.connectorui.beans.Connection;
 import net.objectof.actof.connectorui.beans.Last;
 import net.objectof.actof.connectorui.beans.Saved;
+import net.objectof.connector.Connector;
+import net.objectof.connector.Connectors;
+import net.objectof.connector.SQLiteConnector;
+import net.objectof.connector.parameter.Parameter;
 import net.objectof.model.Package;
 import net.objectof.model.Transaction;
 
