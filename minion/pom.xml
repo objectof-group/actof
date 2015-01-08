@@ -48,7 +48,7 @@
 		<dependency>
 			<groupId>objectof</groupId>
 			<artifactId>objectof-corc.jee</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
@@ -58,7 +58,7 @@
 		<dependency>
 			<groupId>objectof</groupId>
 			<artifactId>objectof-web</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.ws.rs</groupId>
