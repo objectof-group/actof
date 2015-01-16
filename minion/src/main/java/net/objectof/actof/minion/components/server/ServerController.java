@@ -20,6 +20,7 @@ import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.minion.components.server.change.ServerStartChange;
 import net.objectof.actof.minion.components.server.change.ServerStopChange;
+import net.objectof.actof.minion.components.spring.change.BeansChange;
 import net.objectof.actof.widgets.StatusLight;
 import net.objectof.actof.widgets.StatusLight.Status;
 import net.objectof.corc.Handler;
@@ -29,6 +30,10 @@ import net.objectof.corc.web.v2.impl.IHttpRequest;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.AbstractHandler;
+import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.server.session.HashSessionIdManager;
+import org.eclipse.jetty.server.session.HashSessionManager;
+import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.util.component.LifeCycle;
 
 
@@ -45,9 +50,11 @@ public class ServerController extends IActofUIController {
     @FXML
     private VBox topbox;
 
+    // Jetty Server Components
     private Server server;
     private int counter = 0;
     private Handler<HttpRequest> handler;
+
     private StatusLight statuslight;
 
     private int port = 8080;
@@ -63,16 +70,31 @@ public class ServerController extends IActofUIController {
         start.setDisable(true);
         porttext.setDisable(true);
         portlabel.setDisable(true);
-
     }
 
     @Override
-    public void ready() {}
-
+    public void ready() {
+        getChangeBus().listen(BeansChange.class, beansChange -> {
+            Handler<HttpRequest> handler = (Handler<HttpRequest>) beansChange.getRoot();
+            setHandler(handler);
+        });
+    }
 
     private void initServer() {
         server = new Server(port);
-        server.setHandler(new AbstractHandler() {
+
+        HashSessionIdManager idmanager = new HashSessionIdManager();
+        server.setSessionIdManager(idmanager);
+
+        ContextHandler context = new ContextHandler("/");
+        server.setHandler(context);
+
+        // Create the SessionHandler (wrapper) to handle the sessions
+        HashSessionManager manager = new HashSessionManager();
+        SessionHandler sessions = new SessionHandler(manager);
+        context.setHandler(sessions);
+
+        sessions.setHandler(new AbstractHandler() {
 
             @Override
             public void handle(String target, Request base, HttpServletRequest request, HttpServletResponse response)
@@ -85,7 +107,6 @@ public class ServerController extends IActofUIController {
                 base.setHandled(true);
             }
         });
-
 
         server.addLifeCycleListener(new LifeCycle.Listener() {
 
@@ -128,7 +149,6 @@ public class ServerController extends IActofUIController {
     public int getPort() {
         return port;
     }
-
 
     public void setHandler(Handler<HttpRequest> handler) {
 
@@ -198,13 +218,8 @@ public class ServerController extends IActofUIController {
         }
     }
 
-
-
     public static ServerController load(ChangeController changes) throws IOException {
         return FXUtil.load(ServerController.class, "Server.fxml", changes);
     }
-
-
-
 
 }

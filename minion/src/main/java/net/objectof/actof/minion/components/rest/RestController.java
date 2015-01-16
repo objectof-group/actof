@@ -43,6 +43,7 @@ import net.objectof.actof.minion.components.server.change.ServerStopChange;
 import net.objectof.actof.widgets.StatusLight;
 import net.objectof.actof.widgets.StatusLight.Status;
 import flexjson.JSONDeserializer;
+import flexjson.JSONException;
 import flexjson.JSONSerializer;
 
 
@@ -80,12 +81,10 @@ public class RestController extends IActofUIController {
     @FXML
     private TreeTableColumn<KV, String> cookieskey, cookiesvalue, headerskey, headersvalue;
 
-
     private StatusLight responsemessage = new StatusLight("No Response");
 
     private List<KV> cookielist = new ArrayList<>();
     private String prefix;
-
 
     @Override
     @FXML
@@ -96,7 +95,6 @@ public class RestController extends IActofUIController {
         method.getItems().addAll("GET");
         method.getItems().addAll("POST");
         method.getSelectionModel().select(0);
-
 
         address.setOnKeyReleased(event -> {
             if (event.getCode() != KeyCode.ENTER) { return; }
@@ -128,8 +126,6 @@ public class RestController extends IActofUIController {
             });
         });
 
-
-
         headers.setRoot(new TreeItem<>());
         headers.setShowRoot(false);
         headerskey.setCellValueFactory(cookie -> {
@@ -155,9 +151,6 @@ public class RestController extends IActofUIController {
             });
         });
 
-
-
-
         serverStopped(new ServerStopChange());
         tabpane.getSelectionModel().select(tabresponse);
 
@@ -167,7 +160,6 @@ public class RestController extends IActofUIController {
     public void ready() {
         getChangeBus().listen(this::onChange);
     }
-
 
     private void onChange(Change change) {
         change.when(ServerStartChange.class, this::serverStarted);
@@ -258,17 +250,19 @@ public class RestController extends IActofUIController {
         output.setText(msg);
     }
 
-
     private String prettyprint(String json) {
-        Object o = new JSONDeserializer<Object>().deserialize(json);
-        return new JSONSerializer().exclude("*.class").prettyPrint(true).deepSerialize(o);
+        try {
+            Object o = new JSONDeserializer<Object>().deserialize(json);
+            return new JSONSerializer().exclude("*.class").prettyPrint(true).deepSerialize(o);
+        }
+        catch (JSONException e) {
+            return "";
+        }
     }
-
 
     public static <T> T deserialize(String json, Class<T> clazz) {
         return new JSONDeserializer<T>().deserialize(json, clazz);
     }
-
 
     private void setPrefix(String prefix) {
         this.prefix = prefix;
@@ -284,7 +278,6 @@ public class RestController extends IActofUIController {
         cookielist.add(cookie);
         cookies.getRoot().getChildren().add(new TreeItem<KV>(cookie));
     }
-
 
     public static RestController load(ChangeController changes) throws IOException {
         return FXUtil.load(RestController.class, "Rest.fxml", changes);
@@ -303,11 +296,9 @@ public class RestController extends IActofUIController {
         }
     }
 
-
     public class KV {
 
         public String key, value;
-
 
         public KV(String k, String v) {
             key = k;
@@ -318,27 +309,18 @@ public class RestController extends IActofUIController {
             return key;
         }
 
-
         public void setKey(String key) {
             this.key = key;
         }
-
 
         public String getValue() {
             return value;
         }
 
-
         public void setValue(String value) {
             this.value = value;
         }
 
-
-
     }
-
-
-
-
 
 }

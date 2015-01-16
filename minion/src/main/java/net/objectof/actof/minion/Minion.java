@@ -13,29 +13,24 @@ import javafx.stage.StageStyle;
 import net.objectof.actof.common.controller.TopController;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.controller.change.IChangeController;
-import net.objectof.actof.minion.components.handlers.HandlerController;
-import net.objectof.actof.minion.components.repo.RepoSelectionController;
 import net.objectof.actof.minion.components.rest.RestController;
 import net.objectof.actof.minion.components.server.ServerController;
+import net.objectof.actof.minion.components.spring.SpringController;
 
 
 public class Minion extends Application implements TopController {
-
-
 
     private MinionController window;
 
     private IChangeController change = new IChangeController();
 
     private ServerController server;
-    private HandlerController handlers;
+    // private HandlerController handlers;
+    private SpringController spring;
     private RestController rest;
-    private RepoSelectionController repo;
-
-
+    // private RepoSelectionController repo;
 
     private Stage stage;
-
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -43,11 +38,11 @@ public class Minion extends Application implements TopController {
         stage();
         minionWindow();
 
-        repoTab();
-        handlerTab();
+        // repoTab();
+        // handlerTab();
+        springTab();
         serverTab();
         restTab();
-
 
         stage.setOnCloseRequest(event -> {
             server.stop();
@@ -55,9 +50,7 @@ public class Minion extends Application implements TopController {
 
         stage.show();
 
-
     }
-
 
     @Override
     public ChangeController getChangeBus() {
@@ -87,34 +80,35 @@ public class Minion extends Application implements TopController {
         window.addTab(server.getNode(), "Server");
     }
 
-    private void handlerTab() throws IOException {
-        handlers = HandlerController.load(getChangeBus());
-        window.addTab(handlers.getNode(), "Handlers");
+    private void springTab() throws IOException {
+        spring = SpringController.load(getChangeBus());
+        window.addTab(spring.getNode(), "Spring");
     }
 
+    /*
+     * private void handlerTab() throws IOException { handlers =
+     * HandlerController.load(getChangeBus()); window.addTab(handlers.getNode(),
+     * "Handlers"); }
+     */
     private void restTab() throws IOException {
         rest = RestController.load(getChangeBus());
         window.addTab(rest.getNode(), "REST");
     }
 
-    private void repoTab() throws IOException {
-        repo = RepoSelectionController.load(getChangeBus());
-        repo.setTopController(this);
-        window.addTab(repo.getNode(), "Repository");
-    }
-
-
-
+    /*
+     * private void repoTab() throws IOException { repo =
+     * RepoSelectionController.load(getChangeBus());
+     * repo.setTopController(this); window.addTab(repo.getNode(), "Repository");
+     * }
+     */
 
     public static void main(String[] args) {
         System.setProperty("prism.lcdtext", "false");
         launch(args);
     }
 
-
     public ServerController getServer() {
         return server;
     }
-
 
 }
