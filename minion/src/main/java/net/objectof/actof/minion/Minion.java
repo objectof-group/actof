@@ -13,6 +13,7 @@ import javafx.stage.StageStyle;
 import net.objectof.actof.common.controller.TopController;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.controller.change.IChangeController;
+import net.objectof.actof.minion.components.classpath.ClasspathController;
 import net.objectof.actof.minion.components.rest.RestController;
 import net.objectof.actof.minion.components.server.ServerController;
 import net.objectof.actof.minion.components.spring.SpringController;
@@ -29,6 +30,7 @@ public class Minion extends Application implements TopController {
     private SpringController spring;
     private RestController rest;
     // private RepoSelectionController repo;
+    private ClasspathController classpath;
 
     private Stage stage;
 
@@ -40,6 +42,7 @@ public class Minion extends Application implements TopController {
 
         // repoTab();
         // handlerTab();
+        classpathTab();
         springTab();
         serverTab();
         restTab();
@@ -83,6 +86,11 @@ public class Minion extends Application implements TopController {
     private void springTab() throws IOException {
         spring = SpringController.load(getChangeBus());
         window.addTab(spring.getNode(), "Spring");
+    }
+
+    private void classpathTab() throws IOException {
+        classpath = ClasspathController.load(getChangeBus());
+        window.addTab(classpath.getNode(), "Classpath");
     }
 
     /*

@@ -14,33 +14,6 @@
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.minion.components.spring.SpringController">
-	<top>
-		<HBox spacing="2.0" BorderPane.alignment="CENTER">
-			<children>
-				<Label maxHeight="1.7976931348623157E308" text="Root Bean" />
-				<TextField fx:id="rootBean" HBox.hgrow="ALWAYS">
-					<HBox.margin>
-						<Insets bottom="2.0" />
-					</HBox.margin>
-				</TextField>
-				<Button fx:id="apply" mnemonicParsing="false" onAction="#apply" style="-fx-padding: 5;">
-					<graphic>
-						<ImageView pickOnBounds="true" preserveRatio="true">
-							<image>
-								<Image url="@icons/start.png" />
-							</image>
-						</ImageView>
-					</graphic>
-               <HBox.margin>
-                  <Insets right="2.0" />
-               </HBox.margin>
-				</Button>
-			</children>
-			<padding>
-				<Insets left="2.0" top="2.0" />
-			</padding>
-		</HBox>
-	</top>
 	<center>
 		<TextArea fx:id="beans" BorderPane.alignment="CENTER">
 			<BorderPane.margin>
@@ -48,31 +21,30 @@
 			</BorderPane.margin>
 		</TextArea>
 	</center>
-   <left>
-      <VBox BorderPane.alignment="CENTER">
+   <top>
+      <VBox fx:id="topBox" BorderPane.alignment="CENTER">
          <children>
-            <HBox spacing="2.0">
+            <HBox styleClass="tool-bar">
                <children>
-                  <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Jar Files" HBox.hgrow="ALWAYS" />
-                  <Button fx:id="loadjar" mnemonicParsing="false" onAction="#loadJar" style="-fx-padding: 5;">
-                     <graphic>
-                        <ImageView pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@icons/add.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                     <HBox.margin>
-                        <Insets />
-                     </HBox.margin>
-                  </Button>
+      										<Button fx:id="apply" mnemonicParsing="false" onAction="#apply" style="-fx-padding: 5;" text="Build">
+      											<graphic>
+      												<ImageView pickOnBounds="true" preserveRatio="true">
+      													<image>
+      														<Image url="@icons/start.png" />
+      													</image>
+      												</ImageView>
+      											</graphic>
+      										</Button>
+                  <Separator visible="false" HBox.hgrow="ALWAYS" />
+      								<HBox>
+                     <children>
+                        <Label maxHeight="1.7976931348623157E308" text="Root Bean" />
+      								<TextField fx:id="rootBean" prefWidth="100.0" promptText="root" text="root" />
+                     </children>
+      								</HBox>
                </children>
-               <padding>
-                  <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-               </padding>
             </HBox>
-            <ListView fx:id="jarList" VBox.vgrow="ALWAYS" />
          </children>
       </VBox>
-   </left>
+   </top>
 </BorderPane>
