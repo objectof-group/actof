@@ -36,12 +36,8 @@
       											</graphic>
       										</Button>
                   <Separator visible="false" HBox.hgrow="ALWAYS" />
-      								<HBox>
-                     <children>
-                        <Label maxHeight="1.7976931348623157E308" text="Root Bean" />
-      								<TextField fx:id="rootBean" prefWidth="100.0" promptText="root" text="root" />
-                     </children>
-      								</HBox>
+                  <Label maxHeight="1.7976931348623157E308" text="Root Bean" />
+								<TextField fx:id="rootBean" prefWidth="100.0" promptText="root" text="root" />
                </children>
             </HBox>
          </children>

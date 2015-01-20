@@ -12,7 +12,7 @@ import net.objectof.actof.connectorui.beans.Last;
 import net.objectof.actof.connectorui.beans.Saved;
 import net.objectof.connector.Connector;
 import net.objectof.connector.Connectors;
-import net.objectof.connector.SQLiteConnector;
+import net.objectof.connector.ISQLiteConnector;
 import net.objectof.connector.parameter.Parameter;
 import net.objectof.model.Package;
 import net.objectof.model.Transaction;
@@ -26,7 +26,7 @@ public class SavedConnections {
     private static Package getSettingsPackage() {
         File appdir = Env.appDataDirectory("actof");
 
-        Connector settings = new SQLiteConnector();
+        Connector settings = new ISQLiteConnector();
         settings.getParameter("Filename").setValue(appdir.getAbsolutePath() + "/connections.sqlite");
         settings.getParameter("Repository").setValue("Connectors");
         settings.getParameter("Version").setValue("1402");
