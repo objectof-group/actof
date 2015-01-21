@@ -8,7 +8,7 @@ import javafx.scene.control.ChoiceBox;
 import net.objectof.actof.common.controller.schema.AttributeEntry;
 import net.objectof.actof.common.controller.schema.changes.AttributeValueChange;
 import net.objectof.actof.common.controller.schema.schemaentry.SchemaEntry;
-import net.objectof.actof.schemaspy.controller.SchemaSpyController;
+import net.objectof.actof.schemaspy.SchemaSpyController;
 import net.objectof.model.Stereotype;
 
 public class ReferenceCard extends Card {

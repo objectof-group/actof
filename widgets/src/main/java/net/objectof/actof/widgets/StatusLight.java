@@ -3,7 +3,10 @@ package net.objectof.actof.widgets;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+
+import org.controlsfx.dialog.Dialogs;
 
 
 public class StatusLight extends AnchorPane {
@@ -45,9 +48,16 @@ public class StatusLight extends AnchorPane {
 
     private String style = "-fx-font-weight: bold; -fx-text-fill: #fff; -fx-font-family: Monospaced; -fx-padding: 3 3 3 3; ";
     private Label label;
+    private Throwable throwable = null;
 
     public StatusLight() {
         this("");
+
+        label.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            if (throwable == null) { return; }
+            Dialogs.create().showException(throwable);
+        });
+
     }
 
     public StatusLight(String message) {
@@ -63,7 +73,13 @@ public class StatusLight extends AnchorPane {
         setStatus(Status.OFF, message);
     }
 
+    public void setStatus(Status status, Throwable t) {
+        setStatus(status, t.getMessage());
+        throwable = t;
+    }
+
     public void setStatus(Status status, String message) {
+        throwable = null;
         label.setText(message);
         label.setStyle(style + "-fx-background-color: " + status.colour());
 

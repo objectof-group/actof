@@ -13,11 +13,22 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.minion.components.classpath.ClasspathController">
-	<bottom>
-		<HBox alignment="TOP_RIGHT" spacing="3.0" BorderPane.alignment="CENTER">
+<BorderPane stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.minion.components.classpath.ClasspathController">
+	<center>
+		<TreeTableView fx:id="jarList" showRoot="false" BorderPane.alignment="CENTER">
+			<columns>
+				<TreeTableColumn fx:id="jarFile" editable="false" maxWidth="2500.0" prefWidth="200.0" text="File" />
+            <TreeTableColumn fx:id="jarPath" editable="false" maxWidth="7500.0" prefWidth="500.0" text="Path" />
+			</columns>
+         <columnResizePolicy>
+            <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy>
+		</TreeTableView>
+	</center>
+   <top>
+		<HBox styleClass="tool-bar" BorderPane.alignment="CENTER">
 			<children>
-				<Button mnemonicParsing="false" onAction="#addJar" style="-fx-padding: 5;">
+				<Button mnemonicParsing="false" onAction="#addJar" style="-fx-padding: 5;" text="Add Jar">
 					<graphic>
 						<ImageView pickOnBounds="true" preserveRatio="true">
 							<image>
@@ -26,7 +37,7 @@
 						</ImageView>
 					</graphic>
 				</Button>
-            <Button layoutX="229.0" layoutY="13.0" mnemonicParsing="false" onAction="#removeJar" style="-fx-padding: 5;">
+            <Button layoutX="229.0" layoutY="13.0" mnemonicParsing="false" onAction="#removeJar" style="-fx-padding: 5;" text="Remove Jar">
                <graphic>
                   <ImageView pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -39,21 +50,7 @@
 			<opaqueInsets>
 				<Insets />
 			</opaqueInsets>
-         <padding>
-            <Insets bottom="3.0" right="3.0" top="3.0" />
-         </padding>
 		</HBox>
-	</bottom>
-	<center>
-		<TreeTableView fx:id="jarList" showRoot="false" BorderPane.alignment="CENTER">
-			<columns>
-				<TreeTableColumn fx:id="jarFile" editable="false" maxWidth="2500.0" prefWidth="200.0" text="File" />
-            <TreeTableColumn fx:id="jarPath" editable="false" maxWidth="7500.0" prefWidth="500.0" text="Path" />
-			</columns>
-         <columnResizePolicy>
-            <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-         </columnResizePolicy>
-		</TreeTableView>
-	</center>
+   </top>
 
 </BorderPane>

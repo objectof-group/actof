@@ -10,7 +10,7 @@ import javafx.scene.Node;
 import javafx.scene.control.ChoiceBox;
 import net.objectof.actof.common.controller.schema.AttributeEntry;
 import net.objectof.actof.common.controller.schema.schemaentry.SchemaEntry;
-import net.objectof.actof.schemaspy.controller.SchemaSpyController;
+import net.objectof.actof.schemaspy.SchemaSpyController;
 import net.objectof.model.Stereotype;
 
 

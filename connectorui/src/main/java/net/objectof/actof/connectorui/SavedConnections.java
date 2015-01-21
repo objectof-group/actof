@@ -22,9 +22,9 @@ public class SavedConnections {
 
     private static final Package SETTINGS = getSettingsPackage();
 
-
     private static Package getSettingsPackage() {
         File appdir = Env.appDataDirectory("actof");
+        appdir.mkdirs();
 
         Connector settings = new ISQLiteConnector();
         settings.getParameter("Filename").setValue(appdir.getAbsolutePath() + "/connections.sqlite");
@@ -72,9 +72,6 @@ public class SavedConnections {
         return saved;
     }
 
-
-
-
     public static List<ConnectorUI> getSavedConnectors() {
         List<ConnectorUI> connectors = new ArrayList<>();
         Saved saved = saved(getTx());
@@ -84,7 +81,6 @@ public class SavedConnections {
         connectors.sort((a, b) -> a.getName().compareTo(b.getName()));
         return connectors;
     }
-
 
     public static void addSavedConnector(Connector connector) {
 
@@ -101,7 +97,6 @@ public class SavedConnections {
 
     public static void removeSavedConnector(Connector connector) {
         Transaction tx = getTx();
-
 
         for (Connection match : new ArrayList<>(saved(tx).getConnections())) {
             if (connector.equals(asConnectorUI(match))) {
@@ -121,9 +116,6 @@ public class SavedConnections {
         }
         return null;
     }
-
-
-
 
     public static ConnectorUI getLastConnector() {
 

@@ -1,7 +1,7 @@
 package net.objectof.actof.repospy.changes;
 
 
-import net.objectof.actof.repospy.controller.navigator.composite.CompositeEntry;
+import net.objectof.actof.repospy.controllers.navigator.composite.CompositeEntry;
 import net.objectof.model.Kind;
 import net.objectof.model.Stereotype;
 

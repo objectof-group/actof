@@ -8,8 +8,6 @@ import javafx.stage.Stage;
 import javax.management.modelmbean.XMLParseException;
 import javax.xml.parsers.ParserConfigurationException;
 
-import net.objectof.actof.schemaspy.controller.SchemaSpyController;
-
 import org.xml.sax.SAXException;
 
 public class SchemaSpy extends Application {

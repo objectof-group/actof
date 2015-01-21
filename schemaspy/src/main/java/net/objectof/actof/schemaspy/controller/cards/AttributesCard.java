@@ -20,16 +20,13 @@ import javafx.util.StringConverter;
 import net.objectof.actof.common.controller.change.Change;
 import net.objectof.actof.common.controller.schema.AttributeEntry;
 import net.objectof.actof.common.controller.schema.schemaentry.SchemaEntry;
-import net.objectof.actof.schemaspy.SchemaSpy;
-import net.objectof.actof.schemaspy.controller.SchemaSpyController;
+import net.objectof.actof.schemaspy.SchemaSpyController;
 
 import org.controlsfx.dialog.DialogStyle;
 import org.controlsfx.dialog.Dialogs;
 
 
 public class AttributesCard extends Card {
-
-
 
     BorderPane top;
     TableView<AttributeEntry> table;
@@ -42,14 +39,13 @@ public class AttributesCard extends Card {
         return new ArrayList<>(unhandled);
     }
 
-
     @SuppressWarnings("unchecked")
     @Override
     public void init(SchemaSpyController schemaspy, SchemaEntry entry, List<AttributeEntry> unhandled) {
 
         this.schemaEntry = entry;
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(SchemaSpy.class.getResource("view/AttributeCard.fxml"));
+        loader.setLocation(getClass().getResource("AttributeCard.fxml"));
         try {
             top = loader.load();
             // table.setPrefWidth(Region.USE_COMPUTED_SIZE);
@@ -61,9 +57,7 @@ public class AttributesCard extends Card {
             add = (Button) loader.getNamespace().get("add");
             remove = (Button) loader.getNamespace().get("remove");
 
-
             table.getItems().setAll(unhandled);
-
 
             namespace.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getNamespace()));
             namespace.setCellFactory(data -> {
@@ -75,22 +69,16 @@ public class AttributesCard extends Card {
             });
             namespace.setOnEditCommit(event -> event.getRowValue().setNamespace(event.getNewValue()));
 
-
-
             attrname.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getName()));
             attrname.setCellFactory(data -> new TextFieldTableCell<>(new StringStringConverter()));
             attrname.setOnEditCommit(event -> event.getRowValue().setName(event.getNewValue()));
-
 
             attrvalue.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getValue()));
             attrvalue.setCellFactory(data -> new TextFieldTableCell<>(new StringStringConverter()));
             attrvalue.setOnEditCommit(event -> event.getRowValue().setValue(event.getNewValue()));
 
-
             add.setOnAction(event -> onAdd());
             remove.setOnAction(event -> onRemove());
-
-
 
             table.getSelectionModel().selectedItemProperty().addListener((ovs, o, n) -> {
                 setButtonState();
@@ -115,7 +103,6 @@ public class AttributesCard extends Card {
     protected Node getNode() {
         return top;
     }
-
 
     @Override
     public boolean appliesTo(SchemaEntry schemaEntry, List<AttributeEntry> unhandled) {
@@ -142,8 +129,6 @@ public class AttributesCard extends Card {
         schemaEntry.addAttribute(response.get(), "value");
     }
 
-
-
     private void onChange(Change change) {
         /*
          * change.when(AttributeRemovalChange.class, removal -> {
@@ -153,7 +138,6 @@ public class AttributesCard extends Card {
          * table.getItems().add(addition.getAttribute()); });
          */
     }
-
 
 }
 

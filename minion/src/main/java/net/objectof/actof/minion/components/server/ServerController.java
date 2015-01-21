@@ -89,7 +89,6 @@ public class ServerController extends IActofUIController {
         ContextHandler context = new ContextHandler("/");
         server.setHandler(context);
 
-        // Create the SessionHandler (wrapper) to handle the sessions
         HashSessionManager manager = new HashSessionManager();
         SessionHandler sessions = new SessionHandler(manager);
         context.setHandler(sessions);

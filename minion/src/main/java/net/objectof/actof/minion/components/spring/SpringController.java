@@ -3,10 +3,10 @@ package net.objectof.actof.minion.components.spring;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -39,7 +39,7 @@ public class SpringController extends IActofUIController {
 
     private StatusLight status;
 
-    private List<File> classpathFiles;
+    private List<File> classpathFiles = Collections.emptyList();
 
     @Override
     public void ready() {
@@ -61,27 +61,33 @@ public class SpringController extends IActofUIController {
     @Override
     protected void initialize() throws Exception {}
 
-    public void apply() throws MalformedURLException {
+    public void apply() {
 
-        List<URL> urls = new ArrayList<>();
-        for (File file : classpathFiles) {
-            urls.add(file.toURI().toURL());
+        try {
+
+            List<URL> urls = new ArrayList<>();
+            for (File file : classpathFiles) {
+                urls.add(file.toURI().toURL());
+            }
+
+            DefaultListableBeanFactory registry = new DefaultListableBeanFactory();
+            XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(registry);
+
+            ClassLoader loader = new URLClassLoader(urls.toArray(new URL[] {}), Thread.currentThread()
+                    .getContextClassLoader());
+
+            Resource res = new ByteArrayResource(beans.getText().getBytes());
+            reader.setBeanClassLoader(loader);
+            reader.loadBeanDefinitions(res);
+
+            Object root = registry.getBean(rootBean.getText());
+            getChangeBus().broadcast(new BeansChange(root, registry));
+
+            status.setStatus(Status.GOOD, "Server Configuration Built at " + new Date());
         }
-
-        DefaultListableBeanFactory registry = new DefaultListableBeanFactory();
-        XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(registry);
-
-        ClassLoader loader = new URLClassLoader(urls.toArray(new URL[] {}), Thread.currentThread()
-                .getContextClassLoader());
-
-        Resource res = new ByteArrayResource(beans.getText().getBytes());
-        reader.setBeanClassLoader(loader);
-        reader.loadBeanDefinitions(res);
-
-        Object root = registry.getBean(rootBean.getText());
-        getChangeBus().broadcast(new BeansChange(root));
-
-        status.setStatus(Status.GOOD, "Server Configuration Built at " + new Date());
+        catch (Exception e) {
+            status.setStatus(Status.BAD, e);
+        }
 
     }
 

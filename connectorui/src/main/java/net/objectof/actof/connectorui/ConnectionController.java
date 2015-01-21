@@ -50,19 +50,19 @@ public class ConnectionController extends IActofUIController {
     @FXML
     Button connect, cancel;
 
-
     public static Connector showConnectDialog(Window owner) throws IOException {
         return showDialog(owner, false);
     }
 
-
-
-
-
     @Override
     @FXML
     protected void initialize() {
-        populateChoiceBox();
+        try {
+            populateChoiceBox();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -79,22 +79,22 @@ public class ConnectionController extends IActofUIController {
 
         backend.getItems().clear();
 
+        // load any saved connections
         backend.getItems().addAll(SavedConnections.getSavedConnectors());
+
+        // load new/template connections
         for (Connector newconn : Connectors.getConnectors()) {
             ConnectorUI newconnui = new ConnectorUI(newconn);
             newconnui.setDisplayName("New " + newconn.getType() + " Connection");
             backend.getItems().add(newconnui);
         }
 
-
         backend.getSelectionModel().selectedItemProperty().addListener((obs, o, n) -> {
             layout();
         });
 
-
         ConnectorUI last = SavedConnections.getLastConnector();
         ConnectorUI requested = SavedConnections.getSavedByName(name);
-
 
         // if there is a last connection, make sure it's in the list if it isn't
         // already
@@ -104,9 +104,6 @@ public class ConnectionController extends IActofUIController {
                 backend.getItems().add(last);
             }
         }
-
-
-
 
         if (requested != null) {
             backend.getSelectionModel().select(requested);
@@ -119,30 +116,6 @@ public class ConnectionController extends IActofUIController {
         } else {
             backend.getSelectionModel().select(0);
         }
-
-
-        // if (requested == null && last == null) {
-        // backend.getSelectionModel().select(0);
-        // } else if (requested == null)
-        //
-        // if (requested == null) {
-        // if (last == null) {
-        // // no preferred connector and no last connection -- just go with
-        // // the first item in the list
-        // backend.getSelectionModel().select(backend.getItems().get(0));
-        // } else {
-        // // There is a "last connector", if it's not already in the list,
-        // // then add it with a display name of < Last Connection >,
-        // // otherwise just select it
-        // if (!backend.getItems().contains(last)) {
-        // last.setDisplayName("< Last Connection >");
-        // backend.getItems().add(last);
-        // }
-        // backend.getSelectionModel().select(last);
-        // }
-        // } else {
-        //
-        // }
 
     }
 
@@ -168,7 +141,6 @@ public class ConnectionController extends IActofUIController {
         return backend.getSelectionModel().getSelectedItem();
     }
 
-
     private void layout() {
         List<Node> children = grid.getChildren();
         while (!children.isEmpty()) {
@@ -178,7 +150,6 @@ public class ConnectionController extends IActofUIController {
         int row = 0;
 
         Connector conn = getSelectedConnector();
-
 
         ParameterEditor editor = null;
         if (conn == null) { return; }
@@ -225,9 +196,6 @@ public class ConnectionController extends IActofUIController {
         stage.setResizable(false);
     }
 
-
-
-
     public void cancel() {
         if (stage != null) stage.close();
     }
@@ -253,7 +221,6 @@ public class ConnectionController extends IActofUIController {
     private boolean isConnectSelected() {
         return connectSelected;
     }
-
 
     public static ConnectionController load(boolean create) throws IOException {
         return load(create, new IChangeController());
@@ -293,9 +260,5 @@ public class ConnectionController extends IActofUIController {
             return null;
         }
     }
-
-
-
-
 
 }

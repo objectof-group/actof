@@ -7,12 +7,14 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.objectof.actof.common.controller.TopController;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.controller.change.IChangeController;
+import net.objectof.actof.minion.components.beans.BeansController;
 import net.objectof.actof.minion.components.classpath.ClasspathController;
 import net.objectof.actof.minion.components.rest.RestController;
 import net.objectof.actof.minion.components.server.ServerController;
@@ -31,6 +33,7 @@ public class Minion extends Application implements TopController {
     private RestController rest;
     // private RepoSelectionController repo;
     private ClasspathController classpath;
+    private BeansController beans;
 
     private Stage stage;
 
@@ -44,6 +47,7 @@ public class Minion extends Application implements TopController {
         // handlerTab();
         classpathTab();
         springTab();
+        beansTab();
         serverTab();
         restTab();
 
@@ -60,11 +64,14 @@ public class Minion extends Application implements TopController {
         return change;
     }
 
-    private void stage() {
+    private void stage() throws IOException {
         stage = new Stage(StageStyle.DECORATED);
         stage.setTitle("Minion Web Server");
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.initOwner(null);
+
+        stage.getIcons().add(new Image(Minion.class.getResource("view/Minion.png").openStream()));
+
     }
 
     private void minionWindow() throws IOException {
@@ -86,6 +93,11 @@ public class Minion extends Application implements TopController {
     private void springTab() throws IOException {
         spring = SpringController.load(getChangeBus());
         window.addTab(spring.getNode(), "Spring");
+    }
+
+    private void beansTab() throws IOException {
+        beans = BeansController.load(getChangeBus());
+        window.addTab(beans.getNode(), "Beans");
     }
 
     private void classpathTab() throws IOException {
