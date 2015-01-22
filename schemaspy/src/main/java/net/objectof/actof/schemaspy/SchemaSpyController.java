@@ -75,7 +75,7 @@ public class SchemaSpyController extends ITopController {
 
         Scene scene = new Scene((Parent) controller.getNode());
         primaryStage.setScene(scene);
-        primaryStage.getIcons().add(new Image(SchemaSpy.class.getResource("view/icons/schemaspy.png").openStream()));
+        primaryStage.getIcons().add(new Image(SchemaSpy.class.getResource("view/icons/SchemaSpy.png").openStream()));
         primaryStage.setOnCloseRequest(event -> {
             if (!view.modified) { return; }
 

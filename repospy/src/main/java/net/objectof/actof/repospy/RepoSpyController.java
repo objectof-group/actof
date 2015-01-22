@@ -65,7 +65,7 @@ public class RepoSpyController extends ITopController {
 
         Scene scene = new Scene((Parent) controller.getNode());
         primaryStage.setScene(scene);
-        primaryStage.getIcons().add(new Image(RepoSpy.class.getResource("view/icons/repospy.png").openStream()));
+        primaryStage.getIcons().add(new Image(RepoSpy.class.getResource("view/icons/RepoSpy.png").openStream()));
 
         primaryStage.setOnCloseRequest(event -> {
             if (history.get().isEmpty()) { return; }
