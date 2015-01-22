@@ -29,7 +29,6 @@ public class Minion extends Application implements TopController {
     // private HandlerController handlers;
     private SpringController spring;
     private RestController rest;
-    // private RepoSelectionController repo;
     private ClasspathController classpath;
     private BeansController beans;
 
@@ -42,7 +41,6 @@ public class Minion extends Application implements TopController {
         stage();
         minionWindow();
 
-        // repoTab();
         // handlerTab();
         classpathTab();
         springTab();
@@ -108,13 +106,6 @@ public class Minion extends Application implements TopController {
         rest = RestController.load(getChangeBus());
         window.addTab(rest.getNode(), "REST");
     }
-
-    /*
-     * private void repoTab() throws IOException { repo =
-     * RepoSelectionController.load(getChangeBus());
-     * repo.setTopController(this); window.addTab(repo.getNode(), "Repository");
-     * }
-     */
 
     public static void main(String[] args) {
         System.setProperty("prism.lcdtext", "false");
