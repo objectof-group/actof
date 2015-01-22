@@ -2,21 +2,33 @@ package net.objectof.actof.minion.components.spring;
 
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.Scanner;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import net.objectof.actof.common.controller.IActofUIController;
 import net.objectof.actof.common.controller.change.ChangeController;
+import net.objectof.actof.common.controller.config.Env;
 import net.objectof.actof.common.util.FXUtil;
+import net.objectof.actof.minion.Settings;
 import net.objectof.actof.minion.components.classpath.change.ClasspathChange;
 import net.objectof.actof.minion.components.spring.change.BeansChange;
 import net.objectof.actof.widgets.StatusLight;
@@ -36,6 +48,8 @@ public class SpringController extends IActofUIController {
     private TextField rootBean;
     @FXML
     private VBox topBox;
+
+    private static final String SETTING_PATH = "net.objectof.actof.minion.spring.path";
 
     private StatusLight status;
 
@@ -88,6 +102,41 @@ public class SpringController extends IActofUIController {
         catch (Exception e) {
             status.setStatus(Status.BAD, e);
         }
+
+    }
+
+    public void open() throws FileNotFoundException {
+
+        FileChooser chooser = new FileChooser();
+        chooser.setInitialDirectory(Settings.get(SETTING_PATH, Env.homeDirectory()));
+        File config = chooser.showOpenDialog(null);
+        if (config == null) { return; }
+        Settings.put(SETTING_PATH, config.getParentFile());
+
+        Scanner scanner = new Scanner(config);
+        scanner.useDelimiter("\\Z");
+        beans.setText(scanner.next());
+        scanner.close();
+    }
+
+    public void save() throws IOException {
+
+        FileChooser chooser = new FileChooser();
+        chooser.setInitialDirectory(Settings.get(SETTING_PATH, Env.homeDirectory()));
+        File config = chooser.showSaveDialog(null);
+        if (config == null) { return; }
+        Settings.put(SETTING_PATH, config.getParentFile());
+
+        if (config.exists()) {
+            Alert alert = new Alert(AlertType.CONFIRMATION, "Overwrite existing file?", ButtonType.YES, ButtonType.NO);
+            Optional<ButtonType> response = alert.showAndWait();
+            if (!response.isPresent()) { return; }
+            if (response.get() != ButtonType.YES) { return; }
+        }
+
+        Writer writer = new OutputStreamWriter(new FileOutputStream(config));
+        writer.write(beans.getText());
+        writer.close();
 
     }
 

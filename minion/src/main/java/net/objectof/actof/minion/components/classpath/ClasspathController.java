@@ -15,7 +15,9 @@ import javafx.scene.control.TreeTableView;
 import javafx.stage.FileChooser;
 import net.objectof.actof.common.controller.IActofUIController;
 import net.objectof.actof.common.controller.change.ChangeController;
+import net.objectof.actof.common.controller.config.Env;
 import net.objectof.actof.common.util.FXUtil;
+import net.objectof.actof.minion.Settings;
 import net.objectof.actof.minion.components.classpath.change.ClasspathChange;
 
 
@@ -25,6 +27,8 @@ public class ClasspathController extends IActofUIController {
     private TreeTableView<File> jarList;
     @FXML
     private TreeTableColumn<File, String> jarFile, jarPath;
+
+    private static final String SETTING_PATH = "net.objectof.actof.minion.classpath.path";
 
     @Override
     public void ready() {
@@ -53,9 +57,12 @@ public class ClasspathController extends IActofUIController {
     }
 
     public void addJar() throws MalformedURLException, IOException {
+
         FileChooser chooser = new FileChooser();
+        chooser.setInitialDirectory(Settings.get(SETTING_PATH, Env.homeDirectory()));
         List<File> jars = chooser.showOpenMultipleDialog(null);
-        if (jars == null) { return; }
+        if (jars == null || jars.size() == 0) { return; }
+        Settings.put(SETTING_PATH, jars.get(0).getParentFile());
 
         for (File jar : jars) {
             jarList.getRoot().getChildren().add(new TreeItem<File>(jar));

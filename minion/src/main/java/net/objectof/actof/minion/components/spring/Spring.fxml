@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.web.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
@@ -26,6 +27,24 @@
          <children>
             <HBox styleClass="tool-bar">
                <children>
+                  <Button fx:id="open" mnemonicParsing="false" onAction="#open" style="-fx-padding: 5;">
+                     <graphic>
+                        <ImageView pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@icons/open.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="save" mnemonicParsing="false" onAction="#save" style="-fx-padding: 5;">
+                     <graphic>
+                        <ImageView pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@icons/save.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
       										<Button fx:id="apply" mnemonicParsing="false" onAction="#apply" style="-fx-padding: 5;" text="Build">
       											<graphic>
       												<ImageView pickOnBounds="true" preserveRatio="true">

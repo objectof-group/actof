@@ -2,6 +2,8 @@ package net.objectof.actof.minion.components.beans;
 
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
@@ -41,7 +43,6 @@ public class BeansController extends IActofUIController {
             beans.setRoot(root);
 
             for (String name : registry.getBeanDefinitionNames()) {
-                System.out.println(name);
                 root.getChildren().add(new TreeItem(name));
             }
         });
@@ -60,8 +61,26 @@ public class BeansController extends IActofUIController {
         BeanDefinition def = registry.getBeanDefinition(name);
         ConstructorArgumentValues args = def.getConstructorArgumentValues();
         for (ValueHolder val : args.getGenericArgumentValues()) {
+            Object obj = val.getValue();
+
+            if (Map.class.isAssignableFrom(obj.getClass())) {
+                // this is a map
+                Map m = (Map) obj;
+                for (Object key : m.keySet()) {
+                    System.out.println(key + " -> " + m.get(key));
+                    System.out.println(m.get(key).getClass());
+                }
+                continue;
+            }
+
+            if (List.class.isAssignableFrom(obj.getClass())) {
+                // this is a list
+                continue;
+            }
+
+            // this is a value
+
             System.out.println(val.toString());
-            System.out.println("    " + val.getName());
             System.out.println("    " + val.getValue());
         }
     }
