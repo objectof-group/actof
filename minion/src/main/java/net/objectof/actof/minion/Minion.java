@@ -12,7 +12,6 @@ import javafx.stage.Stage;
 import net.objectof.actof.common.controller.TopController;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.controller.change.IChangeController;
-import net.objectof.actof.minion.components.beans.BeansController;
 import net.objectof.actof.minion.components.classpath.ClasspathController;
 import net.objectof.actof.minion.components.rest.RestController;
 import net.objectof.actof.minion.components.server.ServerController;
@@ -30,7 +29,6 @@ public class Minion extends Application implements TopController {
     private SpringController spring;
     private RestController rest;
     private ClasspathController classpath;
-    private BeansController beans;
 
     private Stage stage;
 
@@ -44,7 +42,6 @@ public class Minion extends Application implements TopController {
         // handlerTab();
         classpathTab();
         springTab();
-        beansTab();
         serverTab();
         restTab();
 
@@ -87,11 +84,6 @@ public class Minion extends Application implements TopController {
         window.addTab(spring.getNode(), "Spring");
     }
 
-    private void beansTab() throws IOException {
-        beans = BeansController.load(getChangeBus());
-        window.addTab(beans.getNode(), "Beans");
-    }
-
     private void classpathTab() throws IOException {
         classpath = ClasspathController.load(getChangeBus());
         window.addTab(classpath.getNode(), "Classpath");
@@ -108,12 +100,9 @@ public class Minion extends Application implements TopController {
     }
 
     public static void main(String[] args) {
+
         System.setProperty("prism.lcdtext", "false");
         launch(args);
-    }
-
-    public ServerController getServer() {
-        return server;
     }
 
 }

@@ -4,12 +4,12 @@ package net.objectof.actof.minion.components.spring;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -30,14 +30,11 @@ import net.objectof.actof.common.controller.config.Env;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.minion.Settings;
 import net.objectof.actof.minion.components.classpath.change.ClasspathChange;
-import net.objectof.actof.minion.components.spring.change.BeansChange;
+import net.objectof.actof.minion.components.spring.change.HandlerChange;
 import net.objectof.actof.widgets.StatusLight;
 import net.objectof.actof.widgets.StatusLight.Status;
 
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
+import org.eclipse.jetty.webapp.WebAppContext;
 
 
 public class SpringController extends IActofUIController {
@@ -79,25 +76,43 @@ public class SpringController extends IActofUIController {
 
         try {
 
-            List<URL> urls = new ArrayList<>();
+            // build our classloader
+            IsolatedClassLoader loader = new IsolatedClassLoader();
             for (File file : classpathFiles) {
-                urls.add(file.toURI().toURL());
+                loader.addURL(file.toURI().toURL());
             }
 
-            DefaultListableBeanFactory registry = new DefaultListableBeanFactory();
-            XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(registry);
+            // Create webapp directory/file structure
+            Path rootDir = Files.createTempDirectory("Minion Server");
+            rootDir.toFile().deleteOnExit();
+            File webinf = new File(rootDir.toFile(), "WEB-INF");
+            File appxml = new File(webinf, "app.xml");
+            File webxml = new File(webinf, "web.xml");
+            webinf.mkdirs();
 
-            ClassLoader loader = new URLClassLoader(urls.toArray(new URL[] {}), Thread.currentThread()
-                    .getContextClassLoader());
+            // write web.xml
+            Scanner scanner = new Scanner(SpringController.class.getResourceAsStream("web.xml"));
+            String webxmlContent = scanner.useDelimiter("\\Z").next();
+            scanner.close();
+            FileWriter writer = new FileWriter(webxml);
+            writer.write(webxmlContent);
+            writer.close();
 
-            Resource res = new ByteArrayResource(beans.getText().getBytes());
-            reader.setBeanClassLoader(loader);
-            reader.loadBeanDefinitions(res);
+            // write app.xml - bean config
+            writer = new FileWriter(appxml);
+            writer.write(beans.getText());
+            writer.close();
 
-            Object root = registry.getBean(rootBean.getText());
-            getChangeBus().broadcast(new BeansChange(root, registry));
+            // Create the WebAppContext handler
+            WebAppContext context = new WebAppContext();
+            context.setClassLoader(loader);
+            context.setContextPath("");
+            context.setResourceBase(rootDir.toString());
 
+            // Transmit new WebAppContext as event
+            getChangeBus().broadcast(new HandlerChange(context));
             status.setStatus(Status.GOOD, "Server Configuration Built at " + new Date());
+
         }
         catch (Exception e) {
             status.setStatus(Status.BAD, e);

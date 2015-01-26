@@ -10,31 +10,22 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import net.objectof.actof.common.controller.IActofUIController;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.minion.components.server.change.ServerStartChange;
 import net.objectof.actof.minion.components.server.change.ServerStopChange;
-import net.objectof.actof.minion.components.spring.change.BeansChange;
+import net.objectof.actof.minion.components.spring.change.HandlerChange;
 import net.objectof.actof.widgets.StatusLight;
 import net.objectof.actof.widgets.StatusLight.Status;
-import net.objectof.corc.Handler;
-import net.objectof.corc.web.v2.HttpRequest;
-import net.objectof.corc.web.v2.impl.IHttpRequest;
 
-import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.session.HashSessionIdManager;
 import org.eclipse.jetty.server.session.HashSessionManager;
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.util.component.LifeCycle;
+import org.eclipse.jetty.webapp.WebAppContext;
 
 
 public class ServerController extends IActofUIController {
@@ -52,8 +43,10 @@ public class ServerController extends IActofUIController {
 
     // Jetty Server Components
     private Server server;
+    private ContextHandler context;
+    private SessionHandler sessions;
     private int counter = 0;
-    private Handler<HttpRequest> handler;
+    private WebAppContext handler;
 
     private StatusLight statuslight;
 
@@ -70,14 +63,14 @@ public class ServerController extends IActofUIController {
         start.setDisable(true);
         porttext.setDisable(true);
         portlabel.setDisable(true);
+
     }
 
     @Override
     public void ready() {
-        getChangeBus().listen(BeansChange.class, beansChange -> {
-            Handler<HttpRequest> handler = (Handler<HttpRequest>) beansChange.getRoot();
-            setHandler(handler);
-        });
+
+        getChangeBus().listen(HandlerChange.class, this::setHandler);
+
     }
 
     private void initServer() {
@@ -86,26 +79,16 @@ public class ServerController extends IActofUIController {
         HashSessionIdManager idmanager = new HashSessionIdManager();
         server.setSessionIdManager(idmanager);
 
-        ContextHandler context = new ContextHandler("/");
+        context = new ContextHandler("/");
         server.setHandler(context);
 
         HashSessionManager manager = new HashSessionManager();
-        SessionHandler sessions = new SessionHandler(manager);
+        sessions = new SessionHandler(manager);
         context.setHandler(sessions);
 
-        sessions.setHandler(new AbstractHandler() {
-
-            @Override
-            public void handle(String target, Request base, HttpServletRequest request, HttpServletResponse response)
-                    throws IOException, ServletException {
-
-                addOutput(request.getMethod() + ": " + request.getPathInfo(), true);
-
-                IHttpRequest req = new IHttpRequest("" + counter++, this, request, response);
-                handler.execute(req, req);
-                base.setHandled(true);
-            }
-        });
+        if (handler != null) {
+            sessions.setHandler(handler);
+        }
 
         server.addLifeCycleListener(new LifeCycle.Listener() {
 
@@ -149,23 +132,16 @@ public class ServerController extends IActofUIController {
         return port;
     }
 
-    public void setHandler(Handler<HttpRequest> handler) {
+    public void setHandler(HandlerChange change) {
 
-        if (handler == null) {
-            // if the new handler is null, shut down the server
-            stop();
-            start.setDisable(true);
-            stop.setDisable(true);
-            porttext.setDisable(true);
-            portlabel.setDisable(true);
-        } else if (this.handler == null) {
+        if (this.handler == null) {
             // if the handler was null before this, turn things on
             start.setDisable(false);
             porttext.setDisable(false);
             portlabel.setDisable(false);
         }
 
-        this.handler = handler;
+        this.handler = change.getHandler();
 
     }
 

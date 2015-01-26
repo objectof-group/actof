@@ -14,11 +14,8 @@ public class FXUtil {
 
     public static <T extends ActofUIController> T load(Class<T> cls, String filename, ChangeController changes)
             throws IOException {
-        return load(cls, cls.getResource(filename), changes);
-    }
 
-    public static <T extends ActofUIController> T load(Class<T> cls, URL url, ChangeController changes)
-            throws IOException {
+        URL url = cls.getResource(filename);
 
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(url);
