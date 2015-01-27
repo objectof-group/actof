@@ -44,4 +44,8 @@ public class BeanDefinition {
         this.contents = contents;
     }
 
+    public String toString() {
+        return getFilename();
+    }
+
 }

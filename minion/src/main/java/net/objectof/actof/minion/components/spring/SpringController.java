@@ -16,15 +16,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
-import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
+import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import net.objectof.actof.common.controller.IActofUIController;
@@ -32,6 +32,7 @@ import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.controller.config.Env;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.minion.Settings;
+import net.objectof.actof.minion.components.classpath.ClasspathController;
 import net.objectof.actof.minion.components.classpath.change.ClasspathChange;
 import net.objectof.actof.minion.components.spring.change.HandlerChange;
 import net.objectof.actof.widgets.StatusLight;
@@ -49,9 +50,11 @@ public class SpringController extends IActofUIController {
     @FXML
     private VBox topBox;
     @FXML
-    private TableView<BeanDefinition> filesTable;
+    private ListView<BeanDefinition> beanList;
     @FXML
-    private TableColumn<BeanDefinition, String> filesColumn;
+    private TitledPane classpathBox, beansBox;
+    @FXML
+    private Accordion accordion;
 
     private static final String SETTING_PATH = "net.objectof.actof.minion.spring.path";
 
@@ -74,24 +77,29 @@ public class SpringController extends IActofUIController {
             classpathFiles = event.getFiles();
         });
 
-        filesColumn.setCellValueFactory(cell -> {
-            return new SimpleStringProperty(cell.getValue().getFilename());
-        });
-
-        filesTable.getSelectionModel().selectedItemProperty().addListener(change -> {
-            BeanDefinition def = filesTable.getSelectionModel().getSelectedItem();
+        beanList.getSelectionModel().selectedItemProperty().addListener(change -> {
+            BeanDefinition def = beanList.getSelectionModel().getSelectedItem();
             beans.setText(def.getContents());
         });
 
         beans.textProperty().addListener(change -> {
-            filesTable.getSelectionModel().getSelectedItem().setContents(beans.getText());
+            beanList.getSelectionModel().getSelectedItem().setContents(beans.getText());
         });
 
         BeanDefinition app = new BeanDefinition(
                 "<beans xmlns='http://www.springframework.org/schema/beans' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd'>\n\n\n</beans>",
                 "app.xml");
-        filesTable.getItems().add(app);
-        filesTable.getSelectionModel().select(app);
+        beanList.getItems().add(app);
+        beanList.getSelectionModel().select(app);
+
+        try {
+            classpathBox.setContent(ClasspathController.load(getChangeBus()).getNode());
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        accordion.setExpandedPane(beansBox);
 
     }
 
@@ -118,7 +126,7 @@ public class SpringController extends IActofUIController {
             webinf.mkdirs();
 
             // write user xml files
-            for (BeanDefinition def : filesTable.getItems()) {
+            for (BeanDefinition def : beanList.getItems()) {
                 File file = new File(webinf, def.getFilename());
                 writer = new FileWriter(file);
                 writer.write(def.getContents());
@@ -130,7 +138,7 @@ public class SpringController extends IActofUIController {
             String beansdef = scanner.useDelimiter("\\Z").next();
             scanner.close();
             beansdef = beansdef.replace("[[[rootbean]]]", rootBean.getText());
-            String configFiles = filesTable.getItems().stream().map(bean -> "WEB-INF/" + bean.getFilename())
+            String configFiles = beanList.getItems().stream().map(bean -> "WEB-INF/" + bean.getFilename())
                     .reduce((acc, file) -> acc + "," + file).get();
             beansdef = beansdef.replace("[[[configfiles]]]", configFiles);
 
@@ -193,16 +201,16 @@ public class SpringController extends IActofUIController {
     }
 
     public void remove() {
-        BeanDefinition def = filesTable.getSelectionModel().getSelectedItem();
-        int index = filesTable.getSelectionModel().getSelectedIndex();
+        BeanDefinition def = beanList.getSelectionModel().getSelectedItem();
+        int index = beanList.getSelectionModel().getSelectedIndex();
         if (index == 0) { return; }
         if (def == null) { return; }
-        filesTable.getItems().remove(def);
-        filesTable.getSelectionModel().select(0);
+        beanList.getItems().remove(def);
+        beanList.getSelectionModel().select(0);
     }
 
     private void addBeanDef(BeanDefinition def) {
-        filesTable.getItems().add(def);
+        beanList.getItems().add(def);
     }
 
     public static SpringController load(ChangeController changes) throws IOException {

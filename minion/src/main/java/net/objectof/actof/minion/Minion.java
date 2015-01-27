@@ -39,8 +39,6 @@ public class Minion extends Application implements TopController {
         stage();
         minionWindow();
 
-        // handlerTab();
-        classpathTab();
         springTab();
         serverTab();
         restTab();
@@ -84,16 +82,6 @@ public class Minion extends Application implements TopController {
         window.addTab(spring.getNode(), "Spring");
     }
 
-    private void classpathTab() throws IOException {
-        classpath = ClasspathController.load(getChangeBus());
-        window.addTab(classpath.getNode(), "Classpath");
-    }
-
-    /*
-     * private void handlerTab() throws IOException { handlers =
-     * HandlerController.load(getChangeBus()); window.addTab(handlers.getNode(),
-     * "Handlers"); }
-     */
     private void restTab() throws IOException {
         rest = RestController.load(getChangeBus());
         window.addTab(rest.getNode(), "REST");

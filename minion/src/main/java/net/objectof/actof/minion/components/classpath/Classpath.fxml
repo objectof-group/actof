@@ -14,21 +14,10 @@
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.minion.components.classpath.ClasspathController">
-	<center>
-		<TreeTableView fx:id="jarList" showRoot="false" BorderPane.alignment="CENTER">
-			<columns>
-				<TreeTableColumn fx:id="jarFile" editable="false" maxWidth="2500.0" prefWidth="200.0" text="File" />
-            <TreeTableColumn fx:id="jarPath" editable="false" maxWidth="7500.0" prefWidth="500.0" text="Path" />
-			</columns>
-         <columnResizePolicy>
-            <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-         </columnResizePolicy>
-		</TreeTableView>
-	</center>
-   <top>
-		<HBox styleClass="tool-bar" BorderPane.alignment="CENTER">
+   <bottom>
+		<HBox alignment="CENTER_RIGHT" spacing="3.0" BorderPane.alignment="CENTER">
 			<children>
-				<Button mnemonicParsing="false" onAction="#addJar" style="-fx-padding: 5;" text="Add Jar">
+				<Button mnemonicParsing="false" onAction="#addJar" style="-fx-padding: 5;">
 					<graphic>
 						<ImageView pickOnBounds="true" preserveRatio="true">
 							<image>
@@ -37,7 +26,7 @@
 						</ImageView>
 					</graphic>
 				</Button>
-            <Button layoutX="229.0" layoutY="13.0" mnemonicParsing="false" onAction="#removeJar" style="-fx-padding: 5;" text="Remove Jar">
+            <Button layoutX="229.0" layoutY="13.0" mnemonicParsing="false" onAction="#removeJar" style="-fx-padding: 5;">
                <graphic>
                   <ImageView pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -50,7 +39,16 @@
 			<opaqueInsets>
 				<Insets />
 			</opaqueInsets>
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
+         <padding>
+            <Insets top="3.0" />
+         </padding>
 		</HBox>
-   </top>
+   </bottom>
+   <center>
+      <ListView fx:id="jarList" prefHeight="100.0" BorderPane.alignment="CENTER" />
+   </center>
 
 </BorderPane>
