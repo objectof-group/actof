@@ -1,0 +1,5 @@
+.titled-pane > .title  {
+	
+    -fx-alignment: center;
+    -fx-content-display: center;
+}

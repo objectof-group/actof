@@ -10,7 +10,7 @@
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
-			WEB-INF/app.xml
+			[[[configfiles]]]
 		</param-value>
 	</context-param>
 
@@ -24,7 +24,7 @@
 		<servlet-class>net.objectof.corc.web.v2.impl.ISpringHttpService</servlet-class>
 		<init-param>
 			<param-name>handler</param-name>
-			<param-value>root</param-value>
+			<param-value>[[[rootbean]]]</param-value>
 		</init-param>
 		<init-param>
 			<param-name>servicePrefix</param-name>

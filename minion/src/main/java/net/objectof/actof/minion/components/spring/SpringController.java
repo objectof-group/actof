@@ -16,10 +16,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
@@ -45,6 +48,10 @@ public class SpringController extends IActofUIController {
     private TextField rootBean;
     @FXML
     private VBox topBox;
+    @FXML
+    private TableView<BeanDefinition> filesTable;
+    @FXML
+    private TableColumn<BeanDefinition, String> filesColumn;
 
     private static final String SETTING_PATH = "net.objectof.actof.minion.spring.path";
 
@@ -60,13 +67,32 @@ public class SpringController extends IActofUIController {
         topBox.getChildren().add(status);
 
         beans.setStyle("-fx-font-family: Monospaced;");
-        beans.setText("<beans xmlns='http://www.springframework.org/schema/beans' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd'>\n\n\n</beans>");
 
         rootBean.setText("root");
 
         getChangeBus().listen(ClasspathChange.class, event -> {
             classpathFiles = event.getFiles();
         });
+
+        filesColumn.setCellValueFactory(cell -> {
+            return new SimpleStringProperty(cell.getValue().getFilename());
+        });
+
+        filesTable.getSelectionModel().selectedItemProperty().addListener(change -> {
+            BeanDefinition def = filesTable.getSelectionModel().getSelectedItem();
+            beans.setText(def.getContents());
+        });
+
+        beans.textProperty().addListener(change -> {
+            filesTable.getSelectionModel().getSelectedItem().setContents(beans.getText());
+        });
+
+        BeanDefinition app = new BeanDefinition(
+                "<beans xmlns='http://www.springframework.org/schema/beans' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd'>\n\n\n</beans>",
+                "app.xml");
+        filesTable.getItems().add(app);
+        filesTable.getSelectionModel().select(app);
+
     }
 
     @Override
@@ -75,6 +101,8 @@ public class SpringController extends IActofUIController {
     public void apply() {
 
         try {
+
+            FileWriter writer;
 
             // build our classloader
             IsolatedClassLoader loader = new IsolatedClassLoader();
@@ -86,21 +114,29 @@ public class SpringController extends IActofUIController {
             Path rootDir = Files.createTempDirectory("Minion Server");
             rootDir.toFile().deleteOnExit();
             File webinf = new File(rootDir.toFile(), "WEB-INF");
-            File appxml = new File(webinf, "app.xml");
             File webxml = new File(webinf, "web.xml");
             webinf.mkdirs();
 
-            // write web.xml
-            Scanner scanner = new Scanner(SpringController.class.getResourceAsStream("web.xml"));
-            String webxmlContent = scanner.useDelimiter("\\Z").next();
-            scanner.close();
-            FileWriter writer = new FileWriter(webxml);
-            writer.write(webxmlContent);
-            writer.close();
+            // write user xml files
+            for (BeanDefinition def : filesTable.getItems()) {
+                File file = new File(webinf, def.getFilename());
+                writer = new FileWriter(file);
+                writer.write(def.getContents());
+                writer.close();
+            }
 
-            // write app.xml - bean config
-            writer = new FileWriter(appxml);
-            writer.write(beans.getText());
+            // generate web.xml contents
+            Scanner scanner = new Scanner(SpringController.class.getResourceAsStream("web.xml"));
+            String beansdef = scanner.useDelimiter("\\Z").next();
+            scanner.close();
+            beansdef = beansdef.replace("[[[rootbean]]]", rootBean.getText());
+            String configFiles = filesTable.getItems().stream().map(bean -> "WEB-INF/" + bean.getFilename())
+                    .reduce((acc, file) -> acc + "," + file).get();
+            beansdef = beansdef.replace("[[[configfiles]]]", configFiles);
+
+            // write web.xml
+            writer = new FileWriter(webxml);
+            writer.write(beansdef);
             writer.close();
 
             // Create the WebAppContext handler
@@ -120,18 +156,19 @@ public class SpringController extends IActofUIController {
 
     }
 
-    public void open() throws FileNotFoundException {
+    public void add() throws FileNotFoundException {
 
         FileChooser chooser = new FileChooser();
         chooser.setInitialDirectory(Settings.get(SETTING_PATH, Env.homeDirectory()));
-        File config = chooser.showOpenDialog(null);
-        if (config == null) { return; }
-        Settings.put(SETTING_PATH, config.getParentFile());
+        List<File> files = chooser.showOpenMultipleDialog(null);
+        if (files == null) { return; }
+        if (files.size() == 0) { return; }
+        Settings.put(SETTING_PATH, files.get(0).getParentFile());
 
-        Scanner scanner = new Scanner(config);
-        scanner.useDelimiter("\\Z");
-        beans.setText(scanner.next());
-        scanner.close();
+        for (File file : files) {
+            addBeanDef(new BeanDefinition(file, file.getName()));
+        }
+
     }
 
     public void save() throws IOException {
@@ -153,6 +190,19 @@ public class SpringController extends IActofUIController {
         writer.write(beans.getText());
         writer.close();
 
+    }
+
+    public void remove() {
+        BeanDefinition def = filesTable.getSelectionModel().getSelectedItem();
+        int index = filesTable.getSelectionModel().getSelectedIndex();
+        if (index == 0) { return; }
+        if (def == null) { return; }
+        filesTable.getItems().remove(def);
+        filesTable.getSelectionModel().select(0);
+    }
+
+    private void addBeanDef(BeanDefinition def) {
+        filesTable.getItems().add(def);
     }
 
     public static SpringController load(ChangeController changes) throws IOException {
