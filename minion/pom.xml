@@ -10,7 +10,6 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<groupId>net.objectof.actof</groupId>
 	<artifactId>actof-minion</artifactId>
 	<name>actof-minion</name>
 	<url>http://maven.apache.org</url>

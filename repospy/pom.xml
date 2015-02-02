@@ -9,7 +9,6 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   
-  <groupId>net.objectof.actof</groupId>
   <artifactId>actof-repospy</artifactId>
   <name>actof-repospy</name>
   <url>http://maven.apache.org</url>
