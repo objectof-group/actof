@@ -12,13 +12,14 @@ import javafx.stage.Stage;
 import net.objectof.actof.common.controller.TopController;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.controller.change.IChangeController;
-import net.objectof.actof.minion.components.classpath.ClasspathController;
 import net.objectof.actof.minion.components.rest.RestController;
 import net.objectof.actof.minion.components.server.ServerController;
 import net.objectof.actof.minion.components.spring.SpringController;
 
 
 public class Minion extends Application implements TopController {
+
+    public static final String SETTING_PATH = "net.objectof.actof.minion.path";
 
     private MinionController window;
 
@@ -28,7 +29,6 @@ public class Minion extends Application implements TopController {
     // private HandlerController handlers;
     private SpringController spring;
     private RestController rest;
-    private ClasspathController classpath;
 
     private Stage stage;
 

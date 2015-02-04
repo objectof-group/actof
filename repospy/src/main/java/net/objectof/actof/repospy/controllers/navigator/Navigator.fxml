@@ -15,7 +15,7 @@
          <children>
             <HBox styleClass="tool-bar">
                <children>
-                  <Button fx:id="connect" mnemonicParsing="false" onAction="#doConnect" text="Connect">
+                  <Button fx:id="connect" mnemonicParsing="false" onAction="#doConnect" styleClass="tool-bar-button" text="Connect">
                      <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -27,7 +27,7 @@
                         <Tooltip text="Connect to an ObjectOf repository" />
                      </tooltip>
                   </Button>
-                  <Button fx:id="revert" disable="true" mnemonicParsing="false" onAction="#doRevert">
+                  <Button fx:id="revert" disable="true" mnemonicParsing="false" onAction="#doRevert" styleClass="tool-bar-button">
                      <graphic>
                         <ImageView fx:id="revert_image" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -39,7 +39,7 @@
                         <Tooltip fx:id="revert_tooltip" text="Revert all changes" />
                      </tooltip>
                   </Button>
-                  <Button fx:id="review" disable="true" mnemonicParsing="false" onAction="#doReview">
+                  <Button fx:id="review" disable="true" mnemonicParsing="false" onAction="#doReview" styleClass="tool-bar-button">
                      <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -51,7 +51,7 @@
                         <Tooltip text="Review changes" />
                      </tooltip>
                   </Button>
-                  <Button fx:id="commit" disable="true" mnemonicParsing="false" onAction="#doCommit" text="Commit">
+                  <Button fx:id="commit" disable="true" mnemonicParsing="false" onAction="#doCommit" styleClass="tool-bar-button" text="Commit">
                      <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -64,7 +64,7 @@
                      </tooltip>
                   </Button>
                   <Separator prefWidth="24.0" visible="false" />
-                  <Button fx:id="dump" disable="true" mnemonicParsing="false" onAction="#onDump">
+                  <Button fx:id="dump" disable="true" mnemonicParsing="false" onAction="#onDump" styleClass="tool-bar-button">
                      <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -76,7 +76,7 @@
                         <Tooltip text="Dump repo to json file" />
                      </tooltip>
                   </Button>
-                  <Button fx:id="load" disable="true" mnemonicParsing="false" onAction="#onLoad">
+                  <Button fx:id="load" disable="true" mnemonicParsing="false" onAction="#onLoad" styleClass="tool-bar-button">
                      <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -105,7 +105,7 @@
             <TreeView fx:id="records" prefHeight="200.0" prefWidth="200.0" styleClass="entities" VBox.vgrow="ALWAYS" />
             <HBox alignment="CENTER_RIGHT" spacing="3.0" VBox.vgrow="NEVER">
                <children>
-                  <Button fx:id="addEntity" disable="true" mnemonicParsing="false" onAction="#doAddEntity" HBox.hgrow="NEVER">
+                  <Button fx:id="addEntity" disable="true" mnemonicParsing="false" onAction="#doAddEntity" styleClass="tool-bar-button" HBox.hgrow="NEVER">
                      <graphic>
                         <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                            <image>

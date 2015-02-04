@@ -8,33 +8,33 @@
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
    version="1.1"
-   width="16"
-   height="16"
-   id="svg3883">
+   width="22"
+   height="22"
+   id="svg3915">
   <defs
-     id="defs3885">
+     id="defs3917">
     <linearGradient
        x1="24"
        y1="5"
        x2="24"
        y2="43"
-       id="linearGradient3079-9"
+       id="linearGradient3302"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(0.2972973,0,0,0.2972973,0.8648665,0.86486712)">
+       gradientTransform="matrix(0.45945947,0,0,0.45945947,-0.0257797,9.9717328)">
       <stop
-         id="stop3926-0-4"
+         id="stop3926"
          style="stop-color:#ffffff;stop-opacity:1"
          offset="0" />
       <stop
-         id="stop3928-6-8"
+         id="stop3928"
          style="stop-color:#ffffff;stop-opacity:0.23529412"
-         offset="0.063165" />
+         offset="0.049033" />
       <stop
-         id="stop3930-2-1"
+         id="stop3930"
          style="stop-color:#ffffff;stop-opacity:0.15686275"
          offset="0.95055997" />
       <stop
-         id="stop3932-9-0"
+         id="stop3932"
          style="stop-color:#ffffff;stop-opacity:0.39215687"
          offset="1" />
     </linearGradient>
@@ -42,9 +42,9 @@
        cx="7.4956999"
        cy="8.4497995"
        r="20"
-       id="radialGradient3879"
+       id="radialGradient3295"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(1.3019922e-8,0.77899685,-1.3094806,-1.4352095e-8,19.064844,-4.1449376)">
+       gradientTransform="matrix(-0.00910969,1.1384973,-2.0556233,-0.01644815,28.437876,3.3889667)">
       <stop
          id="stop3244"
          style="stop-color:#f8b17e;stop-opacity:1"
@@ -67,9 +67,9 @@
        y1="44"
        x2="24"
        y2="3.8989999"
-       id="linearGradient3881"
+       id="linearGradient3297"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(0.33333341,0,0,0.33333341,1.5e-7,-2.92e-6)">
+       gradientTransform="matrix(0.48717951,0,0,0.48717951,-0.69230812,9.3076897)">
       <stop
          id="stop2492"
          style="stop-color:#791235;stop-opacity:1"
@@ -81,7 +81,7 @@
     </linearGradient>
   </defs>
   <metadata
-     id="metadata3888">
+     id="metadata3920">
     <rdf:RDF>
       <cc:Work
          rdf:about="">
@@ -93,22 +93,23 @@
     </rdf:RDF>
   </metadata>
   <g
+     transform="translate(0,-10)"
      id="layer1">
     <rect
-       width="13"
-       height="13"
+       width="19"
+       height="19"
        rx="1"
        ry="1"
        x="1.5"
-       y="1.5"
+       y="11.5"
        id="rect5505-21"
-       style="color:#000000;fill:url(#radialGradient3879);fill-rule:nonzero;stroke:url(#linearGradient3881);stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;enable-background:accumulate" />
+       style="color:#000000;fill:url(#radialGradient3295);fill-rule:nonzero;stroke:url(#linearGradient3297);stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;enable-background:accumulate" />
     <rect
-       width="11"
-       height="11"
-       x="2.5"
-       y="2.5"
-       id="rect6741-0-3"
-       style="opacity:0.5;fill:none;stroke:url(#linearGradient3079-9);stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0" />
+       width="17"
+       height="17"
+       x="2.5012"
+       y="12.499"
+       id="rect6741-9"
+       style="opacity:0.5;fill:none;stroke:url(#linearGradient3302);stroke-width:0.99999988;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0" />
   </g>
 </svg>

@@ -33,101 +33,178 @@
 			</center>
 		</BorderPane>
 	</center>
+	<left>
+		<VBox BorderPane.alignment="CENTER">
+			<children>
+				<Accordion fx:id="accordion" VBox.vgrow="ALWAYS">
+					<panes>
+						<TitledPane fx:id="beansBox" animated="false" text="Bean Definition Files">
+							<content>
+								<VBox>
+									<children>
+										<ListView fx:id="beanList" prefHeight="100.0" VBox.vgrow="ALWAYS" />
+										<HBox spacing="3.0">
+											<children>
+												<Button mnemonicParsing="false" onAction="#newBeanDefinition" style="-fx-padding: 5;" styleClass="tool-bar-button">
+													<graphic>
+														<ImageView pickOnBounds="true" preserveRatio="true">
+															<image>
+																<Image url="@icons16/new.png" />
+															</image>
+														</ImageView>
+													</graphic>
+												</Button>
+												<Button mnemonicParsing="false" onAction="#addBeanDefinition" style="-fx-padding: 5;" styleClass="tool-bar-button">
+													<graphic>
+														<ImageView pickOnBounds="true" preserveRatio="true">
+															<image>
+																<Image url="@icons16/open.png" />
+															</image>
+														</ImageView>
+													</graphic>
+												</Button>
+												<Button fx:id="save" mnemonicParsing="false" onAction="#saveBeanDefinition" style="-fx-padding: 5;" styleClass="tool-bar-button">
+													<graphic>
+														<ImageView pickOnBounds="true" preserveRatio="true">
+															<image>
+																<Image url="@icons16/save.png" />
+															</image>
+														</ImageView>
+													</graphic>
+												</Button>
+												<Separator visible="false" HBox.hgrow="ALWAYS" />
+												<Button mnemonicParsing="false" onAction="#removeBeanDefinition" style="-fx-padding: 5;" styleClass="tool-bar-button">
+													<graphic>
+														<ImageView pickOnBounds="true" preserveRatio="true">
+															<image>
+																<Image url="@icons16/close.png" />
+															</image>
+														</ImageView>
+													</graphic>
+												</Button>
+											</children>
+											<padding>
+												<Insets top="3.0" />
+											</padding>
+										</HBox>
+									</children>
+								</VBox>
+							</content>
+						</TitledPane>
+						<TitledPane fx:id="classpathBox" animated="false" text="Classpath Jars">
+							<content>
+								<BorderPane>
+									<bottom>
+										<HBox alignment="CENTER_RIGHT" spacing="3.0" BorderPane.alignment="CENTER">
+											<children>
+												<Button mnemonicParsing="false" onAction="#addJar" style="-fx-padding: 5;" styleClass="tool-bar-button">
+													<graphic>
+														<ImageView pickOnBounds="true" preserveRatio="true">
+															<image>
+																<Image url="@icons16/add.png" />
+															</image>
+														</ImageView>
+													</graphic>
+												</Button>
+												<Button layoutX="229.0" layoutY="13.0" mnemonicParsing="false" onAction="#removeJar" style="-fx-padding: 5;" styleClass="tool-bar-button">
+													<graphic>
+														<ImageView pickOnBounds="true" preserveRatio="true">
+															<image>
+																<Image url="@icons16/remove.png" />
+															</image>
+														</ImageView>
+													</graphic>
+												</Button>
+											</children>
+											<opaqueInsets>
+												<Insets />
+											</opaqueInsets>
+											<BorderPane.margin>
+												<Insets />
+											</BorderPane.margin>
+											<padding>
+												<Insets top="3.0" />
+											</padding>
+										</HBox>
+									</bottom>
+									<center>
+										<ListView fx:id="jarList" prefHeight="100.0" BorderPane.alignment="CENTER" />
+									</center>
+
+								</BorderPane>
+							</content>
+						</TitledPane>
+						<TitledPane animated="false" style="-fx-alignment: center;" text="Server Configuration" textAlignment="CENTER">
+							<content>
+								<VBox alignment="TOP_CENTER" spacing="10.0">
+									<children>
+										<GridPane hgap="3.0" vgap="3.0">
+											<columnConstraints>
+												<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+												<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+											</columnConstraints>
+											<rowConstraints>
+												<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+											</rowConstraints>
+											<children>
+												<Label maxHeight="1.7976931348623157E308" text="Root Bean" />
+												<TextField fx:id="rootBean" promptText="root" text="root" GridPane.columnIndex="1" />
+											</children>
+										</GridPane>
+									</children>
+								</VBox>
+							</content>
+							<font>
+								<Font name="System Bold" size="13.0" />
+							</font>
+						</TitledPane>
+					</panes>
+				</Accordion>
+			</children>
+		</VBox>
+	</left>
 	<top>
-		<VBox fx:id="topBox" BorderPane.alignment="CENTER" />
+		<VBox fx:id="topBox" BorderPane.alignment="CENTER">
+			<children>
+				<HBox styleClass="tool-bar">
+					<children>
+						<Button fx:id="open" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#openProject" style="-fx-padding: 5;" styleClass="tool-bar-button">
+							<graphic>
+								<ImageView pickOnBounds="true" preserveRatio="true">
+									<image>
+										<Image url="@icons22/document-open.png" />
+									</image>
+								</ImageView>
+							</graphic>
+							<tooltip>
+								<Tooltip text="Open Project" />
+							</tooltip>
+						</Button>
+						<Button fx:id="save" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#saveProject" style="-fx-padding: 5;" styleClass="tool-bar-button">
+							<graphic>
+								<ImageView pickOnBounds="true" preserveRatio="true">
+									<image>
+										<Image url="@icons22/document-save.png" />
+									</image>
+								</ImageView>
+							</graphic>
+							<tooltip>
+								<Tooltip text="Save Project" />
+							</tooltip>
+						</Button>
+						<Separator visible="false" HBox.hgrow="ALWAYS" />
+						<Button fx:id="build" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#buildWebApp" style="-fx-padding: 5;" styleClass="tool-bar-button" text="Build" HBox.hgrow="ALWAYS">
+							<graphic>
+								<ImageView pickOnBounds="true" preserveRatio="true">
+									<image>
+										<Image url="@icons22/start.png" />
+									</image>
+								</ImageView>
+							</graphic>
+						</Button>
+					</children>
+				</HBox>
+			</children>
+		</VBox>
 	</top>
-   <left>
-      <VBox BorderPane.alignment="CENTER">
-         <children>
-            <HBox alignment="CENTER">
-               <children>
-      								<Button fx:id="apply" alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#apply" style="-fx-padding: 5;" text="Build" HBox.hgrow="ALWAYS">
-      									<graphic>
-      										<ImageView pickOnBounds="true" preserveRatio="true">
-      											<image>
-      												<Image url="@icons/start.png" />
-      											</image>
-      										</ImageView>
-      									</graphic>
-      								</Button>
-               </children>
-               <padding>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </padding>
-            </HBox>
-            <Accordion fx:id="accordion" VBox.vgrow="ALWAYS">
-              <panes>
-                <TitledPane fx:id="beansBox" animated="false" text="Bean Definition Files">
-                     <content>
-                  		<VBox>
-                  			<children>
-                              <ListView fx:id="beanList" prefHeight="100.0" VBox.vgrow="ALWAYS" />
-                  				<HBox alignment="TOP_RIGHT" spacing="3.0">
-                  					<children>
-                  						<Button mnemonicParsing="false" onAction="#add" style="-fx-padding: 5;">
-                  							<graphic>
-                  								<ImageView pickOnBounds="true" preserveRatio="true">
-                  									<image>
-                  										<Image url="@icons/add.png" />
-                  									</image>
-                  								</ImageView>
-                  							</graphic>
-                  						</Button>
-                  						<Button mnemonicParsing="false" onAction="#remove" style="-fx-padding: 5;">
-                  							<graphic>
-                  								<ImageView pickOnBounds="true" preserveRatio="true">
-                  									<image>
-                  										<Image url="@icons/remove.png" />
-                  									</image>
-                  								</ImageView>
-                  							</graphic>
-                  						</Button>
-                  						<Button fx:id="save" mnemonicParsing="false" onAction="#save" style="-fx-padding: 5;">
-                  							<graphic>
-                  								<ImageView pickOnBounds="true" preserveRatio="true">
-                  									<image>
-                  										<Image url="@icons/save.png" />
-                  									</image>
-                  								</ImageView>
-                  							</graphic>
-                  						</Button>
-                  					</children>
-                                 <padding>
-                                    <Insets top="3.0" />
-                                 </padding>
-                  				</HBox>
-                  			</children>
-                  		</VBox>
-                     </content>
-                </TitledPane>
-                <TitledPane fx:id="classpathBox" animated="false" text="Classpath Jars" />
-      				<TitledPane animated="false" style="-fx-alignment: center;" text="Server Configuration" textAlignment="CENTER">
-      					<content>
-      						<VBox alignment="TOP_CENTER" spacing="10.0">
-      							<children>
-      								<GridPane hgap="3.0" vgap="3.0">
-      									<columnConstraints>
-      										<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-      										<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-      									</columnConstraints>
-      									<rowConstraints>
-      										<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-      									</rowConstraints>
-      									<children>
-      										<Label maxHeight="1.7976931348623157E308" text="Root Bean" />
-      										<TextField fx:id="rootBean" promptText="root" text="root" GridPane.columnIndex="1" />
-      									</children>
-      								</GridPane>
-      							</children>
-      						</VBox>
-      					</content>
-      					<font>
-      						<Font name="System Bold" size="13.0" />
-      					</font>
-      				</TitledPane>
-              </panes>
-            </Accordion>
-         </children>
-      </VBox>
-   </left>
 </BorderPane>

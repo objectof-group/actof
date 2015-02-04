@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<BorderPane prefHeight="400.0" prefWidth="844.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.minion.MinionController">
+<BorderPane prefHeight="474" prefWidth="1000" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.minion.MinionController">
    <center>
       <TabPane fx:id="tabs" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER" />
    </center>

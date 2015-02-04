@@ -57,3 +57,15 @@
     -fx-background-insets: 0, 0, 0, 0, 0;
     -fx-padding: 0, 0, 0, 0, 0;
 }
+
+.tool-bar-button {
+    -fx-background-color: null;
+}
+
+.tool-bar-button:hover, .tool-bar-button:armed {
+	-fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
+}
+
+.tool-bar-button:focused {
+	-fx-background-color: -fx-focus-color, -fx-inner-border, -fx-body-color, -fx-faint-focus-color, -fx-body-color;
+}

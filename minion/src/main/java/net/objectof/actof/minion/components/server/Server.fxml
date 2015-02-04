@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.minion.components.server.ServerController">
+<BorderPane stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.minion.components.server.ServerController">
    <center>
       <ListView fx:id="output" BorderPane.alignment="CENTER" />
    </center>
@@ -17,20 +17,20 @@
          <children>
             <HBox styleClass="tool-bar">
                <children>
-                  <Button fx:id="start" mnemonicParsing="false" onAction="#start" style="-fx-padding: 5;">
+                  <Button fx:id="start" mnemonicParsing="false" onAction="#start" style="-fx-padding: 5;" styleClass="tool-bar-button">
                      <graphic>
                         <ImageView pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@icons/start.png" />
+                              <Image url="@icons22/start.png" />
                            </image>
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="stop" mnemonicParsing="false" onAction="#stop" style="-fx-padding: 5;">
+                  <Button fx:id="stop" mnemonicParsing="false" onAction="#stop" style="-fx-padding: 5;" styleClass="tool-bar-button">
                      <graphic>
                         <ImageView pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@icons/stop.png" />
+                              <Image url="@icons22/stop.png" />
                            </image>
                         </ImageView>
                      </graphic>
