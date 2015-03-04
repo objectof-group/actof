@@ -22,13 +22,11 @@ public class HandlerUI extends IActofUIController {
     @FXML
     private ImageView icon;
 
-
     @Override
     public void initialize() {
         // TODO Auto-generated method stub
 
     }
-
 
     @Override
     public void ready() {
@@ -54,13 +52,8 @@ public class HandlerUI extends IActofUIController {
         }
     }
 
-
     public static HandlerUI load() throws IOException {
         return FXUtil.load(HandlerUI.class, "HandlerUI.fxml", new IChangeController());
     }
-
-
-
-
 
 }

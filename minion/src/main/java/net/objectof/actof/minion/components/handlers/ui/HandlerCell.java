@@ -3,39 +3,30 @@ package net.objectof.actof.minion.components.handlers.ui;
 
 import java.io.IOException;
 
-import javafx.scene.control.ListCell;
-import net.objectof.actof.minion.components.handlers.HandlerClass;
+import javafx.scene.control.TableCell;
+import net.objectof.actof.minion.classpath.MinionHandler;
 
 
-public class HandlerCell extends ListCell<HandlerClass> {
+public class HandlerCell extends TableCell<MinionHandler, MinionHandler> {
 
     HandlerUI ui;
-
 
     public HandlerCell() {
         try {
             ui = HandlerUI.load();
         }
         catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
 
     @Override
-    protected void updateItem(HandlerClass item, boolean empty) {
+    protected void updateItem(MinionHandler item, boolean empty) {
         super.updateItem(item, empty);
-        setText(null); // No text in label of super class
-        if (empty) {
+        if (empty || item == null) {
             setGraphic(null);
         } else {
-            // TODO: Remove this
-            String name = item.getName();
-            String[] parts = name.split("-");
-            name = parts[0];
-            name = name.substring(0, 1).toUpperCase() + name.substring(1);
-
-            ui.setText(item != null ? name : "<null>");
+            ui.setText(item.getTitle());
             ui.setIcon(item.getIcon());
             setGraphic(ui.getNode());
         }

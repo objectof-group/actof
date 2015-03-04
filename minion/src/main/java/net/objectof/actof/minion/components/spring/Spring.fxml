@@ -91,49 +91,6 @@
 								</VBox>
 							</content>
 						</TitledPane>
-						<TitledPane fx:id="classpathBox" animated="false" text="Classpath Jars">
-							<content>
-								<BorderPane>
-									<bottom>
-										<HBox alignment="CENTER_RIGHT" spacing="3.0" BorderPane.alignment="CENTER">
-											<children>
-												<Button mnemonicParsing="false" onAction="#addJar" style="-fx-padding: 5;" styleClass="tool-bar-button">
-													<graphic>
-														<ImageView pickOnBounds="true" preserveRatio="true">
-															<image>
-																<Image url="@icons16/add.png" />
-															</image>
-														</ImageView>
-													</graphic>
-												</Button>
-												<Button layoutX="229.0" layoutY="13.0" mnemonicParsing="false" onAction="#removeJar" style="-fx-padding: 5;" styleClass="tool-bar-button">
-													<graphic>
-														<ImageView pickOnBounds="true" preserveRatio="true">
-															<image>
-																<Image url="@icons16/remove.png" />
-															</image>
-														</ImageView>
-													</graphic>
-												</Button>
-											</children>
-											<opaqueInsets>
-												<Insets />
-											</opaqueInsets>
-											<BorderPane.margin>
-												<Insets />
-											</BorderPane.margin>
-											<padding>
-												<Insets top="3.0" />
-											</padding>
-										</HBox>
-									</bottom>
-									<center>
-										<ListView fx:id="jarList" prefHeight="100.0" BorderPane.alignment="CENTER" />
-									</center>
-
-								</BorderPane>
-							</content>
-						</TitledPane>
 						<TitledPane animated="false" style="-fx-alignment: center;" text="Server Configuration" textAlignment="CENTER">
 							<content>
 								<VBox alignment="TOP_CENTER" spacing="10.0">

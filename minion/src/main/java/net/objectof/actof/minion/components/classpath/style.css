@@ -1,0 +1,45 @@
+.titled-pane > .title  {
+	
+    -fx-alignment: center;
+    -fx-content-display: center;
+    -fx-font-weight: bold;
+}
+
+.tool-bar { /* top */
+    -fx-background-insets: 0 0 0 0, 0 0 0 0;
+}
+
+.titled-pane > *.content {
+    -fx-border-insets: -1 -1 0 -1;
+}
+
+.accordion > .titled-pane > .title {
+    -fx-background-insets: -1 0 0 0, 0 0 1 0, 1 0 2 0;
+}
+
+.accordion > .first-titled-pane > .title {
+    -fx-background-insets: 0, 1 0 1 0, 2 0 2 0;
+}
+
+.accordion > .last-titled-pane > .title {
+    -fx-background-insets: -1 0 0 0, 0 0 0 0, 1 0 0 0;
+}
+
+.tree-table-view {
+    -fx-background-color: -fx-box-border, -fx-control-inner-background;
+	-fx-background-insets: 0, 0;
+    -fx-padding: 0 0 0 0;
+}
+
+
+.tool-bar-button {
+    -fx-background-color: null;
+}
+
+.tool-bar-button:hover, .tool-bar-button:armed {
+	-fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
+}
+
+.tool-bar-button:focused {
+	-fx-background-color: -fx-focus-color, -fx-inner-border, -fx-body-color, -fx-faint-focus-color, -fx-body-color;
+}

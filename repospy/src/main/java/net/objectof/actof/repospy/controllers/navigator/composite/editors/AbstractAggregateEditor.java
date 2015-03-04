@@ -16,9 +16,8 @@ public abstract class AbstractAggregateEditor extends AbstractComboboxEditor {
     private HBox buttonbox = new HBox(2);
     private BorderPane container = new BorderPane();
 
-    private Image addImage = new Image(getClass().getResourceAsStream("/net/objectof/actof/repospy/view/icons/add.png"));
-    private Image remImage = new Image(getClass().getResourceAsStream(
-            "/net/objectof/actof/repospy/view/icons/remove.png"));
+    private Image addImage = new Image(getClass().getResourceAsStream("icons/add.png"));
+    private Image remImage = new Image(getClass().getResourceAsStream("icons/remove.png"));
 
     protected Button add = new Button("", new ImageView(addImage));
     protected Button remove = new Button("", new ImageView(remImage));
@@ -31,7 +30,7 @@ public abstract class AbstractAggregateEditor extends AbstractComboboxEditor {
         buttonbox.setPadding(new Insets(0, 0, 0, 2));
 
         container.setRight(buttonbox);
-        container.setCenter(super.getNode());
+        container.setCenter(super.getWriteNode());
 
         add.setOnAction(event -> {
             doAdd(getValue());
@@ -43,13 +42,10 @@ public abstract class AbstractAggregateEditor extends AbstractComboboxEditor {
 
     }
 
-
-
     @Override
-    public Node getNode() {
+    public Node getWriteNode() {
         return container;
     }
-
 
     protected abstract void doAdd(String text);
 

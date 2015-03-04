@@ -12,6 +12,8 @@ import javafx.stage.Stage;
 import net.objectof.actof.common.controller.TopController;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.controller.change.IChangeController;
+import net.objectof.actof.minion.components.classpath.ClasspathController;
+import net.objectof.actof.minion.components.handlers.HandlerController;
 import net.objectof.actof.minion.components.rest.RestController;
 import net.objectof.actof.minion.components.server.ServerController;
 import net.objectof.actof.minion.components.spring.SpringController;
@@ -26,9 +28,10 @@ public class Minion extends Application implements TopController {
     private IChangeController change = new IChangeController();
 
     private ServerController server;
-    // private HandlerController handlers;
+    private HandlerController handlers;
     private SpringController spring;
     private RestController rest;
+    private ClasspathController classpath;
 
     private Stage stage;
 
@@ -39,9 +42,11 @@ public class Minion extends Application implements TopController {
         stage();
         minionWindow();
 
+        classpathTab();
         springTab();
         serverTab();
         restTab();
+        handlerTab();
 
         stage.setOnCloseRequest(event -> {
             server.stop();
@@ -85,6 +90,16 @@ public class Minion extends Application implements TopController {
     private void restTab() throws IOException {
         rest = RestController.load(getChangeBus());
         window.addTab(rest.getNode(), "REST");
+    }
+
+    private void handlerTab() throws IOException {
+        handlers = HandlerController.load(getChangeBus());
+        window.addTab(handlers.getNode(), "Handlers");
+    }
+
+    private void classpathTab() throws IOException {
+        classpath = ClasspathController.load(getChangeBus());
+        window.addTab(classpath.getNode(), "Classpath");
     }
 
     public static void main(String[] args) {

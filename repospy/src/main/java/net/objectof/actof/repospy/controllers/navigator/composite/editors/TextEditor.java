@@ -40,7 +40,6 @@ public class TextEditor extends AbstractEditor {
             }
         });
 
-
         field.setOnKeyReleased((KeyEvent t) -> {
             if (isFinished) { return; }
 
@@ -53,6 +52,7 @@ public class TextEditor extends AbstractEditor {
                 field.setStyle(redborder);
             }
         });
+
     }
 
     public void init() {
@@ -71,7 +71,7 @@ public class TextEditor extends AbstractEditor {
     }
 
     @Override
-    public Node getNode() {
+    public Node getWriteNode() {
         return field;
     }
 

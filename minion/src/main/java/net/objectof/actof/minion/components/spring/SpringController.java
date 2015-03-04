@@ -8,14 +8,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -27,16 +25,18 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
-import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
-import javafx.util.StringConverter;
 import net.objectof.actof.common.controller.IActofUIController;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.controller.config.Env;
 import net.objectof.actof.common.util.ActofUtil;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.minion.Settings;
+import net.objectof.actof.minion.classpath.IsolatedClassLoader;
+import net.objectof.actof.minion.classpath.MinionClasspath;
+import net.objectof.actof.minion.classpath.sources.MinionSource;
+import net.objectof.actof.minion.components.classpath.change.ClasspathChange;
 import net.objectof.actof.minion.components.spring.change.HandlerChange;
 import net.objectof.actof.widgets.StatusLight;
 import net.objectof.actof.widgets.StatusLight.Status;
@@ -55,15 +55,15 @@ public class SpringController extends IActofUIController {
     @FXML
     private ListView<BeanDefinition> beanList;
     @FXML
-    private TitledPane classpathBox, beansBox;
+    private TitledPane beansBox;
     @FXML
     private Accordion accordion;
-    @FXML
-    private ListView<File> jarList;
 
     private static final String SETTING_PATH = "net.objectof.actof.minion.spring.path";
 
     private StatusLight status;
+
+    private MinionClasspath classpath;
 
     @Override
     public void ready() {
@@ -96,21 +96,7 @@ public class SpringController extends IActofUIController {
 
         accordion.setExpandedPane(beansBox);
 
-        jarList.setCellFactory(list -> {
-            return new TextFieldListCell<>(new StringConverter<File>() {
-
-                @Override
-                public String toString(File file) {
-                    return file.getName();
-                }
-
-                @Override
-                public File fromString(String string) {
-                    return null;
-                }
-            });
-        });
-
+        getChangeBus().listen(ClasspathChange.class, event -> classpath = event.getClasspath());
     }
 
     @Override
@@ -124,8 +110,9 @@ public class SpringController extends IActofUIController {
 
             // build our classloader
             IsolatedClassLoader loader = new IsolatedClassLoader();
-            for (File file : jarList.getItems()) {
-                loader.addURL(file.toURI().toURL());
+            for (MinionSource source : classpath) {
+                if (!source.isDeployable()) continue;
+                loader.addURLs(source.getURLs());
             }
 
             // Create webapp directory/file structure
@@ -243,7 +230,9 @@ public class SpringController extends IActofUIController {
         String json = ActofUtil.readFile(file);
         MinionProject project = ActofUtil.deserialize(json, MinionProject.class);
         beanList.getItems().setAll(project.beanDefs);
-        jarList.getItems().setAll(project.jars.stream().map(s -> new File(s)).collect(Collectors.toList()));
+        // TODO: Fix this
+        // jarList.getItems().setAll(project.jars.stream().map(s -> new
+        // File(s)).collect(Collectors.toList()));
         rootBean.setText(project.rootbean);
 
     }
@@ -257,36 +246,15 @@ public class SpringController extends IActofUIController {
         // build a project object and serialize it
         MinionProject project = new MinionProject();
         project.beanDefs = beanList.getItems();
-        project.jars = jarList.getItems().stream().map(f -> f.toString()).collect(Collectors.toList());
+        // TODO: Fix this
+        // project.jars = jarList.getItems().stream().map(f ->
+        // f.toString()).collect(Collectors.toList());
         project.rootbean = rootBean.getText();
         String json = ActofUtil.serialize(project);
         FileWriter writer = new FileWriter(file);
         writer.write(json);
         writer.close();
 
-    }
-
-    public void addJar() throws MalformedURLException, IOException {
-
-        FileChooser chooser = new FileChooser();
-        chooser.setInitialDirectory(Settings.get(SETTING_PATH, Env.homeDirectory()));
-        List<File> jars = chooser.showOpenMultipleDialog(null);
-        if (jars == null || jars.size() == 0) { return; }
-        Settings.put(SETTING_PATH, jars.get(0).getParentFile());
-
-        for (File jar : jars) {
-            addJar(jar);
-        }
-    }
-
-    public void addJar(File jar) {
-        jarList.getItems().add(jar);
-    }
-
-    public void removeJar() {
-        File jar = jarList.getSelectionModel().getSelectedItem();
-        if (jar == null) { return; }
-        jarList.getItems().remove(jar);
     }
 
     public static SpringController load(ChangeController changes) throws IOException {

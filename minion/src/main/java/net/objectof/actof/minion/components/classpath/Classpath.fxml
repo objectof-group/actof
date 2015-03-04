@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.web.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<BorderPane stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.minion.components.classpath.ClasspathController">
+	<bottom>
+		<HBox alignment="CENTER_RIGHT" spacing="3.0" BorderPane.alignment="CENTER">
+			<children>
+				<Button mnemonicParsing="false" onAction="#addJar" style="-fx-padding: 5;" styleClass="tool-bar-button">
+					<graphic>
+						<ImageView pickOnBounds="true" preserveRatio="true">
+							<image>
+								<Image url="@icons16/add.png" />
+							</image>
+						</ImageView>
+					</graphic>
+				</Button>
+				<Button layoutX="229.0" layoutY="13.0" mnemonicParsing="false" onAction="#removeJar" style="-fx-padding: 5;" styleClass="tool-bar-button">
+					<graphic>
+						<ImageView pickOnBounds="true" preserveRatio="true">
+							<image>
+								<Image url="@icons16/remove.png" />
+							</image>
+						</ImageView>
+					</graphic>
+				</Button>
+			</children>
+			<opaqueInsets>
+				<Insets />
+			</opaqueInsets>
+			<BorderPane.margin>
+				<Insets top="3.0" />
+			</BorderPane.margin>
+         <padding>
+            <Insets bottom="3.0" right="3.0" />
+         </padding>
+		</HBox>
+	</bottom>
+   <center>
+      <TreeTableView fx:id="jarTable" BorderPane.alignment="CENTER">
+        <columns>
+          <TreeTableColumn fx:id="handlerColumn" minWidth="200.0" prefWidth="200.0" text="Handler" />
+          <TreeTableColumn fx:id="classnameColumn" minWidth="300.0" prefWidth="300.0" text="Path" />
+        </columns>
+         <columnResizePolicy>
+            <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy>
+      </TreeTableView>
+   </center>
+</BorderPane>

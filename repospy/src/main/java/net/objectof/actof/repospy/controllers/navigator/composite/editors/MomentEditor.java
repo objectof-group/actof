@@ -16,7 +16,6 @@ public class MomentEditor extends TextEditor {
 
     }
 
-
     @Override
     protected boolean validate(String text) {
 
