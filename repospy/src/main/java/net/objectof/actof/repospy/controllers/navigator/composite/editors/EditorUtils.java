@@ -33,6 +33,8 @@ public class EditorUtils {
 
     public static Editor createConfiguredEditor(Cell<CompositeEntry> cell) {
 
+        System.out.println(cell);
+        System.out.println(cell.getItem());
         CompositeEntry entry = cell.getItem();
         Editor editor = createEditor(entry);
 

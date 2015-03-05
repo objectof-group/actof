@@ -54,8 +54,8 @@ public abstract class AbstractComboboxEditor extends AbstractEditor {
 
         // set all combobox items
         field.getItems().clear();
-        for (Object element : getElements()) {
-            field.getItems().add(elementToString(element));
+        for (String element : getElements()) {
+            field.getItems().add(element);
         }
 
         field.setValue(defaultValue());
@@ -79,7 +79,7 @@ public abstract class AbstractComboboxEditor extends AbstractEditor {
     }
 
     @Override
-    public Node getWriteNode() {
+    public Node getNode() {
         return field;
     }
 
@@ -93,10 +93,6 @@ public abstract class AbstractComboboxEditor extends AbstractEditor {
 
     protected abstract void addListeners();
 
-    protected abstract Set<Object> getElements();
-
-    protected String elementToString(Object element) {
-        return RepoUtils.resToString(element);
-    }
+    protected abstract Set<String> getElements();
 
 }

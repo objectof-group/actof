@@ -3,8 +3,6 @@ package net.objectof.actof.repospy.controllers.navigator.composite.editors;
 
 import java.util.function.Consumer;
 
-import javafx.scene.Node;
-import javafx.scene.control.Label;
 import net.objectof.actof.repospy.controllers.navigator.composite.CompositeEntry;
 
 
@@ -52,8 +50,8 @@ public abstract class AbstractEditor implements Editor {
     }
 
     @Override
-    public Node getReadNode() {
-        return new Label(entry.toString());
+    public boolean isPopOver() {
+        return false;
     }
 
     protected abstract boolean validate(String input);

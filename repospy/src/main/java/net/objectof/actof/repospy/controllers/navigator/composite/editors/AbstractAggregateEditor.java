@@ -30,7 +30,7 @@ public abstract class AbstractAggregateEditor extends AbstractComboboxEditor {
         buttonbox.setPadding(new Insets(0, 0, 0, 2));
 
         container.setRight(buttonbox);
-        container.setCenter(super.getWriteNode());
+        container.setCenter(super.getNode());
 
         add.setOnAction(event -> {
             doAdd(getValue());
@@ -43,7 +43,7 @@ public abstract class AbstractAggregateEditor extends AbstractComboboxEditor {
     }
 
     @Override
-    public Node getWriteNode() {
+    public Node getNode() {
         return container;
     }
 

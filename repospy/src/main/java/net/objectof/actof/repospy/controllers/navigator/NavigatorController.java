@@ -110,7 +110,7 @@ public class NavigatorController extends IActofUIController {
         value.setCellValueFactory(value -> value.getValue().getValue());
 
         value.setCellFactory(column -> {
-            return new CompositeTreeTableCell();
+            return new CompositeTreeTableCell(table);
         });
         value.setEditable(true);
 

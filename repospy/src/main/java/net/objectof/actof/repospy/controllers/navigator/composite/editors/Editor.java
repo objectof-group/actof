@@ -27,9 +27,9 @@ public interface Editor {
      */
     void setOnModify(Consumer<Object> onModify);
 
-    Node getWriteNode();
+    Node getNode();
 
-    Node getReadNode();
+    boolean isPopOver();
 
     void modified();
 

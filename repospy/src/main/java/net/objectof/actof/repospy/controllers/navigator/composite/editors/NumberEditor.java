@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import java.text.NumberFormat;
 
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.util.StringConverter;
@@ -71,14 +70,8 @@ public abstract class NumberEditor extends AbstractEditor {
     }
 
     @Override
-    public Node getWriteNode() {
+    public Node getNode() {
         return field;
-    }
-
-    @Override
-    public Node getReadNode() {
-        BigDecimal dec = getStringConverter().fromString(getEntry().toString());
-        return new Label(getFormat().format(dec));
     }
 
     @Override

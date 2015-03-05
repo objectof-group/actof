@@ -15,11 +15,11 @@ public class IndexedEditor extends AbstractAggregateEditor {
     }
 
     @Override
-    protected Set<Object> getElements() {
-        Set<Object> indexes = new HashSet<>();
+    protected Set<String> getElements() {
+        Set<String> indexes = new HashSet<>();
         int count = 0;
         for (Object o : asList()) {
-            indexes.add(count++);
+            indexes.add(count++ + "");
         }
         return indexes;
     }

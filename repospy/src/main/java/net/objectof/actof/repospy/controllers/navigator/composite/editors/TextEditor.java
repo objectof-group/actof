@@ -71,7 +71,7 @@ public class TextEditor extends AbstractEditor {
     }
 
     @Override
-    public Node getWriteNode() {
+    public Node getNode() {
         return field;
     }
 

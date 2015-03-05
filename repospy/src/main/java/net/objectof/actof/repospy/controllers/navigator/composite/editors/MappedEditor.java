@@ -1,7 +1,6 @@
 package net.objectof.actof.repospy.controllers.navigator.composite.editors;
 
 
-import java.util.HashSet;
 import java.util.Set;
 
 import net.objectof.actof.repospy.controllers.navigator.composite.CompositeEntry;
@@ -15,10 +14,8 @@ public class MappedEditor extends AbstractAggregateEditor {
     }
 
     @Override
-    protected Set<Object> getElements() {
-        Set<Object> set = new HashSet<>();
-        set.addAll(asMap().keySet());
-        return set;
+    protected Set<String> getElements() {
+        return asMap().keySet();
     }
 
     @Override
@@ -65,6 +62,11 @@ public class MappedEditor extends AbstractAggregateEditor {
         if (field.getItems().size() > 0) { return field.getItems().get(0); }
         return null;
 
+    }
+
+    @Override
+    public boolean isPopOver() {
+        return false;
     }
 
     @Override
