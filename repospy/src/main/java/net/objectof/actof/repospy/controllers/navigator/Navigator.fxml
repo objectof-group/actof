@@ -129,18 +129,6 @@
       </VBox>
    </left>
    <center>
-      <ScrollPane fx:id="fieldScroller" hbarPolicy="NEVER" BorderPane.alignment="CENTER">
-        <content>
-          <AnchorPane>
-               <children>
-                  <VBox fx:id="editorBox" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <padding>
-                        <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
-                     </padding>
-                  </VBox>
-               </children>
-            </AnchorPane>
-        </content>
-      </ScrollPane>
+      <ScrollPane fx:id="fieldScroller" hbarPolicy="NEVER" BorderPane.alignment="CENTER" />
    </center>
 </BorderPane>

@@ -33,7 +33,6 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyCombination.Modifier;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import net.objectof.actof.common.controller.IActofUIController;
@@ -51,6 +50,7 @@ import net.objectof.actof.repospy.controllers.navigator.composite.editors.TextEd
 import net.objectof.actof.repospy.controllers.navigator.kind.KindTreeEntry;
 import net.objectof.actof.repospy.controllers.navigator.kind.KindTreeItem;
 import net.objectof.actof.widgets.card.Card;
+import net.objectof.actof.widgets.card.CardsPane;
 import net.objectof.aggr.Aggregate;
 import net.objectof.connector.Connector;
 import net.objectof.model.Kind;
@@ -68,10 +68,10 @@ public class NavigatorController extends IActofUIController {
 
     @FXML
     private BorderPane toppane;
-    @FXML
-    private VBox editorBox;
+
     @FXML
     private ScrollPane fieldScroller;
+    private CardsPane editorBox;
 
     @FXML
     private TextField querytext;
@@ -120,6 +120,8 @@ public class NavigatorController extends IActofUIController {
 
         fieldScroller.setStyle("-fx-background-color:transparent;");
         fieldScroller.setFitToWidth(true);
+        editorBox = new CardsPane();
+        fieldScroller.setContent(editorBox);
 
     }
 
