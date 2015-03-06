@@ -7,21 +7,21 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeTableColumn;
-import javafx.scene.control.TreeTableView;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -32,6 +32,8 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyCombination.Modifier;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import net.objectof.actof.common.controller.IActofUIController;
@@ -43,15 +45,18 @@ import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.actof.repospy.changes.EntityCreatedChange;
 import net.objectof.actof.repospy.controllers.navigator.composite.CompositeEntry;
-import net.objectof.actof.repospy.controllers.navigator.composite.CompositeTreeItem;
-import net.objectof.actof.repospy.controllers.navigator.composite.CompositeTreeTableCell;
+import net.objectof.actof.repospy.controllers.navigator.composite.editors.Editor;
+import net.objectof.actof.repospy.controllers.navigator.composite.editors.EditorUtils;
 import net.objectof.actof.repospy.controllers.navigator.composite.editors.TextEditor;
 import net.objectof.actof.repospy.controllers.navigator.kind.KindTreeEntry;
 import net.objectof.actof.repospy.controllers.navigator.kind.KindTreeItem;
+import net.objectof.actof.widgets.card.Card;
+import net.objectof.aggr.Aggregate;
 import net.objectof.connector.Connector;
 import net.objectof.model.Kind;
 import net.objectof.model.Resource;
 import net.objectof.model.Stereotype;
+import net.objectof.model.impl.IKind;
 
 import org.controlsfx.dialog.Dialogs;
 
@@ -62,14 +67,11 @@ public class NavigatorController extends IActofUIController {
     private boolean isQuerying = false;
 
     @FXML
-    private TreeTableView<CompositeEntry> table;
-
+    private BorderPane toppane;
     @FXML
-    private TreeTableColumn<CompositeEntry, String> field;
+    private VBox editorBox;
     @FXML
-    private TreeTableColumn<CompositeEntry, CompositeEntry> value;
-    @FXML
-    private TreeTableColumn<CompositeEntry, String> stereotype;
+    private ScrollPane fieldScroller;
 
     @FXML
     private TextField querytext;
@@ -105,28 +107,6 @@ public class NavigatorController extends IActofUIController {
         records.setRoot(root);
         records.getSelectionModel().selectedItemProperty().addListener((ov, o, n) -> onRecordSelect(n));
 
-        table.setShowRoot(false);
-
-        value.setCellValueFactory(value -> value.getValue().getValue());
-
-        value.setCellFactory(column -> {
-            return new CompositeTreeTableCell(table);
-        });
-        value.setEditable(true);
-
-        field.setCellValueFactory(data -> {
-            CompositeEntry entry = data.getValue().getValue();
-            if (entry == null || entry.key == null) { return new SimpleStringProperty("null"); }
-            return new SimpleStringProperty(entry.key.toString());
-        });
-
-        stereotype.setCellValueFactory(data -> {
-            CompositeEntry entry = data.getValue().getValue();
-            if (entry == null) { return new SimpleStringProperty(""); }
-            Stereotype st = entry.getStereotype();
-            return new SimpleStringProperty(st.toString());
-        });
-
         querytext.setOnKeyReleased(event -> {
             if (event.getCode() != KeyCode.ENTER) { return; }
             repospy.doQuery(querytext.getText());
@@ -136,8 +116,10 @@ public class NavigatorController extends IActofUIController {
             repospy.search.setKind(queryEntity.getValue());
         });
 
-        shortcut(table, this::tableCopy, KeyCode.C, KeyCombination.CONTROL_DOWN);
         shortcut(records, this::recordCopy, KeyCode.C, KeyCombination.CONTROL_DOWN);
+
+        fieldScroller.setStyle("-fx-background-color:transparent;");
+        fieldScroller.setFitToWidth(true);
 
     }
 
@@ -237,18 +219,6 @@ public class NavigatorController extends IActofUIController {
 
     }
 
-    public void tableCopy() {
-        TreeItem<CompositeEntry> item = table.getSelectionModel().getSelectedItem();
-        if (item == null) { return; }
-        CompositeEntry entry = item.getValue();
-        if (entry == null) { return; }
-        Object o = entry.getFieldValue();
-        if (o == null) { return; }
-
-        toClipboard(entry.getFieldValue());
-
-    }
-
     public void setTopController(RepoSpyController controller) {
         this.repospy = controller;
     }
@@ -308,25 +278,65 @@ public class NavigatorController extends IActofUIController {
 
     private void onRecordSelect(TreeItem<KindTreeEntry> treeItem) {
 
-        if (treeItem == null) {
-            table.setRoot(new TreeItem<CompositeEntry>());
-            return;
-        }
+        editorBox.getChildren().clear();
+
+        if (treeItem == null) { return; }
 
         KindTreeEntry data = treeItem.getValue();
-        if (data == null || data.res == null) {
-            table.setRoot(new TreeItem<CompositeEntry>());
-            return;
+        if (data == null || data.res == null) { return; }
+
+        Resource<?> res = data.res;
+
+        List<CompositeEntry> entries;
+        if (res.id().kind().getStereotype() == Stereotype.COMPOSED) {
+            entries = entriesForComposite(res);
+        } else {
+            entries = entriesForAggredate(res);
         }
 
-        Resource<?> record = data.res;
+        for (CompositeEntry entry : entries) {
+            // FieldView view = new FieldView(entry);
+            Card card = new Card();
+            Editor editor = EditorUtils.createSemiConfiguredEditor(entry);
+            card.setContent(editor.getNode(), editor.expand());
+            String title = entry.getKey().toString();
+            title = title.substring(0, 1).toUpperCase() + title.substring(1);
+            card.setTitle(title);
+            card.setDescription(entry.getStereotype().toString());
 
-        CompositeEntry rootEntry = new CompositeEntry(repospy, record.id(), record.id().kind(), "Resource", true);
-        CompositeTreeItem root = new CompositeTreeItem(rootEntry, repospy);
-        root.setExpanded(true);
+            editorBox.getChildren().add(card);
+        }
 
-        table.setRoot(root);
+    }
 
+    protected List<CompositeEntry> entriesForAggredate(Resource<?> res) {
+
+        @SuppressWarnings("unchecked")
+        Aggregate<?, Resource<?>> agg = (Aggregate<?, Resource<?>>) res;
+        Set<?> keys = agg.keySet();
+
+        Kind<?> kind = res.id().kind().getParts().get(0);
+
+        List<CompositeEntry> entries = new ArrayList<>();
+        for (Object key : keys) {
+            CompositeEntry entry = new CompositeEntry(repospy, res.id(), kind, key);
+            entries.add(entry);
+        }
+
+        return entries;
+    }
+
+    protected List<CompositeEntry> entriesForComposite(Resource<?> res) {
+
+        List<CompositeEntry> entries = new ArrayList<>();
+        for (Kind<?> kind : res.id().kind().getParts()) {
+            IKind<?> ikind = (IKind<?>) kind;
+            Object key = ikind.getSelector();
+            CompositeEntry entry = new CompositeEntry(repospy, res.id(), kind, key);
+            entries.add(entry);
+        }
+
+        return entries;
     }
 
     private void populateQueryEntityChoice() {

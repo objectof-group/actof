@@ -44,6 +44,11 @@
 			<artifactId>jfxtras-controls</artifactId>
 			<version>8.0-r3</version>
 		</dependency>
+		<dependency>
+			<groupId>net.objectof.actof</groupId>
+			<artifactId>actof-widgets</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<build>

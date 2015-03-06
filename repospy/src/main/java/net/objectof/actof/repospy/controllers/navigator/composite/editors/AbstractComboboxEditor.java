@@ -1,8 +1,6 @@
 package net.objectof.actof.repospy.controllers.navigator.composite.editors;
 
 
-import java.util.Set;
-
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.input.KeyCode;
@@ -10,7 +8,7 @@ import net.objectof.actof.common.util.RepoUtils;
 import net.objectof.actof.repospy.controllers.navigator.composite.CompositeEntry;
 
 
-public abstract class AbstractComboboxEditor extends AbstractEditor {
+public abstract class AbstractComboboxEditor extends AbstractEditor implements ElementsEditor {
 
     protected ComboBox<String> field = new ComboBox<String>();
     private String redborder = "-fx-combo-box-border: red; -fx-focus-color: red;";
@@ -92,7 +90,5 @@ public abstract class AbstractComboboxEditor extends AbstractEditor {
     }
 
     protected abstract void addListeners();
-
-    protected abstract Set<String> getElements();
 
 }

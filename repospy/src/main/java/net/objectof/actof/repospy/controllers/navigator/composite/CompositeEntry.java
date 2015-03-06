@@ -29,7 +29,6 @@ public class CompositeEntry extends ObservableValueBase<CompositeEntry> {
     private Object value; // calculated
     public Object key; // provided
 
-
     public CompositeEntry(RepoSpyController repospy, Id<?> parentId, Kind<?> kind, Object key) {
         this(repospy, parentId, kind, key, false);
     }
@@ -57,7 +56,6 @@ public class CompositeEntry extends ObservableValueBase<CompositeEntry> {
 
     }
 
-
     public void setEntryItem(CompositeTreeItem entryItem) {
         this.entryItem = entryItem;
     }
@@ -68,7 +66,6 @@ public class CompositeEntry extends ObservableValueBase<CompositeEntry> {
         // return value.toString();
         return RepoUtils.resToString(value);
     }
-
 
     public Object getKey() {
         return key;
@@ -133,18 +130,12 @@ public class CompositeEntry extends ObservableValueBase<CompositeEntry> {
         return ((Resource<?>) value).id().kind();
     }
 
-
-
     /**
      * Update the value of this field based on the given text
      */
     public void userInputValue(String text) {
         writeToModel(RepoUtils.valueFromString(kind, text, repospy.repository));
     }
-
-
-
-
 
     /**
      * Given the controller and the id of the parent resource, update the parent
@@ -167,9 +158,6 @@ public class CompositeEntry extends ObservableValueBase<CompositeEntry> {
 
     }
 
-
-
-
     /**
      * Given a modification to the represented value, update the model (the
      * current staging transaction)
@@ -188,7 +176,6 @@ public class CompositeEntry extends ObservableValueBase<CompositeEntry> {
 
         updateUI();
 
-
     }
 
     private void updateUI() {
@@ -206,7 +193,6 @@ public class CompositeEntry extends ObservableValueBase<CompositeEntry> {
         repospy.getChangeBus().broadcast(change);
     }
 
-
     private Object getCleanValue() {
         Transaction cleanTx = repospy.repository.getCleanTx();
         Resource<?> cleanParent = cleanTx.retrieve(parentId);
@@ -214,7 +200,5 @@ public class CompositeEntry extends ObservableValueBase<CompositeEntry> {
         Aggregate<Object, Object> agg = (Aggregate<Object, Object>) cleanParent;
         return agg.get(key);
     }
-
-
 
 }

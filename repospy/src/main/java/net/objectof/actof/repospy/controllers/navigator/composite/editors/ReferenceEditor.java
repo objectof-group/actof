@@ -18,7 +18,7 @@ public class ReferenceEditor extends AbstractComboboxEditor {
     }
 
     @Override
-    protected Set<String> getElements() {
+    public Set<String> getElements() {
         IKind<?> ikind = (IKind<?>) getEntry().kind;
         String title = ikind.getTitle();
         Iterable<Resource<?>> ress = getEntry().getController().repository.getStagingTx().enumerate(title);
@@ -70,6 +70,10 @@ public class ReferenceEditor extends AbstractComboboxEditor {
             return false;
         }
 
+    }
+
+    public boolean expand() {
+        return false;
     }
 
 }

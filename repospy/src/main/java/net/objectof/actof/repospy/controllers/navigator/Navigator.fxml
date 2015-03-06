@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<BorderPane prefHeight="480.0" prefWidth="1013.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.repospy.controllers.navigator.NavigatorController">
+<BorderPane fx:id="toppane" prefHeight="480.0" prefWidth="1013.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.repospy.controllers.navigator.NavigatorController">
    <top>
       <VBox BorderPane.alignment="CENTER">
          <children>
@@ -129,19 +129,18 @@
       </VBox>
    </left>
    <center>
-      <VBox fx:id="centerbox" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
-         <children>
-            <TreeTableView fx:id="table" editable="true" showRoot="false" styleClass="values" VBox.vgrow="ALWAYS">
-              <columns>
-                <TreeTableColumn fx:id="field" editable="false" maxWidth="1000.0" minWidth="200.0" prefWidth="200.0" text="Field" />
-                <TreeTableColumn fx:id="value" minWidth="200.0" prefWidth="400.0" text="Value" />
-                  <TreeTableColumn fx:id="stereotype" editable="false" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Stereotype" />
-              </columns>
-               <columnResizePolicy>
-                  <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-               </columnResizePolicy>
-            </TreeTableView>
-         </children>
-      </VBox>
+      <ScrollPane fx:id="fieldScroller" hbarPolicy="NEVER" BorderPane.alignment="CENTER">
+        <content>
+          <AnchorPane>
+               <children>
+                  <VBox fx:id="editorBox" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <padding>
+                        <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
+                     </padding>
+                  </VBox>
+               </children>
+            </AnchorPane>
+        </content>
+      </ScrollPane>
    </center>
 </BorderPane>

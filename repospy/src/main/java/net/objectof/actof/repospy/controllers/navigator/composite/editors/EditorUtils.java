@@ -31,10 +31,21 @@ public class EditorUtils {
         }
     }
 
+    public static Editor createSemiConfiguredEditor(CompositeEntry entry) {
+        Editor editor = createEditor(entry);
+
+        editor.setOnComplete(newValue -> {
+            entry.userInputValue(newValue);
+            entry.addChangeHistory(newValue);
+        });
+
+        editor.setOnCancel(() -> {});
+
+        return editor;
+    }
+
     public static Editor createConfiguredEditor(Cell<CompositeEntry> cell) {
 
-        System.out.println(cell);
-        System.out.println(cell.getItem());
         CompositeEntry entry = cell.getItem();
         Editor editor = createEditor(entry);
 
@@ -45,7 +56,7 @@ public class EditorUtils {
 
         editor.setOnCancel(() -> cell.cancelEdit());
 
-        editor.setOnModify(newValue -> entry.addChangeHistory(newValue));
+        // editor.setOnModify(newValue -> entry.addChangeHistory(newValue));
 
         return editor;
     }

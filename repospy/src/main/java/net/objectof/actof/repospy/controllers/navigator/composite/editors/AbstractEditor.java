@@ -24,11 +24,6 @@ public abstract class AbstractEditor implements Editor {
     }
 
     @Override
-    public void setOnModify(Consumer<Object> onModify) {
-        this.onModify = onModify;
-    }
-
-    @Override
     public void setOnCancel(Runnable onCancel) {
         this.onCancel = onCancel;
     }
@@ -47,11 +42,6 @@ public abstract class AbstractEditor implements Editor {
     @Override
     public boolean isModified() {
         return dirty;
-    }
-
-    @Override
-    public boolean isPopOver() {
-        return false;
     }
 
     protected abstract boolean validate(String input);

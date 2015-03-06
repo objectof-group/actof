@@ -85,4 +85,8 @@ public abstract class NumberEditor extends AbstractEditor {
         }
     }
 
+    public boolean expand() {
+        return false;
+    }
+
 }

@@ -15,7 +15,7 @@ public class IndexedEditor extends AbstractAggregateEditor {
     }
 
     @Override
-    protected Set<String> getElements() {
+    public Set<String> getElements() {
         Set<String> indexes = new HashSet<>();
         int count = 0;
         for (Object o : asList()) {

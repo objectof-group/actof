@@ -20,19 +20,14 @@ public interface Editor {
      */
     void setOnComplete(Consumer<String> onComplete);
 
-    /**
-     * Callback for when the editor itself modifies the object
-     * 
-     * @param onModify
-     */
-    void setOnModify(Consumer<Object> onModify);
-
     Node getNode();
-
-    boolean isPopOver();
 
     void modified();
 
     boolean isModified();
+
+    default boolean expand() {
+        return true;
+    }
 
 }

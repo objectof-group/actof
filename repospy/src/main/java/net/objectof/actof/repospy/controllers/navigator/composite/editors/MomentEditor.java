@@ -44,14 +44,12 @@ public class MomentEditor extends AbstractEditor {
     }
 
     @Override
-    public boolean isPopOver() {
+    protected boolean validate(String input) {
         return true;
     }
 
-    @Override
-    protected boolean validate(String input) {
-        // TODO Auto-generated method stub
-        return true;
+    public boolean expand() {
+        return false;
     }
 
 }
