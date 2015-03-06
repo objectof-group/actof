@@ -24,7 +24,7 @@ public class Card extends AnchorPane {
     public Card() {
 
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("Card.fxml"));
+        loader.setLocation(Card.class.getResource("Card.fxml"));
 
         try {
 
@@ -78,6 +78,11 @@ public class Card extends AnchorPane {
     }
 
     public void setContent(Node node, boolean expanding) {
+        if (node == null) {
+            contentBox.getChildren().clear();
+            node = null;
+            return;
+        }
         this.node = node;
 
         BorderPane.setAlignment(node, Pos.CENTER_LEFT);

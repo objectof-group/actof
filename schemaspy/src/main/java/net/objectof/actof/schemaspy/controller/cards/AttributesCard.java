@@ -26,13 +26,12 @@ import org.controlsfx.dialog.DialogStyle;
 import org.controlsfx.dialog.Dialogs;
 
 
-public class AttributesCard extends Card {
+public class AttributesCard extends SchemaSpyCard {
 
     BorderPane top;
     TableView<AttributeEntry> table;
     TableColumn<AttributeEntry, String> namespace, attrname, attrvalue;
     Button add, remove;
-    SchemaEntry schemaEntry;
 
     @Override
     public List<AttributeEntry> attributes(List<AttributeEntry> unhandled) {
@@ -41,9 +40,8 @@ public class AttributesCard extends Card {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void init(SchemaSpyController schemaspy, SchemaEntry entry, List<AttributeEntry> unhandled) {
+    public void init(SchemaSpyController schemaspy, List<AttributeEntry> unhandled) {
 
-        this.schemaEntry = entry;
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("AttributeCard.fxml"));
         try {
@@ -116,17 +114,17 @@ public class AttributesCard extends Card {
     private void onRemove() {
         AttributeEntry attr = table.getSelectionModel().getSelectedItem();
         if (attr == null) { return; }
-        schemaEntry.removeAttribute(attr);
+        getSchemaEntry().removeAttribute(attr);
     }
 
     private void onAdd() {
 
-        Optional<String> response = Dialogs.create().owner(getUI()).title("Create Node").message("Name of node")
+        Optional<String> response = Dialogs.create().owner(this).title("Create Node").message("Name of node")
                 .lightweight().style(DialogStyle.UNDECORATED).showTextInput("node");
 
         if (!response.isPresent()) { return; }
 
-        schemaEntry.addAttribute(response.get(), "value");
+        getSchemaEntry().addAttribute(response.get(), "value");
     }
 
     private void onChange(Change change) {

@@ -50,7 +50,7 @@ import net.objectof.actof.common.util.AlphaNumericComparitor;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.actof.schemaspy.SchemaSpyController;
-import net.objectof.actof.schemaspy.controller.cards.Card;
+import net.objectof.actof.schemaspy.controller.cards.SchemaSpyCard;
 import net.objectof.actof.schemaspy.util.CodeGen;
 import net.objectof.connector.Connector;
 
@@ -390,13 +390,13 @@ public class SchemaViewController extends IActofUIController {
         removeentity.setDisable(false);
 
         List<AttributeEntry> unhandledAttributes = entry.getAttributes();
-        for (Card card : Card.allCards()) {
+        for (SchemaSpyCard card : SchemaSpyCard.allCards()) {
             if (!card.appliesTo(entry, unhandledAttributes)) {
                 continue;
             }
-            card.init(schemaspy, entry, unhandledAttributes);
+            card.initialize(schemaspy, entry, unhandledAttributes);
             unhandledAttributes.removeAll(card.attributes(unhandledAttributes));
-            cardpane.getChildren().add(card.getUI());
+            cardpane.getChildren().add(card);
         }
 
     }

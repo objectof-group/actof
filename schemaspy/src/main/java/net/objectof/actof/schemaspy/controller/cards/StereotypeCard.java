@@ -14,11 +14,9 @@ import net.objectof.actof.schemaspy.SchemaSpyController;
 import net.objectof.model.Stereotype;
 
 
-public class StereotypeCard extends Card {
-
+public class StereotypeCard extends SchemaSpyCard {
 
     ChoiceBox<Stereotype> choice;
-    SchemaEntry entry;
 
     @Override
     public List<AttributeEntry> attributes(List<AttributeEntry> unhandled) {
@@ -31,15 +29,14 @@ public class StereotypeCard extends Card {
     }
 
     @Override
-    public void init(SchemaSpyController schemaspy, SchemaEntry entry, List<AttributeEntry> unhandled) {
+    public void init(SchemaSpyController schemaspy, List<AttributeEntry> unhandled) {
 
-        this.entry = entry;
         ObservableList<Stereotype> stereotypes = FXCollections.observableArrayList(Stereotype.values());
         stereotypes.sort((a, b) -> a.toString().compareTo(b.toString()));
         choice = new ChoiceBox<>(stereotypes);
-        choice.getSelectionModel().select(entry.getStereotype());
+        choice.getSelectionModel().select(getSchemaEntry().getStereotype());
         choice.getSelectionModel().selectedItemProperty().addListener((obs, o, n) -> {
-            entry.setStereotype(n);
+            getSchemaEntry().setStereotype(n);
         });
 
     }
