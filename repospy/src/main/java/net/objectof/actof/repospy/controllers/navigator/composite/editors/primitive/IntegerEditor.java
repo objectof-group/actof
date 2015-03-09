@@ -1,4 +1,4 @@
-package net.objectof.actof.repospy.controllers.navigator.composite.editors;
+package net.objectof.actof.repospy.controllers.navigator.composite.editors.primitive;
 
 
 import java.math.BigDecimal;
@@ -8,9 +8,9 @@ import javafx.util.StringConverter;
 import net.objectof.actof.repospy.controllers.navigator.composite.CompositeEntry;
 
 
-public class RealEditor extends NumberEditor {
+public class IntegerEditor extends NumberEditor {
 
-    public RealEditor(CompositeEntry entry) {
+    public IntegerEditor(CompositeEntry entry) {
         super(entry);
     }
 
@@ -20,7 +20,7 @@ public class RealEditor extends NumberEditor {
 
             @Override
             public String toString(BigDecimal dec) {
-                return dec.doubleValue() + "";
+                return dec.longValue() + "";
             }
 
             @Override
@@ -32,7 +32,7 @@ public class RealEditor extends NumberEditor {
 
     @Override
     protected NumberFormat getFormat() {
-        return NumberFormat.getNumberInstance();
+        return NumberFormat.getIntegerInstance();
     }
 
 }

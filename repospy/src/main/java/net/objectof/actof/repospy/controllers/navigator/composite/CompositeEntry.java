@@ -1,6 +1,10 @@
 package net.objectof.actof.repospy.controllers.navigator.composite;
 
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import javafx.beans.value.ObservableValueBase;
 import net.objectof.actof.common.controller.change.Change;
 import net.objectof.actof.common.util.RepoUtils;
@@ -12,6 +16,7 @@ import net.objectof.model.Kind;
 import net.objectof.model.Resource;
 import net.objectof.model.Stereotype;
 import net.objectof.model.Transaction;
+import net.objectof.model.impl.IKind;
 
 
 public class CompositeEntry extends ObservableValueBase<CompositeEntry> {
@@ -135,6 +140,7 @@ public class CompositeEntry extends ObservableValueBase<CompositeEntry> {
      */
     public void userInputValue(String text) {
         writeToModel(RepoUtils.valueFromString(kind, text, repospy.repository));
+        addChangeHistory(text);
     }
 
     /**
@@ -199,6 +205,44 @@ public class CompositeEntry extends ObservableValueBase<CompositeEntry> {
         @SuppressWarnings("unchecked")
         Aggregate<Object, Object> agg = (Aggregate<Object, Object>) cleanParent;
         return agg.get(key);
+    }
+
+    public static List<CompositeEntry> getSubEntries(Resource<?> res, RepoSpyController controller) {
+        if (res.id().kind().getStereotype() == Stereotype.COMPOSED) {
+            return entriesForComposite(res, controller);
+        } else {
+            return entriesForAggredate(res, controller);
+        }
+    }
+
+    private static List<CompositeEntry> entriesForAggredate(Resource<?> res, RepoSpyController controller) {
+
+        @SuppressWarnings("unchecked")
+        Aggregate<?, Resource<?>> agg = (Aggregate<?, Resource<?>>) res;
+        Set<?> keys = agg.keySet();
+
+        Kind<?> kind = res.id().kind().getParts().get(0);
+
+        List<CompositeEntry> entries = new ArrayList<>();
+        for (Object key : keys) {
+            CompositeEntry entry = new CompositeEntry(controller, res.id(), kind, key);
+            entries.add(entry);
+        }
+
+        return entries;
+    }
+
+    private static List<CompositeEntry> entriesForComposite(Resource<?> res, RepoSpyController controller) {
+
+        List<CompositeEntry> entries = new ArrayList<>();
+        for (Kind<?> kind : res.id().kind().getParts()) {
+            IKind<?> ikind = (IKind<?>) kind;
+            Object key = ikind.getSelector();
+            CompositeEntry entry = new CompositeEntry(controller, res.id(), kind, key);
+            entries.add(entry);
+        }
+
+        return entries;
     }
 
 }

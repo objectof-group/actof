@@ -11,13 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
@@ -35,6 +36,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.util.Callback;
 import net.objectof.actof.common.controller.IActofUIController;
 import net.objectof.actof.common.controller.change.Change;
 import net.objectof.actof.common.controller.change.ChangeController;
@@ -43,21 +45,16 @@ import net.objectof.actof.common.controller.search.QueryChange;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.actof.repospy.changes.EntityCreatedChange;
-import net.objectof.actof.repospy.controllers.navigator.composite.CompositeEntry;
-import net.objectof.actof.repospy.controllers.navigator.composite.editors.Editor;
-import net.objectof.actof.repospy.controllers.navigator.composite.editors.EditorUtils;
-import net.objectof.actof.repospy.controllers.navigator.composite.editors.TextEditor;
+import net.objectof.actof.repospy.controllers.navigator.composite.CompositeView;
+import net.objectof.actof.repospy.controllers.navigator.composite.editors.primitive.TextEditor;
 import net.objectof.actof.repospy.controllers.navigator.kind.KindTreeEntry;
 import net.objectof.actof.repospy.controllers.navigator.kind.KindTreeItem;
-import net.objectof.actof.widgets.card.Card;
-import net.objectof.actof.widgets.card.CardsPane;
-import net.objectof.aggr.Aggregate;
+import net.objectof.actof.repospy.controllers.navigator.kind.RepoTreeEntry;
 import net.objectof.connector.Connector;
 import net.objectof.model.Kind;
 import net.objectof.model.Resource;
-import net.objectof.model.Stereotype;
-import net.objectof.model.impl.IKind;
 
+import org.controlsfx.control.BreadCrumbBar;
 import org.controlsfx.dialog.Dialogs;
 
 
@@ -70,8 +67,13 @@ public class NavigatorController extends IActofUIController {
     private BorderPane toppane;
 
     @FXML
+    private BorderPane fieldEditor;
+
+    private BreadCrumbBar<BreadCrumb> breadcrumb;
+
+    @FXML
     private ScrollPane fieldScroller;
-    private CardsPane editorBox;
+    private CompositeView editorBox;
 
     @FXML
     private TextField querytext;
@@ -96,13 +98,45 @@ public class NavigatorController extends IActofUIController {
     private Tooltip revert_tooltip;
 
     @FXML
-    private TreeView<KindTreeEntry> records;
+    private TreeView<RepoTreeEntry> records;
 
     @Override
     @FXML
     protected void initialize() {
 
-        TreeItem<KindTreeEntry> root = new TreeItem<>();
+        breadcrumb = new BreadCrumbBar<>();
+        Callback<TreeItem<BreadCrumb>, Button> breadCrumbFactory = breadcrumb.getCrumbFactory();
+        breadcrumb.setCrumbFactory(item -> {
+            Button b = breadCrumbFactory.call(item);
+            b.setText("");
+            Label label = new Label(item.getValue().toString());
+            b.setGraphic(label);
+            label.setPadding(new Insets(0, 10, 0, 10));
+            return b;
+        });
+
+        breadcrumb.setStyle("-fx-background-color: -fx-color; -fx-effect: dropshadow(gaussian, #777, 8, -2, 0, 1)");
+
+        breadcrumb.setAutoNavigationEnabled(false);
+        breadcrumb.setOnCrumbAction(event -> {
+
+            List<Resource<?>> crumbs = new ArrayList<>();
+            TreeItem<BreadCrumb> node = event.getSelectedCrumb();
+            while (true) {
+                crumbs.add(0, node.getValue().getRes());
+                node = node.getParent();
+                if (node == null) {
+                    break;
+                }
+
+            }
+
+            repospy.getChangeBus().broadcast(new ResourceSelectedChange(crumbs));
+        });
+
+        fieldEditor.setTop(breadcrumb);
+
+        TreeItem<RepoTreeEntry> root = new TreeItem<>();
         records.setShowRoot(false);
         records.setRoot(root);
         records.getSelectionModel().selectedItemProperty().addListener((ov, o, n) -> onRecordSelect(n));
@@ -118,16 +152,36 @@ public class NavigatorController extends IActofUIController {
 
         shortcut(records, this::recordCopy, KeyCode.C, KeyCombination.CONTROL_DOWN);
 
-        fieldScroller.setStyle("-fx-background-color:transparent;");
-        fieldScroller.setFitToWidth(true);
-        editorBox = new CardsPane();
-        fieldScroller.setContent(editorBox);
-
     }
 
     @Override
     public void ready() {
         getChangeBus().listen(this::onChange);
+        getChangeBus().listen(ResourceSelectedChange.class, this::buildBreadcrumb);
+    }
+
+    private void buildBreadcrumb(ResourceSelectedChange change) {
+
+        breadcrumb.setPadding(new Insets(10));
+
+        // String resName = res.id().kind().getComponentName() + "-" +
+        // res.id().label().toString();
+
+        TreeItem<BreadCrumb> parent = null;
+        if (change.isAppend()) {
+            parent = breadcrumb.getSelectedCrumb();
+        }
+
+        for (Resource<?> res : change.getResources()) {
+            TreeItem<BreadCrumb> item = new TreeItem<>(new BreadCrumb(res));
+
+            if (parent != null) {
+                parent.getChildren().add(item);
+            }
+            breadcrumb.setSelectedCrumb(item);
+            parent = item;
+        }
+
     }
 
     /* FXML Hook */
@@ -210,19 +264,25 @@ public class NavigatorController extends IActofUIController {
     }
 
     public void recordCopy() {
-        TreeItem<KindTreeEntry> item = records.getSelectionModel().getSelectedItem();
+        TreeItem<RepoTreeEntry> item = records.getSelectionModel().getSelectedItem();
         if (item == null) { return; }
-        KindTreeEntry entry = item.getValue();
+        RepoTreeEntry entry = item.getValue();
         if (entry == null) { return; }
-        Resource<?> res = entry.res;
+        Resource<?> res = entry.getRes();
         if (res == null) { return; }
 
-        toClipboard(entry.res);
+        toClipboard(entry.getRes());
 
     }
 
     public void setTopController(RepoSpyController controller) {
         this.repospy = controller;
+
+        fieldScroller.setStyle("-fx-background-color:transparent;");
+        fieldScroller.setFitToWidth(true);
+        editorBox = new CompositeView(getChangeBus(), repospy);
+        fieldScroller.setContent(editorBox);
+
     }
 
     private void onChange(Change change) {
@@ -278,67 +338,26 @@ public class NavigatorController extends IActofUIController {
         isQuerying = validQuery;
     }
 
-    private void onRecordSelect(TreeItem<KindTreeEntry> treeItem) {
-
-        editorBox.getChildren().clear();
+    private void onRecordSelect(TreeItem<RepoTreeEntry> treeItem) {
 
         if (treeItem == null) { return; }
 
-        KindTreeEntry data = treeItem.getValue();
-        if (data == null || data.res == null) { return; }
+        RepoTreeEntry data = treeItem.getValue();
+        if (data == null || data instanceof KindTreeEntry) { return; }
 
-        Resource<?> res = data.res;
-
-        List<CompositeEntry> entries;
-        if (res.id().kind().getStereotype() == Stereotype.COMPOSED) {
-            entries = entriesForComposite(res);
-        } else {
-            entries = entriesForAggredate(res);
+        Resource<?> res = data.getRes();
+        List<Resource<?>> crumbs = new ArrayList<>();
+        crumbs.add(0, res);
+        while (true) {
+            treeItem = treeItem.getParent();
+            if (treeItem == null || treeItem.getValue() instanceof KindTreeEntry) {
+                break;
+            }
+            crumbs.add(0, treeItem.getValue().getRes());
         }
 
-        for (CompositeEntry entry : entries) {
-            // FieldView view = new FieldView(entry);
-            Card card = new Card();
-            Editor editor = EditorUtils.createSemiConfiguredEditor(entry);
-            card.setContent(editor.getNode(), editor.expand());
-            String title = entry.getKey().toString();
-            title = title.substring(0, 1).toUpperCase() + title.substring(1);
-            card.setTitle(title);
-            card.setDescription(entry.getStereotype().toString());
+        getChangeBus().broadcast(new ResourceSelectedChange(crumbs));
 
-            editorBox.getChildren().add(card);
-        }
-
-    }
-
-    protected List<CompositeEntry> entriesForAggredate(Resource<?> res) {
-
-        @SuppressWarnings("unchecked")
-        Aggregate<?, Resource<?>> agg = (Aggregate<?, Resource<?>>) res;
-        Set<?> keys = agg.keySet();
-
-        Kind<?> kind = res.id().kind().getParts().get(0);
-
-        List<CompositeEntry> entries = new ArrayList<>();
-        for (Object key : keys) {
-            CompositeEntry entry = new CompositeEntry(repospy, res.id(), kind, key);
-            entries.add(entry);
-        }
-
-        return entries;
-    }
-
-    protected List<CompositeEntry> entriesForComposite(Resource<?> res) {
-
-        List<CompositeEntry> entries = new ArrayList<>();
-        for (Kind<?> kind : res.id().kind().getParts()) {
-            IKind<?> ikind = (IKind<?>) kind;
-            Object key = ikind.getSelector();
-            CompositeEntry entry = new CompositeEntry(repospy, res.id(), kind, key);
-            entries.add(entry);
-        }
-
-        return entries;
     }
 
     private void populateQueryEntityChoice() {
@@ -353,7 +372,7 @@ public class NavigatorController extends IActofUIController {
         List<Kind<?>> entities = repospy.repository.getEntities();
 
         // repopulate tree
-        TreeItem<KindTreeEntry> root = records.getRoot();
+        TreeItem<RepoTreeEntry> root = records.getRoot();
         root.getChildren().clear();
         for (Kind<?> kind : entities) {
 
@@ -371,8 +390,8 @@ public class NavigatorController extends IActofUIController {
     }
 
     private void refreshEntityTree() {
-        TreeItem<KindTreeEntry> root = records.getRoot();
-        for (TreeItem<KindTreeEntry> item : root.getChildren()) {
+        TreeItem<RepoTreeEntry> root = records.getRoot();
+        for (TreeItem<RepoTreeEntry> item : root.getChildren()) {
             KindTreeItem child = (KindTreeItem) item;
             child.updateChildren();
         }

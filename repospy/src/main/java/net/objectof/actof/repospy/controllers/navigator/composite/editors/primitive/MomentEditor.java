@@ -1,4 +1,4 @@
-package net.objectof.actof.repospy.controllers.navigator.composite.editors;
+package net.objectof.actof.repospy.controllers.navigator.composite.editors.primitive;
 
 
 import java.util.Calendar;
@@ -7,6 +7,7 @@ import java.util.TimeZone;
 import javafx.scene.Node;
 import jfxtras.scene.control.CalendarPicker;
 import net.objectof.actof.repospy.controllers.navigator.composite.CompositeEntry;
+import net.objectof.actof.repospy.controllers.navigator.composite.editors.AbstractEditor;
 import net.objectof.model.impl.IMoment;
 
 
@@ -29,6 +30,11 @@ public class MomentEditor extends AbstractEditor {
         picker = new CalendarPicker();
         picker.setCalendar(cal);
         picker.setShowTime(true);
+
+        picker.calendarProperty().addListener(change -> {
+            IMoment newMoment = new IMoment(picker.getCalendar().getTime().getTime(), zulu);
+            getEntry().userInputValue(newMoment.toString(zulu));
+        });
 
     }
 

@@ -1,4 +1,4 @@
-package net.objectof.actof.repospy.controllers.navigator.composite.editors;
+package net.objectof.actof.repospy.controllers.navigator.composite.editors.primitive;
 
 
 import java.util.Set;
@@ -7,6 +7,7 @@ import java.util.stream.StreamSupport;
 
 import net.objectof.actof.common.util.RepoUtils;
 import net.objectof.actof.repospy.controllers.navigator.composite.CompositeEntry;
+import net.objectof.actof.repospy.controllers.navigator.composite.editors.aggregate.AbstractComboboxEditor;
 import net.objectof.model.Resource;
 import net.objectof.model.impl.IKind;
 
@@ -38,11 +39,9 @@ public class ReferenceEditor extends AbstractComboboxEditor {
             validationUI(valid);
 
             if (valid) {
-                if (valid) {
-                    onComplete.accept(field.getValue());
-                } else {
-                    onCancel.run();
-                }
+                getEntry().userInputValue(newval);
+            } else {
+                field.getSelectionModel().select(oldval);
             }
 
         });

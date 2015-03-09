@@ -1,4 +1,4 @@
-package net.objectof.actof.repospy.controllers.navigator.composite.editors;
+package net.objectof.actof.repospy.controllers.navigator.composite.editors.aggregate;
 
 
 import java.util.HashSet;
@@ -30,7 +30,6 @@ public class IndexedEditor extends AbstractAggregateEditor {
         try {
             int i = Integer.parseInt(key);
             asList().remove(i);
-            modified();
         }
         catch (NumberFormatException e) {
 
@@ -40,7 +39,6 @@ public class IndexedEditor extends AbstractAggregateEditor {
     @Override
     protected void doAdd(String key) {
         asList().add(null);
-        modified();
     }
 
     @Override

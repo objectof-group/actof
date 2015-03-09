@@ -1,4 +1,4 @@
-package net.objectof.actof.repospy.controllers.navigator.composite.editors;
+package net.objectof.actof.repospy.controllers.navigator.composite.editors.aggregate;
 
 
 import javafx.geometry.Insets;
@@ -16,8 +16,8 @@ public abstract class AbstractAggregateEditor extends AbstractComboboxEditor {
     private HBox buttonbox = new HBox(2);
     private BorderPane container = new BorderPane();
 
-    private Image addImage = new Image(getClass().getResourceAsStream("icons/add.png"));
-    private Image remImage = new Image(getClass().getResourceAsStream("icons/remove.png"));
+    private Image addImage = new Image(AbstractAggregateEditor.class.getResourceAsStream("../icons/add.png"));
+    private Image remImage = new Image(AbstractAggregateEditor.class.getResourceAsStream("../icons/remove.png"));
 
     protected Button add = new Button("", new ImageView(addImage));
     protected Button remove = new Button("", new ImageView(remImage));

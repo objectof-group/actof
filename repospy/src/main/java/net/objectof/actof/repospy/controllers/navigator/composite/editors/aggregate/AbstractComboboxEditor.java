@@ -1,11 +1,12 @@
-package net.objectof.actof.repospy.controllers.navigator.composite.editors;
+package net.objectof.actof.repospy.controllers.navigator.composite.editors.aggregate;
 
 
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
-import javafx.scene.input.KeyCode;
 import net.objectof.actof.common.util.RepoUtils;
 import net.objectof.actof.repospy.controllers.navigator.composite.CompositeEntry;
+import net.objectof.actof.repospy.controllers.navigator.composite.editors.AbstractEditor;
+import net.objectof.actof.repospy.controllers.navigator.composite.editors.ElementsEditor;
 
 
 public abstract class AbstractComboboxEditor extends AbstractEditor implements ElementsEditor {
@@ -21,26 +22,6 @@ public abstract class AbstractComboboxEditor extends AbstractEditor implements E
 
         populate();
         addListeners();
-
-        if (editable) {
-
-            field.setOnKeyPressed(t -> {
-                boolean valid = validate(getValue());
-                validationUI(valid);
-
-                if (t.getCode() == KeyCode.ENTER) {
-                    if (valid) {
-                        onComplete.accept(field.getSelectionModel().getSelectedItem());
-                    } else {
-                        onCancel.run();
-                    }
-                } else if (t.getCode() == KeyCode.ESCAPE) {
-                    onCancel.run();
-                }
-
-            });
-
-        }
 
     }
 

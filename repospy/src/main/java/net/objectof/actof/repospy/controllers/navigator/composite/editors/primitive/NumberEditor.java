@@ -1,15 +1,14 @@
-package net.objectof.actof.repospy.controllers.navigator.composite.editors;
+package net.objectof.actof.repospy.controllers.navigator.composite.editors.primitive;
 
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 
 import javafx.scene.Node;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.util.StringConverter;
 import jfxtras.labs.scene.control.BigDecimalField;
 import net.objectof.actof.repospy.controllers.navigator.composite.CompositeEntry;
+import net.objectof.actof.repospy.controllers.navigator.composite.editors.AbstractEditor;
 
 
 public abstract class NumberEditor extends AbstractEditor {
@@ -24,32 +23,10 @@ public abstract class NumberEditor extends AbstractEditor {
         field.setFormat(getFormat());
         field.setStepwidth(new BigDecimal(1));
 
-        field.setOnKeyReleased((KeyEvent t) -> {
-            if (isFinished) { return; }
-
-            String text = val(field.getNumber());
-            boolean valid = validate(text);
-            if (valid) {
-                field.setStyle("");
-            }
-
-            if (t.getCode() == KeyCode.ENTER) {
-                if (valid) {
-                    isFinished = true;
-                    onComplete.accept(text);
-                } else {
-                    isFinished = false;
-                    field.setStyle(TextEditor.redborder);
-                }
-            } else if (t.getCode() == KeyCode.ESCAPE) {
-                isFinished = true;
-                onCancel.run();
-            }
-
-        });
-
         field.numberProperty().addListener((obs, oldval, newval) -> {
-            if (!validate(val(newval))) {
+            if (validate(val(newval))) {
+                entry.userInputValue(val(newval));
+            } else {
                 field.setNumber(oldval);
             }
         });
