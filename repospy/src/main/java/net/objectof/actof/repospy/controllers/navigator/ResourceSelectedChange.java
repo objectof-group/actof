@@ -1,42 +1,21 @@
 package net.objectof.actof.repospy.controllers.navigator;
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
+import javafx.scene.control.TreeItem;
 import net.objectof.actof.common.controller.change.Change;
-import net.objectof.model.Resource;
+import net.objectof.actof.repospy.controllers.navigator.kind.RepoTreeEntry;
 
 
 public class ResourceSelectedChange extends Change {
 
-    private List<Resource<?>> resources;
-    private boolean append;
+    private TreeItem<RepoTreeEntry> entry;
 
-    public ResourceSelectedChange(Resource<?> res, boolean append) {
-        this.resources = Collections.singletonList(res);
-        this.append = append;
+    public ResourceSelectedChange(TreeItem<RepoTreeEntry> entry) {
+        this.entry = entry;
     }
 
-    public ResourceSelectedChange(List<Resource<?>> res) {
-        resources = new ArrayList<>(res);
-        this.append = false;
-
-    }
-
-    public ResourceSelectedChange(Resource<?>... res) {
-        resources = new ArrayList<>(Arrays.asList(res));
-        this.append = false;
-    }
-
-    public List<Resource<?>> getResources() {
-        return resources;
-    }
-
-    protected boolean isAppend() {
-        return append;
+    public TreeItem<RepoTreeEntry> getEntry() {
+        return entry;
     }
 
 }

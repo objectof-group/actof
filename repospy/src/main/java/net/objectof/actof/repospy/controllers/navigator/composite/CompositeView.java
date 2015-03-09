@@ -17,8 +17,7 @@ public class CompositeView extends CardsPane {
     public CompositeView(ChangeController changes, RepoSpyController repospy) {
         changes.listen(ResourceSelectedChange.class, change -> {
 
-            List<Resource<?>> resources = change.getResources();
-            Resource<?> res = resources.get(resources.size() - 1);
+            Resource<?> res = change.getEntry().getValue().getRes();
 
             getChildren().clear();
 
@@ -38,5 +37,4 @@ public class CompositeView extends CardsPane {
 
         });
     }
-
 }

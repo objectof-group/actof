@@ -3,9 +3,6 @@ package net.objectof.actof.repospy.controllers.navigator.composite.editors;
 
 import javafx.scene.Node;
 import net.objectof.actof.repospy.controllers.navigator.composite.CompositeEntry;
-import net.objectof.actof.repospy.controllers.navigator.composite.editors.aggregate.CompositeEditor;
-import net.objectof.actof.repospy.controllers.navigator.composite.editors.aggregate.IndexedEditor;
-import net.objectof.actof.repospy.controllers.navigator.composite.editors.map.MappedEditor;
 import net.objectof.actof.repospy.controllers.navigator.composite.editors.primitive.IntegerEditor;
 import net.objectof.actof.repospy.controllers.navigator.composite.editors.primitive.MomentEditor;
 import net.objectof.actof.repospy.controllers.navigator.composite.editors.primitive.RealEditor;
@@ -29,12 +26,8 @@ public interface Editor {
         switch (entry.getStereotype()) {
             case BOOL:
                 return new TextEditor(entry);
-            case INDEXED:
-                return new IndexedEditor(entry);
             case INT:
                 return new IntegerEditor(entry);
-            case MAPPED:
-                return new MappedEditor(entry);
             case MOMENT:
                 return new MomentEditor(entry);
             case NUM:
@@ -43,16 +36,16 @@ public interface Editor {
                 return new ReferenceEditor(entry);
             case TEXT:
                 return new TextEditor(entry);
+
+            case INDEXED:
             case COMPOSED:
-                return new CompositeEditor(entry);
+            case MAPPED:
             case SET:
             case MEDIA:
             case FN:
-
             default:
                 return new UnsupportedEditor(entry);
 
         }
     }
-
 }

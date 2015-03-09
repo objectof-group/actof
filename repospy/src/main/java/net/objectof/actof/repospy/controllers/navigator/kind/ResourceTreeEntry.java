@@ -6,7 +6,6 @@ import java.util.List;
 
 import net.objectof.actof.common.controller.repository.RepositoryController;
 import net.objectof.actof.common.controller.search.SearchController;
-import net.objectof.actof.common.util.RepoUtils;
 import net.objectof.model.Kind;
 import net.objectof.model.Resource;
 import net.objectof.model.impl.aggr.IComposite;
@@ -22,7 +21,15 @@ public class ResourceTreeEntry implements RepoTreeEntry {
 
     @Override
     public String toString() {
-        return RepoUtils.resToString(res);
+
+        String name = res.id().kind().getComponentName();
+        if (res instanceof IComposite) {
+            return name + " #" + res.id().label().toString();
+        } else {
+            String[] parts = name.split("\\.");
+            name = parts[parts.length - 1];
+            return name;
+        }
     }
 
     public Resource<?> getRes() {

@@ -7,7 +7,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -50,6 +49,7 @@ import net.objectof.actof.repospy.controllers.navigator.composite.editors.primit
 import net.objectof.actof.repospy.controllers.navigator.kind.KindTreeEntry;
 import net.objectof.actof.repospy.controllers.navigator.kind.KindTreeItem;
 import net.objectof.actof.repospy.controllers.navigator.kind.RepoTreeEntry;
+import net.objectof.actof.repospy.controllers.navigator.kind.ResourceTreeEntry;
 import net.objectof.connector.Connector;
 import net.objectof.model.Kind;
 import net.objectof.model.Resource;
@@ -69,7 +69,7 @@ public class NavigatorController extends IActofUIController {
     @FXML
     private BorderPane fieldEditor;
 
-    private BreadCrumbBar<BreadCrumb> breadcrumb;
+    private BreadCrumbBar<RepoTreeEntry> breadcrumb;
 
     @FXML
     private ScrollPane fieldScroller;
@@ -105,11 +105,16 @@ public class NavigatorController extends IActofUIController {
     protected void initialize() {
 
         breadcrumb = new BreadCrumbBar<>();
-        Callback<TreeItem<BreadCrumb>, Button> breadCrumbFactory = breadcrumb.getCrumbFactory();
+        Callback<TreeItem<RepoTreeEntry>, Button> breadCrumbFactory = breadcrumb.getCrumbFactory();
         breadcrumb.setCrumbFactory(item -> {
             Button b = breadCrumbFactory.call(item);
             b.setText("");
-            Label label = new Label(item.getValue().toString());
+            Label label = new Label();
+
+            if (item.getValue() != null) {
+                label.setText(item.getValue().toString());
+            }
+
             b.setGraphic(label);
             label.setPadding(new Insets(0, 10, 0, 10));
             return b;
@@ -119,19 +124,9 @@ public class NavigatorController extends IActofUIController {
 
         breadcrumb.setAutoNavigationEnabled(false);
         breadcrumb.setOnCrumbAction(event -> {
-
-            List<Resource<?>> crumbs = new ArrayList<>();
-            TreeItem<BreadCrumb> node = event.getSelectedCrumb();
-            while (true) {
-                crumbs.add(0, node.getValue().getRes());
-                node = node.getParent();
-                if (node == null) {
-                    break;
-                }
-
-            }
-
-            repospy.getChangeBus().broadcast(new ResourceSelectedChange(crumbs));
+            if (!(event.getSelectedCrumb().getValue() instanceof ResourceTreeEntry)) { return; }
+            TreeItem<RepoTreeEntry> node = event.getSelectedCrumb();
+            repospy.getChangeBus().broadcast(new ResourceSelectedChange(node));
         });
 
         fieldEditor.setTop(breadcrumb);
@@ -157,30 +152,15 @@ public class NavigatorController extends IActofUIController {
     @Override
     public void ready() {
         getChangeBus().listen(this::onChange);
-        getChangeBus().listen(ResourceSelectedChange.class, this::buildBreadcrumb);
+        getChangeBus().listen(ResourceSelectedChange.class, this::onResourceSelect);
     }
 
-    private void buildBreadcrumb(ResourceSelectedChange change) {
+    private void onResourceSelect(ResourceSelectedChange change) {
 
         breadcrumb.setPadding(new Insets(10));
 
-        // String resName = res.id().kind().getComponentName() + "-" +
-        // res.id().label().toString();
-
-        TreeItem<BreadCrumb> parent = null;
-        if (change.isAppend()) {
-            parent = breadcrumb.getSelectedCrumb();
-        }
-
-        for (Resource<?> res : change.getResources()) {
-            TreeItem<BreadCrumb> item = new TreeItem<>(new BreadCrumb(res));
-
-            if (parent != null) {
-                parent.getChildren().add(item);
-            }
-            breadcrumb.setSelectedCrumb(item);
-            parent = item;
-        }
+        breadcrumb.setSelectedCrumb(change.getEntry());
+        records.getSelectionModel().select(change.getEntry());
 
     }
 
@@ -345,18 +325,7 @@ public class NavigatorController extends IActofUIController {
         RepoTreeEntry data = treeItem.getValue();
         if (data == null || data instanceof KindTreeEntry) { return; }
 
-        Resource<?> res = data.getRes();
-        List<Resource<?>> crumbs = new ArrayList<>();
-        crumbs.add(0, res);
-        while (true) {
-            treeItem = treeItem.getParent();
-            if (treeItem == null || treeItem.getValue() instanceof KindTreeEntry) {
-                break;
-            }
-            crumbs.add(0, treeItem.getValue().getRes());
-        }
-
-        getChangeBus().broadcast(new ResourceSelectedChange(crumbs));
+        getChangeBus().broadcast(new ResourceSelectedChange(treeItem));
 
     }
 
