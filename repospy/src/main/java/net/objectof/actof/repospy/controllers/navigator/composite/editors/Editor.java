@@ -2,13 +2,14 @@ package net.objectof.actof.repospy.controllers.navigator.composite.editors;
 
 
 import javafx.scene.Node;
+import net.objectof.actof.repospy.controllers.navigator.composite.editors.primitive.EntryLinkEditor;
 import net.objectof.actof.repospy.controllers.navigator.composite.editors.primitive.IntegerEditor;
 import net.objectof.actof.repospy.controllers.navigator.composite.editors.primitive.MomentEditor;
 import net.objectof.actof.repospy.controllers.navigator.composite.editors.primitive.RealEditor;
 import net.objectof.actof.repospy.controllers.navigator.composite.editors.primitive.ReferenceEditor;
 import net.objectof.actof.repospy.controllers.navigator.composite.editors.primitive.TextEditor;
 import net.objectof.actof.repospy.controllers.navigator.composite.editors.primitive.UnsupportedEditor;
-import net.objectof.actof.repospy.controllers.navigator.kind.LeafEntry;
+import net.objectof.actof.repospy.controllers.navigator.kind.ILeafNode;
 
 
 public interface Editor {
@@ -21,7 +22,11 @@ public interface Editor {
         return true;
     }
 
-    static Editor createEditor(LeafEntry entry) {
+    default boolean inline() {
+        return false;
+    }
+
+    static Editor createEditor(ILeafNode entry) {
 
         switch (entry.getStereotype()) {
             case BOOL:
@@ -37,10 +42,12 @@ public interface Editor {
             case TEXT:
                 return new TextEditor(entry);
 
+            case MAPPED:
             case INDEXED:
             case COMPOSED:
-            case MAPPED:
             case SET:
+                return new EntryLinkEditor(entry);
+
             case MEDIA:
             case FN:
             default:

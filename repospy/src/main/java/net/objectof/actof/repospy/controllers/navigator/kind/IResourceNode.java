@@ -15,15 +15,14 @@ import net.objectof.model.impl.IKind;
 import net.objectof.model.impl.aggr.IComposite;
 
 
-public class ResourceTreeEntry implements RepoTreeEntry {
+public class IResourceNode implements TreeNode {
 
     private Resource<?> res;
-    private Kind<?> kind;
 
-    private List<LeafEntry> leaves;
-    private List<ResourceTreeEntry> subresources;
+    private List<ILeafNode> leaves;
+    private List<KindTreeItem> subresources;
 
-    public ResourceTreeEntry(Resource<?> res) {
+    public IResourceNode(Resource<?> res) {
         this.res = res;
 
     }
@@ -67,7 +66,7 @@ public class ResourceTreeEntry implements RepoTreeEntry {
     }
 
     @Override
-    public List<ResourceTreeEntry> getChildren(RepoSpyController repospy) {
+    public List<KindTreeItem> getChildren(RepoSpyController repospy) {
 
         if (subresources == null) {
             getLeafEntries(this, repospy);
@@ -98,7 +97,7 @@ public class ResourceTreeEntry implements RepoTreeEntry {
 
     }
 
-    public List<LeafEntry> getLeaves(RepoSpyController repospy) {
+    public List<ILeafNode> getLeaves(RepoSpyController repospy) {
 
         if (leaves == null) {
             getLeafEntries(this, repospy);
@@ -112,7 +111,7 @@ public class ResourceTreeEntry implements RepoTreeEntry {
         return res.id().kind().getStereotype();
     }
 
-    public static void getLeafEntries(ResourceTreeEntry parent, RepoSpyController controller) {
+    public static void getLeafEntries(IResourceNode parent, RepoSpyController controller) {
         if (parent.getStereotype() == Stereotype.COMPOSED) {
             leafEntriesForComposite(parent, controller);
         } else {
@@ -121,7 +120,7 @@ public class ResourceTreeEntry implements RepoTreeEntry {
 
     }
 
-    private static void leafEntriesForAggredate(ResourceTreeEntry parent, RepoSpyController controller) {
+    private static void leafEntriesForAggredate(IResourceNode parent, RepoSpyController controller) {
 
         @SuppressWarnings("unchecked")
         Aggregate<?, Resource<?>> agg = (Aggregate<?, Resource<?>>) parent.getRes();
@@ -132,13 +131,14 @@ public class ResourceTreeEntry implements RepoTreeEntry {
         parent.leaves = new ArrayList<>();
         parent.subresources = new ArrayList<>();
         for (Object key : keys) {
-            LeafEntry entry = new LeafEntry(parent, controller, kind, key);
+            ILeafNode entry = new ILeafNode(parent, controller, kind, key);
             if (entry.getFieldValue() == null) {
                 entry.createFromNull();
             }
 
             if (RepoUtils.isAggregateStereotype(entry.getStereotype())) {
-                ResourceTreeEntry subentry = new ResourceTreeEntry((Resource<?>) entry.getFieldValue());
+                KindTreeItem subentry = new KindTreeItem(new IResourceNode((Resource<?>) entry.getFieldValue()),
+                        controller);
                 parent.subresources.add(subentry);
                 entry.treeNode = subentry;
             }
@@ -148,20 +148,21 @@ public class ResourceTreeEntry implements RepoTreeEntry {
 
     }
 
-    private static void leafEntriesForComposite(ResourceTreeEntry parent, RepoSpyController controller) {
+    private static void leafEntriesForComposite(IResourceNode parent, RepoSpyController controller) {
 
         parent.leaves = new ArrayList<>();
         parent.subresources = new ArrayList<>();
         for (Kind<?> kind : parent.getRes().id().kind().getParts()) {
             IKind<?> ikind = (IKind<?>) kind;
             Object key = ikind.getSelector();
-            LeafEntry entry = new LeafEntry(parent, controller, kind, key);
+            ILeafNode entry = new ILeafNode(parent, controller, kind, key);
             if (entry.getFieldValue() == null) {
                 entry.createFromNull();
             }
 
             if (RepoUtils.isAggregateStereotype(entry.getStereotype())) {
-                ResourceTreeEntry subentry = new ResourceTreeEntry((Resource<?>) entry.getFieldValue());
+                KindTreeItem subentry = new KindTreeItem(new IResourceNode((Resource<?>) entry.getFieldValue()),
+                        controller);
                 parent.subresources.add(subentry);
                 entry.treeNode = subentry;
             }

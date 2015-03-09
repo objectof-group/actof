@@ -4,6 +4,7 @@ package net.objectof.actof.widgets.card;
 import java.io.IOException;
 
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -17,7 +18,7 @@ public class Card extends AnchorPane {
 
     private BorderPane top, content;
     private Label title, description;
-    private HBox contentBox;
+    private HBox contentBox, titleContentBox;
 
     private Node node;
 
@@ -31,6 +32,7 @@ public class Card extends AnchorPane {
             top = (BorderPane) loader.load();
             content = (BorderPane) loader.getNamespace().get("content");
             contentBox = (HBox) loader.getNamespace().get("contentBox");
+            titleContentBox = (HBox) loader.getNamespace().get("titleContentBox");
 
             title = (Label) loader.getNamespace().get("title");
             setTitle("");
@@ -57,8 +59,13 @@ public class Card extends AnchorPane {
         return title.getText();
     }
 
-    public void setTitle(String title) {
-        this.title.setText(title);
+    public void setTitle(String titleString) {
+        if (titleString == null) {
+            titleString = "";
+        }
+        this.title.setText(titleString);
+
+        fixPadding();
     }
 
     public String getDescription() {
@@ -92,6 +99,22 @@ public class Card extends AnchorPane {
             HBox.setHgrow(node, Priority.NEVER);
         }
         contentBox.getChildren().setAll(node);
+
+        fixPadding();
+
+    }
+
+    public void setTitleContent(Node node) {
+        titleContentBox.getChildren().clear();
+        titleContentBox.getChildren().add(node);
+    }
+
+    private void fixPadding() {
+        if (contentBox.getChildren().size() == 0) {
+            title.setPadding(new Insets(0, 10, 0, 0));
+        } else {
+            title.setPadding(new Insets(0, 10, 6, 0));
+        }
     }
 
 }

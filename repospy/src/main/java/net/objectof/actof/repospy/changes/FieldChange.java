@@ -1,7 +1,7 @@
 package net.objectof.actof.repospy.changes;
 
 
-import net.objectof.actof.repospy.controllers.navigator.kind.LeafEntry;
+import net.objectof.actof.repospy.controllers.navigator.kind.ILeafNode;
 import net.objectof.model.Kind;
 import net.objectof.model.Stereotype;
 
@@ -9,9 +9,9 @@ import net.objectof.model.Stereotype;
 public class FieldChange extends EditingChange {
 
     private Object oldValue, newValue;
-    private LeafEntry entry;
+    private ILeafNode entry;
 
-    public FieldChange(Object oldValue, Object newValue, LeafEntry entry) {
+    public FieldChange(Object oldValue, Object newValue, ILeafNode entry) {
         this.oldValue = oldValue;
         this.newValue = newValue;
         this.entry = entry;

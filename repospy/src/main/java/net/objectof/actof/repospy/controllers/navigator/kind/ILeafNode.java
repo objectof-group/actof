@@ -14,7 +14,7 @@ import net.objectof.model.Stereotype;
 import net.objectof.model.Transaction;
 
 
-public class LeafEntry extends ObservableValueBase<LeafEntry> {
+public class ILeafNode extends ObservableValueBase<ILeafNode> {
 
     private RepoSpyController repospy;
 
@@ -26,10 +26,10 @@ public class LeafEntry extends ObservableValueBase<LeafEntry> {
     private Object value; // calculated
     public Object key; // provided
 
-    public ResourceTreeEntry parentTreeEntry;
-    public ResourceTreeEntry treeNode;
+    public IResourceNode parentTreeEntry;
+    public KindTreeItem treeNode;
 
-    public LeafEntry(ResourceTreeEntry parentTreeEntry, RepoSpyController repospy, Kind<?> kind, Object key) {
+    public ILeafNode(IResourceNode parentTreeEntry, RepoSpyController repospy, Kind<?> kind, Object key) {
 
         this.parentTreeEntry = parentTreeEntry;
         this.repospy = repospy;
@@ -89,7 +89,7 @@ public class LeafEntry extends ObservableValueBase<LeafEntry> {
     }
 
     @Override
-    public LeafEntry getValue() {
+    public ILeafNode getValue() {
         return this;
     }
 

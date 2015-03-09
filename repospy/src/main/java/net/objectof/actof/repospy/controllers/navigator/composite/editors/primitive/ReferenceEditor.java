@@ -7,14 +7,14 @@ import java.util.stream.StreamSupport;
 
 import net.objectof.actof.common.util.RepoUtils;
 import net.objectof.actof.repospy.controllers.navigator.composite.editors.aggregate.AbstractComboboxEditor;
-import net.objectof.actof.repospy.controllers.navigator.kind.LeafEntry;
+import net.objectof.actof.repospy.controllers.navigator.kind.ILeafNode;
 import net.objectof.model.Resource;
 import net.objectof.model.impl.IKind;
 
 
 public class ReferenceEditor extends AbstractComboboxEditor {
 
-    public ReferenceEditor(LeafEntry entry) {
+    public ReferenceEditor(ILeafNode entry) {
         super(entry, true);
     }
 
@@ -29,6 +29,10 @@ public class ReferenceEditor extends AbstractComboboxEditor {
             names.add(null);
         }
         return names;
+    }
+
+    public boolean inline() {
+        return true;
     }
 
     @Override

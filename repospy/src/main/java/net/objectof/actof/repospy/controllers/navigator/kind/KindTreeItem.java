@@ -13,34 +13,31 @@ import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.model.Resource;
 
 
-public class KindTreeItem extends DynamicTreeItem<RepoTreeEntry> {
+public class KindTreeItem extends DynamicTreeItem<TreeNode> {
 
     RepoSpyController controller;
 
     public KindTreeItem(Resource<?> res, RepoSpyController controller) {
-        this(new ResourceTreeEntry(res), controller);
+        this(new IResourceNode(res), controller);
     }
 
     public KindTreeItem(String entityKind, RepoSpyController controller) {
-        this(new KindTreeEntry(entityKind), controller);
+        this(new IEntityNode(entityKind), controller);
     }
 
-    public KindTreeItem(RepoTreeEntry kv, RepoSpyController controller) {
+    public KindTreeItem(TreeNode kv, RepoSpyController controller) {
         super(kv);
         this.controller = controller;
     }
 
     @Override
-    protected ObservableList<TreeItem<RepoTreeEntry>> buildChildren(TreeItem<RepoTreeEntry> treeItem) {
+    protected ObservableList<TreeItem<TreeNode>> buildChildren(TreeItem<TreeNode> treeItem) {
 
-        RepoTreeEntry data = treeItem.getValue();
+        TreeNode data = treeItem.getValue();
         if (!data.hasChildren()) { return FXCollections.emptyObservableList(); }
 
-        List<ResourceTreeEntry> childEntries = data.getChildren(controller);
-        ObservableList<TreeItem<RepoTreeEntry>> newlist = FXCollections.observableArrayList();
-        for (RepoTreeEntry child : childEntries) {
-            newlist.add(new KindTreeItem(child, controller));
-        }
+        List<KindTreeItem> childEntries = data.getChildren(controller);
+        ObservableList<TreeItem<TreeNode>> newlist = FXCollections.observableArrayList(childEntries);
 
         // sort them all
         AlphaNumericComparitor comparitor = new AlphaNumericComparitor();
@@ -51,7 +48,7 @@ public class KindTreeItem extends DynamicTreeItem<RepoTreeEntry> {
     }
 
     @Override
-    public boolean isLeafNode(RepoTreeEntry t) {
+    public boolean isLeafNode(TreeNode t) {
         return !t.hasChildren();
     }
 

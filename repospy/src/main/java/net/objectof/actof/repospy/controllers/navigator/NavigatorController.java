@@ -46,10 +46,10 @@ import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.actof.repospy.changes.EntityCreatedChange;
 import net.objectof.actof.repospy.controllers.navigator.composite.CompositeView;
 import net.objectof.actof.repospy.controllers.navigator.composite.editors.primitive.TextEditor;
-import net.objectof.actof.repospy.controllers.navigator.kind.KindTreeEntry;
+import net.objectof.actof.repospy.controllers.navigator.kind.IEntityNode;
+import net.objectof.actof.repospy.controllers.navigator.kind.IResourceNode;
 import net.objectof.actof.repospy.controllers.navigator.kind.KindTreeItem;
-import net.objectof.actof.repospy.controllers.navigator.kind.RepoTreeEntry;
-import net.objectof.actof.repospy.controllers.navigator.kind.ResourceTreeEntry;
+import net.objectof.actof.repospy.controllers.navigator.kind.TreeNode;
 import net.objectof.connector.Connector;
 import net.objectof.model.Kind;
 import net.objectof.model.Resource;
@@ -69,7 +69,7 @@ public class NavigatorController extends IActofUIController {
     @FXML
     private BorderPane fieldEditor;
 
-    private BreadCrumbBar<RepoTreeEntry> breadcrumb;
+    private BreadCrumbBar<TreeNode> breadcrumb;
 
     @FXML
     private ScrollPane fieldScroller;
@@ -98,14 +98,14 @@ public class NavigatorController extends IActofUIController {
     private Tooltip revert_tooltip;
 
     @FXML
-    private TreeView<RepoTreeEntry> records;
+    private TreeView<TreeNode> records;
 
     @Override
     @FXML
     protected void initialize() {
 
         breadcrumb = new BreadCrumbBar<>();
-        Callback<TreeItem<RepoTreeEntry>, Button> breadCrumbFactory = breadcrumb.getCrumbFactory();
+        Callback<TreeItem<TreeNode>, Button> breadCrumbFactory = breadcrumb.getCrumbFactory();
         breadcrumb.setCrumbFactory(item -> {
             Button b = breadCrumbFactory.call(item);
             b.setText("");
@@ -124,14 +124,14 @@ public class NavigatorController extends IActofUIController {
 
         breadcrumb.setAutoNavigationEnabled(false);
         breadcrumb.setOnCrumbAction(event -> {
-            if (!(event.getSelectedCrumb().getValue() instanceof ResourceTreeEntry)) { return; }
-            TreeItem<RepoTreeEntry> node = event.getSelectedCrumb();
-            repospy.getChangeBus().broadcast(new ResourceSelectedChange(node));
+            if (!(event.getSelectedCrumb().getValue() instanceof IResourceNode)) { return; }
+            TreeItem<TreeNode> node = event.getSelectedCrumb();
+            repospy.getChangeBus().broadcast(new ResourceSelectedChange((KindTreeItem) node));
         });
 
         fieldEditor.setTop(breadcrumb);
 
-        TreeItem<RepoTreeEntry> root = new TreeItem<>();
+        TreeItem<TreeNode> root = new TreeItem<>();
         records.setShowRoot(false);
         records.setRoot(root);
         records.getSelectionModel().selectedItemProperty().addListener((ov, o, n) -> onRecordSelect(n));
@@ -159,6 +159,7 @@ public class NavigatorController extends IActofUIController {
 
         breadcrumb.setPadding(new Insets(10));
 
+        System.out.println(change.getEntry().getParent());
         breadcrumb.setSelectedCrumb(change.getEntry());
         records.getSelectionModel().select(change.getEntry());
 
@@ -244,9 +245,9 @@ public class NavigatorController extends IActofUIController {
     }
 
     public void recordCopy() {
-        TreeItem<RepoTreeEntry> item = records.getSelectionModel().getSelectedItem();
+        TreeItem<TreeNode> item = records.getSelectionModel().getSelectedItem();
         if (item == null) { return; }
-        RepoTreeEntry entry = item.getValue();
+        TreeNode entry = item.getValue();
         if (entry == null) { return; }
         Resource<?> res = entry.getRes();
         if (res == null) { return; }
@@ -318,14 +319,14 @@ public class NavigatorController extends IActofUIController {
         isQuerying = validQuery;
     }
 
-    private void onRecordSelect(TreeItem<RepoTreeEntry> treeItem) {
+    private void onRecordSelect(TreeItem<TreeNode> treeItem) {
 
         if (treeItem == null) { return; }
 
-        RepoTreeEntry data = treeItem.getValue();
-        if (data == null || data instanceof KindTreeEntry) { return; }
+        TreeNode data = treeItem.getValue();
+        if (data == null || data instanceof IEntityNode) { return; }
 
-        getChangeBus().broadcast(new ResourceSelectedChange(treeItem));
+        getChangeBus().broadcast(new ResourceSelectedChange((KindTreeItem) treeItem));
 
     }
 
@@ -341,7 +342,7 @@ public class NavigatorController extends IActofUIController {
         List<Kind<?>> entities = repospy.repository.getEntities();
 
         // repopulate tree
-        TreeItem<RepoTreeEntry> root = records.getRoot();
+        TreeItem<TreeNode> root = records.getRoot();
         root.getChildren().clear();
         for (Kind<?> kind : entities) {
 
@@ -359,8 +360,8 @@ public class NavigatorController extends IActofUIController {
     }
 
     private void refreshEntityTree() {
-        TreeItem<RepoTreeEntry> root = records.getRoot();
-        for (TreeItem<RepoTreeEntry> item : root.getChildren()) {
+        TreeItem<TreeNode> root = records.getRoot();
+        for (TreeItem<TreeNode> item : root.getChildren()) {
             KindTreeItem child = (KindTreeItem) item;
             child.updateChildren();
         }

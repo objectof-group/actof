@@ -5,12 +5,12 @@ import java.math.BigDecimal;
 import java.text.NumberFormat;
 
 import javafx.util.StringConverter;
-import net.objectof.actof.repospy.controllers.navigator.kind.LeafEntry;
+import net.objectof.actof.repospy.controllers.navigator.kind.ILeafNode;
 
 
 public class IntegerEditor extends NumberEditor {
 
-    public IntegerEditor(LeafEntry entry) {
+    public IntegerEditor(ILeafNode entry) {
         super(entry);
     }
 

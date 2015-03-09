@@ -8,11 +8,11 @@ import net.objectof.model.Resource;
 import net.objectof.model.Stereotype;
 
 
-public interface RepoTreeEntry {
+public interface TreeNode {
 
     public boolean hasChildren();
 
-    public List<ResourceTreeEntry> getChildren(RepoSpyController repospy);
+    public List<KindTreeItem> getChildren(RepoSpyController repospy);
 
     public String getEntityKind();
 

@@ -11,11 +11,11 @@ import net.objectof.model.Stereotype;
 import net.objectof.model.Transaction;
 
 
-public class KindTreeEntry implements RepoTreeEntry {
+public class IEntityNode implements TreeNode {
 
     private String entityKind;
 
-    public KindTreeEntry(String entityKind) {
+    public IEntityNode(String entityKind) {
         this.entityKind = entityKind;
     }
 
@@ -37,12 +37,12 @@ public class KindTreeEntry implements RepoTreeEntry {
     }
 
     @Override
-    public List<ResourceTreeEntry> getChildren(RepoSpyController repospy) {
+    public List<KindTreeItem> getChildren(RepoSpyController repospy) {
 
         Transaction tx = repospy.repository.getStagingTx();
         String kind = getEntityKind();
         Iterable<Resource<?>> iter;
-        List<ResourceTreeEntry> newlist = new ArrayList<>();
+        List<KindTreeItem> newlist = new ArrayList<>();
 
         if (repospy.search.isValid() && kind.equals(repospy.search.getKind())) {
             iter = tx.query(kind, repospy.search.getQuery());
@@ -54,12 +54,12 @@ public class KindTreeEntry implements RepoTreeEntry {
 
         // persistent entities
         for (Resource<?> res : iter) {
-            newlist.add(new ResourceTreeEntry(res));
+            newlist.add(new KindTreeItem(new IResourceNode(res), repospy));
         }
 
         // transient entities
         for (Resource<?> res : repospy.repository.getTransientsForKind(kind)) {
-            newlist.add(new ResourceTreeEntry(res));
+            newlist.add(new KindTreeItem(new IResourceNode(res), repospy));
         }
 
         return newlist;

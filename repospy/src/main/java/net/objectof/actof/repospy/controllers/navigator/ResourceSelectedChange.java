@@ -1,20 +1,19 @@
 package net.objectof.actof.repospy.controllers.navigator;
 
 
-import javafx.scene.control.TreeItem;
 import net.objectof.actof.common.controller.change.Change;
-import net.objectof.actof.repospy.controllers.navigator.kind.RepoTreeEntry;
+import net.objectof.actof.repospy.controllers.navigator.kind.KindTreeItem;
 
 
 public class ResourceSelectedChange extends Change {
 
-    private TreeItem<RepoTreeEntry> entry;
+    private KindTreeItem entry;
 
-    public ResourceSelectedChange(TreeItem<RepoTreeEntry> entry) {
+    public ResourceSelectedChange(KindTreeItem entry) {
         this.entry = entry;
     }
 
-    public TreeItem<RepoTreeEntry> getEntry() {
+    public KindTreeItem getEntry() {
         return entry;
     }
 

@@ -7,7 +7,7 @@ import java.util.TimeZone;
 import javafx.scene.Node;
 import jfxtras.scene.control.CalendarPicker;
 import net.objectof.actof.repospy.controllers.navigator.composite.editors.AbstractEditor;
-import net.objectof.actof.repospy.controllers.navigator.kind.LeafEntry;
+import net.objectof.actof.repospy.controllers.navigator.kind.ILeafNode;
 import net.objectof.model.impl.IMoment;
 
 
@@ -15,7 +15,7 @@ public class MomentEditor extends AbstractEditor {
 
     private CalendarPicker picker;
 
-    public MomentEditor(LeafEntry entry) {
+    public MomentEditor(ILeafNode entry) {
         super(entry);
 
         TimeZone zulu = TimeZone.getTimeZone("GMT");

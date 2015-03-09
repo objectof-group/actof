@@ -6,7 +6,7 @@ import javafx.scene.control.ComboBox;
 import net.objectof.actof.common.util.RepoUtils;
 import net.objectof.actof.repospy.controllers.navigator.composite.editors.AbstractEditor;
 import net.objectof.actof.repospy.controllers.navigator.composite.editors.ElementsEditor;
-import net.objectof.actof.repospy.controllers.navigator.kind.LeafEntry;
+import net.objectof.actof.repospy.controllers.navigator.kind.ILeafNode;
 
 
 public abstract class AbstractComboboxEditor extends AbstractEditor implements ElementsEditor {
@@ -14,7 +14,7 @@ public abstract class AbstractComboboxEditor extends AbstractEditor implements E
     protected ComboBox<String> field = new ComboBox<String>();
     private String redborder = "-fx-combo-box-border: red; -fx-focus-color: red;";
 
-    public AbstractComboboxEditor(LeafEntry entry, boolean editable) {
+    public AbstractComboboxEditor(ILeafNode entry, boolean editable) {
         super(entry);
 
         field.setEditable(editable);

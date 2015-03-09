@@ -2,28 +2,28 @@ package net.objectof.actof.repospy.controllers.navigator.composite.editors.primi
 
 
 import javafx.scene.Node;
-import javafx.scene.control.TextField;
+import javafx.scene.control.TextArea;
 import net.objectof.actof.repospy.controllers.navigator.composite.editors.AbstractEditor;
-import net.objectof.actof.repospy.controllers.navigator.kind.LeafEntry;
+import net.objectof.actof.repospy.controllers.navigator.kind.ILeafNode;
 
 
 public class TextEditor extends AbstractEditor {
 
-    protected TextField field = new TextField();
+    protected TextArea node = new TextArea();
     protected boolean isFinished = false;
 
     public static String redborder = "-fx-text-box-border: red; -fx-focus-color: red ;";
 
-    public TextEditor(LeafEntry entry) {
-
+    public TextEditor(ILeafNode entry) {
         super(entry);
-        field.setText(entry.toString());
-        field.textProperty().addListener((obs, o, n) -> {
+
+        node.setText(entry.toString());
+        node.textProperty().addListener((obs, o, n) -> {
             boolean valid = validate(n);
             if (valid) {
-                field.setStyle("");
+                node.setStyle("");
             } else {
-                field.setStyle(redborder);
+                node.setStyle(redborder);
                 return;
             }
 
@@ -31,6 +31,10 @@ public class TextEditor extends AbstractEditor {
 
         });
 
+    }
+
+    public boolean inline() {
+        return false;
     }
 
     public void init() {
@@ -44,13 +48,13 @@ public class TextEditor extends AbstractEditor {
 
     @Override
     public void focus() {
-        field.selectAll();
-        field.requestFocus();
+        node.selectAll();
+        node.requestFocus();
     }
 
     @Override
     public Node getNode() {
-        return field;
+        return node;
     }
 
 }

@@ -23,14 +23,19 @@
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </padding>
          <top>
-            <HBox BorderPane.alignment="CENTER">
+            <HBox fx:id="titleBox" BorderPane.alignment="CENTER">
                <children>
-                  <Label fx:id="title" style="-fx-font-size: 125%;" text="">
-                     <padding>
-                        <Insets bottom="6.0" />
-                     </padding>
-                  </Label>
-                  <Separator visible="false" HBox.hgrow="ALWAYS" />
+                  <AnchorPane HBox.hgrow="NEVER">
+                     <children>
+                        <Label fx:id="title" alignment="CENTER_RIGHT" style="-fx-font-size: 125%;" text="" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <padding>
+                              <Insets bottom="6.0" />
+                           </padding>
+                        </Label>
+                     </children>
+                  </AnchorPane>
+                  <HBox fx:id="titleContentBox" />
+                  <Separator fx:id="separator" visible="false" HBox.hgrow="ALWAYS" />
                   <Label fx:id="stereotype" textFill="#777777" />
                </children>
             </HBox>
