@@ -10,24 +10,18 @@ import net.objectof.actof.common.controller.DynamicTreeItem;
 import net.objectof.actof.common.util.AlphaNumericComparitor;
 import net.objectof.actof.common.util.RepoUtils;
 import net.objectof.actof.repospy.RepoSpyController;
-import net.objectof.model.Resource;
 
 
 public class KindTreeItem extends DynamicTreeItem<TreeNode> {
 
     RepoSpyController controller;
 
-    public KindTreeItem(Resource<?> res, RepoSpyController controller) {
-        this(new IResourceNode(res), controller);
-    }
-
-    public KindTreeItem(String entityKind, RepoSpyController controller) {
-        this(new IEntityNode(entityKind), controller);
-    }
-
     public KindTreeItem(TreeNode kv, RepoSpyController controller) {
         super(kv);
         this.controller = controller;
+        if (kv instanceof IResourceNode) {
+            getChildren();
+        }
     }
 
     @Override

@@ -24,7 +24,6 @@ public class IResourceNode implements TreeNode {
 
     public IResourceNode(Resource<?> res) {
         this.res = res;
-
     }
 
     @Override

@@ -351,7 +351,7 @@ public class NavigatorController extends IActofUIController {
                 continue;
             }
 
-            KindTreeItem item = new KindTreeItem(kind.getComponentName(), repospy);
+            KindTreeItem item = new KindTreeItem(new IEntityNode(kind.getComponentName()), repospy);
             item.setExpanded(repospy.search.isValid());
             root.getChildren().add(item);
 
