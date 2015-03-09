@@ -3,20 +3,29 @@ package net.objectof.actof.repospy.controllers.navigator.kind;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-import net.objectof.actof.common.controller.repository.RepositoryController;
-import net.objectof.actof.common.controller.search.SearchController;
+import net.objectof.actof.common.util.RepoUtils;
+import net.objectof.actof.repospy.RepoSpyController;
+import net.objectof.aggr.Aggregate;
 import net.objectof.model.Kind;
 import net.objectof.model.Resource;
+import net.objectof.model.Stereotype;
+import net.objectof.model.impl.IKind;
 import net.objectof.model.impl.aggr.IComposite;
 
 
 public class ResourceTreeEntry implements RepoTreeEntry {
 
     private Resource<?> res;
+    private Kind<?> kind;
+
+    private List<LeafEntry> leaves;
+    private List<ResourceTreeEntry> subresources;
 
     public ResourceTreeEntry(Resource<?> res) {
         this.res = res;
+
     }
 
     @Override
@@ -58,32 +67,108 @@ public class ResourceTreeEntry implements RepoTreeEntry {
     }
 
     @Override
-    public List<RepoTreeEntry> getChildren(RepositoryController repository, SearchController search) {
-        List<RepoTreeEntry> children = new ArrayList<>();
-        IComposite composite = (IComposite) res;
+    public List<ResourceTreeEntry> getChildren(RepoSpyController repospy) {
 
-        for (Kind<?> kind : res.id().kind().getParts()) {
-
-            System.out.println(kind);
-            switch (kind.getStereotype()) {
-
-                case COMPOSED:
-                    break;
-                case SET:
-                case INDEXED:
-                case MAPPED:
-                    String[] keyParts = kind.getComponentName().split("\\.");
-                    String key = keyParts[keyParts.length - 1];
-                    Resource<?> map = (Resource<?>) composite.get(key);
-                    children.add(new ResourceTreeEntry(map));
-
-                default:
-                    break;
-
-            }
+        if (subresources == null) {
+            getLeafEntries(this, repospy);
         }
 
-        return children;
+        /*
+         * 
+         * List<ResourceTreeEntry> children = new ArrayList<>(); IComposite
+         * composite = (IComposite) res;
+         * 
+         * for (Kind<?> kind : res.id().kind().getParts()) {
+         * 
+         * System.out.println(kind); switch (kind.getStereotype()) {
+         * 
+         * case COMPOSED: break; case SET: case INDEXED: case MAPPED: String[]
+         * keyParts = kind.getComponentName().split("\\."); String key =
+         * keyParts[keyParts.length - 1]; Resource<?> map = (Resource<?>)
+         * composite.get(key); children.add(new ResourceTreeEntry(map));
+         * 
+         * default: break;
+         * 
+         * } }
+         * 
+         * return children;
+         */
+
+        return subresources;
 
     }
+
+    public List<LeafEntry> getLeaves(RepoSpyController repospy) {
+
+        if (leaves == null) {
+            getLeafEntries(this, repospy);
+        }
+
+        return leaves;
+    }
+
+    @Override
+    public Stereotype getStereotype() {
+        return res.id().kind().getStereotype();
+    }
+
+    public static void getLeafEntries(ResourceTreeEntry parent, RepoSpyController controller) {
+        if (parent.getStereotype() == Stereotype.COMPOSED) {
+            leafEntriesForComposite(parent, controller);
+        } else {
+            leafEntriesForAggredate(parent, controller);
+        }
+
+    }
+
+    private static void leafEntriesForAggredate(ResourceTreeEntry parent, RepoSpyController controller) {
+
+        @SuppressWarnings("unchecked")
+        Aggregate<?, Resource<?>> agg = (Aggregate<?, Resource<?>>) parent.getRes();
+        Set<?> keys = agg.keySet();
+
+        Kind<?> kind = parent.getRes().id().kind().getParts().get(0);
+
+        parent.leaves = new ArrayList<>();
+        parent.subresources = new ArrayList<>();
+        for (Object key : keys) {
+            LeafEntry entry = new LeafEntry(parent, controller, kind, key);
+            if (entry.getFieldValue() == null) {
+                entry.createFromNull();
+            }
+
+            if (RepoUtils.isAggregateStereotype(entry.getStereotype())) {
+                ResourceTreeEntry subentry = new ResourceTreeEntry((Resource<?>) entry.getFieldValue());
+                parent.subresources.add(subentry);
+                entry.treeNode = subentry;
+            }
+
+            parent.leaves.add(entry);
+        }
+
+    }
+
+    private static void leafEntriesForComposite(ResourceTreeEntry parent, RepoSpyController controller) {
+
+        parent.leaves = new ArrayList<>();
+        parent.subresources = new ArrayList<>();
+        for (Kind<?> kind : parent.getRes().id().kind().getParts()) {
+            IKind<?> ikind = (IKind<?>) kind;
+            Object key = ikind.getSelector();
+            LeafEntry entry = new LeafEntry(parent, controller, kind, key);
+            if (entry.getFieldValue() == null) {
+                entry.createFromNull();
+            }
+
+            if (RepoUtils.isAggregateStereotype(entry.getStereotype())) {
+                ResourceTreeEntry subentry = new ResourceTreeEntry((Resource<?>) entry.getFieldValue());
+                parent.subresources.add(subentry);
+                entry.treeNode = subentry;
+            }
+
+            parent.leaves.add(entry);
+        }
+
+    }
+
 }

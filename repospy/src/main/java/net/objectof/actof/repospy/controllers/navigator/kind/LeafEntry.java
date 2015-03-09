@@ -1,9 +1,5 @@
-package net.objectof.actof.repospy.controllers.navigator.composite;
+package net.objectof.actof.repospy.controllers.navigator.kind;
 
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 import javafx.beans.value.ObservableValueBase;
 import net.objectof.actof.common.controller.change.Change;
@@ -16,15 +12,11 @@ import net.objectof.model.Kind;
 import net.objectof.model.Resource;
 import net.objectof.model.Stereotype;
 import net.objectof.model.Transaction;
-import net.objectof.model.impl.IKind;
 
 
-public class CompositeEntry extends ObservableValueBase<CompositeEntry> {
-
-    private boolean rootnode = false;;
+public class LeafEntry extends ObservableValueBase<LeafEntry> {
 
     private RepoSpyController repospy;
-    private CompositeTreeItem entryItem;
 
     public Id<?> parentId; // provided
     public Kind<?> kind; // provided - kind from the perspective of the parent,
@@ -34,15 +26,14 @@ public class CompositeEntry extends ObservableValueBase<CompositeEntry> {
     private Object value; // calculated
     public Object key; // provided
 
-    public CompositeEntry(RepoSpyController repospy, Id<?> parentId, Kind<?> kind, Object key) {
-        this(repospy, parentId, kind, key, false);
-    }
+    public ResourceTreeEntry parentTreeEntry;
+    public ResourceTreeEntry treeNode;
 
-    public CompositeEntry(RepoSpyController repospy, Id<?> parentId, Kind<?> kind, Object key, boolean rootnode) {
+    public LeafEntry(ResourceTreeEntry parentTreeEntry, RepoSpyController repospy, Kind<?> kind, Object key) {
 
-        this.rootnode = rootnode;
+        this.parentTreeEntry = parentTreeEntry;
         this.repospy = repospy;
-        this.parentId = parentId;
+        this.parentId = parentTreeEntry.getRes().id();
         this.kind = kind;
         this.key = key;
 
@@ -61,14 +52,9 @@ public class CompositeEntry extends ObservableValueBase<CompositeEntry> {
 
     }
 
-    public void setEntryItem(CompositeTreeItem entryItem) {
-        this.entryItem = entryItem;
-    }
-
     @Override
     public String toString() {
         if (value == null) { return "null"; }
-        // return value.toString();
         return RepoUtils.resToString(value);
     }
 
@@ -103,20 +89,12 @@ public class CompositeEntry extends ObservableValueBase<CompositeEntry> {
     }
 
     @Override
-    public CompositeEntry getValue() {
+    public LeafEntry getValue() {
         return this;
     }
 
     public RepoSpyController getController() {
         return repospy;
-    }
-
-    public boolean isResource() {
-        Stereotype st = getStereotype();
-        if (st == Stereotype.COMPOSED) { return true; }
-        if (st == Stereotype.MAPPED) { return true; }
-        if (st == Stereotype.INDEXED) { return true; }
-        return false;
     }
 
     /**
@@ -152,13 +130,9 @@ public class CompositeEntry extends ObservableValueBase<CompositeEntry> {
         Transaction tx = repospy.repository.getStagingTx();
         parent = tx.retrieve(parentId);
 
-        if (rootnode) {
-            value = parent;
-        } else {
-            @SuppressWarnings("unchecked")
-            Aggregate<Object, Object> agg = (Aggregate<Object, Object>) parent;
-            value = agg.get(key);
-        }
+        @SuppressWarnings("unchecked")
+        Aggregate<Object, Object> agg = (Aggregate<Object, Object>) parent;
+        value = agg.get(key);
 
         updateUI();
 
@@ -185,17 +159,12 @@ public class CompositeEntry extends ObservableValueBase<CompositeEntry> {
     }
 
     private void updateUI() {
-        // force tree item to reevaluate child nodes
-        if (entryItem != null) {
-            entryItem.updateChildren();
-        }
         // fire event indicating that this node has changed
         fireValueChangedEvent();
     }
 
     public void addChangeHistory(Object newValue) {
         FieldChange change = new FieldChange(getCleanValue(), newValue, this);
-
         repospy.getChangeBus().broadcast(change);
     }
 
@@ -205,44 +174,6 @@ public class CompositeEntry extends ObservableValueBase<CompositeEntry> {
         @SuppressWarnings("unchecked")
         Aggregate<Object, Object> agg = (Aggregate<Object, Object>) cleanParent;
         return agg.get(key);
-    }
-
-    public static List<CompositeEntry> getSubEntries(Resource<?> res, RepoSpyController controller) {
-        if (res.id().kind().getStereotype() == Stereotype.COMPOSED) {
-            return entriesForComposite(res, controller);
-        } else {
-            return entriesForAggredate(res, controller);
-        }
-    }
-
-    private static List<CompositeEntry> entriesForAggredate(Resource<?> res, RepoSpyController controller) {
-
-        @SuppressWarnings("unchecked")
-        Aggregate<?, Resource<?>> agg = (Aggregate<?, Resource<?>>) res;
-        Set<?> keys = agg.keySet();
-
-        Kind<?> kind = res.id().kind().getParts().get(0);
-
-        List<CompositeEntry> entries = new ArrayList<>();
-        for (Object key : keys) {
-            CompositeEntry entry = new CompositeEntry(controller, res.id(), kind, key);
-            entries.add(entry);
-        }
-
-        return entries;
-    }
-
-    private static List<CompositeEntry> entriesForComposite(Resource<?> res, RepoSpyController controller) {
-
-        List<CompositeEntry> entries = new ArrayList<>();
-        for (Kind<?> kind : res.id().kind().getParts()) {
-            IKind<?> ikind = (IKind<?>) kind;
-            Object key = ikind.getSelector();
-            CompositeEntry entry = new CompositeEntry(controller, res.id(), kind, key);
-            entries.add(entry);
-        }
-
-        return entries;
     }
 
 }

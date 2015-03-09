@@ -3,8 +3,8 @@ package net.objectof.actof.repospy.controllers.navigator.composite.editors.primi
 
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
-import net.objectof.actof.repospy.controllers.navigator.composite.CompositeEntry;
 import net.objectof.actof.repospy.controllers.navigator.composite.editors.AbstractEditor;
+import net.objectof.actof.repospy.controllers.navigator.kind.LeafEntry;
 
 
 public class TextEditor extends AbstractEditor {
@@ -14,7 +14,7 @@ public class TextEditor extends AbstractEditor {
 
     public static String redborder = "-fx-text-box-border: red; -fx-focus-color: red ;";
 
-    public TextEditor(CompositeEntry entry) {
+    public TextEditor(LeafEntry entry) {
 
         super(entry);
         field.setText(entry.toString());

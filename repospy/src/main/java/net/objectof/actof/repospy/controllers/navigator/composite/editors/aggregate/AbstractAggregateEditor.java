@@ -8,7 +8,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import net.objectof.actof.repospy.controllers.navigator.composite.CompositeEntry;
+import net.objectof.actof.repospy.controllers.navigator.kind.LeafEntry;
 
 
 public abstract class AbstractAggregateEditor extends AbstractComboboxEditor {
@@ -22,7 +22,7 @@ public abstract class AbstractAggregateEditor extends AbstractComboboxEditor {
     protected Button add = new Button("", new ImageView(addImage));
     protected Button remove = new Button("", new ImageView(remImage));
 
-    public AbstractAggregateEditor(CompositeEntry entry, boolean editable) {
+    public AbstractAggregateEditor(LeafEntry entry, boolean editable) {
         super(entry, editable);
 
         buttonbox.getChildren().add(add);

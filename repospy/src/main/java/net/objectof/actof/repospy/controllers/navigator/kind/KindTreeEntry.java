@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javafx.collections.FXCollections;
-import net.objectof.actof.common.controller.repository.RepositoryController;
-import net.objectof.actof.common.controller.search.SearchController;
+import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.model.Resource;
+import net.objectof.model.Stereotype;
 import net.objectof.model.Transaction;
 
 
@@ -37,16 +37,16 @@ public class KindTreeEntry implements RepoTreeEntry {
     }
 
     @Override
-    public List<RepoTreeEntry> getChildren(RepositoryController repository, SearchController search) {
+    public List<ResourceTreeEntry> getChildren(RepoSpyController repospy) {
 
-        Transaction tx = repository.getStagingTx();
+        Transaction tx = repospy.repository.getStagingTx();
         String kind = getEntityKind();
         Iterable<Resource<?>> iter;
-        List<RepoTreeEntry> newlist = new ArrayList<>();
+        List<ResourceTreeEntry> newlist = new ArrayList<>();
 
-        if (search.isValid() && kind.equals(search.getKind())) {
-            iter = tx.query(kind, search.getQuery());
-        } else if (search.isValid()) {
+        if (repospy.search.isValid() && kind.equals(repospy.search.getKind())) {
+            iter = tx.query(kind, repospy.search.getQuery());
+        } else if (repospy.search.isValid()) {
             return FXCollections.emptyObservableList();
         } else {
             iter = tx.enumerate(kind);
@@ -58,12 +58,17 @@ public class KindTreeEntry implements RepoTreeEntry {
         }
 
         // transient entities
-        for (Resource<?> res : repository.getTransientsForKind(kind)) {
+        for (Resource<?> res : repospy.repository.getTransientsForKind(kind)) {
             newlist.add(new ResourceTreeEntry(res));
         }
 
         return newlist;
 
+    }
+
+    @Override
+    public Stereotype getStereotype() {
+        throw new UnsupportedOperationException();
     }
 
 }

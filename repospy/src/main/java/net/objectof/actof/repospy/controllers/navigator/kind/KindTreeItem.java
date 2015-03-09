@@ -36,7 +36,7 @@ public class KindTreeItem extends DynamicTreeItem<RepoTreeEntry> {
         RepoTreeEntry data = treeItem.getValue();
         if (!data.hasChildren()) { return FXCollections.emptyObservableList(); }
 
-        List<RepoTreeEntry> childEntries = data.getChildren(controller.repository, controller.search);
+        List<ResourceTreeEntry> childEntries = data.getChildren(controller);
         ObservableList<TreeItem<RepoTreeEntry>> newlist = FXCollections.observableArrayList();
         for (RepoTreeEntry child : childEntries) {
             newlist.add(new KindTreeItem(child, controller));

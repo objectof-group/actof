@@ -2,13 +2,13 @@ package net.objectof.actof.repospy.controllers.navigator.composite.editors;
 
 
 import javafx.scene.Node;
-import net.objectof.actof.repospy.controllers.navigator.composite.CompositeEntry;
 import net.objectof.actof.repospy.controllers.navigator.composite.editors.primitive.IntegerEditor;
 import net.objectof.actof.repospy.controllers.navigator.composite.editors.primitive.MomentEditor;
 import net.objectof.actof.repospy.controllers.navigator.composite.editors.primitive.RealEditor;
 import net.objectof.actof.repospy.controllers.navigator.composite.editors.primitive.ReferenceEditor;
 import net.objectof.actof.repospy.controllers.navigator.composite.editors.primitive.TextEditor;
 import net.objectof.actof.repospy.controllers.navigator.composite.editors.primitive.UnsupportedEditor;
+import net.objectof.actof.repospy.controllers.navigator.kind.LeafEntry;
 
 
 public interface Editor {
@@ -21,7 +21,7 @@ public interface Editor {
         return true;
     }
 
-    static Editor createEditor(CompositeEntry entry) {
+    static Editor createEditor(LeafEntry entry) {
 
         switch (entry.getStereotype()) {
             case BOOL:

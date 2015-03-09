@@ -6,15 +6,15 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import net.objectof.actof.common.util.RepoUtils;
-import net.objectof.actof.repospy.controllers.navigator.composite.CompositeEntry;
 import net.objectof.actof.repospy.controllers.navigator.composite.editors.aggregate.AbstractComboboxEditor;
+import net.objectof.actof.repospy.controllers.navigator.kind.LeafEntry;
 import net.objectof.model.Resource;
 import net.objectof.model.impl.IKind;
 
 
 public class ReferenceEditor extends AbstractComboboxEditor {
 
-    public ReferenceEditor(CompositeEntry entry) {
+    public ReferenceEditor(LeafEntry entry) {
         super(entry, true);
     }
 

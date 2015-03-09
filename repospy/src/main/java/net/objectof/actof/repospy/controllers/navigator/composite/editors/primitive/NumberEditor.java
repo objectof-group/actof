@@ -7,8 +7,8 @@ import java.text.NumberFormat;
 import javafx.scene.Node;
 import javafx.util.StringConverter;
 import jfxtras.labs.scene.control.BigDecimalField;
-import net.objectof.actof.repospy.controllers.navigator.composite.CompositeEntry;
 import net.objectof.actof.repospy.controllers.navigator.composite.editors.AbstractEditor;
+import net.objectof.actof.repospy.controllers.navigator.kind.LeafEntry;
 
 
 public abstract class NumberEditor extends AbstractEditor {
@@ -16,7 +16,7 @@ public abstract class NumberEditor extends AbstractEditor {
     BigDecimalField field = new BigDecimalField();
     protected boolean isFinished = false;
 
-    public NumberEditor(CompositeEntry entry) {
+    public NumberEditor(LeafEntry entry) {
         super(entry);
 
         field.setNumber(new BigDecimal(entry.toString()));

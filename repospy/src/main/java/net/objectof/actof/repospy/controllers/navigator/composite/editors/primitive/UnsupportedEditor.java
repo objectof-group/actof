@@ -3,13 +3,13 @@ package net.objectof.actof.repospy.controllers.navigator.composite.editors.primi
 
 import javafx.scene.Node;
 import javafx.scene.layout.VBox;
-import net.objectof.actof.repospy.controllers.navigator.composite.CompositeEntry;
 import net.objectof.actof.repospy.controllers.navigator.composite.editors.AbstractEditor;
+import net.objectof.actof.repospy.controllers.navigator.kind.LeafEntry;
 
 
 public class UnsupportedEditor extends AbstractEditor {
 
-    public UnsupportedEditor(CompositeEntry entry) {
+    public UnsupportedEditor(LeafEntry entry) {
         super(entry);
     }
 

@@ -6,6 +6,7 @@ import net.objectof.aggr.Aggregate;
 import net.objectof.model.Id;
 import net.objectof.model.Kind;
 import net.objectof.model.Resource;
+import net.objectof.model.Stereotype;
 import net.objectof.model.impl.IMoment;
 
 
@@ -14,6 +15,14 @@ public class RepoUtils {
     public static Id<?> getIdOrNull(Object res) {
         if (isAggregate(res)) { return ((Resource<?>) res).id(); }
         return null;
+    }
+
+    public static boolean isAggregateStereotype(Stereotype st) {
+        if (st == Stereotype.COMPOSED) { return true; }
+        if (st == Stereotype.MAPPED) { return true; }
+        if (st == Stereotype.INDEXED) { return true; }
+        if (st == Stereotype.SET) { return true; }
+        return false;
     }
 
     public static boolean isAggregate(Object agg) {
