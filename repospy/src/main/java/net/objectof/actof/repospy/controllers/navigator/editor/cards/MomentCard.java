@@ -29,7 +29,7 @@ public class MomentCard extends LeafCard {
 
         picker.calendarProperty().addListener(change -> {
             IMoment newMoment = new IMoment(picker.getCalendar().getTime().getTime(), zulu);
-            getEntry().userInputValue(newMoment.toString(zulu));
+            getEntry().userInputString(newMoment.toString(zulu));
         });
 
         setContent(picker, false);

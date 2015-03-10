@@ -20,7 +20,7 @@ public class EntityCreatedChange extends EditingChange {
     }
 
     @Override
-    public String getKey() {
+    public String getName() {
         return value.getUniqueName();
     }
 

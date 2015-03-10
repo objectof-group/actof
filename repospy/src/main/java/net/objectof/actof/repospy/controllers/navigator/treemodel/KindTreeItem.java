@@ -19,7 +19,7 @@ public class KindTreeItem extends DynamicTreeItem<TreeNode> {
     public KindTreeItem(TreeNode kv, RepoSpyController controller) {
         super(kv);
         this.controller = controller;
-        if (kv instanceof IResourceNode) {
+        if (kv instanceof IAggregateNode) {
             getChildren();
         }
     }

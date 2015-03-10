@@ -23,7 +23,7 @@ public abstract class NumberCard extends LeafCard {
 
         field.numberProperty().addListener((obs, oldval, newval) -> {
             if (validate(val(newval))) {
-                entry.userInputValue(val(newval));
+                entry.userInputString(val(newval));
             } else {
                 field.setNumber(oldval);
             }

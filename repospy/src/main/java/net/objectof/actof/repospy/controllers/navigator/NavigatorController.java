@@ -47,7 +47,7 @@ import net.objectof.actof.repospy.changes.EntityCreatedChange;
 import net.objectof.actof.repospy.controllers.navigator.editor.layout.CompositeView;
 import net.objectof.actof.repospy.controllers.navigator.editor.layout.IndexedView;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.IEntityNode;
-import net.objectof.actof.repospy.controllers.navigator.treemodel.IResourceNode;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.IAggregateNode;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.IRootNode;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.KindTreeItem;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.TreeNode;
@@ -132,7 +132,7 @@ public class NavigatorController extends IActofUIController {
         breadcrumb.setPadding(new Insets(10));
         breadcrumb.setAutoNavigationEnabled(false);
         breadcrumb.setOnCrumbAction(event -> {
-            if (!(event.getSelectedCrumb().getValue() instanceof IResourceNode)) { return; }
+            if (!(event.getSelectedCrumb().getValue() instanceof IAggregateNode)) { return; }
             TreeItem<TreeNode> node = event.getSelectedCrumb();
             repospy.getChangeBus().broadcast(new ResourceSelectedChange((KindTreeItem) node));
         });
@@ -168,8 +168,8 @@ public class NavigatorController extends IActofUIController {
         records.getSelectionModel().select(change.getEntry());
 
         TreeNode node = change.getEntry().getValue();
-        if (node instanceof IResourceNode) {
-            IResourceNode resnode = (IResourceNode) node;
+        if (node instanceof IAggregateNode) {
+            IAggregateNode resnode = (IAggregateNode) node;
 
             if (resnode.getStereotype() == Stereotype.INDEXED) {
                 editorBox = new IndexedView(resnode, repospy);

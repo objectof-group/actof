@@ -54,12 +54,12 @@ public class IEntityNode implements TreeNode {
 
         // persistent entities
         for (Resource<?> res : iter) {
-            newlist.add(new KindTreeItem(new IResourceNode(res), repospy));
+            newlist.add(new KindTreeItem(new IAggregateNode(res), repospy));
         }
 
         // transient entities
         for (Resource<?> res : repospy.repository.getTransientsForKind(kind)) {
-            newlist.add(new KindTreeItem(new IResourceNode(res), repospy));
+            newlist.add(new KindTreeItem(new IAggregateNode(res), repospy));
         }
 
         return newlist;

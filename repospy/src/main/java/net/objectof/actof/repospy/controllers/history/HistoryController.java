@@ -24,7 +24,7 @@ public class HistoryController {
 		});
 		
 		change.when(EditingChange.class, edit -> {
-			String key = edit.getKey();
+			String key = edit.getName();
 			if (model.keyset.containsKey(key)) {
 				Change oldChange = model.keyset.get(key);
 				model.keyset.remove(key);

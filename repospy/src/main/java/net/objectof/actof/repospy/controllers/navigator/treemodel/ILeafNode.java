@@ -26,10 +26,10 @@ public class ILeafNode extends ObservableValueBase<ILeafNode> {
     private Object value; // calculated
     public Object key; // provided
 
-    public IResourceNode parentTreeEntry;
+    public IAggregateNode parentTreeEntry;
     public KindTreeItem treeNode;
 
-    public ILeafNode(IResourceNode parentTreeEntry, RepoSpyController repospy, Kind<?> kind, Object key) {
+    public ILeafNode(IAggregateNode parentTreeEntry, RepoSpyController repospy, Kind<?> kind, Object key) {
 
         this.parentTreeEntry = parentTreeEntry;
         this.repospy = repospy;
@@ -45,7 +45,7 @@ public class ILeafNode extends ObservableValueBase<ILeafNode> {
     private void onChange(Change change) {
 
         change.when(FieldChange.class, fieldchange -> {
-            if (getName().equals(fieldchange.getKey())) {
+            if (getName().equals(fieldchange.getName())) {
                 refreshFromModel();
             }
         });
@@ -117,9 +117,14 @@ public class ILeafNode extends ObservableValueBase<ILeafNode> {
     /**
      * Update the value of this field based on the given text
      */
-    public void userInputValue(String text) {
+    public void userInputString(String text) {
         writeToModel(RepoUtils.valueFromString(kind, text, repospy.repository));
         addChangeHistory(text);
+    }
+
+    public void userInputResource(Resource<?> res) {
+        writeToModel(res);
+        addChangeHistory(res);
     }
 
     /**

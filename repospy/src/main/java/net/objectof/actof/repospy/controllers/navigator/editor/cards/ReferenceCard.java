@@ -1,11 +1,12 @@
 package net.objectof.actof.repospy.controllers.navigator.editor.cards;
 
 
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import javafx.scene.control.ChoiceBox;
+import javafx.util.StringConverter;
 import net.objectof.actof.common.util.RepoUtils;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.ILeafNode;
 import net.objectof.model.Resource;
@@ -17,29 +18,37 @@ public class ReferenceCard extends LeafCard {
     public ReferenceCard(ILeafNode entry) {
         super(entry);
 
-        ChoiceBox<String> refs = new ChoiceBox<>();
-        refs.getItems().setAll(getElements());
+        ChoiceBox<Resource<?>> refs = new ChoiceBox<>();
+        refs.setConverter(new StringConverter<Resource<?>>() {
 
-        refs.valueProperty().addListener((obs, oldval, newval) -> {
-            getEntry().userInputValue(newval);
+            @Override
+            public String toString(Resource<?> res) {
+                return RepoUtils.prettyPrintRes(res);
+            }
+
+            @Override
+            public Resource<?> fromString(String string) {
+                return null;
+            }
         });
 
-        refs.getSelectionModel().select(RepoUtils.resToString(entry.getFieldValue()));
+        refs.getItems().setAll(getElements());
+        refs.getSelectionModel().select((Resource<?>) entry.getFieldValue());
+
+        refs.valueProperty().addListener((obs, oldval, newval) -> {
+            getEntry().userInputResource(newval);
+        });
 
         setTitleContent(refs);
 
     }
 
-    public Set<String> getElements() {
+    public List<Resource<?>> getElements() {
         IKind<?> ikind = (IKind<?>) getEntry().kind;
         String title = ikind.getTitle();
-        Iterable<Resource<?>> ress = getEntry().getController().repository.getStagingTx().enumerate(title);
-        Set<String> names = StreamSupport.stream(ress.spliterator(), false).map(RepoUtils::resToString)
-                .collect(Collectors.toSet());
-        if (getEntry().getFieldValue() == null) {
-            names.add(null);
-        }
-        return names;
+        Iterable<Resource<?>> resiter = getEntry().getController().repository.getStagingTx().enumerate(title);
+        List<Resource<?>> resources = StreamSupport.stream(resiter.spliterator(), false).collect(Collectors.toList());
+        return resources;
     }
 
 }

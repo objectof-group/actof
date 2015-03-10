@@ -13,7 +13,7 @@ public class TextCard extends LeafCard {
         TextArea node = new TextArea();
         node.setText(entry.toString());
         node.textProperty().addListener((obs, o, n) -> {
-            getEntry().userInputValue(n);
+            getEntry().userInputString(n);
         });
         setContent(node);
     }

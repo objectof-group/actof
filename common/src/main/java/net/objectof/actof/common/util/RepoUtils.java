@@ -8,6 +8,7 @@ import net.objectof.model.Kind;
 import net.objectof.model.Resource;
 import net.objectof.model.Stereotype;
 import net.objectof.model.impl.IMoment;
+import net.objectof.model.impl.aggr.IComposite;
 
 
 public class RepoUtils {
@@ -57,6 +58,17 @@ public class RepoUtils {
         }
 
         return o.toString();
+    }
+
+    public static String prettyPrintRes(Resource<?> res) {
+        String name = res.id().kind().getComponentName();
+        if (res instanceof IComposite) {
+            return name + " #" + res.id().label().toString();
+        } else {
+            String[] parts = name.split("\\.");
+            name = parts[parts.length - 1];
+            return name;
+        }
     }
 
     public static Object valueFromString(Kind<?> kind, String text, RepositoryController repository) {

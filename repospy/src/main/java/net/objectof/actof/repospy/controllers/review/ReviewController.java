@@ -23,7 +23,7 @@ public class ReviewController {
 	@FXML
     private void initialize() {
 		
-		entity    .setCellValueFactory(features -> new SimpleStringProperty( features.getValue().getKey() ));
+		entity    .setCellValueFactory(features -> new SimpleStringProperty( features.getValue().getName() ));
 		kind      .setCellValueFactory(features -> new SimpleStringProperty( features.getValue().getKind().getComponentName() ));
 		stereotype.setCellValueFactory(features -> new SimpleStringProperty( features.getValue().getStereotype().toString() ));
 		oldvalue  .setCellValueFactory(features -> new SimpleStringProperty( RepoUtils.resToString(features.getValue().oldValue()) ));

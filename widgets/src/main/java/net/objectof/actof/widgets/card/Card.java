@@ -75,6 +75,10 @@ public class Card extends AnchorPane {
         titleBox.getChildren().add(titleNode);
     }
 
+    public Node getTitle() {
+        return titleBox.getChildren().get(0);
+    }
+
     public void setDescription(String description) {
         if (description == null) {
             description = "";
@@ -93,6 +97,10 @@ public class Card extends AnchorPane {
         AnchorPane.setLeftAnchor(descriptionNode, 0d);
         AnchorPane.setRightAnchor(descriptionNode, 0d);
         descriptionBox.getChildren().add(descriptionNode);
+    }
+
+    public Node getDescription() {
+        return descriptionBox.getChildren().get(0);
     }
 
     public Node getContent() {
@@ -126,6 +134,10 @@ public class Card extends AnchorPane {
     public void setTitleContent(Node node) {
         titleContentBox.getChildren().clear();
         titleContentBox.getChildren().add(node);
+    }
+
+    public Node getTitleContent() {
+        return titleContentBox.getChildren().get(0);
     }
 
     private void fixPadding() {

@@ -8,7 +8,7 @@ import net.objectof.model.Stereotype;
 
 public abstract class EditingChange extends Change {
 
-    public abstract String getKey();
+    public abstract String getName();
 
     public abstract Stereotype getStereotype();
 
