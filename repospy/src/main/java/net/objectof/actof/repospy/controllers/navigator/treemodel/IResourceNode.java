@@ -105,6 +105,10 @@ public class IResourceNode implements TreeNode {
         return leaves;
     }
 
+    public void refreshLeaves(RepoSpyController repospy) {
+        getLeafEntries(this, repospy);
+    }
+
     @Override
     public Stereotype getStereotype() {
         return res.id().kind().getStereotype();
@@ -130,9 +134,11 @@ public class IResourceNode implements TreeNode {
         parent.leaves = new ArrayList<>();
         parent.subresources = new ArrayList<>();
         for (Object key : keys) {
+            System.out.println(key);
             ILeafNode entry = new ILeafNode(parent, controller, kind, key);
             if (entry.getFieldValue() == null) {
-                entry.createFromNull();
+                // TODO: Find a way to create aggregate types only
+                // entry.createFromNull();
             }
 
             if (RepoUtils.isAggregateStereotype(entry.getStereotype())) {
