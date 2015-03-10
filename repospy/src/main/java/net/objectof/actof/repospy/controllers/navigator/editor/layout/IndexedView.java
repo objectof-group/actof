@@ -26,8 +26,8 @@ public class IndexedView extends CardsPane {
     private void updateUI(IAggregateNode entry, RepoSpyController repospy) {
         getChildren().clear();
 
-        Image addimg = new Image(IndexedView.class.getResourceAsStream("icons/add.png"));
-        Image remimg = new Image(IndexedView.class.getResourceAsStream("icons/remove.png"));
+        Image addimg = new Image(IndexedView.class.getResourceAsStream("../icons/add.png"));
+        Image remimg = new Image(IndexedView.class.getResourceAsStream("../icons/remove.png"));
 
         Button add = new Button("", new ImageView(addimg));
         add.setOnAction(action -> {

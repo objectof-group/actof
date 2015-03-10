@@ -26,8 +26,8 @@ public class MappedView extends CardsPane {
     private void updateUI(IAggregateNode entry, RepoSpyController repospy) {
         getChildren().clear();
 
-        Image addimg = new Image(IndexedView.class.getResourceAsStream("icons/add.png"));
-        Image remimg = new Image(IndexedView.class.getResourceAsStream("icons/remove.png"));
+        Image addimg = new Image(IndexedView.class.getResourceAsStream("../icons/add.png"));
+        Image remimg = new Image(IndexedView.class.getResourceAsStream("../icons/remove.png"));
 
         TextField keyField = new TextField();
         Button add = new Button("", new ImageView(addimg));

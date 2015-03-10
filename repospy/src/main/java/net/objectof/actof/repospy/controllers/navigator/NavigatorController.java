@@ -34,6 +34,7 @@ import javafx.scene.input.KeyCombination.Modifier;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.util.Callback;
@@ -53,7 +54,6 @@ import net.objectof.actof.repospy.controllers.navigator.treemodel.IEntityNode;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.IRootNode;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.KindTreeItem;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.TreeNode;
-import net.objectof.actof.widgets.card.CardsPane;
 import net.objectof.connector.Connector;
 import net.objectof.model.Kind;
 import net.objectof.model.Resource;
@@ -80,7 +80,7 @@ public class NavigatorController extends IActofUIController {
 
     @FXML
     private ScrollPane fieldScroller;
-    private CardsPane editorBox;
+    private VBox editorBox;
 
     @FXML
     private TextField querytext;
