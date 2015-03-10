@@ -33,6 +33,7 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyCombination.Modifier;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.util.Callback;
@@ -46,8 +47,9 @@ import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.actof.repospy.changes.EntityCreatedChange;
 import net.objectof.actof.repospy.controllers.navigator.editor.layout.CompositeView;
 import net.objectof.actof.repospy.controllers.navigator.editor.layout.IndexedView;
-import net.objectof.actof.repospy.controllers.navigator.treemodel.IEntityNode;
+import net.objectof.actof.repospy.controllers.navigator.editor.layout.MappedView;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.IAggregateNode;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.IEntityNode;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.IRootNode;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.KindTreeItem;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.TreeNode;
@@ -72,6 +74,8 @@ public class NavigatorController extends IActofUIController {
     @FXML
     private BorderPane fieldEditor;
 
+    @FXML
+    private HBox breadcrumbBox;
     private BreadCrumbBar<TreeNode> breadcrumb;
 
     @FXML
@@ -124,12 +128,12 @@ public class NavigatorController extends IActofUIController {
             }
 
             b.setGraphic(label);
-            label.setPadding(new Insets(0, 10, 0, 10));
+            label.setPadding(new Insets(3, 10, 3, 10));
             return b;
         });
 
-        breadcrumb.setStyle("-fx-background-color: -fx-color; -fx-effect: dropshadow(gaussian, #777, 8, -2, 0, 1)");
-        breadcrumb.setPadding(new Insets(10));
+        // breadcrumb.setStyle("-fx-background-color: -fx-color; -fx-effect: dropshadow(gaussian, #777, 8, -2, 0, 1)");
+        // breadcrumb.setPadding(new Insets(10));
         breadcrumb.setAutoNavigationEnabled(false);
         breadcrumb.setOnCrumbAction(event -> {
             if (!(event.getSelectedCrumb().getValue() instanceof IAggregateNode)) { return; }
@@ -137,8 +141,7 @@ public class NavigatorController extends IActofUIController {
             repospy.getChangeBus().broadcast(new ResourceSelectedChange((KindTreeItem) node));
         });
         breadcrumb.setSelectedCrumb(root);
-
-        fieldEditor.setTop(breadcrumb);
+        breadcrumbBox.getChildren().add(breadcrumb);
 
         records.setShowRoot(false);
         records.setRoot(root);
@@ -173,6 +176,8 @@ public class NavigatorController extends IActofUIController {
 
             if (resnode.getStereotype() == Stereotype.INDEXED) {
                 editorBox = new IndexedView(resnode, repospy);
+            } else if (resnode.getStereotype() == Stereotype.MAPPED) {
+                editorBox = new MappedView(resnode, repospy);
             } else {
                 editorBox = new CompositeView(resnode, repospy);
             }

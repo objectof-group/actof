@@ -70,7 +70,7 @@
                         <Tooltip text="Commit all changes to the repo" />
                      </tooltip>
                   </Button>
-                  <Separator prefWidth="24.0" visible="false" />
+                  <HBox fx:id="breadcrumbBox" alignment="CENTER_LEFT" fillHeight="false" HBox.hgrow="ALWAYS" />
                   <Button fx:id="dump" disable="true" mnemonicParsing="false" onAction="#onDump" styleClass="tool-bar-button">
                      <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
@@ -95,9 +95,6 @@
                         <Tooltip text="Import repo from json file" />
                      </tooltip>
                   </Button>
-                  <Separator prefWidth="100.0" visible="false" HBox.hgrow="ALWAYS" />
-                  <ChoiceBox fx:id="queryEntity" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" />
-                  <TextField fx:id="querytext" prefWidth="300.0" promptText="Enter Query" />
                </children>
                <padding>
                   <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
@@ -109,6 +106,16 @@
    <left>
       <VBox prefWidth="250.0" BorderPane.alignment="CENTER">
          <children>
+            <TitledPane expanded="false" text="Search">
+               <content>
+                  <VBox spacing="6.0">
+                     <children>
+                        <ChoiceBox fx:id="queryEntity" maxWidth="1.7976931348623157E308" />
+                        <TextField fx:id="querytext" promptText="Enter Query" />
+                     </children>
+                  </VBox>
+               </content>
+            </TitledPane>
             <TreeView fx:id="records" prefHeight="200.0" prefWidth="200.0" styleClass="entities" VBox.vgrow="ALWAYS" />
             <HBox alignment="CENTER_RIGHT" spacing="3.0" VBox.vgrow="NEVER">
                <children>

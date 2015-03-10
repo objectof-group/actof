@@ -131,7 +131,7 @@ public class IAggregateNode implements TreeNode {
             IKind<?> ikind = (IKind<?>) kind;
             Object key = ikind.getSelector();
             ILeafNode entry = new ILeafNode(parent, controller, kind, key);
-            if (entry.getFieldValue() == null) {
+            if (entry.getFieldValue() == null && RepoUtils.isAggregateStereotype(kind.getStereotype())) {
                 entry.createFromNull();
             }
 
