@@ -21,17 +21,15 @@ import net.objectof.model.Transaction;
 
 public class RepositoryController extends IActofController {
 
-
     private RepositoryModel model = new RepositoryModel();
 
     public RepositoryController(ChangeController changes) {
         super(changes);
     }
 
-
     public void connect(Connector conn) throws Exception {
         Package repo = conn.getPackage();
-        setRepo(repo);
+        setRepo(repo, conn.getPackageName());
         makeFresh();
     }
 
@@ -86,17 +84,19 @@ public class RepositoryController extends IActofController {
         return model.cleanTx;
     }
 
-
-
     public Package getRepo() {
         return model.repo;
     }
 
-    private void setRepo(Package repo) {
-        model.repo = repo;
-        getChangeBus().broadcast(new RepositoryReplacedChange());
+    public String getRepoName() {
+        return model.name;
     }
 
+    private void setRepo(Package repo, String name) {
+        model.repo = repo;
+        model.name = name;
+        getChangeBus().broadcast(new RepositoryReplacedChange());
+    }
 
     public List<Resource<?>> getTransientsForKind(String kind) {
         return model.transients.stream().filter(res -> res.id().kind().getComponentName().equals(kind))

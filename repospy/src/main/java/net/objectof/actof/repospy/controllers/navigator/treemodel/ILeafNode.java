@@ -1,4 +1,4 @@
-package net.objectof.actof.repospy.controllers.navigator.kind;
+package net.objectof.actof.repospy.controllers.navigator.treemodel;
 
 
 import javafx.beans.value.ObservableValueBase;
@@ -79,6 +79,7 @@ public class ILeafNode extends ObservableValueBase<ILeafNode> {
 
     public Object createFromNull() {
         Transaction tx = getController().repository.getStagingTx();
+        System.out.println(kind.getComponentName());
         Object newValue = tx.create(kind.getComponentName());
         writeToModel(newValue);
         return newValue;

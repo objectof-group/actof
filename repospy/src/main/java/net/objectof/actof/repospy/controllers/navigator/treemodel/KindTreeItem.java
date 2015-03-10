@@ -1,4 +1,4 @@
-package net.objectof.actof.repospy.controllers.navigator.kind;
+package net.objectof.actof.repospy.controllers.navigator.treemodel;
 
 
 import java.util.List;

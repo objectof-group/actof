@@ -25,18 +25,10 @@
          <top>
             <HBox fx:id="titleBox" BorderPane.alignment="CENTER">
                <children>
-                  <AnchorPane HBox.hgrow="NEVER">
-                     <children>
-                        <Label fx:id="title" alignment="CENTER_RIGHT" style="-fx-font-size: 125%;" text="" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
-                           <padding>
-                              <Insets bottom="6.0" />
-                           </padding>
-                        </Label>
-                     </children>
-                  </AnchorPane>
+                  <AnchorPane fx:id="titleBox" HBox.hgrow="NEVER" />
                   <HBox fx:id="titleContentBox" />
                   <Separator fx:id="separator" visible="false" HBox.hgrow="ALWAYS" />
-                  <Label fx:id="stereotype" textFill="#777777" />
+                  <AnchorPane fx:id="descriptionBox" />
                </children>
             </HBox>
          </top>

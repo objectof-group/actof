@@ -1,7 +1,7 @@
 package net.objectof.actof.repospy.changes;
 
 
-import net.objectof.actof.repospy.controllers.navigator.kind.ILeafNode;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.ILeafNode;
 import net.objectof.model.Kind;
 import net.objectof.model.Stereotype;
 

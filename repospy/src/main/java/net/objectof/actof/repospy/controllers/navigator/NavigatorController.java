@@ -44,15 +44,18 @@ import net.objectof.actof.common.controller.search.QueryChange;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.actof.repospy.changes.EntityCreatedChange;
-import net.objectof.actof.repospy.controllers.navigator.composite.CompositeView;
-import net.objectof.actof.repospy.controllers.navigator.composite.editors.primitive.TextEditor;
-import net.objectof.actof.repospy.controllers.navigator.kind.IEntityNode;
-import net.objectof.actof.repospy.controllers.navigator.kind.IResourceNode;
-import net.objectof.actof.repospy.controllers.navigator.kind.KindTreeItem;
-import net.objectof.actof.repospy.controllers.navigator.kind.TreeNode;
+import net.objectof.actof.repospy.controllers.navigator.editor.layout.CompositeView;
+import net.objectof.actof.repospy.controllers.navigator.editor.layout.IndexedView;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.IEntityNode;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.IResourceNode;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.IRootNode;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.KindTreeItem;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.TreeNode;
+import net.objectof.actof.widgets.card.CardsPane;
 import net.objectof.connector.Connector;
 import net.objectof.model.Kind;
 import net.objectof.model.Resource;
+import net.objectof.model.Stereotype;
 
 import org.controlsfx.control.BreadCrumbBar;
 import org.controlsfx.dialog.Dialogs;
@@ -73,7 +76,7 @@ public class NavigatorController extends IActofUIController {
 
     @FXML
     private ScrollPane fieldScroller;
-    private CompositeView editorBox;
+    private CardsPane editorBox;
 
     @FXML
     private TextField querytext;
@@ -100,9 +103,14 @@ public class NavigatorController extends IActofUIController {
     @FXML
     private TreeView<TreeNode> records;
 
+    private IRootNode rootNode;
+
     @Override
     @FXML
     protected void initialize() {
+
+        rootNode = new IRootNode();
+        TreeItem<TreeNode> root = new TreeItem<>(rootNode);
 
         breadcrumb = new BreadCrumbBar<>();
         Callback<TreeItem<TreeNode>, Button> breadCrumbFactory = breadcrumb.getCrumbFactory();
@@ -121,17 +129,17 @@ public class NavigatorController extends IActofUIController {
         });
 
         breadcrumb.setStyle("-fx-background-color: -fx-color; -fx-effect: dropshadow(gaussian, #777, 8, -2, 0, 1)");
-
+        breadcrumb.setPadding(new Insets(10));
         breadcrumb.setAutoNavigationEnabled(false);
         breadcrumb.setOnCrumbAction(event -> {
             if (!(event.getSelectedCrumb().getValue() instanceof IResourceNode)) { return; }
             TreeItem<TreeNode> node = event.getSelectedCrumb();
             repospy.getChangeBus().broadcast(new ResourceSelectedChange((KindTreeItem) node));
         });
+        breadcrumb.setSelectedCrumb(root);
 
         fieldEditor.setTop(breadcrumb);
 
-        TreeItem<TreeNode> root = new TreeItem<>();
         records.setShowRoot(false);
         records.setRoot(root);
         records.getSelectionModel().selectedItemProperty().addListener((ov, o, n) -> onRecordSelect(n));
@@ -156,13 +164,23 @@ public class NavigatorController extends IActofUIController {
     }
 
     private void onResourceSelect(ResourceSelectedChange change) {
-
-        breadcrumb.setPadding(new Insets(10));
-
-        System.out.println(change.getEntry().getParent());
         breadcrumb.setSelectedCrumb(change.getEntry());
         records.getSelectionModel().select(change.getEntry());
 
+        TreeNode node = change.getEntry().getValue();
+        if (node instanceof IResourceNode) {
+            IResourceNode resnode = (IResourceNode) node;
+
+            if (resnode.getStereotype() == Stereotype.INDEXED) {
+                editorBox = new IndexedView(resnode, repospy);
+            } else {
+                editorBox = new CompositeView(resnode, repospy);
+            }
+
+        } else {
+            editorBox = null;
+        }
+        fieldScroller.setContent(editorBox);
     }
 
     /* FXML Hook */
@@ -258,12 +276,8 @@ public class NavigatorController extends IActofUIController {
 
     public void setTopController(RepoSpyController controller) {
         this.repospy = controller;
-
         fieldScroller.setStyle("-fx-background-color:transparent;");
         fieldScroller.setFitToWidth(true);
-        editorBox = new CompositeView(getChangeBus(), repospy);
-        fieldScroller.setContent(editorBox);
-
     }
 
     private void onChange(Change change) {
@@ -295,6 +309,9 @@ public class NavigatorController extends IActofUIController {
         revert.setDisable(false);
         dump.setDisable(false);
         load.setDisable(false);
+
+        rootNode.setPackageName(repospy.repository.getRepoName());
+
     }
 
     private void onQueryChange() {
@@ -309,7 +326,7 @@ public class NavigatorController extends IActofUIController {
             populateEntityTree();
         } else {
             if (querytext.getText().length() > 0) {
-                querytext.setStyle(TextEditor.redborder);
+                querytext.setStyle("-fx-text-box-border: red; -fx-focus-color: red ;");
             } else {
                 querytext.setStyle("");
             }

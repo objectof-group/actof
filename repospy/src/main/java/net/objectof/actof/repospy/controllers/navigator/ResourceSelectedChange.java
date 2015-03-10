@@ -2,7 +2,7 @@ package net.objectof.actof.repospy.controllers.navigator;
 
 
 import net.objectof.actof.common.controller.change.Change;
-import net.objectof.actof.repospy.controllers.navigator.kind.KindTreeItem;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.KindTreeItem;
 
 
 public class ResourceSelectedChange extends Change {

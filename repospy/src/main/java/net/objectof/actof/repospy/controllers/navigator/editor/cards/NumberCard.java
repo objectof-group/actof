@@ -1,22 +1,20 @@
-package net.objectof.actof.repospy.controllers.navigator.composite.editors.primitive;
+package net.objectof.actof.repospy.controllers.navigator.editor.cards;
 
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 
-import javafx.scene.Node;
 import javafx.util.StringConverter;
 import jfxtras.labs.scene.control.BigDecimalField;
-import net.objectof.actof.repospy.controllers.navigator.composite.editors.AbstractEditor;
-import net.objectof.actof.repospy.controllers.navigator.kind.ILeafNode;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.ILeafNode;
 
 
-public abstract class NumberEditor extends AbstractEditor {
+public abstract class NumberCard extends LeafCard {
 
     BigDecimalField field = new BigDecimalField();
     protected boolean isFinished = false;
 
-    public NumberEditor(ILeafNode entry) {
+    public NumberCard(ILeafNode entry) {
         super(entry);
 
         field.setNumber(new BigDecimal(entry.toString()));
@@ -31,10 +29,8 @@ public abstract class NumberEditor extends AbstractEditor {
             }
         });
 
-    }
+        setTitleContent(field);
 
-    public boolean inline() {
-        return true;
     }
 
     private String val(BigDecimal dec) {
@@ -45,17 +41,6 @@ public abstract class NumberEditor extends AbstractEditor {
 
     protected abstract NumberFormat getFormat();
 
-    @Override
-    public void focus() {
-        field.requestFocus();
-    }
-
-    @Override
-    public Node getNode() {
-        return field;
-    }
-
-    @Override
     protected boolean validate(String text) {
         try {
             getStringConverter().fromString(text);
@@ -64,10 +49,6 @@ public abstract class NumberEditor extends AbstractEditor {
         catch (Exception e) {
             return false;
         }
-    }
-
-    public boolean expand() {
-        return false;
     }
 
 }

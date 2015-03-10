@@ -1,16 +1,16 @@
-package net.objectof.actof.repospy.controllers.navigator.composite.editors.primitive;
+package net.objectof.actof.repospy.controllers.navigator.editor.cards;
 
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 
 import javafx.util.StringConverter;
-import net.objectof.actof.repospy.controllers.navigator.kind.ILeafNode;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.ILeafNode;
 
 
-public class IntegerEditor extends NumberEditor {
+public class IntegerCard extends NumberCard {
 
-    public IntegerEditor(ILeafNode entry) {
+    public IntegerCard(ILeafNode entry) {
         super(entry);
     }
 

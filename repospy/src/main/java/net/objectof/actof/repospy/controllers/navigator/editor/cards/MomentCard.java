@@ -1,0 +1,39 @@
+package net.objectof.actof.repospy.controllers.navigator.editor.cards;
+
+
+import java.util.Calendar;
+import java.util.TimeZone;
+
+import jfxtras.scene.control.CalendarPicker;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.ILeafNode;
+import net.objectof.model.impl.IMoment;
+
+
+public class MomentCard extends LeafCard {
+
+    public MomentCard(ILeafNode entry) {
+        super(entry);
+
+        TimeZone zulu = TimeZone.getTimeZone("GMT");
+        IMoment moment = (IMoment) entry.getFieldValue();
+        if (moment == null) {
+            moment = new IMoment();
+        }
+
+        Calendar cal = Calendar.getInstance(zulu);
+        cal.setTime(moment);
+
+        CalendarPicker picker = new CalendarPicker();
+        picker.setCalendar(cal);
+        picker.setShowTime(true);
+
+        picker.calendarProperty().addListener(change -> {
+            IMoment newMoment = new IMoment(picker.getCalendar().getTime().getTime(), zulu);
+            getEntry().userInputValue(newMoment.toString(zulu));
+        });
+
+        setContent(picker, false);
+
+    }
+
+}

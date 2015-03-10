@@ -17,8 +17,8 @@ import javafx.scene.layout.Priority;
 public class Card extends AnchorPane {
 
     private BorderPane top, content;
-    private Label title, description;
     private HBox contentBox, titleContentBox;
+    private AnchorPane titleBox, descriptionBox;
 
     private Node node;
 
@@ -34,10 +34,10 @@ public class Card extends AnchorPane {
             contentBox = (HBox) loader.getNamespace().get("contentBox");
             titleContentBox = (HBox) loader.getNamespace().get("titleContentBox");
 
-            title = (Label) loader.getNamespace().get("title");
+            titleBox = (AnchorPane) loader.getNamespace().get("titleBox");
             setTitle("");
 
-            description = (Label) loader.getNamespace().get("stereotype");
+            descriptionBox = (AnchorPane) loader.getNamespace().get("descriptionBox");
             setDescription("");
 
             content.setStyle("-fx-background-radius: 5px; -fx-background-color: #ffffff; -fx-effect: dropshadow(gaussian, #777, 8, -2, 0, 1)");
@@ -55,25 +55,44 @@ public class Card extends AnchorPane {
         }
     }
 
-    public String getTitle() {
-        return title.getText();
-    }
-
     public void setTitle(String titleString) {
         if (titleString == null) {
             titleString = "";
         }
-        this.title.setText(titleString);
+        Label label = new Label(titleString);
+        label.setStyle("-fx-font-size: 13pt;");
+        setTitle(label);
 
         fixPadding();
     }
 
-    public String getDescription() {
-        return description.getText();
+    public void setTitle(Node titleNode) {
+        titleBox.getChildren().clear();
+        AnchorPane.setTopAnchor(titleNode, 0d);
+        AnchorPane.setBottomAnchor(titleNode, 0d);
+        AnchorPane.setLeftAnchor(titleNode, 0d);
+        AnchorPane.setRightAnchor(titleNode, 0d);
+        titleBox.getChildren().add(titleNode);
     }
 
     public void setDescription(String description) {
-        this.description.setText(description);
+        if (description == null) {
+            description = "";
+        }
+        Label label = new Label(description);
+        label.setStyle("-fx-text-fill: #777777;");
+        setDescription(label);
+
+        fixPadding();
+    }
+
+    public void setDescription(Node descriptionNode) {
+        descriptionBox.getChildren().clear();
+        AnchorPane.setTopAnchor(descriptionNode, 0d);
+        AnchorPane.setBottomAnchor(descriptionNode, 0d);
+        AnchorPane.setLeftAnchor(descriptionNode, 0d);
+        AnchorPane.setRightAnchor(descriptionNode, 0d);
+        descriptionBox.getChildren().add(descriptionNode);
     }
 
     public Node getContent() {
@@ -111,9 +130,9 @@ public class Card extends AnchorPane {
 
     private void fixPadding() {
         if (contentBox.getChildren().size() == 0) {
-            title.setPadding(new Insets(0, 10, 0, 0));
+            titleBox.setPadding(new Insets(0, 10, 0, 0));
         } else {
-            title.setPadding(new Insets(0, 10, 6, 0));
+            titleBox.setPadding(new Insets(0, 10, 6, 0));
         }
     }
 
