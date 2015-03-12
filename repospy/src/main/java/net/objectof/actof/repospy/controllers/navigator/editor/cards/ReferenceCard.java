@@ -15,8 +15,8 @@ import net.objectof.model.impl.IKind;
 
 public class ReferenceCard extends LeafCard {
 
-    public ReferenceCard(ILeafNode entry) {
-        super(entry);
+    public ReferenceCard(ILeafNode entry, boolean capitalize) {
+        super(entry, capitalize);
 
         ChoiceBox<Resource<?>> refs = new ChoiceBox<>();
         refs.setConverter(new StringConverter<Resource<?>>() {

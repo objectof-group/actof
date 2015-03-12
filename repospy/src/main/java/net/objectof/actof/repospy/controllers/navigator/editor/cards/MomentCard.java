@@ -11,8 +11,8 @@ import net.objectof.model.impl.IMoment;
 
 public class MomentCard extends LeafCard {
 
-    public MomentCard(ILeafNode entry) {
-        super(entry);
+    public MomentCard(ILeafNode entry, boolean capitalize) {
+        super(entry, capitalize);
 
         TimeZone zulu = TimeZone.getTimeZone("GMT");
         IMoment moment = (IMoment) entry.getFieldValue();

@@ -6,8 +6,8 @@ import net.objectof.actof.repospy.controllers.navigator.treemodel.ILeafNode;
 
 public class UnsupportedCard extends LeafCard {
 
-    public UnsupportedCard(ILeafNode entry) {
-        super(entry);
+    public UnsupportedCard(ILeafNode entry, boolean capitalize) {
+        super(entry, capitalize);
     }
 
 }

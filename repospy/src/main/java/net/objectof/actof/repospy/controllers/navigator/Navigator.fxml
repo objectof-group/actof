@@ -11,11 +11,7 @@
 
 <BorderPane fx:id="toppane" prefHeight="480.0" prefWidth="1013.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.repospy.controllers.navigator.NavigatorController">
   <center>
-      <BorderPane fx:id="fieldEditor" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-         <center>
-            <ScrollPane fx:id="fieldScroller" hbarPolicy="NEVER" BorderPane.alignment="CENTER" />
-         </center>
-      </BorderPane>
+      <BorderPane fx:id="fieldEditor" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
    </center>
    <top>
       <VBox BorderPane.alignment="CENTER">

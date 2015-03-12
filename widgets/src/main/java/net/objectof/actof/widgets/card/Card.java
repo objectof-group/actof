@@ -20,6 +20,9 @@ public class Card extends AnchorPane {
     protected HBox contentBox, titleContentBox;
     protected AnchorPane titleBox, descriptionBox;
 
+    protected int radius = 5;
+    protected String colour = "#ffffff";
+
     protected Node node;
 
     public Card() {
@@ -45,6 +48,7 @@ public class Card extends AnchorPane {
             AnchorPane.setBottomAnchor(top, 0d);
             AnchorPane.setLeftAnchor(top, 0d);
             AnchorPane.setRightAnchor(top, 0d);
+            setPadding(new Insets(6));
 
             getChildren().add(top);
 
@@ -155,4 +159,27 @@ public class Card extends AnchorPane {
 
     }
 
+    public void setRadius(int radius) {
+        this.radius = radius;
+        buildStyle();
+    }
+
+    public int getRadius() {
+        return radius;
+    }
+
+    protected String getColour() {
+        return colour;
+    }
+
+    protected void setColour(String colour) {
+        this.colour = colour;
+        buildStyle();
+    }
+
+    private void buildStyle() {
+        String rad = "-fx-background-radius: " + radius + "px; ";
+        String col = "-fx-background-color: " + colour + "; ";
+        content.setStyle(rad + col + " -fx-effect: dropshadow(gaussian, #777, 8, -2, 0, 1)");
+    }
 }

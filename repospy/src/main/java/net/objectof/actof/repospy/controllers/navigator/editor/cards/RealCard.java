@@ -10,8 +10,8 @@ import net.objectof.actof.repospy.controllers.navigator.treemodel.ILeafNode;
 
 public class RealCard extends NumberCard {
 
-    public RealCard(ILeafNode entry) {
-        super(entry);
+    public RealCard(ILeafNode entry, boolean capitalize) {
+        super(entry, capitalize);
     }
 
     @Override

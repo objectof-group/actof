@@ -18,7 +18,6 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
@@ -34,7 +33,6 @@ import javafx.scene.input.KeyCombination.Modifier;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.util.Callback;
@@ -79,8 +77,7 @@ public class NavigatorController extends IActofUIController {
     private BreadCrumbBar<TreeNode> breadcrumb;
 
     @FXML
-    private ScrollPane fieldScroller;
-    private VBox editorBox;
+    private Node editorBox;
 
     @FXML
     private TextField querytext;
@@ -185,7 +182,7 @@ public class NavigatorController extends IActofUIController {
         } else {
             editorBox = null;
         }
-        fieldScroller.setContent(editorBox);
+        fieldEditor.setCenter(editorBox);
     }
 
     /* FXML Hook */
@@ -281,8 +278,6 @@ public class NavigatorController extends IActofUIController {
 
     public void setTopController(RepoSpyController controller) {
         this.repospy = controller;
-        fieldScroller.setStyle("-fx-background-color:transparent;");
-        fieldScroller.setFitToWidth(true);
     }
 
     private void onChange(Change change) {

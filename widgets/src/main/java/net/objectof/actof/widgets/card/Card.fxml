@@ -13,34 +13,24 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-   <center>
-      <BorderPane fx:id="content" style="-fx-background-color: #fff;" BorderPane.alignment="CENTER">
-         <BorderPane.margin>
-            <Insets />
-         </BorderPane.margin>
-         <padding>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-         </padding>
-         <top>
-            <HBox fx:id="titleBox" BorderPane.alignment="CENTER">
-               <children>
-                  <AnchorPane fx:id="titleBox" HBox.hgrow="NEVER" />
-                  <HBox fx:id="titleContentBox" />
-                  <Separator fx:id="separator" visible="false" HBox.hgrow="ALWAYS" />
-                  <AnchorPane fx:id="descriptionBox" />
-               </children>
-            </HBox>
-         </top>
-         <center>
-            <HBox fx:id="contentBox" BorderPane.alignment="CENTER" />
-         </center>
-      </BorderPane>
-   </center>
+<BorderPane fx:id="content" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <opaqueInsets>
       <Insets />
    </opaqueInsets>
    <padding>
-      <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
    </padding>
+   <top>
+      <HBox fx:id="titleBox" BorderPane.alignment="CENTER">
+         <children>
+            <AnchorPane fx:id="titleBox" HBox.hgrow="NEVER" />
+            <HBox fx:id="titleContentBox" />
+            <Separator fx:id="separator" visible="false" HBox.hgrow="ALWAYS" />
+            <AnchorPane fx:id="descriptionBox" />
+         </children>
+      </HBox>
+   </top>
+   <center>
+      <HBox fx:id="contentBox" BorderPane.alignment="CENTER" />
+   </center>
 </BorderPane>

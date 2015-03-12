@@ -14,8 +14,8 @@ public abstract class NumberCard extends LeafCard {
     BigDecimalField field = new BigDecimalField();
     protected boolean isFinished = false;
 
-    public NumberCard(ILeafNode entry) {
-        super(entry);
+    public NumberCard(ILeafNode entry, boolean capitalize) {
+        super(entry, capitalize);
 
         field.setNumber(new BigDecimal(entry.toString()));
         field.setFormat(getFormat());

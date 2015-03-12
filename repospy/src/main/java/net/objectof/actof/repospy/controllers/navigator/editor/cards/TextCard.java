@@ -16,8 +16,8 @@ public class TextCard extends LeafCard {
 
     private Image expimg = new Image(IndexedView.class.getResourceAsStream("../icons/expand.png"));
 
-    public TextCard(ILeafNode entry) {
-        super(entry);
+    public TextCard(ILeafNode entry, boolean capitalize) {
+        super(entry, capitalize);
 
         String contents = entry.getFieldValue().toString();
 
