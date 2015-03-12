@@ -1,4 +1,4 @@
-package net.objectof.actof.repospy.controllers.navigator.treemodel;
+package net.objectof.actof.repospy.controllers.navigator.treemodel.nodes;
 
 
 import java.util.ArrayList;
@@ -7,6 +7,8 @@ import java.util.Set;
 
 import net.objectof.actof.common.util.RepoUtils;
 import net.objectof.actof.repospy.RepoSpyController;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.RepoSpyTreeItem;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.TreeNode;
 import net.objectof.aggr.Aggregate;
 import net.objectof.model.Kind;
 import net.objectof.model.Resource;
@@ -19,7 +21,7 @@ public class IAggregateNode implements TreeNode {
     private Resource<?> res;
 
     private List<ILeafNode> leaves;
-    private List<KindTreeItem> subresources;
+    private List<RepoSpyTreeItem> subresources;
 
     public IAggregateNode(Resource<?> res) {
         this.res = res;
@@ -56,7 +58,7 @@ public class IAggregateNode implements TreeNode {
     }
 
     @Override
-    public List<KindTreeItem> getChildren(RepoSpyController repospy) {
+    public List<RepoSpyTreeItem> getChildren(RepoSpyController repospy) {
 
         if (subresources == null) {
             getLeafEntries(this, repospy);
@@ -84,7 +86,7 @@ public class IAggregateNode implements TreeNode {
         return res.id().kind().getStereotype();
     }
 
-    public static void getLeafEntries(IAggregateNode parent, RepoSpyController controller) {
+    private static void getLeafEntries(IAggregateNode parent, RepoSpyController controller) {
         if (parent.getStereotype() == Stereotype.COMPOSED) {
             leafEntriesForComposite(parent, controller);
         } else {
@@ -112,7 +114,7 @@ public class IAggregateNode implements TreeNode {
             }
 
             if (RepoUtils.isAggregateStereotype(entry.getStereotype())) {
-                KindTreeItem subentry = new KindTreeItem(new IAggregateNode((Resource<?>) entry.getFieldValue()),
+                RepoSpyTreeItem subentry = new RepoSpyTreeItem(new IAggregateNode((Resource<?>) entry.getFieldValue()),
                         controller);
                 parent.subresources.add(subentry);
                 entry.treeNode = subentry;
@@ -136,7 +138,7 @@ public class IAggregateNode implements TreeNode {
             }
 
             if (RepoUtils.isAggregateStereotype(entry.getStereotype())) {
-                KindTreeItem subentry = new KindTreeItem(new IAggregateNode((Resource<?>) entry.getFieldValue()),
+                RepoSpyTreeItem subentry = new RepoSpyTreeItem(new IAggregateNode((Resource<?>) entry.getFieldValue()),
                         controller);
                 parent.subresources.add(subentry);
                 entry.treeNode = subentry;

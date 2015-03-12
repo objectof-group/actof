@@ -1,11 +1,11 @@
-package net.objectof.actof.repospy.controllers.navigator.editor.cards;
+package net.objectof.actof.repospy.controllers.navigator.editor.cards.leaf;
 
 
 import java.util.Calendar;
 import java.util.TimeZone;
 
 import jfxtras.scene.control.CalendarPicker;
-import net.objectof.actof.repospy.controllers.navigator.treemodel.ILeafNode;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.ILeafNode;
 import net.objectof.model.impl.IMoment;
 
 

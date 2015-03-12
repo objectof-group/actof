@@ -2,16 +2,16 @@ package net.objectof.actof.repospy.controllers.navigator.editor.layout;
 
 
 import net.objectof.actof.repospy.RepoSpyController;
-import net.objectof.actof.repospy.controllers.navigator.treemodel.IAggregateNode;
-import net.objectof.actof.repospy.controllers.navigator.treemodel.ILeafNode;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.RepoSpyTreeItem;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.ILeafNode;
 import net.objectof.aggr.Listing;
 import net.objectof.model.Resource;
 
 
 public class IndexedView extends AggregateView {
 
-    public IndexedView(IAggregateNode entry, RepoSpyController repospy) {
-        super(entry, repospy);
+    public IndexedView(RepoSpyTreeItem treeitem, RepoSpyController repospy) {
+        super(treeitem, repospy);
         updateUI();
     }
 

@@ -1,4 +1,4 @@
-package net.objectof.actof.repospy.controllers.navigator.treemodel;
+package net.objectof.actof.repospy.controllers.navigator.treemodel.nodes;
 
 
 import javafx.beans.value.ObservableValueBase;
@@ -6,6 +6,7 @@ import net.objectof.actof.common.controller.change.Change;
 import net.objectof.actof.common.util.RepoUtils;
 import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.actof.repospy.changes.FieldChange;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.RepoSpyTreeItem;
 import net.objectof.aggr.Aggregate;
 import net.objectof.model.Id;
 import net.objectof.model.Kind;
@@ -27,7 +28,7 @@ public class ILeafNode extends ObservableValueBase<ILeafNode> {
     public Object key; // provided
 
     public IAggregateNode parentTreeEntry;
-    public KindTreeItem treeNode;
+    public RepoSpyTreeItem treeNode;
 
     public ILeafNode(IAggregateNode parentTreeEntry, RepoSpyController repospy, Kind<?> kind, Object key) {
 

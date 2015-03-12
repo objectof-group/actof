@@ -12,7 +12,7 @@ public interface TreeNode {
 
     public boolean hasChildren();
 
-    public List<KindTreeItem> getChildren(RepoSpyController repospy);
+    public List<RepoSpyTreeItem> getChildren(RepoSpyController repospy);
 
     public String getEntityKind();
 

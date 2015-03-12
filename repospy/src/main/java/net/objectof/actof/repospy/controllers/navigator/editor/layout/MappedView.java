@@ -3,8 +3,8 @@ package net.objectof.actof.repospy.controllers.navigator.editor.layout;
 
 import javafx.scene.control.TextField;
 import net.objectof.actof.repospy.RepoSpyController;
-import net.objectof.actof.repospy.controllers.navigator.treemodel.IAggregateNode;
-import net.objectof.actof.repospy.controllers.navigator.treemodel.ILeafNode;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.RepoSpyTreeItem;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.ILeafNode;
 import net.objectof.aggr.Mapping;
 
 import org.controlsfx.dialog.Dialogs;
@@ -14,8 +14,8 @@ public class MappedView extends AggregateView {
 
     private TextField keyField = new TextField();
 
-    public MappedView(IAggregateNode entry, RepoSpyController repospy) {
-        super(entry, repospy);
+    public MappedView(RepoSpyTreeItem treeitem, RepoSpyController repospy) {
+        super(treeitem, repospy);
         getControlCard().setTitleContent(keyField);
         capitalize = false;
         updateUI();

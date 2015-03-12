@@ -1,4 +1,4 @@
-package net.objectof.actof.repospy.controllers.navigator.editor.cards;
+package net.objectof.actof.repospy.controllers.navigator.editor.cards.leaf;
 
 
 import javafx.scene.control.Button;
@@ -9,7 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import net.objectof.actof.repospy.controllers.navigator.editor.layout.IndexedView;
-import net.objectof.actof.repospy.controllers.navigator.treemodel.ILeafNode;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.ILeafNode;
 
 
 public class TextCard extends LeafCard {

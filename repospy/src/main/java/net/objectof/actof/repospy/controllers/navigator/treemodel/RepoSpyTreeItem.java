@@ -10,13 +10,14 @@ import net.objectof.actof.common.controller.DynamicTreeItem;
 import net.objectof.actof.common.util.AlphaNumericComparitor;
 import net.objectof.actof.common.util.RepoUtils;
 import net.objectof.actof.repospy.RepoSpyController;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.IAggregateNode;
 
 
-public class KindTreeItem extends DynamicTreeItem<TreeNode> {
+public class RepoSpyTreeItem extends DynamicTreeItem<TreeNode> {
 
     RepoSpyController controller;
 
-    public KindTreeItem(TreeNode kv, RepoSpyController controller) {
+    public RepoSpyTreeItem(TreeNode kv, RepoSpyController controller) {
         super(kv);
         this.controller = controller;
         if (kv instanceof IAggregateNode) {
@@ -30,7 +31,7 @@ public class KindTreeItem extends DynamicTreeItem<TreeNode> {
         TreeNode data = treeItem.getValue();
         if (!data.hasChildren()) { return FXCollections.emptyObservableList(); }
 
-        List<KindTreeItem> childEntries = data.getChildren(controller);
+        List<RepoSpyTreeItem> childEntries = data.getChildren(controller);
         ObservableList<TreeItem<TreeNode>> newlist = FXCollections.observableArrayList(childEntries);
 
         // sort them all

@@ -7,7 +7,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -46,12 +45,14 @@ import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.actof.repospy.changes.EntityCreatedChange;
 import net.objectof.actof.repospy.controllers.navigator.editor.layout.CompositeView;
 import net.objectof.actof.repospy.controllers.navigator.editor.layout.IndexedView;
+import net.objectof.actof.repospy.controllers.navigator.editor.layout.KindView;
 import net.objectof.actof.repospy.controllers.navigator.editor.layout.MappedView;
-import net.objectof.actof.repospy.controllers.navigator.treemodel.IAggregateNode;
-import net.objectof.actof.repospy.controllers.navigator.treemodel.IEntityNode;
-import net.objectof.actof.repospy.controllers.navigator.treemodel.IRootNode;
-import net.objectof.actof.repospy.controllers.navigator.treemodel.KindTreeItem;
+import net.objectof.actof.repospy.controllers.navigator.editor.layout.PackageView;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.RepoSpyTreeItem;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.TreeNode;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.IAggregateNode;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.IKindNode;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.IRootNode;
 import net.objectof.connector.Connector;
 import net.objectof.model.Kind;
 import net.objectof.model.Resource;
@@ -104,56 +105,12 @@ public class NavigatorController extends IActofUIController {
     @FXML
     private TreeView<TreeNode> records;
 
+    private RepoSpyTreeItem root;
     private IRootNode rootNode;
 
     @Override
     @FXML
     protected void initialize() {
-
-        rootNode = new IRootNode();
-        TreeItem<TreeNode> root = new TreeItem<>(rootNode);
-
-        breadcrumb = new BreadCrumbBar<>();
-        Callback<TreeItem<TreeNode>, Button> breadCrumbFactory = breadcrumb.getCrumbFactory();
-        breadcrumb.setCrumbFactory(item -> {
-            Button b = breadCrumbFactory.call(item);
-            b.setText("");
-            Label label = new Label();
-
-            if (item.getValue() != null) {
-                label.setText(item.getValue().toString());
-            }
-
-            b.setGraphic(label);
-            label.setPadding(new Insets(3, 10, 3, 10));
-            return b;
-        });
-
-        // breadcrumb.setStyle("-fx-background-color: -fx-color; -fx-effect: dropshadow(gaussian, #777, 8, -2, 0, 1)");
-        // breadcrumb.setPadding(new Insets(10));
-        breadcrumb.setAutoNavigationEnabled(false);
-        breadcrumb.setOnCrumbAction(event -> {
-            if (!(event.getSelectedCrumb().getValue() instanceof IAggregateNode)) { return; }
-            TreeItem<TreeNode> node = event.getSelectedCrumb();
-            repospy.getChangeBus().broadcast(new ResourceSelectedChange((KindTreeItem) node));
-        });
-        breadcrumb.setSelectedCrumb(root);
-        breadcrumbBox.getChildren().add(breadcrumb);
-
-        records.setShowRoot(false);
-        records.setRoot(root);
-        records.getSelectionModel().selectedItemProperty().addListener((ov, o, n) -> onRecordSelect(n));
-
-        querytext.setOnKeyReleased(event -> {
-            if (event.getCode() != KeyCode.ENTER) { return; }
-            repospy.doQuery(querytext.getText());
-        });
-
-        queryEntity.valueProperty().addListener(change -> {
-            repospy.search.setKind(queryEntity.getValue());
-        });
-
-        shortcut(records, this::recordCopy, KeyCode.C, KeyCombination.CONTROL_DOWN);
 
     }
 
@@ -164,21 +121,26 @@ public class NavigatorController extends IActofUIController {
     }
 
     private void onResourceSelect(ResourceSelectedChange change) {
+
         breadcrumb.setSelectedCrumb(change.getEntry());
         records.getSelectionModel().select(change.getEntry());
 
-        TreeNode node = change.getEntry().getValue();
+        RepoSpyTreeItem treeitem = change.getEntry();
+        TreeNode node = treeitem.getValue();
         if (node instanceof IAggregateNode) {
             IAggregateNode resnode = (IAggregateNode) node;
 
             if (resnode.getStereotype() == Stereotype.INDEXED) {
-                editorBox = new IndexedView(resnode, repospy);
+                editorBox = new IndexedView(treeitem, repospy);
             } else if (resnode.getStereotype() == Stereotype.MAPPED) {
-                editorBox = new MappedView(resnode, repospy);
+                editorBox = new MappedView(treeitem, repospy);
             } else {
-                editorBox = new CompositeView(resnode, repospy);
+                editorBox = new CompositeView(treeitem, repospy);
             }
-
+        } else if (node instanceof IKindNode) {
+            editorBox = new KindView(treeitem, repospy);
+        } else if (node instanceof IRootNode) {
+            editorBox = new PackageView(treeitem, repospy);
         } else {
             editorBox = null;
         }
@@ -278,6 +240,51 @@ public class NavigatorController extends IActofUIController {
 
     public void setTopController(RepoSpyController controller) {
         this.repospy = controller;
+
+        rootNode = new IRootNode();
+        root = new RepoSpyTreeItem(rootNode, repospy);
+
+        breadcrumb = new BreadCrumbBar<>();
+        Callback<TreeItem<TreeNode>, Button> breadCrumbFactory = breadcrumb.getCrumbFactory();
+        breadcrumb.setCrumbFactory(item -> {
+            Button b = breadCrumbFactory.call(item);
+            b.setText("");
+            Label label = new Label();
+
+            if (item.getValue() != null) {
+                label.setText(item.getValue().toString());
+            }
+
+            b.setGraphic(label);
+            label.setPadding(new Insets(3, 10, 3, 10));
+            return b;
+        });
+
+        // breadcrumb.setStyle("-fx-background-color: -fx-color; -fx-effect: dropshadow(gaussian, #777, 8, -2, 0, 1)");
+        // breadcrumb.setPadding(new Insets(10));
+        breadcrumb.setAutoNavigationEnabled(false);
+        breadcrumb.setOnCrumbAction(event -> {
+            TreeItem<TreeNode> node = event.getSelectedCrumb();
+            repospy.getChangeBus().broadcast(new ResourceSelectedChange((RepoSpyTreeItem) node));
+        });
+        breadcrumb.setSelectedCrumb(root);
+        breadcrumbBox.getChildren().add(breadcrumb);
+
+        records.setShowRoot(false);
+        records.setRoot(root);
+        records.getSelectionModel().selectedItemProperty().addListener((ov, o, n) -> onRecordSelect(n));
+
+        querytext.setOnKeyReleased(event -> {
+            if (event.getCode() != KeyCode.ENTER) { return; }
+            repospy.doQuery(querytext.getText());
+        });
+
+        queryEntity.valueProperty().addListener(change -> {
+            repospy.search.setKind(queryEntity.getValue());
+        });
+
+        shortcut(records, this::recordCopy, KeyCode.C, KeyCombination.CONTROL_DOWN);
+
     }
 
     private void onChange(Change change) {
@@ -311,6 +318,7 @@ public class NavigatorController extends IActofUIController {
         load.setDisable(false);
 
         rootNode.setPackageName(repospy.repository.getRepoName());
+        getChangeBus().broadcast(new ResourceSelectedChange(root));
 
     }
 
@@ -341,9 +349,8 @@ public class NavigatorController extends IActofUIController {
         if (treeItem == null) { return; }
 
         TreeNode data = treeItem.getValue();
-        if (data == null || data instanceof IEntityNode) { return; }
-
-        getChangeBus().broadcast(new ResourceSelectedChange((KindTreeItem) treeItem));
+        if (data == null) { return; }
+        getChangeBus().broadcast(new ResourceSelectedChange((RepoSpyTreeItem) treeItem));
 
     }
 
@@ -356,30 +363,34 @@ public class NavigatorController extends IActofUIController {
 
     private void populateEntityTree() {
 
-        List<Kind<?>> entities = repospy.repository.getEntities();
+        root.updateChildren();
 
-        // repopulate tree
-        TreeItem<TreeNode> root = records.getRoot();
-        root.getChildren().clear();
-        for (Kind<?> kind : entities) {
-
-            String kindname = kind.getComponentName();
-            if (repospy.search.isValid() && !repospy.search.getKind().equals(kindname)) {
-                continue;
-            }
-
-            KindTreeItem item = new KindTreeItem(new IEntityNode(kind.getComponentName()), repospy);
-            item.setExpanded(repospy.search.isValid());
-            root.getChildren().add(item);
-
-        }
+        // List<Kind<?>> entities = repospy.repository.getEntities();
+        //
+        // // repopulate tree
+        // TreeItem<TreeNode> root = records.getRoot();
+        // root.getChildren().clear();
+        // for (Kind<?> kind : entities) {
+        //
+        // String kindname = kind.getComponentName();
+        // if (repospy.search.isValid() &&
+        // !repospy.search.getKind().equals(kindname)) {
+        // continue;
+        // }
+        //
+        // RepoSpyTreeItem item = new RepoSpyTreeItem(new
+        // IKindNode(kind.getComponentName()), repospy);
+        // item.setExpanded(repospy.search.isValid());
+        // root.getChildren().add(item);
+        //
+        // }
 
     }
 
     private void refreshEntityTree() {
         TreeItem<TreeNode> root = records.getRoot();
         for (TreeItem<TreeNode> item : root.getChildren()) {
-            KindTreeItem child = (KindTreeItem) item;
+            RepoSpyTreeItem child = (RepoSpyTreeItem) item;
             child.updateChildren();
         }
     }

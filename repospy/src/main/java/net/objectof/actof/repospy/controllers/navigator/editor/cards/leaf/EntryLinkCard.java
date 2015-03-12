@@ -1,9 +1,9 @@
-package net.objectof.actof.repospy.controllers.navigator.editor.cards;
+package net.objectof.actof.repospy.controllers.navigator.editor.cards.leaf;
 
 
 import javafx.scene.control.Hyperlink;
 import net.objectof.actof.repospy.controllers.navigator.ResourceSelectedChange;
-import net.objectof.actof.repospy.controllers.navigator.treemodel.ILeafNode;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.ILeafNode;
 
 
 public class EntryLinkCard extends LeafCard {
@@ -12,11 +12,10 @@ public class EntryLinkCard extends LeafCard {
         super(entry, capitalize);
         Hyperlink node = new Hyperlink(getLeafTitle(capitalize));
         node.setStyle("-fx-font-size: 13pt");
-
+        entry.treeNode.getChildren();
         node.setOnAction(event -> {
             entry.getController().getChangeBus().broadcast(new ResourceSelectedChange(entry.treeNode));
         });
-
         setTitle(node);
 
     }

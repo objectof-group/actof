@@ -1,4 +1,4 @@
-package net.objectof.actof.repospy.controllers.navigator.editor.cards;
+package net.objectof.actof.repospy.controllers.navigator.editor.cards.leaf;
 
 
 import java.math.BigDecimal;
@@ -6,7 +6,7 @@ import java.text.NumberFormat;
 
 import javafx.util.StringConverter;
 import jfxtras.labs.scene.control.BigDecimalField;
-import net.objectof.actof.repospy.controllers.navigator.treemodel.ILeafNode;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.ILeafNode;
 
 
 public abstract class NumberCard extends LeafCard {

@@ -9,9 +9,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import net.objectof.actof.repospy.RepoSpyController;
-import net.objectof.actof.repospy.controllers.navigator.editor.cards.LeafCard;
-import net.objectof.actof.repospy.controllers.navigator.treemodel.IAggregateNode;
-import net.objectof.actof.repospy.controllers.navigator.treemodel.ILeafNode;
+import net.objectof.actof.repospy.controllers.navigator.editor.cards.leaf.LeafCard;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.RepoSpyTreeItem;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.IAggregateNode;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.ILeafNode;
 import net.objectof.actof.widgets.card.Card;
 
 
@@ -22,9 +23,11 @@ public abstract class AggregateView extends AbstractView {
     protected Image addimg = new Image(IndexedView.class.getResourceAsStream("../icons/add.png"));
     protected Image remimg = new Image(IndexedView.class.getResourceAsStream("../icons/remove.png"));
     protected boolean capitalize = true;
+    protected IAggregateNode entry;
 
-    public AggregateView(IAggregateNode entry, RepoSpyController repospy) {
-        super(entry, repospy);
+    public AggregateView(RepoSpyTreeItem treeitem, RepoSpyController repospy) {
+        super(treeitem, repospy);
+        this.entry = (IAggregateNode) treeitem.getValue();
 
         Button add = new Button("", new ImageView(addimg));
         add.setOnAction(action -> {

@@ -2,15 +2,19 @@ package net.objectof.actof.repospy.controllers.navigator.editor.layout;
 
 
 import net.objectof.actof.repospy.RepoSpyController;
-import net.objectof.actof.repospy.controllers.navigator.editor.cards.LeafCard;
-import net.objectof.actof.repospy.controllers.navigator.treemodel.IAggregateNode;
-import net.objectof.actof.repospy.controllers.navigator.treemodel.ILeafNode;
+import net.objectof.actof.repospy.controllers.navigator.editor.cards.leaf.LeafCard;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.RepoSpyTreeItem;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.IAggregateNode;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.ILeafNode;
 
 
 public class CompositeView extends AbstractView {
 
-    public CompositeView(IAggregateNode entry, RepoSpyController repospy) {
-        super(entry, repospy);
+    private IAggregateNode entry;
+
+    public CompositeView(RepoSpyTreeItem treeitem, RepoSpyController repospy) {
+        super(treeitem, repospy);
+        this.entry = (IAggregateNode) treeitem.getValue();
         updateUI();
     }
 

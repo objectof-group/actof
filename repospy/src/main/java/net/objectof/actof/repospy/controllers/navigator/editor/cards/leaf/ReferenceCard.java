@@ -1,4 +1,4 @@
-package net.objectof.actof.repospy.controllers.navigator.editor.cards;
+package net.objectof.actof.repospy.controllers.navigator.editor.cards.leaf;
 
 
 import java.util.List;
@@ -8,7 +8,7 @@ import java.util.stream.StreamSupport;
 import javafx.scene.control.ChoiceBox;
 import javafx.util.StringConverter;
 import net.objectof.actof.common.util.RepoUtils;
-import net.objectof.actof.repospy.controllers.navigator.treemodel.ILeafNode;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.ILeafNode;
 import net.objectof.model.Resource;
 import net.objectof.model.impl.IKind;
 

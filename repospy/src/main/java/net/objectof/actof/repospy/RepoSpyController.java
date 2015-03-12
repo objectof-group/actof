@@ -120,6 +120,7 @@ public class RepoSpyController extends ITopController {
             search.setQuery(query);
         }
         catch (IllegalArgumentException | UnsupportedOperationException e) {
+            e.printStackTrace();
             search.setQuery(null);
             return;
         }

@@ -35,6 +35,8 @@ public class RepositoryController extends IActofController {
 
     public List<Kind<?>> getEntities() {
         List<Kind<?>> kinds = new ArrayList<>();
+        if (getRepo() == null) { return kinds; }
+
         for (Kind<?> kind : getRepo().getParts()) {
             if (kind.getPartOf() != null) {
                 continue;

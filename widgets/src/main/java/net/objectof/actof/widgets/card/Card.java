@@ -70,6 +70,7 @@ public class Card extends AnchorPane {
     }
 
     public void setTitle(Node titleNode) {
+        System.out.println(titleNode);
         titleBox.getChildren().clear();
         AnchorPane.setTopAnchor(titleNode, 0d);
         AnchorPane.setBottomAnchor(titleNode, 0d);

@@ -1,4 +1,4 @@
-package net.objectof.actof.repospy.controllers.navigator.treemodel;
+package net.objectof.actof.repospy.controllers.navigator.treemodel.nodes;
 
 
 import java.util.ArrayList;
@@ -6,26 +6,33 @@ import java.util.List;
 
 import javafx.collections.FXCollections;
 import net.objectof.actof.repospy.RepoSpyController;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.RepoSpyTreeItem;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.TreeNode;
+import net.objectof.model.Kind;
 import net.objectof.model.Resource;
 import net.objectof.model.Stereotype;
 import net.objectof.model.Transaction;
 
 
-public class IEntityNode implements TreeNode {
+public class IKindNode implements TreeNode {
 
-    private String entityKind;
+    private Kind<?> kind;
 
-    public IEntityNode(String entityKind) {
-        this.entityKind = entityKind;
+    public IKindNode(Kind<?> kind) {
+        this.kind = kind;
     }
 
     @Override
     public String toString() {
-        return entityKind;
+        return getEntityKind();
     }
 
     public String getEntityKind() {
-        return entityKind;
+        return kind.getComponentName();
+    }
+
+    public Kind<?> getKind() {
+        return kind;
     }
 
     public boolean hasChildren() {
@@ -37,12 +44,12 @@ public class IEntityNode implements TreeNode {
     }
 
     @Override
-    public List<KindTreeItem> getChildren(RepoSpyController repospy) {
+    public List<RepoSpyTreeItem> getChildren(RepoSpyController repospy) {
 
         Transaction tx = repospy.repository.getStagingTx();
         String kind = getEntityKind();
         Iterable<Resource<?>> iter;
-        List<KindTreeItem> newlist = new ArrayList<>();
+        List<RepoSpyTreeItem> newlist = new ArrayList<>();
 
         if (repospy.search.isValid() && kind.equals(repospy.search.getKind())) {
             iter = tx.query(kind, repospy.search.getQuery());
@@ -54,12 +61,12 @@ public class IEntityNode implements TreeNode {
 
         // persistent entities
         for (Resource<?> res : iter) {
-            newlist.add(new KindTreeItem(new IAggregateNode(res), repospy));
+            newlist.add(new RepoSpyTreeItem(new IAggregateNode(res), repospy));
         }
 
         // transient entities
         for (Resource<?> res : repospy.repository.getTransientsForKind(kind)) {
-            newlist.add(new KindTreeItem(new IAggregateNode(res), repospy));
+            newlist.add(new RepoSpyTreeItem(new IAggregateNode(res), repospy));
         }
 
         return newlist;

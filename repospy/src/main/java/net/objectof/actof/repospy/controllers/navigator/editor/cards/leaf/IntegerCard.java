@@ -1,16 +1,16 @@
-package net.objectof.actof.repospy.controllers.navigator.editor.cards;
+package net.objectof.actof.repospy.controllers.navigator.editor.cards.leaf;
 
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 
 import javafx.util.StringConverter;
-import net.objectof.actof.repospy.controllers.navigator.treemodel.ILeafNode;
+import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.ILeafNode;
 
 
-public class RealCard extends NumberCard {
+public class IntegerCard extends NumberCard {
 
-    public RealCard(ILeafNode entry, boolean capitalize) {
+    public IntegerCard(ILeafNode entry, boolean capitalize) {
         super(entry, capitalize);
     }
 
@@ -20,7 +20,7 @@ public class RealCard extends NumberCard {
 
             @Override
             public String toString(BigDecimal dec) {
-                return dec.doubleValue() + "";
+                return dec.longValue() + "";
             }
 
             @Override
@@ -32,7 +32,7 @@ public class RealCard extends NumberCard {
 
     @Override
     protected NumberFormat getFormat() {
-        return NumberFormat.getNumberInstance();
+        return NumberFormat.getIntegerInstance();
     }
 
 }
