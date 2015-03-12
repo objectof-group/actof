@@ -16,11 +16,11 @@ import javafx.scene.layout.Priority;
 
 public class Card extends AnchorPane {
 
-    private BorderPane top, content;
-    private HBox contentBox, titleContentBox;
-    private AnchorPane titleBox, descriptionBox;
+    protected BorderPane top, content;
+    protected HBox contentBox, titleContentBox;
+    protected AnchorPane titleBox, descriptionBox;
 
-    private Node node;
+    protected Node node;
 
     public Card() {
 
@@ -35,9 +35,8 @@ public class Card extends AnchorPane {
             titleContentBox = (HBox) loader.getNamespace().get("titleContentBox");
 
             titleBox = (AnchorPane) loader.getNamespace().get("titleBox");
-            setTitle("");
-
             descriptionBox = (AnchorPane) loader.getNamespace().get("descriptionBox");
+            setTitle("");
             setDescription("");
 
             content.setStyle("-fx-background-radius: 5px; -fx-background-color: #ffffff; -fx-effect: dropshadow(gaussian, #777, 8, -2, 0, 1)");
@@ -87,7 +86,6 @@ public class Card extends AnchorPane {
         label.setStyle("-fx-text-fill: #777777;");
         setDescription(label);
 
-        fixPadding();
     }
 
     public void setDescription(Node descriptionNode) {
@@ -97,6 +95,9 @@ public class Card extends AnchorPane {
         AnchorPane.setLeftAnchor(descriptionNode, 0d);
         AnchorPane.setRightAnchor(descriptionNode, 0d);
         descriptionBox.getChildren().add(descriptionNode);
+
+        fixPadding();
+
     }
 
     public Node getDescription() {
@@ -141,11 +142,17 @@ public class Card extends AnchorPane {
     }
 
     private void fixPadding() {
+
         if (contentBox.getChildren().size() == 0) {
             titleBox.setPadding(new Insets(0, 10, 0, 0));
+            descriptionBox.setPadding(new Insets(0, 0, 0, 0));
+            titleContentBox.setPadding(new Insets(0, 0, 0, 0));
         } else {
             titleBox.setPadding(new Insets(0, 10, 6, 0));
+            descriptionBox.setPadding(new Insets(0, 0, 6, 0));
+            titleContentBox.setPadding(new Insets(0, 0, 6, 0));
         }
+
     }
 
 }

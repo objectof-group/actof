@@ -26,34 +26,4 @@
 		  </columnResizePolicy>
 		</TableView>
    </center>
-   <bottom>
-	   <HBox alignment="TOP_RIGHT" spacing="2.0">
-	      <children>
-	         <Button fx:id="add" mnemonicParsing="false" style="-fx-padding: 5;" styleClass="tool-bar-button">
-	            <graphic>
-	               <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-	                  <image>
-	                     <Image url="@icons/add.png" />
-	                  </image>
-	               </ImageView>
-	            </graphic>
-	         </Button>
-	         <Button fx:id="remove" mnemonicParsing="false" style="-fx-padding: 5;" styleClass="tool-bar-button">
-	            <graphic>
-	               <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-	                  <image>
-	                     <Image url="@icons/remove.png" />
-	                  </image>
-	               </ImageView>
-	            </graphic>
-	         </Button>
-	      </children>
-	      <opaqueInsets>
-	         <Insets />
-	      </opaqueInsets>
-         <padding>
-            <Insets bottom="2.0" top="2.0" />
-         </padding>
-	   </HBox>
-   </bottom>
 </BorderPane>

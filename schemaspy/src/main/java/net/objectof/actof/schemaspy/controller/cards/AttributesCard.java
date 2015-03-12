@@ -2,6 +2,7 @@ package net.objectof.actof.schemaspy.controller.cards;
 
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -15,11 +16,15 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.util.StringConverter;
 import net.objectof.actof.common.controller.change.Change;
 import net.objectof.actof.common.controller.schema.AttributeEntry;
 import net.objectof.actof.common.controller.schema.schemaentry.SchemaEntry;
+import net.objectof.actof.repospy.controllers.navigator.editor.layout.IndexedView;
 import net.objectof.actof.schemaspy.SchemaSpyController;
 
 import org.controlsfx.dialog.DialogStyle;
@@ -42,6 +47,21 @@ public class AttributesCard extends SchemaSpyCard {
     @Override
     public void init(SchemaSpyController schemaspy, List<AttributeEntry> unhandled) {
 
+        URL css = AttributesCard.class.getResource("style.css");
+        this.getStylesheets().add(css.toString());
+
+        Image addimg = new Image(IndexedView.class.getResourceAsStream("../icons/add.png"));
+        Image remimg = new Image(IndexedView.class.getResourceAsStream("../icons/remove.png"));
+
+        add = new Button("", new ImageView(addimg));
+        remove = new Button("", new ImageView(remimg));
+        HBox buttonBox = new HBox(2, add, remove);
+
+        add.getStyleClass().add("tool-bar-button");
+        remove.getStyleClass().add("tool-bar-button");
+
+        setDescription(buttonBox);
+
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("AttributeCard.fxml"));
         try {
@@ -52,8 +72,6 @@ public class AttributesCard extends SchemaSpyCard {
             namespace = (TableColumn<AttributeEntry, String>) loader.getNamespace().get("namespace");
             attrname = (TableColumn<AttributeEntry, String>) loader.getNamespace().get("name");
             attrvalue = (TableColumn<AttributeEntry, String>) loader.getNamespace().get("value");
-            add = (Button) loader.getNamespace().get("add");
-            remove = (Button) loader.getNamespace().get("remove");
 
             table.getItems().setAll(unhandled);
 
