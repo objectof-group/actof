@@ -55,7 +55,7 @@ public class ILeafNode extends ObservableValueBase<ILeafNode> {
 
     @Override
     public String toString() {
-        if (value == null) { return "null"; }
+        if (value == null) { return "<null>"; }
         return RepoUtils.resToString(value);
     }
 

@@ -60,6 +60,17 @@ public class RepoUtils {
         return o.toString();
     }
 
+    public static String prettyPrint(Object o) {
+        if (o == null) { return "null"; }
+
+        if (isResource(o)) {
+            Resource<?> res = (Resource<?>) o;
+            return prettyPrintRes(res);
+        }
+
+        return o.toString();
+    }
+
     public static String prettyPrintRes(Resource<?> res) {
         String name = res.id().kind().getComponentName();
         if (res instanceof IComposite) {

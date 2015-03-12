@@ -20,8 +20,8 @@ public abstract class AggregateView extends AbstractView {
 
     private Card controlCard = new Card();
 
-    protected Image addimg = new Image(IndexedView.class.getResourceAsStream("../icons/add.png"));
-    protected Image remimg = new Image(IndexedView.class.getResourceAsStream("../icons/remove.png"));
+    public static Image addimg = new Image(IndexedView.class.getResourceAsStream("../icons/add.png"));
+    public static Image remimg = new Image(IndexedView.class.getResourceAsStream("../icons/remove.png"));
     protected boolean capitalize = true;
     protected IAggregateNode entry;
 

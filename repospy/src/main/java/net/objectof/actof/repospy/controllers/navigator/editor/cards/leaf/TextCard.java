@@ -19,7 +19,11 @@ public class TextCard extends LeafCard {
     public TextCard(ILeafNode entry, boolean capitalize) {
         super(entry, capitalize);
 
-        String contents = entry.getFieldValue().toString();
+        String contents = "";
+
+        if (entry.getFieldValue() != null) {
+            contents = entry.getFieldValue().toString();
+        }
 
         if (contents.contains("\n")) {
             createTextArea(entry);
@@ -30,7 +34,7 @@ public class TextCard extends LeafCard {
 
     private void createTextField(ILeafNode entry) {
         TextField node = new TextField();
-        node.setText(entry.toString());
+        node.setText(textFromLeaf(entry));
         node.textProperty().addListener((obs, o, n) -> {
             getEntry().userInputString(n);
         });
@@ -48,7 +52,7 @@ public class TextCard extends LeafCard {
 
     private void createTextArea(ILeafNode entry) {
         TextArea node = new TextArea();
-        node.setText(entry.toString());
+        node.setText(textFromLeaf(entry));
         node.textProperty().addListener((obs, o, n) -> {
             getEntry().userInputString(n);
         });
@@ -56,4 +60,8 @@ public class TextCard extends LeafCard {
         setContent(node);
     }
 
+    private String textFromLeaf(ILeafNode entry) {
+        if (entry.getFieldValue() == null) { return null; }
+        return entry.getFieldValue().toString();
+    }
 }

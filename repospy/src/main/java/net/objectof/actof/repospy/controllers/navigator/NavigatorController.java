@@ -7,9 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Optional;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -42,7 +40,6 @@ import net.objectof.actof.common.controller.repository.RepositoryReplacedChange;
 import net.objectof.actof.common.controller.search.QueryChange;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.repospy.RepoSpyController;
-import net.objectof.actof.repospy.changes.EntityCreatedChange;
 import net.objectof.actof.repospy.controllers.navigator.editor.layout.CompositeView;
 import net.objectof.actof.repospy.controllers.navigator.editor.layout.IndexedView;
 import net.objectof.actof.repospy.controllers.navigator.editor.layout.KindView;
@@ -90,8 +87,6 @@ public class NavigatorController extends IActofUIController {
     private Button review;
     @FXML
     private Button revert;
-    @FXML
-    private Button addEntity;
     @FXML
     private Button dump, load;
     @FXML
@@ -188,28 +183,6 @@ public class NavigatorController extends IActofUIController {
         Writer writer = new FileWriter(file);
         writer.write(repospy.repository.dump());
         writer.close();
-    }
-
-    /* FXML Hook */
-    public void doAddEntity() {
-
-        Optional<String> kind = Dialogs
-                .create()
-                .title("Create New Entry")
-                // .masthead("Create New Entry")
-                .message("Entity Kind")
-                .showChoices(
-                        repospy.repository.getEntities().stream().map(k -> k.getComponentName())
-                                .collect(Collectors.toList()));
-
-        if (!kind.isPresent()) { return; }
-
-        Resource<?> newEntity = repospy.repository.getStagingTx().create(kind.get());
-        EntityCreatedChange change = new EntityCreatedChange(newEntity);
-        repospy.getChangeBus().broadcast(change);
-        repospy.repository.addTransientEntity(newEntity);
-        refreshEntityTree();
-
     }
 
     /* FXML Hook */
@@ -312,7 +285,6 @@ public class NavigatorController extends IActofUIController {
     private void onRepositoryReplacedChange() {
         populateEntityTree();
         populateQueryEntityChoice();
-        addEntity.setDisable(false);
         revert.setDisable(false);
         dump.setDisable(false);
         load.setDisable(false);
@@ -362,29 +334,7 @@ public class NavigatorController extends IActofUIController {
     }
 
     private void populateEntityTree() {
-
         root.updateChildren();
-
-        // List<Kind<?>> entities = repospy.repository.getEntities();
-        //
-        // // repopulate tree
-        // TreeItem<TreeNode> root = records.getRoot();
-        // root.getChildren().clear();
-        // for (Kind<?> kind : entities) {
-        //
-        // String kindname = kind.getComponentName();
-        // if (repospy.search.isValid() &&
-        // !repospy.search.getKind().equals(kindname)) {
-        // continue;
-        // }
-        //
-        // RepoSpyTreeItem item = new RepoSpyTreeItem(new
-        // IKindNode(kind.getComponentName()), repospy);
-        // item.setExpanded(repospy.search.isValid());
-        // root.getChildren().add(item);
-        //
-        // }
-
     }
 
     private void refreshEntityTree() {
