@@ -56,7 +56,7 @@
 .menu-button > .arrow-button > .arrow {
     -fx-background-color: transparent, transparent;
     -fx-background-insets: 0 0 0 0, 0;
-    -fx-padding: 0em;
+    -fx-padding: 0;
 }
 
 .menu-button:openvertically > .arrow-button > .arrow {
@@ -67,4 +67,12 @@
 
 .menu-button > .arrow-button {
     -fx-padding: 0;
+}
+
+.menu-button {
+	-fx-padding: 5px;
+}
+
+.menu-button > .label {
+	-fx-padding: 0px;
 }

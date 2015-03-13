@@ -22,6 +22,8 @@ public class Card extends AnchorPane {
 
     protected int radius = 5;
     protected String colour = "#ffffff";
+    private String shadowColour = "#777";
+    private int shadowRadius = 8;
 
     protected Node node;
 
@@ -51,6 +53,16 @@ public class Card extends AnchorPane {
             setPadding(new Insets(6));
 
             getChildren().add(top);
+
+            focusedProperty().addListener(change -> {
+                if (isFocused()) {
+                    setShadowColour("#444");
+                    setShadowRadius(10);
+                } else {
+                    setShadowColour("#777");
+                    setShadowRadius(8);
+                }
+            });
 
         }
         catch (IOException e) {
@@ -171,18 +183,29 @@ public class Card extends AnchorPane {
         return radius;
     }
 
-    protected String getColour() {
+    public String getColour() {
         return colour;
     }
 
-    protected void setColour(String colour) {
+    public void setColour(String colour) {
         this.colour = colour;
+        buildStyle();
+    }
+
+    protected void setShadowColour(String colour) {
+        this.shadowColour = colour;
+        buildStyle();
+    }
+
+    protected void setShadowRadius(int rad) {
+        this.shadowRadius = rad;
         buildStyle();
     }
 
     private void buildStyle() {
         String rad = "-fx-background-radius: " + radius + "px; ";
         String col = "-fx-background-color: " + colour + "; ";
-        content.setStyle(rad + col + " -fx-effect: dropshadow(gaussian, #777, 8, -2, 0, 1)");
+        content.setStyle(rad + col + " -fx-effect: dropshadow(gaussian, " + shadowColour + " , " + shadowRadius
+                + ", -2, 0, 1)");
     }
 }
