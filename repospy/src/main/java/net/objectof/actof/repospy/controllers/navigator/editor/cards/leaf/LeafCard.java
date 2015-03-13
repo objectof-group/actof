@@ -34,7 +34,7 @@ public abstract class LeafCard extends Card {
 
         switch (entry.getStereotype()) {
             case BOOL:
-                return new TextCard(entry, capitalize);
+                return new BooleanCard(entry, capitalize);
             case INT:
                 return new IntegerCard(entry, capitalize);
             case MOMENT:
@@ -59,5 +59,4 @@ public abstract class LeafCard extends Card {
 
         }
     }
-
 }

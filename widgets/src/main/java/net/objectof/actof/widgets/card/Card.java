@@ -71,6 +71,7 @@ public class Card extends AnchorPane {
 
     public void setTitle(Node titleNode) {
         titleBox.getChildren().clear();
+        if (titleNode == null) { return; }
         AnchorPane.setTopAnchor(titleNode, 0d);
         AnchorPane.setBottomAnchor(titleNode, 0d);
         AnchorPane.setLeftAnchor(titleNode, 0d);
@@ -94,6 +95,7 @@ public class Card extends AnchorPane {
 
     public void setDescription(Node descriptionNode) {
         descriptionBox.getChildren().clear();
+        if (descriptionNode == null) { return; }
         AnchorPane.setTopAnchor(descriptionNode, 0d);
         AnchorPane.setBottomAnchor(descriptionNode, 0d);
         AnchorPane.setLeftAnchor(descriptionNode, 0d);
@@ -117,8 +119,8 @@ public class Card extends AnchorPane {
     }
 
     public void setContent(Node node, boolean expanding) {
+        contentBox.getChildren().clear();
         if (node == null) {
-            contentBox.getChildren().clear();
             node = null;
             return;
         }
@@ -138,6 +140,7 @@ public class Card extends AnchorPane {
 
     public void setTitleContent(Node node) {
         titleContentBox.getChildren().clear();
+        if (node == null) { return; }
         titleContentBox.getChildren().add(node);
     }
 
