@@ -65,4 +65,8 @@ public class ReferenceCard extends SchemaSpyCard {
         return "Reference Target";
     }
 
+    protected boolean inline() {
+        return true;
+    }
+
 }

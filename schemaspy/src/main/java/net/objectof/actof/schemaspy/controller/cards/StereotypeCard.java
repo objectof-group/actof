@@ -51,4 +51,8 @@ public class StereotypeCard extends SchemaSpyCard {
         return choice;
     }
 
+    protected boolean inline() {
+        return true;
+    }
+
 }

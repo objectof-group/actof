@@ -31,7 +31,11 @@ public abstract class SchemaSpyCard extends Card {
         schemaEntry = entry;
         init(schemaspy, unhandled);
         setTitle(getName());
-        setContent(getNode(), true);
+        if (inline()) {
+            setTitleContent(getNode());
+        } else {
+            setContent(getNode(), true);
+        }
     }
 
     protected abstract void init(SchemaSpyController schemaspy, List<AttributeEntry> unhandled);
@@ -42,6 +46,10 @@ public abstract class SchemaSpyCard extends Card {
 
     protected SchemaEntry getSchemaEntry() {
         return schemaEntry;
+    }
+
+    protected boolean inline() {
+        return false;
     }
 
 }
