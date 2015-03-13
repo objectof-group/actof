@@ -73,11 +73,12 @@ public class RepoUtils {
 
     public static String prettyPrintRes(Resource<?> res) {
         String name = res.id().kind().getComponentName();
+        String[] parts = name.split("\\.");
+        name = parts[parts.length - 1];
+
         if (res instanceof IComposite) {
             return name + " #" + res.id().label().toString();
         } else {
-            String[] parts = name.split("\\.");
-            name = parts[parts.length - 1];
             return name;
         }
     }
