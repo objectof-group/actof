@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
 <?import javafx.scene.image.*?>
 <?import org.controlsfx.control.*?>
 <?import javafx.scene.text.*?>
@@ -67,30 +68,19 @@
                      </tooltip>
                   </Button>
                   <HBox fx:id="breadcrumbBox" alignment="CENTER_LEFT" fillHeight="false" HBox.hgrow="ALWAYS" />
-                  <Button fx:id="dump" disable="true" mnemonicParsing="false" onAction="#onDump" styleClass="tool-bar-button">
+                  <MenuButton mnemonicParsing="false" styleClass="tool-bar-button">
+                    <items>
+                      <MenuItem fx:id="dump" mnemonicParsing="false" onAction="#onDump" text="Dump to JSON" />
+                      <MenuItem fx:id="load" mnemonicParsing="false" onAction="#onLoad" text="Load from JSON" />
+                    </items>
                      <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@icons/dump.png" />
+                              <Image url="@icons/menu.png" />
                            </image>
                         </ImageView>
                      </graphic>
-                     <tooltip>
-                        <Tooltip text="Dump repo to json file" />
-                     </tooltip>
-                  </Button>
-                  <Button fx:id="load" disable="true" mnemonicParsing="false" onAction="#onLoad" styleClass="tool-bar-button">
-                     <graphic>
-                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@icons/import.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                     <tooltip>
-                        <Tooltip text="Import repo from json file" />
-                     </tooltip>
-                  </Button>
+                  </MenuButton>
                </children>
                <padding>
                   <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
