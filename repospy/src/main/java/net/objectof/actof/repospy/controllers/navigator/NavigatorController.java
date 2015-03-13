@@ -219,6 +219,7 @@ public class NavigatorController extends IActofUIController {
         root = new RepoSpyTreeItem(rootNode, repospy);
 
         breadcrumb = new BreadCrumbBar<>();
+        breadcrumb.setFocusTraversable(false);
         Callback<TreeItem<TreeNode>, Button> breadCrumbFactory = breadcrumb.getCrumbFactory();
         breadcrumb.setCrumbFactory(item -> {
             Button b = breadCrumbFactory.call(item);
