@@ -4,6 +4,7 @@ package net.objectof.actof.repospy.controllers.navigator.editor.cards;
 import javafx.geometry.Insets;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import net.objectof.actof.common.util.RepoUtils;
 import net.objectof.actof.repospy.RepoSpyController;
@@ -54,6 +55,12 @@ public class EntityCard extends Card {
             fields.add(valueLabel, 1, row);
             row++;
         }
+
+        ColumnConstraints constraints;
+
+        constraints = new ColumnConstraints();
+        constraints.setMinWidth(100);
+        fields.getColumnConstraints().add(constraints);
 
     }
 }

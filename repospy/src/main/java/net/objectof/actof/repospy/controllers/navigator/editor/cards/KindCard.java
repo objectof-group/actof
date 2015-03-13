@@ -4,6 +4,7 @@ package net.objectof.actof.repospy.controllers.navigator.editor.cards;
 import javafx.geometry.Insets;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import net.objectof.actof.common.util.RepoUtils;
 import net.objectof.actof.repospy.RepoSpyController;
@@ -32,6 +33,7 @@ public class KindCard extends Card {
         GridPane fields = new GridPane();
         fields.setHgap(10);
         fields.setPadding(new Insets(0, 0, 0, 20));
+
         setContent(fields);
 
         node.getKind().getParts();
@@ -44,10 +46,6 @@ public class KindCard extends Card {
             keyString = keyParts[keyParts.length - 1];
 
             String valueString = RepoUtils.resToString(part.getStereotype());
-            if (valueString.length() > 100) {
-                valueString = valueString.substring(0, 100);
-            }
-
             Label keyLabel = new Label(keyString);
             Label valueLabel = new Label(valueString);
 
@@ -58,6 +56,12 @@ public class KindCard extends Card {
             fields.add(valueLabel, 1, row);
             row++;
         }
+
+        ColumnConstraints constraints;
+
+        constraints = new ColumnConstraints();
+        constraints.setMinWidth(100);
+        fields.getColumnConstraints().add(constraints);
 
     }
 }

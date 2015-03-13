@@ -42,3 +42,13 @@
 .tool-bar-button:focused {
 	-fx-background-color: -fx-focus-color, -fx-inner-border, -fx-body-color, -fx-faint-focus-color, -fx-body-color;
 }
+
+
+.titled-pane > .title {
+	    -fx-background-insets: -1 0 0 -1, 0 1 1 0, 1 2 2 1;
+    -fx-background-radius: 0 0 0 0, 0 0 0 0, 0 0 0 0;
+}
+
+.titled-pane > *.content {
+    -fx-border-insets: -1 0 0 -1;
+}

@@ -102,7 +102,7 @@
    <left>
       <VBox prefWidth="250.0" BorderPane.alignment="CENTER">
          <children>
-            <TitledPane expanded="false" text="Search">
+            <TitledPane collapsible="false" text="Search" VBox.vgrow="ALWAYS">
                <content>
                   <VBox spacing="6.0">
                      <children>
@@ -112,7 +112,11 @@
                   </VBox>
                </content>
             </TitledPane>
-            <TreeView fx:id="records" prefHeight="200.0" prefWidth="200.0" styleClass="entities" VBox.vgrow="ALWAYS" />
+            <TitledPane collapsible="false" text="Entities">
+               <content>
+                  <TreeView fx:id="records" prefWidth="200.0" styleClass="entities" />
+               </content>
+            </TitledPane>
          </children>
       </VBox>
    </left>
