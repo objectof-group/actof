@@ -8,6 +8,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import net.objectof.actof.repospy.controllers.navigator.editor.layout.IndexedView;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.ILeafNode;
 
@@ -38,16 +39,18 @@ public class TextCard extends LeafCard {
         node.textProperty().addListener((obs, o, n) -> {
             getEntry().userInputString(n);
         });
+        HBox.setHgrow(node, Priority.ALWAYS);
 
         Button expand = new Button("", new ImageView(expimg));
         expand.setTooltip(new Tooltip("Expand to multiline text field"));
+        expand.getStyleClass().add("tool-bar-button");
         expand.setOnAction(action -> {
             createTextArea(entry);
         });
 
         HBox content = new HBox(6, node, expand);
 
-        setTitleContent(content);
+        setContent(content, true);
     }
 
     private void createTextArea(ILeafNode entry) {
@@ -56,7 +59,6 @@ public class TextCard extends LeafCard {
         node.textProperty().addListener((obs, o, n) -> {
             getEntry().userInputString(n);
         });
-        setTitleContent(null);
         setContent(node);
     }
 
