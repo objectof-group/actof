@@ -15,15 +15,15 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.util.StringConverter;
 import net.objectof.actof.common.controller.change.Change;
 import net.objectof.actof.common.controller.schema.AttributeEntry;
 import net.objectof.actof.common.controller.schema.schemaentry.SchemaEntry;
-import net.objectof.actof.repospy.controllers.navigator.editor.layout.IndexedLayout;
+import net.objectof.actof.common.icons.ActofIcons;
+import net.objectof.actof.common.icons.ActofIcons.Icon;
+import net.objectof.actof.common.icons.ActofIcons.Size;
 import net.objectof.actof.schemaspy.SchemaSpyController;
 
 import org.controlsfx.dialog.Dialogs;
@@ -48,11 +48,8 @@ public class AttributesCard extends SchemaSpyCard {
         URL css = AttributesCard.class.getResource("style.css");
         this.getStylesheets().add(css.toString());
 
-        Image addimg = new Image(IndexedLayout.class.getResourceAsStream("../icons/add.png"));
-        Image remimg = new Image(IndexedLayout.class.getResourceAsStream("../icons/remove.png"));
-
-        add = new Button("", new ImageView(addimg));
-        remove = new Button("", new ImageView(remimg));
+        add = new Button("", ActofIcons.getIconView(Icon.ADD, Size.BUTTON));
+        remove = new Button("", ActofIcons.getIconView(Icon.REMOVE, Size.BUTTON));
         HBox buttonBox = new HBox(2, add, remove);
 
         add.getStyleClass().add("tool-bar-button");

@@ -4,10 +4,11 @@ package net.objectof.actof.repospy.controllers.navigator.editor.layout;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import net.objectof.actof.common.icons.ActofIcons;
+import net.objectof.actof.common.icons.ActofIcons.Icon;
+import net.objectof.actof.common.icons.ActofIcons.Size;
 import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.actof.repospy.controllers.navigator.editor.cards.leaf.LeafCard;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.RepoSpyTreeItem;
@@ -20,8 +21,6 @@ public abstract class AggregateLayout extends AbstractLayout {
 
     private Card controlCard = new Card();
 
-    private static Image addimg = new Image(AggregateLayout.class.getResourceAsStream("icons/add.png"));
-    private static Image remimg = new Image(AggregateLayout.class.getResourceAsStream("icons/remove.png"));
     protected boolean capitalize = true;
     protected IAggregateNode entry;
 
@@ -29,7 +28,7 @@ public abstract class AggregateLayout extends AbstractLayout {
         super(treeitem, repospy);
         this.entry = (IAggregateNode) treeitem.getValue();
 
-        Button add = new Button("", new ImageView(addimg));
+        Button add = new Button("", ActofIcons.getIconView(Icon.ADD, Size.BUTTON));
         add.setOnAction(action -> {
             onAdd();
         });
@@ -63,7 +62,7 @@ public abstract class AggregateLayout extends AbstractLayout {
             AnchorPane.setRightAnchor(desc, 0d);
             desc = new AnchorPane(desc);
 
-            Button rem = new Button("", new ImageView(remimg));
+            Button rem = new Button("", ActofIcons.getIconView(Icon.REMOVE, Size.BUTTON));
             rem.setOnAction(action -> {
                 onRemove(leaf);
             });

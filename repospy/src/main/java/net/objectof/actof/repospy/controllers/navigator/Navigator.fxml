@@ -90,9 +90,9 @@
       </VBox>
    </top>
    <left>
-      <VBox prefWidth="250.0" BorderPane.alignment="CENTER">
+      <VBox fx:id="sidebar" prefWidth="250.0" BorderPane.alignment="CENTER">
          <children>
-            <TitledPane style="-fx-alignment: center;" text="Search" textAlignment="CENTER" VBox.vgrow="ALWAYS">
+            <TitledPane fx:id="searchPane" style="-fx-alignment: center;" text="Search" textAlignment="CENTER" VBox.vgrow="ALWAYS">
                <content>
                   <VBox spacing="6.0">
                      <children>
@@ -105,7 +105,7 @@
                   <Font name="System Bold" size="13.0" />
                </font>
             </TitledPane>
-            <TitledPane collapsible="false" style="-fx-alignment: center;" text="Entities" textAlignment="CENTER">
+            <TitledPane fx:id="entitiesPane" collapsible="false" style="-fx-alignment: center;" text="Entities" textAlignment="CENTER">
                <content>
                   <TreeView fx:id="records" prefWidth="200.0" styleClass="entities" />
                </content>

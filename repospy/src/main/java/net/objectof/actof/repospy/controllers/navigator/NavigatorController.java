@@ -17,6 +17,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
@@ -31,6 +32,7 @@ import javafx.scene.input.KeyCombination.Modifier;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.util.Callback;
@@ -62,58 +64,48 @@ import org.controlsfx.dialog.Dialogs;
 
 public class NavigatorController extends IActofUIController {
 
-    public RepoSpyController repospy;
-    private boolean isQuerying = false;
-
     @FXML
-    private BorderPane toppane;
-
-    @FXML
-    private BorderPane fieldEditor;
-
+    private BorderPane toppane, fieldEditor;
     @FXML
     private HBox breadcrumbBox;
-    private BreadCrumbBar<TreeNode> breadcrumb;
-
+    @FXML
+    private VBox sidebar;
     @FXML
     private Node editorBox;
-
     @FXML
     private TextField querytext;
     @FXML
-    private Button connect;
-    @FXML
-    private Button commit;
-    @FXML
-    private Button review;
-    @FXML
-    private Button revert;
+    private Button connect, commit, review, revert;
     @FXML
     private MenuItem dump, load;
     @FXML
     private ChoiceBox<String> queryEntity;
-
     @FXML
     private ImageView revert_image;
     @FXML
     private Tooltip revert_tooltip;
-
     @FXML
     private TreeView<TreeNode> records;
+    @FXML
+    private TitledPane searchPane, entitiesPane;
+
+    public RepoSpyController repospy;
+    private boolean isQuerying = false;
+
+    private BreadCrumbBar<TreeNode> breadcrumb;
 
     private RepoSpyTreeItem root;
     private IRootNode rootNode;
 
     @Override
     @FXML
-    protected void initialize() {
-
-    }
+    protected void initialize() {}
 
     @Override
     public void ready() {
         getChangeBus().listen(this::onChange);
         getChangeBus().listen(ResourceSelectedChange.class, this::onResourceSelect);
+        // sidebar.getChildren().remove(searchPane);
     }
 
     private void onResourceSelect(ResourceSelectedChange change) {

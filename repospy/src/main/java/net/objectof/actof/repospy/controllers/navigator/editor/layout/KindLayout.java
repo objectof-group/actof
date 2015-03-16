@@ -4,8 +4,9 @@ package net.objectof.actof.repospy.controllers.navigator.editor.layout;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.TreeItem;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import net.objectof.actof.common.icons.ActofIcons;
+import net.objectof.actof.common.icons.ActofIcons.Icon;
+import net.objectof.actof.common.icons.ActofIcons.Size;
 import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.actof.repospy.changes.EntityCreatedChange;
 import net.objectof.actof.repospy.controllers.navigator.editor.cards.EntityCard;
@@ -27,10 +28,7 @@ public class KindLayout extends AbstractLayout {
         this.node = (IKindNode) treeitem.getValue();
         this.treeitem = treeitem;
 
-        Image addimg = new Image(KindLayout.class.getResourceAsStream("icons/add.png"));
-        Image remimg = new Image(KindLayout.class.getResourceAsStream("icons/remove.png"));
-
-        Button add = new Button("", new ImageView(addimg));
+        Button add = new Button("", ActofIcons.getIconView(Icon.ADD, Size.BUTTON));
         add.setOnAction(event -> {
             Resource<?> newEntity = repospy.repository.getStagingTx().create(node.getKind().getComponentName());
             EntityCreatedChange change = new EntityCreatedChange(newEntity);
