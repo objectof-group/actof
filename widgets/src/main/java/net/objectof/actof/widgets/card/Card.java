@@ -16,12 +16,12 @@ import javafx.scene.layout.Priority;
 
 public class Card extends AnchorPane {
 
-    protected BorderPane top, content;
-    protected HBox contentBox, titleContentBox;
-    protected AnchorPane titleBox, descriptionBox;
+    private BorderPane top, content;
+    private HBox contentBox, titleContentBox;
+    private AnchorPane titleBox, descriptionBox;
 
-    protected int radius = 5;
-    protected String colour = "#ffffff";
+    private int radius = 5;
+    private String colour = "#ffffff";
     private String shadowColour = "#777";
     private int shadowRadius = 8;
 
