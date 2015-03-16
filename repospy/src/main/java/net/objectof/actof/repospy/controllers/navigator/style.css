@@ -4,13 +4,13 @@
 
 .entities {
 	-fx-background-insets: 0, 1;
-    -fx-padding: 0 0 1 0;
+    -fx-padding: 0 1 0 0;
 }
 
 .entities:focused {
     -fx-background-color: -fx-box-border, -fx-control-inner-background;
 	-fx-background-insets: 0, 1;
-    -fx-padding: 0 0 1 0;
+    -fx-padding: 0 1 0 0;
 }
 
 

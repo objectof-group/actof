@@ -50,5 +50,4 @@ public class ReferenceCard extends LeafCard {
         List<Resource<?>> resources = StreamSupport.stream(resiter.spliterator(), false).collect(Collectors.toList());
         return resources;
     }
-
 }
