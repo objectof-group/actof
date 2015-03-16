@@ -68,6 +68,8 @@ public class RepoUtils {
             return prettyPrintRes(res);
         }
 
+        if (o instanceof Stereotype) { return prettyPrintStereotype((Stereotype) o); }
+
         return o.toString();
     }
 
@@ -80,6 +82,33 @@ public class RepoUtils {
             return name + " #" + res.id().label().toString();
         } else {
             return name;
+        }
+    }
+
+    public static String prettyPrintStereotype(Stereotype st) {
+        switch (st) {
+            case BOOL:
+                return "Boolean";
+            case NUM:
+                return "Real Number";
+            case REF:
+                return "Reference";
+            case INT:
+                return "Integer";
+            case FN:
+                return "Function";
+
+            case TEXT:
+            case COMPOSED:
+            case INDEXED:
+            case MAPPED:
+            case MEDIA:
+            case MOMENT:
+            case NIL:
+            case SET:
+            default:
+                String pretty = st.toString().toLowerCase();
+                return pretty.substring(0, 1).toUpperCase() + pretty.substring(1);
         }
     }
 

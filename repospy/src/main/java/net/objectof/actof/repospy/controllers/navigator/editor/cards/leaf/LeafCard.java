@@ -1,6 +1,7 @@
 package net.objectof.actof.repospy.controllers.navigator.editor.cards.leaf;
 
 
+import net.objectof.actof.common.util.RepoUtils;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.ILeafNode;
 import net.objectof.actof.widgets.card.Card;
 
@@ -12,7 +13,7 @@ public abstract class LeafCard extends Card {
     public LeafCard(ILeafNode entry, boolean capitalize) {
         this.entry = entry;
         setTitle(getLeafTitle(capitalize));
-        setDescription(entry.getStereotype().toString());
+        setDescription(RepoUtils.prettyPrintStereotype(entry.getStereotype()));
     }
 
     protected String getLeafTitle(boolean capitalize) {
