@@ -41,11 +41,11 @@ import net.objectof.actof.common.controller.repository.RepositoryReplacedChange;
 import net.objectof.actof.common.controller.search.QueryChange;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.repospy.RepoSpyController;
-import net.objectof.actof.repospy.controllers.navigator.editor.layout.CompositeView;
-import net.objectof.actof.repospy.controllers.navigator.editor.layout.IndexedView;
-import net.objectof.actof.repospy.controllers.navigator.editor.layout.KindView;
-import net.objectof.actof.repospy.controllers.navigator.editor.layout.MappedView;
-import net.objectof.actof.repospy.controllers.navigator.editor.layout.PackageView;
+import net.objectof.actof.repospy.controllers.navigator.editor.layout.CompositeLayout;
+import net.objectof.actof.repospy.controllers.navigator.editor.layout.IndexedLayout;
+import net.objectof.actof.repospy.controllers.navigator.editor.layout.KindLayout;
+import net.objectof.actof.repospy.controllers.navigator.editor.layout.MappedLayout;
+import net.objectof.actof.repospy.controllers.navigator.editor.layout.PackageLayout;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.RepoSpyTreeItem;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.TreeNode;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.IAggregateNode;
@@ -127,16 +127,16 @@ public class NavigatorController extends IActofUIController {
             IAggregateNode resnode = (IAggregateNode) node;
 
             if (resnode.getStereotype() == Stereotype.INDEXED) {
-                editorBox = new IndexedView(treeitem, repospy);
+                editorBox = new IndexedLayout(treeitem, repospy);
             } else if (resnode.getStereotype() == Stereotype.MAPPED) {
-                editorBox = new MappedView(treeitem, repospy);
+                editorBox = new MappedLayout(treeitem, repospy);
             } else {
-                editorBox = new CompositeView(treeitem, repospy);
+                editorBox = new CompositeLayout(treeitem, repospy);
             }
         } else if (node instanceof IKindNode) {
-            editorBox = new KindView(treeitem, repospy);
+            editorBox = new KindLayout(treeitem, repospy);
         } else if (node instanceof IRootNode) {
-            editorBox = new PackageView(treeitem, repospy);
+            editorBox = new PackageLayout(treeitem, repospy);
         } else {
             editorBox = null;
         }

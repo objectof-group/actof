@@ -37,8 +37,7 @@ public class SavedConnections {
         catch (Exception e) {
 
             try {
-                InputStream input = SavedConnections.class.getClassLoader().getResourceAsStream(
-                        "packages/connections.xml");
+                InputStream input = SavedConnections.class.getResourceAsStream("/packages/connections.xml");
                 Package repo = settings.createPackage(input);
                 populate(repo);
                 return repo;

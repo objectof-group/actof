@@ -16,16 +16,16 @@ import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.ILeafNod
 import net.objectof.actof.widgets.card.Card;
 
 
-public abstract class AggregateView extends AbstractView {
+public abstract class AggregateLayout extends AbstractLayout {
 
     private Card controlCard = new Card();
 
-    public static Image addimg = new Image(IndexedView.class.getResourceAsStream("../icons/add.png"));
-    public static Image remimg = new Image(IndexedView.class.getResourceAsStream("../icons/remove.png"));
+    private static Image addimg = new Image(AggregateLayout.class.getResourceAsStream("icons/add.png"));
+    private static Image remimg = new Image(AggregateLayout.class.getResourceAsStream("icons/remove.png"));
     protected boolean capitalize = true;
     protected IAggregateNode entry;
 
-    public AggregateView(RepoSpyTreeItem treeitem, RepoSpyController repospy) {
+    public AggregateLayout(RepoSpyTreeItem treeitem, RepoSpyController repospy) {
         super(treeitem, repospy);
         this.entry = (IAggregateNode) treeitem.getValue();
 

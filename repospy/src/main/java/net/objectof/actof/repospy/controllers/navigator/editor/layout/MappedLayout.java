@@ -10,11 +10,11 @@ import net.objectof.aggr.Mapping;
 import org.controlsfx.dialog.Dialogs;
 
 
-public class MappedView extends AggregateView {
+public class MappedLayout extends AggregateLayout {
 
     private TextField keyField = new TextField();
 
-    public MappedView(RepoSpyTreeItem treeitem, RepoSpyController repospy) {
+    public MappedLayout(RepoSpyTreeItem treeitem, RepoSpyController repospy) {
         super(treeitem, repospy);
         getControlCard().setTitleContent(keyField);
         capitalize = false;

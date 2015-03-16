@@ -8,11 +8,11 @@ import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.IAggrega
 import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.ILeafNode;
 
 
-public class CompositeView extends AbstractView {
+public class CompositeLayout extends AbstractLayout {
 
     private IAggregateNode entry;
 
-    public CompositeView(RepoSpyTreeItem treeitem, RepoSpyController repospy) {
+    public CompositeLayout(RepoSpyTreeItem treeitem, RepoSpyController repospy) {
         super(treeitem, repospy);
         this.entry = (IAggregateNode) treeitem.getValue();
         updateUI();

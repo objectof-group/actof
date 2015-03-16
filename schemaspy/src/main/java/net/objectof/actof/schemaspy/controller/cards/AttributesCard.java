@@ -23,7 +23,7 @@ import javafx.util.StringConverter;
 import net.objectof.actof.common.controller.change.Change;
 import net.objectof.actof.common.controller.schema.AttributeEntry;
 import net.objectof.actof.common.controller.schema.schemaentry.SchemaEntry;
-import net.objectof.actof.repospy.controllers.navigator.editor.layout.IndexedView;
+import net.objectof.actof.repospy.controllers.navigator.editor.layout.IndexedLayout;
 import net.objectof.actof.schemaspy.SchemaSpyController;
 
 import org.controlsfx.dialog.Dialogs;
@@ -48,8 +48,8 @@ public class AttributesCard extends SchemaSpyCard {
         URL css = AttributesCard.class.getResource("style.css");
         this.getStylesheets().add(css.toString());
 
-        Image addimg = new Image(IndexedView.class.getResourceAsStream("../icons/add.png"));
-        Image remimg = new Image(IndexedView.class.getResourceAsStream("../icons/remove.png"));
+        Image addimg = new Image(IndexedLayout.class.getResourceAsStream("../icons/add.png"));
+        Image remimg = new Image(IndexedLayout.class.getResourceAsStream("../icons/remove.png"));
 
         add = new Button("", new ImageView(addimg));
         remove = new Button("", new ImageView(remimg));

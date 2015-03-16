@@ -8,14 +8,14 @@ import net.objectof.actof.repospy.controllers.navigator.treemodel.RepoSpyTreeIte
 import net.objectof.actof.widgets.card.CardsPane;
 
 
-public abstract class AbstractView extends BorderPane {
+public abstract class AbstractLayout extends BorderPane {
 
     protected CardsPane cards = new CardsPane();
     protected ScrollPane scroll = new ScrollPane(cards);
     protected RepoSpyController repospy;
     protected RepoSpyTreeItem treeitem;
 
-    public AbstractView(RepoSpyTreeItem treeitem, RepoSpyController repospy) {
+    public AbstractLayout(RepoSpyTreeItem treeitem, RepoSpyController repospy) {
 
         this.repospy = repospy;
         this.treeitem = treeitem;

@@ -8,9 +8,9 @@ import net.objectof.aggr.Listing;
 import net.objectof.model.Resource;
 
 
-public class IndexedView extends AggregateView {
+public class IndexedLayout extends AggregateLayout {
 
-    public IndexedView(RepoSpyTreeItem treeitem, RepoSpyController repospy) {
+    public IndexedLayout(RepoSpyTreeItem treeitem, RepoSpyController repospy) {
         super(treeitem, repospy);
         updateUI();
     }

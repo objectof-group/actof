@@ -4,6 +4,7 @@ package net.objectof.actof.repospy.controllers.navigator.editor.layout;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.TreeItem;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.actof.repospy.changes.EntityCreatedChange;
@@ -16,17 +17,20 @@ import net.objectof.actof.widgets.card.Card;
 import net.objectof.model.Resource;
 
 
-public class KindView extends AbstractView {
+public class KindLayout extends AbstractLayout {
 
     private IKindNode node;
     private Card controlCard = new Card();
 
-    public KindView(RepoSpyTreeItem treeitem, RepoSpyController repospy) {
+    public KindLayout(RepoSpyTreeItem treeitem, RepoSpyController repospy) {
         super(treeitem, repospy);
         this.node = (IKindNode) treeitem.getValue();
         this.treeitem = treeitem;
 
-        Button add = new Button("", new ImageView(AggregateView.addimg));
+        Image addimg = new Image(KindLayout.class.getResourceAsStream("icons/add.png"));
+        Image remimg = new Image(KindLayout.class.getResourceAsStream("icons/remove.png"));
+
+        Button add = new Button("", new ImageView(addimg));
         add.setOnAction(event -> {
             Resource<?> newEntity = repospy.repository.getStagingTx().create(node.getKind().getComponentName());
             EntityCreatedChange change = new EntityCreatedChange(newEntity);

@@ -9,13 +9,12 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import net.objectof.actof.repospy.controllers.navigator.editor.layout.IndexedView;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.ILeafNode;
 
 
 public class TextCard extends LeafCard {
 
-    private Image expimg = new Image(IndexedView.class.getResourceAsStream("../icons/expand.png"));
+    private Image expimg = new Image(TextCard.class.getResourceAsStream("icons/expand.png"));
 
     public TextCard(ILeafNode entry, boolean capitalize) {
         super(entry, capitalize);

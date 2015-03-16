@@ -9,9 +9,9 @@ import net.objectof.actof.repospy.controllers.navigator.treemodel.TreeNode;
 import net.objectof.actof.widgets.card.Card;
 
 
-public class PackageView extends AbstractView {
+public class PackageLayout extends AbstractLayout {
 
-    public PackageView(RepoSpyTreeItem treeitem, RepoSpyController repospy) {
+    public PackageLayout(RepoSpyTreeItem treeitem, RepoSpyController repospy) {
         super(treeitem, repospy);
         updateUI();
     }
