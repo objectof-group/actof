@@ -21,7 +21,7 @@
       <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
    </padding>
    <top>
-      <HBox fx:id="titleBox" BorderPane.alignment="CENTER">
+      <HBox BorderPane.alignment="CENTER">
          <children>
             <AnchorPane fx:id="titleBox" HBox.hgrow="NEVER" />
             <HBox fx:id="titleContentBox" />

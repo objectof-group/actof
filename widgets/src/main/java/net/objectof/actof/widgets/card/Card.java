@@ -1,62 +1,40 @@
 package net.objectof.actof.widgets.card;
 
 
-import java.io.IOException;
-
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 
 
-public class Card extends AnchorPane {
+public class Card extends BlankCard {
 
-    private BorderPane card;
-    private HBox contentBox, titleContentBox;
+    private HBox titleContentBox;
     private AnchorPane titleBox, descriptionBox;
-
-    private int radius = 5;
-    private String colour = "#ffffff";
-    private String shadowColour = "#777";
-    private int shadowRadius = 8;
 
     protected Node node;
 
     public Card() {
 
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(Card.class.getResource("Card.fxml"));
+        titleContentBox = new HBox();
+        titleBox = new AnchorPane();
+        descriptionBox = new AnchorPane();
+        Separator sep = new Separator(Orientation.HORIZONTAL);
 
-        try {
+        HBox.setHgrow(sep, Priority.ALWAYS);
+        sep.setVisible(false);
+        HBox top = new HBox(titleBox, titleContentBox, sep, descriptionBox);
+        card.setTop(top);
 
-            card = (BorderPane) loader.load();
-            contentBox = (HBox) loader.getNamespace().get("contentBox");
-            titleContentBox = (HBox) loader.getNamespace().get("titleContentBox");
+        setTitle("");
+        setDescription("");
 
-            titleBox = (AnchorPane) loader.getNamespace().get("titleBox");
-            descriptionBox = (AnchorPane) loader.getNamespace().get("descriptionBox");
-            setTitle("");
-            setDescription("");
-
-            buildStyle();
-
-            AnchorPane.setTopAnchor(card, 0d);
-            AnchorPane.setBottomAnchor(card, 0d);
-            AnchorPane.setLeftAnchor(card, 0d);
-            AnchorPane.setRightAnchor(card, 0d);
-            setPadding(new Insets(6));
-
-            getChildren().add(card);
-
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public void setTitle(String titleString) {
@@ -120,7 +98,7 @@ public class Card extends AnchorPane {
     }
 
     public void setContent(Node node, boolean expanding) {
-        contentBox.getChildren().clear();
+        card.setCenter(null);
         if (node == null) {
             node = null;
             return;
@@ -133,7 +111,7 @@ public class Card extends AnchorPane {
         } else {
             HBox.setHgrow(node, Priority.NEVER);
         }
-        contentBox.getChildren().setAll(node);
+        card.setCenter(node);
 
         fixPadding();
 
@@ -151,7 +129,7 @@ public class Card extends AnchorPane {
 
     private void fixPadding() {
 
-        if (contentBox.getChildren().size() == 0) {
+        if (card.getCenter() == null) {
             titleBox.setPadding(new Insets(0, 10, 0, 0));
             descriptionBox.setPadding(new Insets(0, 0, 0, 0));
             titleContentBox.setPadding(new Insets(0, 0, 0, 0));
@@ -161,40 +139,5 @@ public class Card extends AnchorPane {
             titleContentBox.setPadding(new Insets(0, 0, 6, 0));
         }
 
-    }
-
-    public void setRadius(int radius) {
-        this.radius = radius;
-        buildStyle();
-    }
-
-    public int getRadius() {
-        return radius;
-    }
-
-    public String getColour() {
-        return colour;
-    }
-
-    public void setColour(String colour) {
-        this.colour = colour;
-        buildStyle();
-    }
-
-    public void setShadowColour(String colour) {
-        this.shadowColour = colour;
-        buildStyle();
-    }
-
-    public void setShadowRadius(int rad) {
-        this.shadowRadius = rad;
-        buildStyle();
-    }
-
-    private void buildStyle() {
-        String rad = "-fx-background-radius: " + radius + "px; ";
-        String col = "-fx-background-color: " + colour + "; ";
-        card.setStyle(rad + col + " -fx-effect: dropshadow(gaussian, " + shadowColour + " , " + shadowRadius
-                + ", -2, 0, 1)");
     }
 }
