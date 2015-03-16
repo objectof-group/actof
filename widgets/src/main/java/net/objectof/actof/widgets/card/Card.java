@@ -16,7 +16,7 @@ import javafx.scene.layout.Priority;
 
 public class Card extends AnchorPane {
 
-    private BorderPane top, content;
+    private BorderPane card;
     private HBox contentBox, titleContentBox;
     private AnchorPane titleBox, descriptionBox;
 
@@ -34,8 +34,7 @@ public class Card extends AnchorPane {
 
         try {
 
-            top = (BorderPane) loader.load();
-            content = (BorderPane) loader.getNamespace().get("content");
+            card = (BorderPane) loader.load();
             contentBox = (HBox) loader.getNamespace().get("contentBox");
             titleContentBox = (HBox) loader.getNamespace().get("titleContentBox");
 
@@ -44,25 +43,15 @@ public class Card extends AnchorPane {
             setTitle("");
             setDescription("");
 
-            content.setStyle("-fx-background-radius: 5px; -fx-background-color: #ffffff; -fx-effect: dropshadow(gaussian, #777, 8, -2, 0, 1)");
+            buildStyle();
 
-            AnchorPane.setTopAnchor(top, 0d);
-            AnchorPane.setBottomAnchor(top, 0d);
-            AnchorPane.setLeftAnchor(top, 0d);
-            AnchorPane.setRightAnchor(top, 0d);
+            AnchorPane.setTopAnchor(card, 0d);
+            AnchorPane.setBottomAnchor(card, 0d);
+            AnchorPane.setLeftAnchor(card, 0d);
+            AnchorPane.setRightAnchor(card, 0d);
             setPadding(new Insets(6));
 
-            getChildren().add(top);
-
-            focusedProperty().addListener(change -> {
-                if (isFocused()) {
-                    setShadowColour("#444");
-                    setShadowRadius(10);
-                } else {
-                    setShadowColour("#777");
-                    setShadowRadius(8);
-                }
-            });
+            getChildren().add(card);
 
         }
         catch (IOException e) {
@@ -192,12 +181,12 @@ public class Card extends AnchorPane {
         buildStyle();
     }
 
-    protected void setShadowColour(String colour) {
+    public void setShadowColour(String colour) {
         this.shadowColour = colour;
         buildStyle();
     }
 
-    protected void setShadowRadius(int rad) {
+    public void setShadowRadius(int rad) {
         this.shadowRadius = rad;
         buildStyle();
     }
@@ -205,7 +194,7 @@ public class Card extends AnchorPane {
     private void buildStyle() {
         String rad = "-fx-background-radius: " + radius + "px; ";
         String col = "-fx-background-color: " + colour + "; ";
-        content.setStyle(rad + col + " -fx-effect: dropshadow(gaussian, " + shadowColour + " , " + shadowRadius
+        card.setStyle(rad + col + " -fx-effect: dropshadow(gaussian, " + shadowColour + " , " + shadowRadius
                 + ", -2, 0, 1)");
     }
 }
