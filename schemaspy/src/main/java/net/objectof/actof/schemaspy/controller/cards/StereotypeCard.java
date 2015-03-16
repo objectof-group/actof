@@ -6,7 +6,6 @@ import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.Node;
 import javafx.scene.control.ChoiceBox;
 import javafx.util.StringConverter;
 import net.objectof.actof.common.controller.schema.AttributeEntry;
@@ -53,16 +52,13 @@ public class StereotypeCard extends SchemaSpyCard {
             }
         });
 
+        setTitleContent(choice);
+
     }
 
     @Override
     protected String getName() {
         return "Stereotype";
-    }
-
-    @Override
-    protected Node getNode() {
-        return choice;
     }
 
     protected boolean inline() {

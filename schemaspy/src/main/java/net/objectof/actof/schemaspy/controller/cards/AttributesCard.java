@@ -10,7 +10,6 @@ import java.util.Optional;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -27,7 +26,6 @@ import net.objectof.actof.common.controller.schema.schemaentry.SchemaEntry;
 import net.objectof.actof.repospy.controllers.navigator.editor.layout.IndexedView;
 import net.objectof.actof.schemaspy.SchemaSpyController;
 
-import org.controlsfx.dialog.DialogStyle;
 import org.controlsfx.dialog.Dialogs;
 
 
@@ -108,16 +106,15 @@ public class AttributesCard extends SchemaSpyCard {
             e.printStackTrace();
         }
 
+        if (unhandled.size() > 0) {
+            setContent(top);
+        }
+
     }
 
     @Override
     protected String getName() {
         return "Attributes";
-    }
-
-    @Override
-    protected Node getNode() {
-        return top;
     }
 
     @Override
@@ -137,12 +134,12 @@ public class AttributesCard extends SchemaSpyCard {
 
     private void onAdd() {
 
-        Optional<String> response = Dialogs.create().owner(this).title("Create Node").message("Name of node")
-                .lightweight().style(DialogStyle.UNDECORATED).showTextInput("node");
+        Optional<String> response = Dialogs.create().owner(this).title("Add Attribute").message("Attribute Name")
+                .showTextInput("");
 
         if (!response.isPresent()) { return; }
 
-        getSchemaEntry().addAttribute(response.get(), "value");
+        getSchemaEntry().addAttribute(response.get(), "");
     }
 
     private void onChange(Change change) {

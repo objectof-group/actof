@@ -4,7 +4,6 @@ package net.objectof.actof.schemaspy.controller.cards;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.scene.Node;
 import javafx.scene.control.ChoiceBox;
 import net.objectof.actof.common.controller.schema.AttributeEntry;
 import net.objectof.actof.common.controller.schema.schemaentry.SchemaEntry;
@@ -41,6 +40,8 @@ public class ReferenceCard extends SchemaSpyCard {
             }
         });
 
+        setTitleContent(choice);
+
     }
 
     @Override
@@ -56,17 +57,8 @@ public class ReferenceCard extends SchemaSpyCard {
     }
 
     @Override
-    public Node getNode() {
-        return choice;
-    }
-
-    @Override
     protected String getName() {
         return "Reference Target";
-    }
-
-    protected boolean inline() {
-        return true;
     }
 
 }
