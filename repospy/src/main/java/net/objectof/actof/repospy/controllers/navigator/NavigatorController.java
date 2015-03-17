@@ -298,6 +298,7 @@ public class NavigatorController extends IActofUIController {
         if (validQuery || isQuerying) {
             querytext.setStyle("");
             populateEntityTree();
+            repospy.getChangeBus().broadcast(new ResourceSelectedChange(root));
         } else {
             if (querytext.getText().length() > 0) {
                 querytext.setStyle("-fx-text-box-border: red; -fx-focus-color: red ;");
