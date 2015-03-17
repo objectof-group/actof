@@ -148,7 +148,7 @@ public class NavigatorController extends IActofUIController {
     /* FXML Hook */
     public void doRevert() {
         repospy.repository.makeFresh();
-        refreshEntityTree();
+        // refreshEntityTree();
     }
 
     public void onLoad() throws FileNotFoundException {
@@ -304,7 +304,6 @@ public class NavigatorController extends IActofUIController {
             } else {
                 querytext.setStyle("");
             }
-            refreshEntityTree();
         }
 
         isQuerying = validQuery;
@@ -329,14 +328,6 @@ public class NavigatorController extends IActofUIController {
 
     private void populateEntityTree() {
         root.updateChildren();
-    }
-
-    private void refreshEntityTree() {
-        TreeItem<TreeNode> root = records.getRoot();
-        for (TreeItem<TreeNode> item : root.getChildren()) {
-            RepoSpyTreeItem child = (RepoSpyTreeItem) item;
-            child.updateChildren();
-        }
     }
 
     private void toClipboard(Object o) {
