@@ -15,14 +15,13 @@ import javafx.scene.layout.Priority;
 
 public class Card extends BlankCard {
 
-    private HBox titleContentBox;
+    private HBox titleContentBox, contentBox;
     private AnchorPane titleBox, descriptionBox;
-
-    protected Node node;
 
     public Card() {
 
         titleContentBox = new HBox();
+        contentBox = new HBox();
         titleBox = new AnchorPane();
         descriptionBox = new AnchorPane();
         Separator sep = new Separator(Orientation.HORIZONTAL);
@@ -31,6 +30,7 @@ public class Card extends BlankCard {
         sep.setVisible(false);
         HBox top = new HBox(titleBox, titleContentBox, sep, descriptionBox);
         card.setTop(top);
+        card.setCenter(contentBox);
 
         setTitle("");
         setDescription("");
@@ -90,7 +90,8 @@ public class Card extends BlankCard {
     }
 
     public Node getContent() {
-        return node;
+        if (contentBox.getChildren().size() == 0) { return null; }
+        return contentBox.getChildren().get(0);
     }
 
     public void setContent(Node node) {
@@ -98,12 +99,8 @@ public class Card extends BlankCard {
     }
 
     public void setContent(Node node, boolean expanding) {
-        card.setCenter(null);
-        if (node == null) {
-            node = null;
-            return;
-        }
-        this.node = node;
+        contentBox.getChildren().clear();
+        if (node == null) { return; }
 
         BorderPane.setAlignment(node, Pos.CENTER_LEFT);
         if (expanding) {
@@ -111,7 +108,7 @@ public class Card extends BlankCard {
         } else {
             HBox.setHgrow(node, Priority.NEVER);
         }
-        card.setCenter(node);
+        contentBox.getChildren().add(node);
 
         fixPadding();
 
