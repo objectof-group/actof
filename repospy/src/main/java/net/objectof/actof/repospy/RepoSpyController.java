@@ -4,9 +4,9 @@ package net.objectof.actof.repospy;
 import java.io.IOException;
 
 import javafx.collections.ObservableList;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -65,7 +65,7 @@ public class RepoSpyController extends ITopController {
 
         Scene scene = new Scene((Parent) controller.getNode());
         primaryStage.setScene(scene);
-        primaryStage.getIcons().add(new Image(RepoSpy.class.getResource("view/icons/RepoSpy.png").openStream()));
+        primaryStage.getIcons().add(new Image(RepoSpy.class.getResource("RepoSpy.png").openStream()));
 
         primaryStage.setOnCloseRequest(event -> {
             if (history.get().isEmpty()) { return; }
@@ -87,18 +87,16 @@ public class RepoSpyController extends ITopController {
 
     public void showReview(ObservableList<EditingChange> changes) throws IOException {
 
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(RepoSpy.class.getResource("view/TransactionReview.fxml"));
-        Parent page = loader.load();
+        ReviewController review = new ReviewController(history, getChangeBus());
+        ScrollPane scroll = new ScrollPane(review);
+        scroll.setStyle("-fx-background-color:transparent;");
+        scroll.setFitToWidth(true);
 
         Stage connectStage = new Stage(StageStyle.UTILITY);
         connectStage.setTitle("Review Changes");
-        // connectStage.initModality(Modality.WINDOW_MODAL);
+        // connectStage.initModality(Modality.NONE);
         connectStage.initOwner(primaryStage);
-        connectStage.setScene(new Scene(page));
-        ReviewController controller = loader.getController();
-        controller.setChanges(changes);
-
+        connectStage.setScene(new Scene(scroll));
         connectStage.showAndWait();
 
     }

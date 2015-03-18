@@ -21,8 +21,6 @@ public class ReferenceCard extends LeafCard {
 
     private ChoiceBox<Resource<?>> refs;
     private PropertiesPane fields;
-    private String keyStyle = "-fx-text-fill: #999999;";
-    private String valueStyle = "-fx-text-fill: #555555;";
 
     public ReferenceCard(ILeafNode entry, boolean capitalize) {
         super(entry, capitalize);
@@ -56,8 +54,6 @@ public class ReferenceCard extends LeafCard {
 
         fields = new PropertiesPane();
         fields.setPadding(new Insets(10, 0, 0, 20));
-        fields.setKeyStyle(keyStyle);
-        fields.setValueStyle(valueStyle);
         ColumnConstraints constraints;
         constraints = new ColumnConstraints();
         constraints.setMinWidth(100);

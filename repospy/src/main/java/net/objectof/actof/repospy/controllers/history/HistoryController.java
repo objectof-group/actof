@@ -1,49 +1,53 @@
 package net.objectof.actof.repospy.controllers.history;
 
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import net.objectof.actof.common.controller.change.Change;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.controller.repository.RepositoryReplacedChange;
 import net.objectof.actof.repospy.changes.EditingChange;
+import net.objectof.actof.repospy.changes.HistoryChange;
+
 
 public class HistoryController {
 
-	HistoryModel model = new HistoryModel();
-	
-	ChangeController changes;
-	
-	public HistoryController(ChangeController changes) {
-		this.changes = changes;
-		changes.listen(this::onChange);
-	}
-	
-	private void onChange(Change change) {
-		
-		change.when(RepositoryReplacedChange.class, modelchange -> {
-			clear(); //the repository model has been cleared/replaced. History no longer applies.
-		});
-		
-		change.when(EditingChange.class, edit -> {
-			String key = edit.getName();
-			if (model.keyset.containsKey(key)) {
-				Change oldChange = model.keyset.get(key);
-				model.keyset.remove(key);
-				model.history.remove(oldChange);
-			}
-			
-			model.keyset.put(key, edit);
-			model.history.add(edit);
-		});
+    private Map<String, EditingChange> keyset = new HashMap<>();
+    private ObservableList<EditingChange> history = FXCollections.observableArrayList();
 
-	}
-	
-	public void clear() {
-		model.history.clear();
-		model.keyset.clear();
-	}
-	
-	public ObservableList<EditingChange> get() {
-		return model.history;
-	}
-	
+    ChangeController changes;
+
+    public HistoryController(ChangeController changes) {
+        this.changes = changes;
+        changes.listen(RepositoryReplacedChange.class, this::clear);
+        changes.listen(EditingChange.class, this::edit);
+    }
+
+    public void clear() {
+        history.clear();
+        keyset.clear();
+        changes.broadcast(new HistoryChange());
+    }
+
+    private void edit(EditingChange edit) {
+        String key = edit.getName();
+        if (keyset.containsKey(key)) {
+            Change oldChange = keyset.get(key);
+            keyset.remove(key);
+            history.remove(oldChange);
+        }
+
+        keyset.put(key, edit);
+        history.add(edit);
+
+        changes.broadcast(new HistoryChange());
+    }
+
+    public ObservableList<EditingChange> get() {
+        return history;
+    }
+
 }

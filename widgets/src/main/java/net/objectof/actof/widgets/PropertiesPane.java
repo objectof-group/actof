@@ -14,8 +14,8 @@ import javafx.scene.layout.GridPane;
 public class PropertiesPane extends GridPane {
 
     private Map<String, String> properties = new LinkedHashMap<>();
-    private SimpleStringProperty keyStyle = new SimpleStringProperty();
-    private SimpleStringProperty valueStyle = new SimpleStringProperty();
+    private SimpleStringProperty keyStyle = new SimpleStringProperty("-fx-text-fill: #999999;");
+    private SimpleStringProperty valueStyle = new SimpleStringProperty("-fx-text-fill: #555555;");
     private HPos keyAlignment = HPos.LEFT;
 
     public PropertiesPane() {}

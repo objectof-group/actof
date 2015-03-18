@@ -18,9 +18,6 @@ public class EntityCard extends Card {
 
     private IAggregateNode node;
 
-    private String keyStyle = "-fx-text-fill: #999999;";
-    private String valueStyle = "-fx-text-fill: #555555;";
-
     public EntityCard(RepoSpyTreeItem treeitem, RepoSpyController repospy) {
         this.node = (IAggregateNode) treeitem.getValue();
 
@@ -33,8 +30,6 @@ public class EntityCard extends Card {
 
         PropertiesPane fields = new PropertiesPane();
         fields.setPadding(new Insets(0, 0, 0, 20));
-        fields.setValueStyle(valueStyle);
-        fields.setKeyStyle(keyStyle);
         setContent(fields);
 
         for (ILeafNode child : node.getLeaves(repospy)) {

@@ -17,8 +17,6 @@ import net.objectof.model.Kind;
 public class KindCard extends Card {
 
     private IKindNode node;
-    private String keyStyle = "-fx-text-fill: #999999;";
-    private String valueStyle = "-fx-text-fill: #555555;";
 
     public KindCard(RepoSpyTreeItem treeitem, RepoSpyController repospy) {
         this.node = (IKindNode) treeitem.getValue();
@@ -32,8 +30,6 @@ public class KindCard extends Card {
 
         PropertiesPane fields = new PropertiesPane();
         fields.setPadding(new Insets(0, 0, 0, 20));
-        fields.setKeyStyle(keyStyle);
-        fields.setValueStyle(valueStyle);
         setContent(fields);
 
         for (Kind<?> part : node.getKind().getParts()) {
