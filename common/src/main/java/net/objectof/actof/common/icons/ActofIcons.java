@@ -11,7 +11,7 @@ import javafx.scene.image.ImageView;
 public class ActofIcons {
 
     public enum Icon {
-        ADD, REMOVE
+        ADD, REMOVE, UNDO, REDO
     }
 
     public enum Size {

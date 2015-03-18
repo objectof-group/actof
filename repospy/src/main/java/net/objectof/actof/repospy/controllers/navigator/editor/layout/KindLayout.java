@@ -34,7 +34,7 @@ public class KindLayout extends AbstractLayout {
             EntityCreatedChange change = new EntityCreatedChange(newEntity);
             repospy.getChangeBus().broadcast(change);
             repospy.repository.addTransientEntity(newEntity);
-            repospy.repository.getChangeBus().broadcast(new EntityCreatedChange(newEntity));
+            repospy.repository.getChangeBus().broadcast(change);
             treeitem.updateChildren();
             updateUI();
         });
