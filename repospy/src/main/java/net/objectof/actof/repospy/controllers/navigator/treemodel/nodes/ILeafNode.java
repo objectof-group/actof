@@ -2,7 +2,6 @@ package net.objectof.actof.repospy.controllers.navigator.treemodel.nodes;
 
 
 import javafx.beans.value.ObservableValueBase;
-import net.objectof.actof.common.controller.change.Change;
 import net.objectof.actof.common.util.RepoUtils;
 import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.actof.repospy.changes.FieldChange;
@@ -37,19 +36,7 @@ public class ILeafNode extends ObservableValueBase<ILeafNode> {
         this.parentId = parentTreeEntry.getRes().id();
         this.kind = kind;
         this.key = key;
-
         refreshFromModel();
-        repospy.getChangeBus().listen(this::onChange);
-
-    }
-
-    private void onChange(Change change) {
-
-        change.when(FieldChange.class, fieldchange -> {
-            if (getName().equals(fieldchange.getQualifiedName())) {
-                refreshFromModel();
-            }
-        });
 
     }
 
@@ -116,19 +103,14 @@ public class ILeafNode extends ObservableValueBase<ILeafNode> {
     /**
      * Update the value of this field based on the given text
      */
-    public void userInputString(String text) {
+    public void setValueByString(String text) {
         writeToModel(RepoUtils.valueFromString(kind, text, repospy.repository));
         addChangeHistory(text);
     }
 
-    public void userInput(Object object) {
+    public void setValue(Object object) {
         writeToModel(object);
         addChangeHistory(object);
-    }
-
-    public void userInputResource(Resource<?> res) {
-        writeToModel(res);
-        addChangeHistory(res);
     }
 
     /**
@@ -144,8 +126,7 @@ public class ILeafNode extends ObservableValueBase<ILeafNode> {
         Aggregate<Object, Object> agg = (Aggregate<Object, Object>) parent;
         value = agg.get(key);
 
-        updateUI();
-
+        fireValueChangedEvent();
     }
 
     /**
@@ -163,14 +144,8 @@ public class ILeafNode extends ObservableValueBase<ILeafNode> {
         agg.set(key, value);
 
         addChangeHistory(newValue);
-
-        updateUI();
-
-    }
-
-    private void updateUI() {
-        // fire event indicating that this node has changed
         fireValueChangedEvent();
+
     }
 
     public void addChangeHistory(Object newValue) {

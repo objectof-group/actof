@@ -39,19 +39,6 @@ public class ReferenceCard extends LeafCard {
             }
         });
 
-        refs.getItems().setAll(getElements());
-        Resource<?> selected = (Resource<?>) entry.getFieldValue();
-        if (selected == null) {
-            refs.getSelectionModel().select(0);
-        } else {
-            refs.getSelectionModel().select(selected);
-        }
-
-        refs.valueProperty().addListener((obs, oldval, newval) -> {
-            getEntry().userInputResource(newval);
-        });
-        setTitleContent(refs);
-
         fields = new PropertiesPane();
         fields.setPadding(new Insets(10, 0, 0, 20));
         ColumnConstraints constraints;
@@ -59,12 +46,15 @@ public class ReferenceCard extends LeafCard {
         constraints.setMinWidth(100);
         fields.getColumnConstraints().add(constraints);
 
-        refs.getSelectionModel().selectedItemProperty().addListener(change -> {
-            updateGrid();
-        });
-        setContent(fields);
+        updateFromEntry();
 
-        updateGrid();
+        refs.valueProperty().addListener((obs, oldval, newval) -> {
+            updateGrid();
+            if (isUpdating()) { return; }
+            getEntry().setValue(newval);
+        });
+        setTitleContent(refs);
+        setContent(fields);
 
     }
 
@@ -88,4 +78,17 @@ public class ReferenceCard extends LeafCard {
         resources.add(0, null);
         return resources;
     }
+
+    @Override
+    public void updateUIFromEntry() {
+        refs.getItems().setAll(getElements());
+        Resource<?> selected = (Resource<?>) getEntry().getFieldValue();
+        if (selected == null) {
+            refs.getSelectionModel().select(0);
+        } else {
+            refs.getSelectionModel().select(selected);
+        }
+        updateGrid();
+    }
+
 }

@@ -10,24 +10,30 @@ import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.ILeafNod
 
 public class IntegerCard extends LeafCard {
 
+    BigDecimalField field = new BigDecimalField();
+
     public IntegerCard(ILeafNode entry, boolean capitalize) {
         super(entry, capitalize);
 
-        BigDecimalField field = new BigDecimalField();
+        field.setFormat(NumberFormat.getIntegerInstance());
+        field.setStepwidth(new BigDecimal(1));
+        field.numberProperty().addListener((obs, oldval, newval) -> {
+            if (isUpdating()) { return; }
+            entry.setValue(newval.longValue());
+        });
 
-        Long value = (Long) entry.getFieldValue();
+        updateFromEntry();
+        setTitleContent(field);
+
+    }
+
+    @Override
+    public void updateUIFromEntry() {
+        Long value = (Long) getEntry().getFieldValue();
         if (value == null) {
             value = 0l;
         }
         field.setNumber(new BigDecimal(value));
-        field.setFormat(NumberFormat.getIntegerInstance());
-        field.setStepwidth(new BigDecimal(1));
-        field.numberProperty().addListener((obs, oldval, newval) -> {
-            entry.userInput(newval.longValue());
-        });
-
-        setTitleContent(field);
-
     }
 
 }

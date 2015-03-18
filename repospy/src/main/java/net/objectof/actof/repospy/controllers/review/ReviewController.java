@@ -15,14 +15,12 @@ import net.objectof.actof.common.icons.ActofIcons.Icon;
 import net.objectof.actof.common.icons.ActofIcons.Size;
 import net.objectof.actof.common.util.RepoUtils;
 import net.objectof.actof.repospy.changes.EditingChange;
-import net.objectof.actof.repospy.changes.EntityCreatedChange;
 import net.objectof.actof.repospy.changes.FieldChange;
 import net.objectof.actof.repospy.changes.HistoryChange;
 import net.objectof.actof.repospy.controllers.history.HistoryController;
 import net.objectof.actof.widgets.PropertiesPane;
 import net.objectof.actof.widgets.card.Card;
 import net.objectof.actof.widgets.card.CardsPane;
-import net.objectof.aggr.Aggregate;
 
 
 public class ReviewController extends CardsPane {
@@ -75,7 +73,9 @@ public class ReviewController extends CardsPane {
                 Button revert = new Button("", ActofIcons.getIconView(Icon.UNDO, Size.BUTTON));
                 revert.getStyleClass().add("tool-bar-button");
                 revert.setOnAction(event -> {
-                    doRevert(change);
+                    if (change instanceof FieldChange) {
+                        doRevert((FieldChange) change);
+                    }
                 });
 
                 HBox box = new HBox(10, desc, revert);
@@ -92,17 +92,13 @@ public class ReviewController extends CardsPane {
         }
     }
 
-    private void doRevert(EditingChange change) {
+    private void doRevert(FieldChange change) {
 
-        if (change instanceof FieldChange) {
-            FieldChange fieldChange = (FieldChange) change;
-            Aggregate<Object, Object> agg = (Aggregate<Object, Object>) fieldChange.getLeafnode().parent;
-            agg.set(fieldChange.getLeafnode().key, fieldChange.oldValue());
-            changes.broadcast(new FieldChange(fieldChange.oldValue(), fieldChange.oldValue(), fieldChange.getLeafnode()));
-        } else if (change instanceof EntityCreatedChange) {
-            EntityCreatedChange createdChange = (EntityCreatedChange) change;
-
-        }
+        FieldChange fieldChange = (FieldChange) change;
+        fieldChange.getLeafnode().setValue(fieldChange.oldValue());
+        // Aggregate<Object, Object> agg = (Aggregate<Object, Object>)
+        // fieldChange.getLeafnode().parent;
+        // agg.set(fieldChange.getLeafnode().key, fieldChange.oldValue());
 
     }
 

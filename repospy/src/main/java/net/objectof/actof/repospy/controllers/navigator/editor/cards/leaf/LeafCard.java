@@ -9,9 +9,17 @@ import net.objectof.actof.widgets.card.Card;
 public abstract class LeafCard extends Card {
 
     private ILeafNode entry;
+    private boolean isUpdating = false;
 
     public LeafCard(ILeafNode entry, boolean capitalize) {
         this.entry = entry;
+
+        // add a listener to the LeafNode, when the value changes, update the
+        // control/UI. Set the isUpdating flag so that UI component doesn't
+        // think the user modified the value
+        entry.addListener(change -> {
+            updateFromEntry();
+        });
         setTitle(getLeafTitle(capitalize));
         setDescription(RepoUtils.prettyPrintStereotype(entry.getStereotype()));
     }
@@ -60,4 +68,22 @@ public abstract class LeafCard extends Card {
 
         }
     }
+
+    public void updateFromEntry() {
+        try {
+            isUpdating = true;
+            updateUIFromEntry();
+        }
+        finally {
+            isUpdating = false;
+        }
+
+    }
+
+    public void updateUIFromEntry() {}
+
+    public boolean isUpdating() {
+        return isUpdating;
+    }
+
 }

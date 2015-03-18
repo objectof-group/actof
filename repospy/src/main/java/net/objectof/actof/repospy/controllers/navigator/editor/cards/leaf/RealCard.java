@@ -10,24 +10,30 @@ import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.ILeafNod
 
 public class RealCard extends LeafCard {
 
+    BigDecimalField field = new BigDecimalField();
+
     public RealCard(ILeafNode entry, boolean capitalize) {
         super(entry, capitalize);
 
-        BigDecimalField field = new BigDecimalField();
+        field.setFormat(NumberFormat.getNumberInstance());
+        field.setStepwidth(new BigDecimal(1));
+        field.numberProperty().addListener((obs, oldval, newval) -> {
+            if (isUpdating()) { return; }
+            entry.setValue(newval.doubleValue());
+        });
 
-        Double value = (Double) entry.getFieldValue();
+        updateFromEntry();
+        setTitleContent(field);
+
+    }
+
+    @Override
+    public void updateUIFromEntry() {
+        Double value = (Double) getEntry().getFieldValue();
         if (value == null) {
             value = 0d;
         }
         field.setNumber(new BigDecimal(value));
-        field.setFormat(NumberFormat.getNumberInstance());
-        field.setStepwidth(new BigDecimal(1));
-        field.numberProperty().addListener((obs, oldval, newval) -> {
-            entry.userInput(newval.doubleValue());
-        });
-
-        setTitleContent(field);
-
     }
 
 }

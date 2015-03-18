@@ -7,16 +7,27 @@ import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.ILeafNod
 
 public class BooleanCard extends LeafCard {
 
+    CheckBox check;
+
     public BooleanCard(ILeafNode entry, boolean capitalize) {
         super(entry, capitalize);
 
-        CheckBox check = new CheckBox();
+        check = new CheckBox();
         check.selectedProperty().addListener(change -> {
-            getEntry().userInput(check.selectedProperty().getValue());
+            if (isUpdating()) { return; }
+            getEntry().setValue(check.selectedProperty().getValue());
         });
-
         setTitleContent(check);
+        updateFromEntry();
 
     }
 
+    @Override
+    public void updateUIFromEntry() {
+        Boolean value = (Boolean) getEntry().getFieldValue();
+        if (value == null) {
+            value = false;
+        }
+        check.setSelected(value);
+    }
 }

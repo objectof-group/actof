@@ -4,6 +4,7 @@ package net.objectof.actof.repospy.controllers.navigator.editor.cards.leaf;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputControl;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -15,6 +16,7 @@ import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.ILeafNod
 public class TextCard extends LeafCard {
 
     private Image expimg = new Image(TextCard.class.getResourceAsStream("icons/expand.png"));
+    private TextInputControl textBox;
 
     public TextCard(ILeafNode entry, boolean capitalize) {
         super(entry, capitalize);
@@ -30,15 +32,17 @@ public class TextCard extends LeafCard {
         } else {
             createTextField(entry);
         }
+
+        updateFromEntry();
     }
 
     private void createTextField(ILeafNode entry) {
-        TextField node = new TextField();
-        node.setText(textFromLeaf(entry));
-        node.textProperty().addListener((obs, o, n) -> {
-            getEntry().userInputString(n);
+        textBox = new TextField();
+        textBox.textProperty().addListener((obs, o, n) -> {
+            if (isUpdating()) { return; }
+            getEntry().setValueByString(n);
         });
-        HBox.setHgrow(node, Priority.ALWAYS);
+        HBox.setHgrow(textBox, Priority.ALWAYS);
 
         Button expand = new Button("", new ImageView(expimg));
         expand.setTooltip(new Tooltip("Expand to multiline text field"));
@@ -47,22 +51,23 @@ public class TextCard extends LeafCard {
             createTextArea(entry);
         });
 
-        HBox content = new HBox(6, node, expand);
-
+        HBox content = new HBox(6, textBox, expand);
         setContent(content, true);
     }
 
     private void createTextArea(ILeafNode entry) {
-        TextArea node = new TextArea();
-        node.setText(textFromLeaf(entry));
-        node.textProperty().addListener((obs, o, n) -> {
-            getEntry().userInputString(n);
+        textBox = new TextArea();
+        textBox.textProperty().addListener((obs, o, n) -> {
+            if (isUpdating()) { return; }
+            getEntry().setValueByString(n);
         });
-        setContent(node);
+        setContent(textBox);
     }
 
-    private String textFromLeaf(ILeafNode entry) {
-        if (entry.getFieldValue() == null) { return null; }
-        return entry.getFieldValue().toString();
+    @Override
+    public void updateUIFromEntry() {
+        String value = (String) getEntry().getFieldValue();
+        textBox.setText(value);
     }
+
 }

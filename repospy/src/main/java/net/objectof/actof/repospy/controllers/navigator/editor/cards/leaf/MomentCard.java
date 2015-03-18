@@ -11,28 +11,34 @@ import net.objectof.model.impl.IMoment;
 
 public class MomentCard extends LeafCard {
 
+    CalendarPicker picker = new CalendarPicker();
+    TimeZone zulu = TimeZone.getTimeZone("GMT");
+
     public MomentCard(ILeafNode entry, boolean capitalize) {
         super(entry, capitalize);
 
-        TimeZone zulu = TimeZone.getTimeZone("GMT");
-        IMoment moment = (IMoment) entry.getFieldValue();
+        picker.setShowTime(true);
+        picker.calendarProperty().addListener(change -> {
+            if (isUpdating()) { return; }
+            IMoment newMoment = new IMoment(picker.getCalendar().getTime().getTime(), zulu);
+            getEntry().setValueByString(newMoment.toString(zulu));
+        });
+
+        updateFromEntry();
+        setContent(picker, false);
+
+    }
+
+    @Override
+    public void updateUIFromEntry() {
+
+        IMoment moment = (IMoment) getEntry().getFieldValue();
         if (moment == null) {
             moment = new IMoment();
         }
-
         Calendar cal = Calendar.getInstance(zulu);
         cal.setTime(moment);
-
-        CalendarPicker picker = new CalendarPicker();
         picker.setCalendar(cal);
-        picker.setShowTime(true);
-
-        picker.calendarProperty().addListener(change -> {
-            IMoment newMoment = new IMoment(picker.getCalendar().getTime().getTime(), zulu);
-            getEntry().userInputString(newMoment.toString(zulu));
-        });
-
-        setContent(picker, false);
 
     }
 
