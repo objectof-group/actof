@@ -92,6 +92,7 @@ public class RepoSpyController extends ITopController {
         scroll.setStyle("-fx-background-color:transparent;");
         scroll.setFitToWidth(true);
 
+        scroll.setPrefSize(600, 400);
         Stage connectStage = new Stage(StageStyle.UTILITY);
         connectStage.setTitle("Review Changes");
         // connectStage.initModality(Modality.NONE);

@@ -46,7 +46,7 @@ public class ILeafNode extends ObservableValueBase<ILeafNode> {
     private void onChange(Change change) {
 
         change.when(FieldChange.class, fieldchange -> {
-            if (getName().equals(fieldchange.getName())) {
+            if (getName().equals(fieldchange.getQualifiedName())) {
                 refreshFromModel();
             }
         });
@@ -55,7 +55,6 @@ public class ILeafNode extends ObservableValueBase<ILeafNode> {
 
     @Override
     public String toString() {
-        if (value == null) { return "<null>"; }
         return RepoUtils.resToString(value);
     }
 

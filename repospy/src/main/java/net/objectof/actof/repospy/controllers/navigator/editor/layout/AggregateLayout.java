@@ -29,6 +29,7 @@ public abstract class AggregateLayout extends AbstractLayout {
         this.entry = (IAggregateNode) treeitem.getValue();
 
         Button add = new Button("", ActofIcons.getIconView(Icon.ADD, Size.BUTTON));
+        add.getStyleClass().add("tool-bar-button");
         add.setOnAction(action -> {
             onAdd();
         });
@@ -63,6 +64,7 @@ public abstract class AggregateLayout extends AbstractLayout {
             desc = new AnchorPane(desc);
 
             Button rem = new Button("", ActofIcons.getIconView(Icon.REMOVE, Size.BUTTON));
+            rem.getStyleClass().add("tool-bar-button");
             rem.setOnAction(action -> {
                 onRemove(leaf);
             });

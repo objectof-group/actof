@@ -20,7 +20,7 @@ public class FieldChange extends EditingChange {
 
     @Override
     public String toString() {
-        return "Changed " + getName() + " from '" + RepoUtils.prettyPrint(oldValue) + "' to '"
+        return "Changed " + getQualifiedName() + " from '" + RepoUtils.prettyPrint(oldValue) + "' to '"
                 + RepoUtils.prettyPrint(newValue) + "'";
     }
 
@@ -45,12 +45,17 @@ public class FieldChange extends EditingChange {
     }
 
     @Override
-    public String getName() {
+    public String getQualifiedName() {
         return leafnode.getName();
     }
 
     public ILeafNode getLeafnode() {
         return leafnode;
+    }
+
+    @Override
+    public String getName() {
+        return RepoUtils.prettyPrint(leafnode.parent) + " " + leafnode.key.toString();
     }
 
 }

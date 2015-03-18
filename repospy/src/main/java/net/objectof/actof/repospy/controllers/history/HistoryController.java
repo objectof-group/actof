@@ -33,7 +33,7 @@ public class HistoryController {
     }
 
     private void edit(EditingChange edit) {
-        String key = edit.getName();
+        String key = edit.getQualifiedName();
         if (keyset.containsKey(key)) {
             Change oldChange = keyset.get(key);
             keyset.remove(key);

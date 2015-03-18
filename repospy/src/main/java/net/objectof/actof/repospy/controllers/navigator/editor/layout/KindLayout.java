@@ -29,6 +29,7 @@ public class KindLayout extends AbstractLayout {
         this.treeitem = treeitem;
 
         Button add = new Button("", ActofIcons.getIconView(Icon.ADD, Size.BUTTON));
+        add.getStyleClass().add("tool-bar-button");
         add.setOnAction(event -> {
             Resource<?> newEntity = repospy.repository.getStagingTx().create(node.getKind().getComponentName());
             EntityCreatedChange change = new EntityCreatedChange(newEntity);

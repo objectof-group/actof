@@ -10,6 +10,8 @@ public abstract class EditingChange extends Change {
 
     public abstract String getName();
 
+    public abstract String getQualifiedName();
+
     public abstract Stereotype getStereotype();
 
     public abstract Kind<?> getKind();

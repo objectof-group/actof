@@ -1,6 +1,8 @@
 package net.objectof.actof.repospy.controllers.review;
 
 
+import java.net.URL;
+
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -29,9 +31,12 @@ public class ReviewController extends CardsPane {
     private ChangeController changes;
 
     public ReviewController(HistoryController history, ChangeController changes) {
+
+        URL css = ReviewController.class.getResource("style.css");
+        getStylesheets().add(css.toString());
+
         this.history = history;
         this.changes = changes;
-        setPrefSize(400, 400);
         changes.listen(HistoryChange.class, this::updateUI);
         updateUI();
     }
@@ -41,11 +46,24 @@ public class ReviewController extends CardsPane {
         getChildren().clear();
         for (EditingChange change : history.get()) {
 
+            if (change.oldValue() == null && change.newValue() == null) {
+                // same
+                continue;
+            } else if (change.oldValue() == null || change.newValue() == null) {
+                // exactly one is null, don't skip
+            } else if (change.oldValue().equals(change.newValue())) {
+                // neither are null, but they're equal
+                continue;
+            }
+
             Card card = new Card();
+            card.setShadowRadius(5);
+            card.setShadowOffsetY(0.7d);
+            card.setPadding(new Insets(3));
             card.setTitle(change.getName());
             card.setDescription(RepoUtils.prettyPrintStereotype(change.getStereotype()));
 
-            if (change instanceof FieldChange) {
+            if (change instanceof FieldChange && !RepoUtils.isAggregateStereotype(change.getStereotype())) {
 
                 Node desc = card.getDescription();
                 AnchorPane.setTopAnchor(desc, 0d);
@@ -55,6 +73,7 @@ public class ReviewController extends CardsPane {
                 desc = new AnchorPane(desc);
 
                 Button revert = new Button("", ActofIcons.getIconView(Icon.UNDO, Size.BUTTON));
+                revert.getStyleClass().add("tool-bar-button");
                 revert.setOnAction(event -> {
                     doRevert(change);
                 });
