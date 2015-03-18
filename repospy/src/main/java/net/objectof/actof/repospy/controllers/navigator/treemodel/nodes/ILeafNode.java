@@ -121,6 +121,11 @@ public class ILeafNode extends ObservableValueBase<ILeafNode> {
         addChangeHistory(text);
     }
 
+    public void userInput(Object object) {
+        writeToModel(object);
+        addChangeHistory(object);
+    }
+
     public void userInputResource(Resource<?> res) {
         writeToModel(res);
         addChangeHistory(res);

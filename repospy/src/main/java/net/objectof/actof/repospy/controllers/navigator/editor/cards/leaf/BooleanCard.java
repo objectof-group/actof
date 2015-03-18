@@ -12,7 +12,7 @@ public class BooleanCard extends LeafCard {
 
         CheckBox check = new CheckBox();
         check.selectedProperty().addListener(change -> {
-            getEntry().userInputString(check.selectedProperty().getValue().toString());
+            getEntry().userInput(check.selectedProperty().getValue());
         });
 
         setTitleContent(check);

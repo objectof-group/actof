@@ -4,35 +4,30 @@ package net.objectof.actof.repospy.controllers.navigator.editor.cards.leaf;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 
-import javafx.util.StringConverter;
+import jfxtras.labs.scene.control.BigDecimalField;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.ILeafNode;
 
 
-public class RealCard extends NumberCard {
+public class RealCard extends LeafCard {
 
     public RealCard(ILeafNode entry, boolean capitalize) {
         super(entry, capitalize);
-    }
 
-    @Override
-    protected StringConverter<BigDecimal> getStringConverter() {
-        return new StringConverter<BigDecimal>() {
+        BigDecimalField field = new BigDecimalField();
 
-            @Override
-            public String toString(BigDecimal dec) {
-                return dec.doubleValue() + "";
-            }
+        Double value = (Double) entry.getFieldValue();
+        if (value == null) {
+            value = 0d;
+        }
+        field.setNumber(new BigDecimal(value));
+        field.setFormat(NumberFormat.getNumberInstance());
+        field.setStepwidth(new BigDecimal(1));
+        field.numberProperty().addListener((obs, oldval, newval) -> {
+            entry.userInput(newval.doubleValue());
+        });
 
-            @Override
-            public BigDecimal fromString(String string) {
-                return new BigDecimal(string);
-            }
-        };
-    }
+        setTitleContent(field);
 
-    @Override
-    protected NumberFormat getFormat() {
-        return NumberFormat.getNumberInstance();
     }
 
 }
