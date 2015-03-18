@@ -41,7 +41,7 @@ public class MappedLayout extends AggregateLayout {
     @Override
     protected void onRemove(ILeafNode leaf) {
         Mapping<String, ?> map = (Mapping<String, ?>) entry.getRes();
-        map.remove(leaf.key);
+        map.remove(leaf.getKey());
         leaf.addChangeHistory(null);
         entry.refreshLeaves(repospy);
         updateUI();

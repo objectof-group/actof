@@ -34,7 +34,7 @@ public class EntityCard extends Card {
 
         for (ILeafNode child : node.getLeaves(repospy)) {
 
-            String keyString = child.key.toString();
+            String keyString = child.getKey().toString();
             String valueString = RepoUtils.prettyPrint(child.getFieldValue());
             if (valueString.length() > 100) {
                 valueString = valueString.substring(0, 100);

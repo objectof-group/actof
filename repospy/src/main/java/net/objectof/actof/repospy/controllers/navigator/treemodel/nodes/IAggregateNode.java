@@ -19,14 +19,12 @@ import net.objectof.model.impl.IKind;
 public class IAggregateNode implements TreeNode {
 
     private Resource<?> res;
-    private Kind<?> kind;
 
     private List<ILeafNode> leaves;
     private List<RepoSpyTreeItem> subresources;
 
     public IAggregateNode(Resource<?> res) {
         this.res = res;
-        this.kind = res.id().kind();
     }
 
     @Override
@@ -110,7 +108,7 @@ public class IAggregateNode implements TreeNode {
         for (Object key : keys) {
             ILeafNode entry = new ILeafNode(parent, controller, kind, key);
             if (entry.getFieldValue() == null) {
-                if (RepoUtils.isAggregateStereotype(entry.kind.getStereotype())) {
+                if (RepoUtils.isAggregateStereotype(entry.getKind().getStereotype())) {
                     entry.createFromNull();
                 }
             }
