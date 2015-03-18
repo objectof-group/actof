@@ -8,7 +8,6 @@ import net.objectof.model.Kind;
 import net.objectof.model.Resource;
 import net.objectof.model.Stereotype;
 import net.objectof.model.impl.IMoment;
-import net.objectof.model.impl.aggr.IComposite;
 
 
 public class RepoUtils {
@@ -61,24 +60,28 @@ public class RepoUtils {
     }
 
     public static String prettyPrint(Object o) {
-        if (o == null) { return "null"; }
+        if (o == null) { return "None"; }
 
         if (isResource(o)) {
             Resource<?> res = (Resource<?>) o;
             return prettyPrintRes(res);
         }
 
+        if (o instanceof String) { return "\"" + o.toString() + "\""; }
         if (o instanceof Stereotype) { return prettyPrintStereotype((Stereotype) o); }
 
         return o.toString();
     }
 
     public static String prettyPrintRes(Resource<?> res) {
+        if (res == null) { return "None"; }
         String name = res.id().kind().getComponentName();
         String[] parts = name.split("\\.");
         name = parts[parts.length - 1];
 
-        if (res instanceof IComposite) {
+        Stereotype st = res.id().kind().getStereotype();
+
+        if (st == Stereotype.COMPOSED) {
             return name + " #" + res.id().label().toString();
         } else {
             return name;
@@ -98,10 +101,10 @@ public class RepoUtils {
             case FN:
                 return "Function";
 
-            case TEXT:
-            case COMPOSED:
             case INDEXED:
             case MAPPED:
+            case TEXT:
+            case COMPOSED:
             case MEDIA:
             case MOMENT:
             case NIL:

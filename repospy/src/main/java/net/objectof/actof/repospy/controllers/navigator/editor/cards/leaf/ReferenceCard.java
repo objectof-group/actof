@@ -42,7 +42,12 @@ public class ReferenceCard extends LeafCard {
         });
 
         refs.getItems().setAll(getElements());
-        refs.getSelectionModel().select((Resource<?>) entry.getFieldValue());
+        Resource<?> selected = (Resource<?>) entry.getFieldValue();
+        if (selected == null) {
+            refs.getSelectionModel().select(0);
+        } else {
+            refs.getSelectionModel().select(selected);
+        }
 
         refs.valueProperty().addListener((obs, oldval, newval) -> {
             getEntry().userInputResource(newval);
@@ -84,6 +89,7 @@ public class ReferenceCard extends LeafCard {
         String title = ikind.getTitle();
         Iterable<Resource<?>> resiter = getEntry().getController().repository.getStagingTx().enumerate(title);
         List<Resource<?>> resources = StreamSupport.stream(resiter.spliterator(), false).collect(Collectors.toList());
+        resources.add(0, null);
         return resources;
     }
 }
