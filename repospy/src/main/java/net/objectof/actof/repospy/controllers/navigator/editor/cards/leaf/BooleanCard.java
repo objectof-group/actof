@@ -15,7 +15,7 @@ public class BooleanCard extends LeafCard {
         check = new CheckBox();
         check.selectedProperty().addListener(change -> {
             if (isUpdating()) { return; }
-            getEntry().setValue(check.selectedProperty().getValue());
+            getEntry().setFieldValue(check.selectedProperty().getValue());
         });
         setTitleContent(check);
         updateFromEntry();

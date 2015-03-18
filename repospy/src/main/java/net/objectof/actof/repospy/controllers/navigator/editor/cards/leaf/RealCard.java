@@ -19,7 +19,7 @@ public class RealCard extends LeafCard {
         field.setStepwidth(new BigDecimal(1));
         field.numberProperty().addListener((obs, oldval, newval) -> {
             if (isUpdating()) { return; }
-            entry.setValue(newval.doubleValue());
+            entry.setFieldValue(newval.doubleValue());
         });
 
         updateFromEntry();

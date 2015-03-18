@@ -19,7 +19,7 @@ public class IntegerCard extends LeafCard {
         field.setStepwidth(new BigDecimal(1));
         field.numberProperty().addListener((obs, oldval, newval) -> {
             if (isUpdating()) { return; }
-            entry.setValue(newval.longValue());
+            entry.setFieldValue(newval.longValue());
         });
 
         updateFromEntry();

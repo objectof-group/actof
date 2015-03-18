@@ -21,7 +21,7 @@ public class MomentCard extends LeafCard {
         picker.calendarProperty().addListener(change -> {
             if (isUpdating()) { return; }
             IMoment newMoment = new IMoment(picker.getCalendar().getTime().getTime(), zulu);
-            getEntry().setValueByString(newMoment.toString(zulu));
+            getEntry().setFieldValue(newMoment);
         });
 
         updateFromEntry();

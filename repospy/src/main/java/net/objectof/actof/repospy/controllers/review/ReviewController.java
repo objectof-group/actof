@@ -93,13 +93,8 @@ public class ReviewController extends CardsPane {
     }
 
     private void doRevert(FieldChange change) {
-
         FieldChange fieldChange = (FieldChange) change;
-        fieldChange.getLeafnode().setValue(fieldChange.oldValue());
-        // Aggregate<Object, Object> agg = (Aggregate<Object, Object>)
-        // fieldChange.getLeafnode().parent;
-        // agg.set(fieldChange.getLeafnode().key, fieldChange.oldValue());
-
+        fieldChange.getLeafnode().setFieldValue(fieldChange.oldValue());
     }
 
     class StyledTableCell<S, T> extends TableCell<S, T> {

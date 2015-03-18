@@ -40,7 +40,7 @@ public class TextCard extends LeafCard {
         textBox = new TextField();
         textBox.textProperty().addListener((obs, o, n) -> {
             if (isUpdating()) { return; }
-            getEntry().setValueByString(n);
+            getEntry().setFieldValue(n);
         });
         HBox.setHgrow(textBox, Priority.ALWAYS);
 
@@ -59,7 +59,7 @@ public class TextCard extends LeafCard {
         textBox = new TextArea();
         textBox.textProperty().addListener((obs, o, n) -> {
             if (isUpdating()) { return; }
-            getEntry().setValueByString(n);
+            getEntry().setFieldValue(n);
         });
         setContent(textBox);
     }

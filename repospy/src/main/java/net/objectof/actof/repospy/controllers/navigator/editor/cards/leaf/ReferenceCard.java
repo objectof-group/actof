@@ -51,7 +51,7 @@ public class ReferenceCard extends LeafCard {
         refs.valueProperty().addListener((obs, oldval, newval) -> {
             updateGrid();
             if (isUpdating()) { return; }
-            getEntry().setValue(newval);
+            getEntry().setFieldValue(newval);
         });
         setTitleContent(refs);
         setContent(fields);

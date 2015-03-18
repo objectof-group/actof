@@ -1,13 +1,10 @@
 package net.objectof.actof.common.util;
 
 
-import net.objectof.actof.common.controller.repository.RepositoryController;
 import net.objectof.aggr.Aggregate;
 import net.objectof.model.Id;
-import net.objectof.model.Kind;
 import net.objectof.model.Resource;
 import net.objectof.model.Stereotype;
-import net.objectof.model.impl.IMoment;
 
 
 public class RepoUtils {
@@ -113,49 +110,6 @@ public class RepoUtils {
                 String pretty = st.toString().toLowerCase();
                 return pretty.substring(0, 1).toUpperCase() + pretty.substring(1);
         }
-    }
-
-    public static Object valueFromString(Kind<?> kind, String text, RepositoryController repository) {
-
-        switch (kind.getStereotype()) {
-            case BOOL:
-                return (Boolean.parseBoolean(text));
-            case COMPOSED:
-                throw new UnsupportedOperationException();
-            case FN:
-                throw new UnsupportedOperationException();
-            case INDEXED:
-                throw new UnsupportedOperationException();
-            case INT:
-                return (Long.parseLong(text));
-            case MAPPED:
-                Resource<?> newMap = resFromString(text, repository);
-                return (newMap);
-            case MEDIA:
-                throw new UnsupportedOperationException();
-            case MOMENT:
-                return new IMoment(text);
-            case NUM:
-                return (Double.parseDouble(text));
-            case REF:
-                Resource<?> newValue = resFromString(text, repository);
-                return (newValue);
-            case SET:
-                throw new UnsupportedOperationException();
-            case TEXT:
-                return (text);
-            default:
-                throw new UnsupportedOperationException();
-
-        }
-
-    }
-
-    private static Resource<?> resFromString(String id, RepositoryController repository) {
-        String[] parts = id.split("-", 2);
-        String kind = parts[0];
-        String label = parts[1];
-        return repository.getStagingTx().retrieve(kind, label);
     }
 
 }

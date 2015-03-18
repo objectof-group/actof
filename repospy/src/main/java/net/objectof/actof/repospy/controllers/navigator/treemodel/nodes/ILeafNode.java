@@ -56,6 +56,11 @@ public class ILeafNode extends ObservableValueBase<ILeafNode> {
     public Object getFieldValue() {
         return value;
     }
+    
+    public void setFieldValue(Object object) {
+        writeToModel(object);
+        addChangeHistory(object);
+    }
 
     public String getName() {
         String record = RepoUtils.resToString(parent);
@@ -100,18 +105,7 @@ public class ILeafNode extends ObservableValueBase<ILeafNode> {
         return ((Resource<?>) value).id().kind();
     }
 
-    /**
-     * Update the value of this field based on the given text
-     */
-    public void setValueByString(String text) {
-        writeToModel(RepoUtils.valueFromString(kind, text, repospy.repository));
-        addChangeHistory(text);
-    }
 
-    public void setValue(Object object) {
-        writeToModel(object);
-        addChangeHistory(object);
-    }
 
     /**
      * Given the controller and the id of the parent resource, update the parent
