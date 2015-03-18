@@ -126,7 +126,7 @@ public class Card extends BlankCard {
 
     private void fixPadding() {
 
-        if (card.getCenter() == null) {
+        if (contentBox.getChildren().size() == 0) {
             titleBox.setPadding(new Insets(0, 10, 0, 0));
             descriptionBox.setPadding(new Insets(0, 0, 0, 0));
             titleContentBox.setPadding(new Insets(0, 0, 0, 0));

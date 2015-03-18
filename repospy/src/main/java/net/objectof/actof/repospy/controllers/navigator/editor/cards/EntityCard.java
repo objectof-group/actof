@@ -3,15 +3,14 @@ package net.objectof.actof.repospy.controllers.navigator.editor.cards;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.Hyperlink;
-import javafx.scene.control.Label;
 import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
 import net.objectof.actof.common.util.RepoUtils;
 import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.actof.repospy.controllers.navigator.ResourceSelectedChange;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.RepoSpyTreeItem;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.IAggregateNode;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.ILeafNode;
+import net.objectof.actof.widgets.PropertiesPane;
 import net.objectof.actof.widgets.card.Card;
 
 
@@ -19,7 +18,8 @@ public class EntityCard extends Card {
 
     private IAggregateNode node;
 
-    private String style = "-fx-text-fill: #777777;";
+    private String keyStyle = "-fx-text-fill: #999999;";
+    private String valueStyle = "-fx-text-fill: #555555;";
 
     public EntityCard(RepoSpyTreeItem treeitem, RepoSpyController repospy) {
         this.node = (IAggregateNode) treeitem.getValue();
@@ -31,12 +31,12 @@ public class EntityCard extends Card {
         });
         setTitle(link);
 
-        GridPane fields = new GridPane();
-        fields.setHgap(10);
+        PropertiesPane fields = new PropertiesPane();
         fields.setPadding(new Insets(0, 0, 0, 20));
+        fields.setValueStyle(valueStyle);
+        fields.setKeyStyle(keyStyle);
         setContent(fields);
 
-        int row = 0;
         for (ILeafNode child : node.getLeaves(repospy)) {
 
             String keyString = child.key.toString();
@@ -45,19 +45,11 @@ public class EntityCard extends Card {
                 valueString = valueString.substring(0, 100);
             }
 
-            Label keyLabel = new Label(keyString);
-            Label valueLabel = new Label(valueString);
+            fields.addProperty(keyString, valueString);
 
-            keyLabel.setStyle(style);
-            valueLabel.setStyle(style);
-
-            fields.add(keyLabel, 0, row);
-            fields.add(valueLabel, 1, row);
-            row++;
         }
 
         ColumnConstraints constraints;
-
         constraints = new ColumnConstraints();
         constraints.setMinWidth(100);
         fields.getColumnConstraints().add(constraints);
