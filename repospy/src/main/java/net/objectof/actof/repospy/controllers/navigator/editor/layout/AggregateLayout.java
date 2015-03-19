@@ -72,8 +72,11 @@ public abstract class AggregateLayout extends AbstractLayout {
 
             editor.setDescription(box);
 
+            customizeCard(leaf, editor);
             cards.getChildren().add(editor);
         }
     }
+
+    protected void customizeCard(ILeafNode node, LeafCard card) {}
 
 }

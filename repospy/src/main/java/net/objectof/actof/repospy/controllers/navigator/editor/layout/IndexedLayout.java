@@ -1,7 +1,10 @@
 package net.objectof.actof.repospy.controllers.navigator.editor.layout;
 
 
+import net.objectof.actof.common.util.RepoUtils;
+import net.objectof.actof.common.util.RepoUtils.PrintStyle;
 import net.objectof.actof.repospy.RepoSpyController;
+import net.objectof.actof.repospy.controllers.navigator.editor.cards.leaf.LeafCard;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.RepoSpyTreeItem;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.ILeafNode;
 import net.objectof.aggr.Listing;
@@ -13,6 +16,11 @@ public class IndexedLayout extends AggregateLayout {
     public IndexedLayout(RepoSpyTreeItem treeitem, RepoSpyController repospy) {
         super(treeitem, repospy);
         updateUI();
+    }
+
+    @Override
+    protected void customizeCard(ILeafNode node, LeafCard card) {
+        card.setTitleContent(RepoUtils.prettyPrint(node.getFieldValue(), PrintStyle.LONG));
     }
 
     @Override

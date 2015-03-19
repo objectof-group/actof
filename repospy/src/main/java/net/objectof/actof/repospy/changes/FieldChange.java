@@ -2,6 +2,7 @@ package net.objectof.actof.repospy.changes;
 
 
 import net.objectof.actof.common.util.RepoUtils;
+import net.objectof.actof.common.util.RepoUtils.PrintStyle;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.ILeafNode;
 import net.objectof.model.Kind;
 import net.objectof.model.Stereotype;
@@ -55,7 +56,8 @@ public class FieldChange extends EditingChange {
 
     @Override
     public String getName() {
-        return RepoUtils.prettyPrint(leafnode.getParent()) + " " + leafnode.getKey().toString();
+        return RepoUtils.prettyPrint(leafnode.getParent(), PrintStyle.LONG) + RepoUtils.SEPARATOR
+                + leafnode.getKey().toString();
     }
 
 }

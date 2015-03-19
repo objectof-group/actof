@@ -30,7 +30,7 @@ public class ReferenceCard extends LeafCard {
 
             @Override
             public String toString(Resource<?> res) {
-                return RepoUtils.prettyPrintRes(res);
+                return RepoUtils.prettyPrint(res);
             }
 
             @Override

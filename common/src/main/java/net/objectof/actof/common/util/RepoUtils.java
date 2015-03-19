@@ -9,6 +9,12 @@ import net.objectof.model.Stereotype;
 
 public class RepoUtils {
 
+    public static final String SEPARATOR = " \u2023 ";
+
+    public enum PrintStyle {
+        SHORT, LONG
+    }
+
     public static Id<?> getIdOrNull(Object res) {
         if (isAggregate(res)) { return ((Resource<?>) res).id(); }
         return null;
@@ -57,24 +63,32 @@ public class RepoUtils {
     }
 
     public static String prettyPrint(Object o) {
+        return prettyPrint(o, PrintStyle.SHORT);
+    }
+
+    public static String prettyPrint(Object o, PrintStyle style) {
         if (o == null) { return "None"; }
 
-        if (isResource(o)) {
-            Resource<?> res = (Resource<?>) o;
-            return prettyPrintRes(res);
-        }
-
+        if (isResource(o)) { return prettyPrintRes((Resource<?>) o, style); }
         if (o instanceof String) { return "\"" + o.toString() + "\""; }
         if (o instanceof Stereotype) { return prettyPrintStereotype((Stereotype) o); }
 
         return o.toString();
     }
 
-    public static String prettyPrintRes(Resource<?> res) {
+    private static String prettyPrintRes(Resource<?> res, PrintStyle style) {
         if (res == null) { return "None"; }
+
+        System.out.println(res.id());
+
         String name = res.id().kind().getComponentName();
-        String[] parts = name.split("\\.");
-        name = parts[parts.length - 1];
+        System.out.println(name);
+        if (style == PrintStyle.SHORT) {
+            String[] parts = name.split("\\.");
+            name = parts[parts.length - 1];
+        } else {
+            name = name.replace(".", SEPARATOR);
+        }
 
         Stereotype st = res.id().kind().getStereotype();
 
@@ -85,7 +99,7 @@ public class RepoUtils {
         }
     }
 
-    public static String prettyPrintStereotype(Stereotype st) {
+    private static String prettyPrintStereotype(Stereotype st) {
         switch (st) {
             case BOOL:
                 return "Boolean";

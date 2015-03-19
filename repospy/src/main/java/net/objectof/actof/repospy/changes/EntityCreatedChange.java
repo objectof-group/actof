@@ -51,7 +51,7 @@ public class EntityCreatedChange extends EditingChange {
 
     @Override
     public String getName() {
-        return RepoUtils.prettyPrintRes(value);
+        return RepoUtils.prettyPrint(value);
     }
 
 }

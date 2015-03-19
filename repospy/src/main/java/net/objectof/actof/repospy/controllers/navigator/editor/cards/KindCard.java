@@ -36,7 +36,7 @@ public class KindCard extends Card {
             String keyString = part.getComponentName();
             String[] keyParts = keyString.split("\\.");
             keyString = keyParts[keyParts.length - 1];
-            String valueString = RepoUtils.prettyPrintStereotype(part.getStereotype());
+            String valueString = RepoUtils.prettyPrint(part.getStereotype());
             fields.addProperty(keyString, valueString);
         }
 

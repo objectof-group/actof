@@ -29,7 +29,7 @@ public class IAggregateNode implements TreeNode {
 
     @Override
     public String toString() {
-        return RepoUtils.prettyPrintRes(res);
+        return RepoUtils.prettyPrint(res);
     }
 
     public Resource<?> getRes() {

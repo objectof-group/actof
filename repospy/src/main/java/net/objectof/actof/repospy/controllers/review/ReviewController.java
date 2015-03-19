@@ -59,7 +59,7 @@ public class ReviewController extends CardsPane {
             card.setShadowOffsetY(0.7d);
             card.setPadding(new Insets(3));
             card.setTitle(change.getName());
-            card.setDescription(RepoUtils.prettyPrintStereotype(change.getStereotype()));
+            card.setDescription(RepoUtils.prettyPrint(change.getStereotype()));
 
             if (change instanceof FieldChange && !RepoUtils.isAggregateStereotype(change.getStereotype())) {
 

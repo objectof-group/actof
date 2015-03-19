@@ -21,7 +21,7 @@ public abstract class LeafCard extends Card {
             updateFromEntry();
         });
         setTitle(getLeafTitle(capitalize));
-        setDescription(RepoUtils.prettyPrintStereotype(entry.getStereotype()));
+        setDescription(RepoUtils.prettyPrint(entry.getStereotype()));
     }
 
     protected String getLeafTitle(boolean capitalize) {

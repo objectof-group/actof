@@ -43,7 +43,7 @@ public class StereotypeCard extends SchemaSpyCard {
 
             @Override
             public String toString(Stereotype st) {
-                return RepoUtils.prettyPrintStereotype(st);
+                return RepoUtils.prettyPrint(st);
             }
 
             @Override
