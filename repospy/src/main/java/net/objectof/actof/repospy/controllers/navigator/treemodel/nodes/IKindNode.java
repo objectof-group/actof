@@ -51,8 +51,6 @@ public class IKindNode extends AbstractTreeNode {
         String kind = getEntityKind();
         Iterable<Resource<?>> iter;
 
-        System.out.println("Cleared Children");
-
         children.clear();
 
         if (getRepospy().search.isValid() && kind.equals(getRepospy().search.getKind())) {
