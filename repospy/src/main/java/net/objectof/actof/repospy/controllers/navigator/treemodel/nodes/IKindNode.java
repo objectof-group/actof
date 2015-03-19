@@ -1,10 +1,8 @@
 package net.objectof.actof.repospy.controllers.navigator.treemodel.nodes;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
 import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.RepoSpyTreeItem;
@@ -45,12 +43,12 @@ public class IKindNode implements TreeNode {
     }
 
     @Override
-    public List<TreeItem<TreeNode>> getChildren(RepoSpyController repospy) {
+    public ObservableList<TreeItem<TreeNode>> getChildren(RepoSpyController repospy) {
 
         Transaction tx = repospy.repository.getStagingTx();
         String kind = getEntityKind();
         Iterable<Resource<?>> iter;
-        List<TreeItem<TreeNode>> newlist = new ArrayList<>();
+        ObservableList<TreeItem<TreeNode>> newlist = FXCollections.observableArrayList();
 
         if (repospy.search.isValid() && kind.equals(repospy.search.getKind())) {
             iter = tx.query(kind, repospy.search.getQuery());

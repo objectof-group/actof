@@ -1,8 +1,7 @@
 package net.objectof.actof.repospy.controllers.navigator.treemodel;
 
 
-import java.util.List;
-
+import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
 import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.model.Resource;
@@ -13,7 +12,7 @@ public interface TreeNode {
 
     public boolean hasChildren();
 
-    public List<TreeItem<TreeNode>> getChildren(RepoSpyController repospy);
+    public ObservableList<TreeItem<TreeNode>> getChildren(RepoSpyController repospy);
 
     public String getEntityKind();
 

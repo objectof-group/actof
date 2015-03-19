@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
 import net.objectof.actof.common.util.RepoUtils;
 import net.objectof.actof.repospy.RepoSpyController;
@@ -22,7 +24,7 @@ public class IAggregateNode implements TreeNode {
     private Resource<?> res;
 
     private List<ILeafNode> leaves;
-    private List<TreeItem<TreeNode>> subresources;
+    private ObservableList<TreeItem<TreeNode>> subresources;
 
     public IAggregateNode(Resource<?> res) {
         this.res = res;
@@ -59,7 +61,7 @@ public class IAggregateNode implements TreeNode {
     }
 
     @Override
-    public List<TreeItem<TreeNode>> getChildren(RepoSpyController repospy) {
+    public ObservableList<TreeItem<TreeNode>> getChildren(RepoSpyController repospy) {
 
         if (subresources == null) {
             getLeafEntries(this, repospy);
@@ -105,7 +107,7 @@ public class IAggregateNode implements TreeNode {
         Kind<?> kind = parent.getRes().id().kind().getParts().get(0);
 
         parent.leaves = new ArrayList<>();
-        parent.subresources = new ArrayList<>();
+        parent.subresources = FXCollections.observableArrayList();
         for (Object key : keys) {
             ILeafNode entry = new ILeafNode(parent.getRes().id(), controller, kind, key);
             if (entry.getFieldValue() == null) {
@@ -129,7 +131,7 @@ public class IAggregateNode implements TreeNode {
     private static void leafEntriesForComposite(IAggregateNode parent, RepoSpyController controller) {
 
         parent.leaves = new ArrayList<>();
-        parent.subresources = new ArrayList<>();
+        parent.subresources = FXCollections.observableArrayList();
         for (Kind<?> kind : parent.getRes().id().kind().getParts()) {
             IKind<?> ikind = (IKind<?>) kind;
             Object key = ikind.getSelector();

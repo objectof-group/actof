@@ -1,9 +1,10 @@
 package net.objectof.actof.repospy.controllers.navigator.treemodel.nodes;
 
 
-import java.util.ArrayList;
 import java.util.List;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
 import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.RepoSpyTreeItem;
@@ -23,9 +24,9 @@ public class IRootNode implements TreeNode {
     }
 
     @Override
-    public List<TreeItem<TreeNode>> getChildren(RepoSpyController repospy) {
+    public ObservableList<TreeItem<TreeNode>> getChildren(RepoSpyController repospy) {
 
-        List<TreeItem<TreeNode>> children = new ArrayList<>();
+        ObservableList<TreeItem<TreeNode>> children = FXCollections.observableArrayList();
         if (repospy == null) { return children; }
         if (repospy.repository == null) { return children; }
         List<Kind<?>> entities = repospy.repository.getEntities();

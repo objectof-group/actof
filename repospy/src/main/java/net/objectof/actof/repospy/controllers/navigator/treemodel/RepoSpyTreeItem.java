@@ -1,8 +1,6 @@
 package net.objectof.actof.repospy.controllers.navigator.treemodel;
 
 
-import java.util.List;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
@@ -31,14 +29,13 @@ public class RepoSpyTreeItem extends DynamicTreeItem<TreeNode> {
         TreeNode data = treeItem.getValue();
         if (!data.hasChildren()) { return FXCollections.emptyObservableList(); }
 
-        List<TreeItem<TreeNode>> childEntries = data.getChildren(controller);
-        ObservableList<TreeItem<TreeNode>> newlist = FXCollections.observableArrayList(childEntries);
+        ObservableList<TreeItem<TreeNode>> childEntries = data.getChildren(controller);
 
         // sort them all
         AlphaNumericComparitor comparitor = new AlphaNumericComparitor();
-        newlist.sort((a, b) -> comparitor.compare(RepoUtils.resToString(a), RepoUtils.resToString(b)));
+        childEntries.sort((a, b) -> comparitor.compare(RepoUtils.resToString(a), RepoUtils.resToString(b)));
 
-        return newlist;
+        return childEntries;
 
     }
 
