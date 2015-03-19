@@ -18,8 +18,8 @@ public class TextCard extends LeafCard {
     private Image expimg = new Image(TextCard.class.getResourceAsStream("icons/expand.png"));
     private TextInputControl textBox;
 
-    public TextCard(ILeafNode entry, boolean capitalize) {
-        super(entry, capitalize);
+    public TextCard(ILeafNode entry) {
+        super(entry);
 
         String contents = "";
 

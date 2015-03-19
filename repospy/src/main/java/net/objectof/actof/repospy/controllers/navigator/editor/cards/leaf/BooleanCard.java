@@ -9,8 +9,8 @@ public class BooleanCard extends LeafCard {
 
     CheckBox check;
 
-    public BooleanCard(ILeafNode entry, boolean capitalize) {
-        super(entry, capitalize);
+    public BooleanCard(ILeafNode entry) {
+        super(entry);
 
         check = new CheckBox();
         check.selectedProperty().addListener(change -> {

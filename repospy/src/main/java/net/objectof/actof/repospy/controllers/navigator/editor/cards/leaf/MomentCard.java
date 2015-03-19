@@ -14,8 +14,8 @@ public class MomentCard extends LeafCard {
     CalendarPicker picker = new CalendarPicker();
     TimeZone zulu = TimeZone.getTimeZone("GMT");
 
-    public MomentCard(ILeafNode entry, boolean capitalize) {
-        super(entry, capitalize);
+    public MomentCard(ILeafNode entry) {
+        super(entry);
 
         picker.setShowTime(true);
         picker.calendarProperty().addListener(change -> {

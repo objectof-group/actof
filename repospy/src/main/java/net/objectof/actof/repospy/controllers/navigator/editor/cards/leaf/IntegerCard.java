@@ -12,8 +12,8 @@ public class IntegerCard extends LeafCard {
 
     BigDecimalField field = new BigDecimalField();
 
-    public IntegerCard(ILeafNode entry, boolean capitalize) {
-        super(entry, capitalize);
+    public IntegerCard(ILeafNode entry) {
+        super(entry);
 
         field.setFormat(NumberFormat.getIntegerInstance());
         field.setStepwidth(new BigDecimal(1));

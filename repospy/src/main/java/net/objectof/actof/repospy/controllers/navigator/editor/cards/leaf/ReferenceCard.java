@@ -22,8 +22,8 @@ public class ReferenceCard extends LeafCard {
     private ChoiceBox<Resource<?>> refs;
     private PropertiesPane fields;
 
-    public ReferenceCard(ILeafNode entry, boolean capitalize) {
-        super(entry, capitalize);
+    public ReferenceCard(ILeafNode entry) {
+        super(entry);
 
         refs = new ChoiceBox<>();
         refs.setConverter(new StringConverter<Resource<?>>() {

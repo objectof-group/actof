@@ -21,7 +21,6 @@ public abstract class AggregateLayout extends AbstractLayout {
 
     private Card controlCard = new Card();
 
-    protected boolean capitalize = true;
     private IAggregateNode entry;
 
     public AggregateLayout(RepoSpyTreeItem treeitem, RepoSpyController repospy) {
@@ -54,7 +53,7 @@ public abstract class AggregateLayout extends AbstractLayout {
         cards.getChildren().clear();
 
         for (ILeafNode leaf : entry.getLeaves(repospy)) {
-            LeafCard editor = LeafCard.createEditor(leaf, capitalize);
+            LeafCard editor = LeafCard.createEditor(leaf);
 
             Node desc = editor.getDescription();
             AnchorPane.setTopAnchor(desc, 0d);

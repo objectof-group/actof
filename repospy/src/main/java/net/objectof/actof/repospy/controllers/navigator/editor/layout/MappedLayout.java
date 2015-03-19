@@ -17,7 +17,6 @@ public class MappedLayout extends AggregateLayout {
     public MappedLayout(RepoSpyTreeItem treeitem, RepoSpyController repospy) {
         super(treeitem, repospy);
         getControlCard().setTitleContent(keyField);
-        capitalize = false;
         updateUI();
     }
 

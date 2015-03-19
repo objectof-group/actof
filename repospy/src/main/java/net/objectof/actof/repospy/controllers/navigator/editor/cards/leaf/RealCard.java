@@ -12,8 +12,8 @@ public class RealCard extends LeafCard {
 
     BigDecimalField field = new BigDecimalField();
 
-    public RealCard(ILeafNode entry, boolean capitalize) {
-        super(entry, capitalize);
+    public RealCard(ILeafNode entry) {
+        super(entry);
 
         field.setFormat(NumberFormat.getNumberInstance());
         field.setStepwidth(new BigDecimal(1));

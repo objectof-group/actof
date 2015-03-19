@@ -11,7 +11,7 @@ public abstract class LeafCard extends Card {
     private ILeafNode entry;
     private boolean isUpdating = false;
 
-    public LeafCard(ILeafNode entry, boolean capitalize) {
+    public LeafCard(ILeafNode entry) {
         this.entry = entry;
 
         // add a listener to the LeafNode, when the value changes, update the
@@ -20,15 +20,12 @@ public abstract class LeafCard extends Card {
         entry.addListener(change -> {
             updateFromEntry();
         });
-        setTitle(getLeafTitle(capitalize));
+        setTitle(getLeafTitle());
         setDescription(RepoUtils.prettyPrint(entry.getStereotype()));
     }
 
-    protected String getLeafTitle(boolean capitalize) {
-        String title = entry.getKey().toString();
-        if (!capitalize) { return title; }
-        if (title.length() == 0) { return ""; }
-        return title.substring(0, 1).toUpperCase() + title.substring(1);
+    protected String getLeafTitle() {
+        return entry.getKey().toString();
     }
 
     protected ILeafNode getEntry() {
@@ -36,35 +33,31 @@ public abstract class LeafCard extends Card {
     }
 
     public static LeafCard createEditor(ILeafNode entry) {
-        return createEditor(entry, true);
-    }
-
-    public static LeafCard createEditor(ILeafNode entry, boolean capitalize) {
 
         switch (entry.getStereotype()) {
             case BOOL:
-                return new BooleanCard(entry, capitalize);
+                return new BooleanCard(entry);
             case INT:
-                return new IntegerCard(entry, capitalize);
+                return new IntegerCard(entry);
             case MOMENT:
-                return new MomentCard(entry, capitalize);
+                return new MomentCard(entry);
             case NUM:
-                return new RealCard(entry, capitalize);
+                return new RealCard(entry);
             case REF:
-                return new ReferenceCard(entry, capitalize);
+                return new ReferenceCard(entry);
             case TEXT:
-                return new TextCard(entry, capitalize);
+                return new TextCard(entry);
 
             case MAPPED:
             case INDEXED:
             case COMPOSED:
             case SET:
-                return new EntryLinkCard(entry, capitalize);
+                return new EntryLinkCard(entry);
 
             case MEDIA:
             case FN:
             default:
-                return new UnsupportedCard(entry, capitalize);
+                return new UnsupportedCard(entry);
 
         }
     }

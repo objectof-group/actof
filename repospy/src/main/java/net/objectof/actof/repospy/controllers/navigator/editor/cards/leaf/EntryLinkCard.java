@@ -9,9 +9,9 @@ import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.ILeafNod
 
 public class EntryLinkCard extends LeafCard {
 
-    public EntryLinkCard(ILeafNode entry, boolean capitalize) {
-        super(entry, capitalize);
-        Hyperlink node = new Hyperlink(getLeafTitle(capitalize));
+    public EntryLinkCard(ILeafNode entry) {
+        super(entry);
+        Hyperlink node = new Hyperlink(getLeafTitle());
         node.setPadding(new Insets(0));
         node.setStyle("-fx-font-size: 13pt");
         entry.getTreeNode().getChildren();
