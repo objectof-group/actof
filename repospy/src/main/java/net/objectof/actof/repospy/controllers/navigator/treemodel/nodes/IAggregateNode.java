@@ -24,7 +24,8 @@ public class IAggregateNode implements TreeNode {
     private Resource<?> res;
 
     private List<ILeafNode> leaves;
-    private ObservableList<TreeItem<TreeNode>> subresources;
+    private ObservableList<TreeItem<TreeNode>> subresources = FXCollections.observableArrayList();
+    private boolean initalized = false;
 
     public IAggregateNode(Resource<?> res) {
         this.res = res;
@@ -63,8 +64,8 @@ public class IAggregateNode implements TreeNode {
     @Override
     public ObservableList<TreeItem<TreeNode>> getChildren(RepoSpyController repospy) {
 
-        if (subresources == null) {
-            getLeafEntries(this, repospy);
+        if (!initalized) {
+            getLeafEntries(repospy);
         }
 
         return subresources;
@@ -73,15 +74,15 @@ public class IAggregateNode implements TreeNode {
 
     public List<ILeafNode> getLeaves(RepoSpyController repospy) {
 
-        if (leaves == null) {
-            getLeafEntries(this, repospy);
+        if (!initalized) {
+            getLeafEntries(repospy);
         }
 
         return leaves;
     }
 
     public void refreshLeaves(RepoSpyController repospy) {
-        getLeafEntries(this, repospy);
+        getLeafEntries(repospy);
     }
 
     @Override
@@ -89,11 +90,12 @@ public class IAggregateNode implements TreeNode {
         return res.id().kind().getStereotype();
     }
 
-    private static void getLeafEntries(IAggregateNode parent, RepoSpyController controller) {
-        if (parent.getStereotype() == Stereotype.COMPOSED) {
-            leafEntriesForComposite(parent, controller);
+    private void getLeafEntries(RepoSpyController controller) {
+        initalized = true;
+        if (this.getStereotype() == Stereotype.COMPOSED) {
+            leafEntriesForComposite(this, controller);
         } else {
-            leafEntriesForAggregate(parent, controller);
+            leafEntriesForAggregate(this, controller);
         }
 
     }
@@ -107,8 +109,9 @@ public class IAggregateNode implements TreeNode {
         Kind<?> kind = parent.getRes().id().kind().getParts().get(0);
 
         parent.leaves = new ArrayList<>();
-        parent.subresources = FXCollections.observableArrayList();
+        parent.subresources.clear();
         for (Object key : keys) {
+
             ILeafNode entry = new ILeafNode(parent.getRes().id(), controller, kind, key);
             if (entry.getFieldValue() == null) {
                 if (RepoUtils.isAggregateStereotype(entry.getKind().getStereotype())) {
@@ -131,7 +134,7 @@ public class IAggregateNode implements TreeNode {
     private static void leafEntriesForComposite(IAggregateNode parent, RepoSpyController controller) {
 
         parent.leaves = new ArrayList<>();
-        parent.subresources = FXCollections.observableArrayList();
+        parent.subresources.clear();
         for (Kind<?> kind : parent.getRes().id().kind().getParts()) {
             IKind<?> ikind = (IKind<?>) kind;
             Object key = ikind.getSelector();

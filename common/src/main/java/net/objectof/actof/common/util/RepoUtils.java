@@ -79,10 +79,7 @@ public class RepoUtils {
     private static String prettyPrintRes(Resource<?> res, PrintStyle style) {
         if (res == null) { return "None"; }
 
-        System.out.println(res.id());
-
         String name = res.id().kind().getComponentName();
-        System.out.println(name);
         if (style == PrintStyle.SHORT) {
             String[] parts = name.split("\\.");
             name = parts[parts.length - 1];

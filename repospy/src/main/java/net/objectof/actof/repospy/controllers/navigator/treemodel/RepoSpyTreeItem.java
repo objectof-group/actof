@@ -24,7 +24,7 @@ public class RepoSpyTreeItem extends DynamicTreeItem<TreeNode> {
     }
 
     @Override
-    protected ObservableList<TreeItem<TreeNode>> buildChildren(TreeItem<TreeNode> treeItem) {
+    protected ObservableList<TreeItem<TreeNode>> createChildList(TreeItem<TreeNode> treeItem) {
 
         TreeNode data = treeItem.getValue();
         if (!data.hasChildren()) { return FXCollections.emptyObservableList(); }
