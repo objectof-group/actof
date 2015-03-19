@@ -22,7 +22,7 @@ public abstract class AggregateLayout extends AbstractLayout {
     private Card controlCard = new Card();
 
     protected boolean capitalize = true;
-    protected IAggregateNode entry;
+    private IAggregateNode entry;
 
     public AggregateLayout(RepoSpyTreeItem treeitem, RepoSpyController repospy) {
         super(treeitem, repospy);
@@ -78,5 +78,9 @@ public abstract class AggregateLayout extends AbstractLayout {
     }
 
     protected void customizeCard(ILeafNode node, LeafCard card) {}
+
+    protected IAggregateNode getEntry() {
+        return entry;
+    }
 
 }

@@ -24,7 +24,7 @@ public class MappedLayout extends AggregateLayout {
     @Override
     protected void onAdd() {
         String key = keyField.getText();
-        Mapping<String, ?> map = (Mapping<String, ?>) entry.getRes();
+        Mapping<String, ?> map = (Mapping<String, ?>) getEntry().getRes();
         if (map.containsKey(key)) {
             Dialogs.create().message("This key already exists").title("Cannot Create Entry").showError();
             return;
@@ -33,19 +33,20 @@ public class MappedLayout extends AggregateLayout {
 
         // TODO: There has to be a better way than creating a dummy leaf node
         // just to set the hisotry?
-        ILeafNode leaf = new ILeafNode(entry.getRes().id(), repospy, entry.getRes().id().kind().getParts().get(0), key);
+        ILeafNode leaf = new ILeafNode(getEntry().getRes().id(), repospy, getEntry().getRes().id().kind().getParts()
+                .get(0), key);
         leaf.addChangeHistory(null);
 
-        entry.refreshLeaves(repospy);
+        getEntry().refreshLeaves(repospy);
         updateUI();
     }
 
     @Override
     protected void onRemove(ILeafNode leaf) {
-        Mapping<String, ?> map = (Mapping<String, ?>) entry.getRes();
+        Mapping<String, ?> map = (Mapping<String, ?>) getEntry().getRes();
         map.remove(leaf.getKey());
         leaf.addChangeHistory(null);
-        entry.refreshLeaves(repospy);
+        getEntry().refreshLeaves(repospy);
         updateUI();
     }
 

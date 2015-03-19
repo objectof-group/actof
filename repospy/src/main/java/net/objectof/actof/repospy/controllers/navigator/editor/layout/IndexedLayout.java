@@ -25,25 +25,25 @@ public class IndexedLayout extends AggregateLayout {
 
     @Override
     protected void onAdd() {
-        Listing<?> list = (Listing<?>) entry.getRes();
+        Listing<?> list = (Listing<?>) getEntry().getRes();
         list.add(null);
 
         // TODO: There has to be a better way than creating a dummy leaf node
         // just to set the hisotry?
-        ILeafNode leaf = new ILeafNode(entry.getRes().id(), repospy, entry.getRes().id().kind().getParts().get(0),
-                list.size() - 1);
+        ILeafNode leaf = new ILeafNode(getEntry().getRes().id(), repospy, getEntry().getRes().id().kind().getParts()
+                .get(0), list.size() - 1);
         leaf.addChangeHistory(null);
-        entry.refreshLeaves(repospy);
+        getEntry().refreshLeaves(repospy);
         updateUI();
     }
 
     @Override
     protected void onRemove(ILeafNode leaf) {
-        Listing<?> list = (Listing<?>) entry.getRes();
+        Listing<?> list = (Listing<?>) getEntry().getRes();
         Resource<?> subres = (Resource<?>) leaf.getFieldValue();
         list.remove(subres);
         leaf.addChangeHistory(null);
-        entry.refreshLeaves(repospy);
+        getEntry().refreshLeaves(repospy);
         updateUI();
     }
 }
