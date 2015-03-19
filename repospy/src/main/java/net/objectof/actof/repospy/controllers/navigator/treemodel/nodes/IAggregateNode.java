@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javafx.scene.control.TreeItem;
 import net.objectof.actof.common.util.RepoUtils;
 import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.RepoSpyTreeItem;
@@ -21,7 +22,7 @@ public class IAggregateNode implements TreeNode {
     private Resource<?> res;
 
     private List<ILeafNode> leaves;
-    private List<RepoSpyTreeItem> subresources;
+    private List<TreeItem<TreeNode>> subresources;
 
     public IAggregateNode(Resource<?> res) {
         this.res = res;
@@ -58,7 +59,7 @@ public class IAggregateNode implements TreeNode {
     }
 
     @Override
-    public List<RepoSpyTreeItem> getChildren(RepoSpyController repospy) {
+    public List<TreeItem<TreeNode>> getChildren(RepoSpyController repospy) {
 
         if (subresources == null) {
             getLeafEntries(this, repospy);

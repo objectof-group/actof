@@ -31,7 +31,7 @@ public class RepoSpyTreeItem extends DynamicTreeItem<TreeNode> {
         TreeNode data = treeItem.getValue();
         if (!data.hasChildren()) { return FXCollections.emptyObservableList(); }
 
-        List<RepoSpyTreeItem> childEntries = data.getChildren(controller);
+        List<TreeItem<TreeNode>> childEntries = data.getChildren(controller);
         ObservableList<TreeItem<TreeNode>> newlist = FXCollections.observableArrayList(childEntries);
 
         // sort them all
