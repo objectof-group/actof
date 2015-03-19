@@ -110,6 +110,9 @@ public class IAggregateNode extends AbstractTreeNode {
             agg.set(key, null);
         }
 
+        // if this resource is a transient resources, remove it
+        getRepospy().repository.removeTransientEntity(getRes());
+
         // remove this aggregate from the parent
         getParent().refreshNode();
 

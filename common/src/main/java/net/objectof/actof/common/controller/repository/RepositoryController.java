@@ -114,6 +114,10 @@ public class RepositoryController extends IActofController {
         model.transients.add(res);
     }
 
+    public void removeTransientEntity(Resource<?> res) {
+        model.transients.remove(res);
+    }
+
     // TODO: Relies on each .send call writing json without linebreaks!
     public void load(Scanner scanner) {
         scanner = scanner.useDelimiter("\n");
