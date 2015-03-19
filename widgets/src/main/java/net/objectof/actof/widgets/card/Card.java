@@ -15,12 +15,12 @@ import javafx.scene.layout.Priority;
 
 public class Card extends BlankCard {
 
-    private HBox titleContentBox, contentBox;
-    private AnchorPane titleBox, descriptionBox;
+    private HBox contentBox;
+    private AnchorPane titleBox, descriptionBox, titleContentBox;
 
     public Card() {
 
-        titleContentBox = new HBox();
+        titleContentBox = new AnchorPane();
         contentBox = new HBox();
         titleBox = new AnchorPane();
         descriptionBox = new AnchorPane();
@@ -69,7 +69,6 @@ public class Card extends BlankCard {
         Label label = new Label(description);
         label.setStyle("-fx-text-fill: #777777;");
         setDescription(label);
-
     }
 
     public void setDescription(Node descriptionNode) {
@@ -114,9 +113,23 @@ public class Card extends BlankCard {
 
     }
 
+    public void setTitleContent(String text) {
+        if (text == null) {
+            text = "";
+        }
+        Label label = new Label(text);
+        label.setStyle("-fx-text-fill: #999999; -fx-font-size: 13pt;");
+        setTitleContent(label);
+    }
+
     public void setTitleContent(Node node) {
         titleContentBox.getChildren().clear();
         if (node == null) { return; }
+
+        AnchorPane.setTopAnchor(node, 0d);
+        AnchorPane.setBottomAnchor(node, 0d);
+        AnchorPane.setLeftAnchor(node, 0d);
+        AnchorPane.setRightAnchor(node, 0d);
         titleContentBox.getChildren().add(node);
     }
 
