@@ -207,7 +207,7 @@ public class NavigatorController extends IActofUIController {
     public void setTopController(RepoSpyController controller) {
         this.repospy = controller;
 
-        rootNode = new IRootNode();
+        rootNode = new IRootNode(controller, null);
         root = new RepoSpyTreeItem(rootNode, repospy);
 
         breadcrumb = new BreadCrumbBar<>();

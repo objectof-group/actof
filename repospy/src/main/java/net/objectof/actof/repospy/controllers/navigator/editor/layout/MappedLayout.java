@@ -37,7 +37,7 @@ public class MappedLayout extends AggregateLayout {
                 .get(0), key);
         leaf.addChangeHistory(null);
 
-        getEntry().refreshNode(repospy);
+        getEntry().refreshNode();
         updateUI();
     }
 
@@ -46,7 +46,7 @@ public class MappedLayout extends AggregateLayout {
         Mapping<String, ?> map = (Mapping<String, ?>) getEntry().getRes();
         map.remove(leaf.getKey());
         leaf.addChangeHistory(null);
-        getEntry().refreshNode(repospy);
+        getEntry().refreshNode();
         updateUI();
     }
 

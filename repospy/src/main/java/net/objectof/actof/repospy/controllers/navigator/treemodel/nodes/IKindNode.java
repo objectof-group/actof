@@ -4,7 +4,7 @@ package net.objectof.actof.repospy.controllers.navigator.treemodel.nodes;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
-import net.objectof.actof.repospy.RepoSpyController;
+import net.objectof.actof.common.util.RepoUtils;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.RepoSpyTreeItem;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.TreeNode;
 import net.objectof.model.Kind;
@@ -13,11 +13,13 @@ import net.objectof.model.Stereotype;
 import net.objectof.model.Transaction;
 
 
-public class IKindNode implements TreeNode {
+public class IKindNode extends AbstractTreeNode {
 
     private Kind<?> kind;
+    private ObservableList<TreeItem<TreeNode>> children = FXCollections.observableArrayList();
 
-    public IKindNode(Kind<?> kind) {
+    public IKindNode(TreeNode parent, Kind<?> kind) {
+        super(parent);
         this.kind = kind;
     }
 
@@ -43,16 +45,19 @@ public class IKindNode implements TreeNode {
     }
 
     @Override
-    public ObservableList<TreeItem<TreeNode>> getChildren(RepoSpyController repospy) {
+    public ObservableList<TreeItem<TreeNode>> getChildren() {
 
-        Transaction tx = repospy.repository.getStagingTx();
+        Transaction tx = getRepospy().repository.getStagingTx();
         String kind = getEntityKind();
         Iterable<Resource<?>> iter;
-        ObservableList<TreeItem<TreeNode>> newlist = FXCollections.observableArrayList();
 
-        if (repospy.search.isValid() && kind.equals(repospy.search.getKind())) {
-            iter = tx.query(kind, repospy.search.getQuery());
-        } else if (repospy.search.isValid()) {
+        System.out.println("Cleared Children");
+
+        children.clear();
+
+        if (getRepospy().search.isValid() && kind.equals(getRepospy().search.getKind())) {
+            iter = tx.query(kind, getRepospy().search.getQuery());
+        } else if (getRepospy().search.isValid()) {
             return FXCollections.emptyObservableList();
         } else {
             iter = tx.enumerate(kind);
@@ -60,21 +65,29 @@ public class IKindNode implements TreeNode {
 
         // persistent entities
         for (Resource<?> res : iter) {
-            newlist.add(new RepoSpyTreeItem(new IAggregateNode(res), repospy));
+            if (RepoUtils.isEmptyAggregate(res)) {
+                continue;
+            }
+            children.add(new RepoSpyTreeItem(new IAggregateNode(this, res), getRepospy()));
         }
 
         // transient entities
-        for (Resource<?> res : repospy.repository.getTransientsForKind(kind)) {
-            newlist.add(new RepoSpyTreeItem(new IAggregateNode(res), repospy));
+        for (Resource<?> res : getRepospy().repository.getTransientsForKind(kind)) {
+            children.add(new RepoSpyTreeItem(new IAggregateNode(this, res), getRepospy()));
         }
 
-        return newlist;
+        return children;
 
     }
 
     @Override
     public Stereotype getStereotype() {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void refreshNode() {
+        getChildren();
     }
 
 }

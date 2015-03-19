@@ -12,12 +12,25 @@ public interface TreeNode {
 
     public boolean hasChildren();
 
-    public ObservableList<TreeItem<TreeNode>> getChildren(RepoSpyController repospy);
+    public ObservableList<TreeItem<TreeNode>> getChildren();
+
+    /**
+     * Updates the child tree nodes and leaf entries. This should be called when
+     * direct modification of the model has caused it to become out of sync with
+     * the TreeNode's representation.
+     * 
+     * @param repospy
+     */
+    public void refreshNode();
 
     public String getEntityKind();
 
     public Stereotype getStereotype();
 
     public Resource<?> getRes();
+
+    public RepoSpyController getRepospy();
+
+    public TreeNode getParent();
 
 }

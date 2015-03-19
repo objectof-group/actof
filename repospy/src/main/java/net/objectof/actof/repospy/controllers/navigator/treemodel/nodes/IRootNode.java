@@ -14,9 +14,20 @@ import net.objectof.model.Resource;
 import net.objectof.model.Stereotype;
 
 
-public class IRootNode implements TreeNode {
+public class IRootNode extends AbstractTreeNode {
 
     private String packageName = "Not Connected";
+    private RepoSpyController repospy;
+
+    public IRootNode(RepoSpyController repospy, TreeNode parent) {
+        super(parent);
+        this.repospy = repospy;
+    }
+
+    @Override
+    public RepoSpyController getRepospy() {
+        return repospy;
+    }
 
     @Override
     public boolean hasChildren() {
@@ -24,7 +35,7 @@ public class IRootNode implements TreeNode {
     }
 
     @Override
-    public ObservableList<TreeItem<TreeNode>> getChildren(RepoSpyController repospy) {
+    public ObservableList<TreeItem<TreeNode>> getChildren() {
 
         ObservableList<TreeItem<TreeNode>> children = FXCollections.observableArrayList();
         if (repospy == null) { return children; }
@@ -38,7 +49,7 @@ public class IRootNode implements TreeNode {
                 continue;
             }
 
-            RepoSpyTreeItem item = new RepoSpyTreeItem(new IKindNode(kind), repospy);
+            RepoSpyTreeItem item = new RepoSpyTreeItem(new IKindNode(this, kind), repospy);
             item.setExpanded(repospy.search.isValid());
             children.add(item);
         }
@@ -68,5 +79,10 @@ public class IRootNode implements TreeNode {
 
     public void setPackageName(String name) {
         this.packageName = name;
+    }
+
+    @Override
+    public void refreshNode() {
+        // NO-OP: This should never need to be refreshed
     }
 }

@@ -36,6 +36,15 @@ public class RepoUtils {
         return res instanceof Resource;
     }
 
+    public static boolean isEmptyAggregate(Object o) {
+        if (!isAggregate(o)) { return false; }
+        Aggregate<Object, Resource<?>> agg = (Aggregate<Object, Resource<?>>) o;
+        for (Object key : agg.keySet()) {
+            if (agg.get(key) != null) { return false; }
+        }
+        return true;
+    }
+
     public static String idToString(Id<?> id) {
         return id.kind().getComponentName() + "-" + id.label().toString();
     }

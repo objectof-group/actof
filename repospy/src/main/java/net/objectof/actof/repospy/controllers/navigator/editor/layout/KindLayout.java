@@ -72,7 +72,7 @@ public class KindLayout extends AbstractLayout {
             Button rem = new Button("", ActofIcons.getIconView(Icon.REMOVE, Size.BUTTON));
             rem.getStyleClass().add("tool-bar-button");
             rem.setOnAction(action -> {
-                delete(aggChild);
+                aggChild.delete();
             });
             HBox box = new HBox(10, desc, rem);
             card.setDescription(box);
@@ -82,12 +82,4 @@ public class KindLayout extends AbstractLayout {
         }
     }
 
-    private void delete(IAggregateNode node) {
-
-        // Aggregate<Object, Resource<?>> agg = node.getAggregate();
-        // for (Object o : agg.keySet()) {
-        // agg.set(o, null);
-        // }
-
-    }
 }

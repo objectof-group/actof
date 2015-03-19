@@ -19,7 +19,7 @@ import net.objectof.model.Stereotype;
 import net.objectof.model.impl.IKind;
 
 
-public class IAggregateNode implements TreeNode {
+public class IAggregateNode extends AbstractTreeNode {
 
     private Resource<?> res;
 
@@ -27,7 +27,8 @@ public class IAggregateNode implements TreeNode {
     private ObservableList<TreeItem<TreeNode>> subresources = FXCollections.observableArrayList();
     private boolean initalized = false;
 
-    public IAggregateNode(Resource<?> res) {
+    public IAggregateNode(TreeNode parent, Resource<?> res) {
+        super(parent);
         this.res = res;
     }
 
@@ -67,10 +68,10 @@ public class IAggregateNode implements TreeNode {
     }
 
     @Override
-    public ObservableList<TreeItem<TreeNode>> getChildren(RepoSpyController repospy) {
+    public ObservableList<TreeItem<TreeNode>> getChildren() {
 
         if (!initalized) {
-            getLeafEntries(repospy);
+            getLeafEntries();
         }
 
         return subresources;
@@ -80,7 +81,7 @@ public class IAggregateNode implements TreeNode {
     public List<ILeafNode> getLeaves(RepoSpyController repospy) {
 
         if (!initalized) {
-            getLeafEntries(repospy);
+            getLeafEntries();
         }
 
         return leaves;
@@ -93,8 +94,24 @@ public class IAggregateNode implements TreeNode {
      * 
      * @param repospy
      */
-    public void refreshNode(RepoSpyController repospy) {
-        getLeafEntries(repospy);
+    public void refreshNode() {
+        getLeafEntries();
+    }
+
+    /**
+     * Deletes this aggregate from the model
+     */
+    public void delete() {
+
+        // clear the aggregate of any values
+        Aggregate<Object, Resource<?>> agg = getAggregate();
+        for (Object key : agg.keySet()) {
+            agg.set(key, null);
+        }
+
+        // remove this aggregate from the parent
+        getParent().refreshNode();
+
     }
 
     @Override
@@ -102,19 +119,18 @@ public class IAggregateNode implements TreeNode {
         return res.id().kind().getStereotype();
     }
 
-    private void getLeafEntries(RepoSpyController controller) {
+    private void getLeafEntries() {
         initalized = true;
         if (this.getStereotype() == Stereotype.COMPOSED) {
-            leafEntriesForComposite(controller);
+            leafEntriesForComposite();
         } else {
-            leafEntriesForAggregate(controller);
+            leafEntriesForAggregate();
         }
 
     }
 
-    private void leafEntriesForAggregate(RepoSpyController controller) {
+    private void leafEntriesForAggregate() {
 
-        @SuppressWarnings("unchecked")
         Aggregate<Object, Resource<?>> agg = getAggregate();
         Set<Object> keys = agg.keySet();
 
@@ -124,7 +140,7 @@ public class IAggregateNode implements TreeNode {
         subresources.clear();
         for (Object key : keys) {
 
-            ILeafNode entry = new ILeafNode(getRes().id(), controller, kind, key);
+            ILeafNode entry = new ILeafNode(getRes().id(), getRepospy(), kind, key);
             if (entry.getFieldValue() == null) {
                 if (RepoUtils.isAggregateStereotype(entry.getKind().getStereotype())) {
                     entry.createFromNull();
@@ -132,8 +148,8 @@ public class IAggregateNode implements TreeNode {
             }
 
             if (RepoUtils.isAggregateStereotype(entry.getStereotype())) {
-                RepoSpyTreeItem subentry = new RepoSpyTreeItem(new IAggregateNode((Resource<?>) entry.getFieldValue()),
-                        controller);
+                TreeNode subnode = new IAggregateNode(this, (Resource<?>) entry.getFieldValue());
+                RepoSpyTreeItem subentry = new RepoSpyTreeItem(subnode, getRepospy());
                 subresources.add(subentry);
                 entry.setTreeNode(subentry);
             }
@@ -143,21 +159,21 @@ public class IAggregateNode implements TreeNode {
 
     }
 
-    private void leafEntriesForComposite(RepoSpyController controller) {
+    private void leafEntriesForComposite() {
 
         leaves = new ArrayList<>();
         subresources.clear();
         for (Kind<?> kind : getRes().id().kind().getParts()) {
             IKind<?> ikind = (IKind<?>) kind;
             Object key = ikind.getSelector();
-            ILeafNode entry = new ILeafNode(getRes().id(), controller, kind, key);
+            ILeafNode entry = new ILeafNode(getRes().id(), getRepospy(), kind, key);
             if (entry.getFieldValue() == null && RepoUtils.isAggregateStereotype(kind.getStereotype())) {
                 entry.createFromNull();
             }
 
             if (RepoUtils.isAggregateStereotype(entry.getStereotype())) {
-                RepoSpyTreeItem subentry = new RepoSpyTreeItem(new IAggregateNode((Resource<?>) entry.getFieldValue()),
-                        controller);
+                TreeNode subnode = new IAggregateNode(this, (Resource<?>) entry.getFieldValue());
+                RepoSpyTreeItem subentry = new RepoSpyTreeItem(subnode, getRepospy());
                 subresources.add(subentry);
                 entry.setTreeNode(subentry);
             }

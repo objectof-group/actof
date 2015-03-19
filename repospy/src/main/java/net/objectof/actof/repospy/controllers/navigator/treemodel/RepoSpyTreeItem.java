@@ -29,7 +29,7 @@ public class RepoSpyTreeItem extends DynamicTreeItem<TreeNode> {
         TreeNode data = treeItem.getValue();
         if (!data.hasChildren()) { return FXCollections.emptyObservableList(); }
 
-        ObservableList<TreeItem<TreeNode>> childEntries = data.getChildren(controller);
+        ObservableList<TreeItem<TreeNode>> childEntries = data.getChildren();
 
         // sort them all
         AlphaNumericComparitor comparitor = new AlphaNumericComparitor();

@@ -35,7 +35,7 @@ public class IndexedLayout extends AggregateLayout {
         ILeafNode leaf = new ILeafNode(getEntry().getRes().id(), repospy, getEntry().getRes().id().kind().getParts()
                 .get(0), list.size() - 1);
         leaf.addChangeHistory(null);
-        getEntry().refreshNode(repospy);
+        getEntry().refreshNode();
         updateUI();
     }
 
@@ -45,7 +45,7 @@ public class IndexedLayout extends AggregateLayout {
         Resource<?> subres = (Resource<?>) leaf.getFieldValue();
         list.remove(subres);
         leaf.addChangeHistory(null);
-        getEntry().refreshNode(repospy);
+        getEntry().refreshNode();
         updateUI();
     }
 }
