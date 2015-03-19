@@ -2,8 +2,11 @@ package net.objectof.actof.repospy.controllers.navigator.editor.layout;
 
 
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.TreeItem;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import net.objectof.actof.common.icons.ActofIcons;
 import net.objectof.actof.common.icons.ActofIcons.Icon;
 import net.objectof.actof.common.icons.ActofIcons.Size;
@@ -58,7 +61,33 @@ public class KindLayout extends AbstractLayout {
         for (TreeItem<TreeNode> child : treeitem.getChildren()) {
             IAggregateNode aggChild = (IAggregateNode) (child.getValue());
             EntityCard card = new EntityCard((RepoSpyTreeItem) child, repospy);
+
+            Node desc = card.getDescription();
+            AnchorPane.setTopAnchor(desc, 0d);
+            AnchorPane.setBottomAnchor(desc, 0d);
+            AnchorPane.setLeftAnchor(desc, 0d);
+            AnchorPane.setRightAnchor(desc, 0d);
+            desc = new AnchorPane(desc);
+
+            Button rem = new Button("", ActofIcons.getIconView(Icon.REMOVE, Size.BUTTON));
+            rem.getStyleClass().add("tool-bar-button");
+            rem.setOnAction(action -> {
+                delete(aggChild);
+            });
+            HBox box = new HBox(10, desc, rem);
+            card.setDescription(box);
+
             cards.getChildren().add(card);
+
         }
+    }
+
+    private void delete(IAggregateNode node) {
+
+        // Aggregate<Object, Resource<?>> agg = node.getAggregate();
+        // for (Object o : agg.keySet()) {
+        // agg.set(o, null);
+        // }
+
     }
 }

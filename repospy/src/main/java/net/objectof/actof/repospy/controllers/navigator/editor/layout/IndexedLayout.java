@@ -20,7 +20,9 @@ public class IndexedLayout extends AggregateLayout {
 
     @Override
     protected void customizeCard(ILeafNode node, LeafCard card) {
-        card.setTitleContent(RepoUtils.prettyPrint(node.getFieldValue(), PrintStyle.LONG));
+        if (RepoUtils.isAggregateStereotype(node.getStereotype())) {
+            card.setTitleContent(RepoUtils.prettyPrint(node.getFieldValue(), PrintStyle.LONG));
+        }
     }
 
     @Override
@@ -33,7 +35,7 @@ public class IndexedLayout extends AggregateLayout {
         ILeafNode leaf = new ILeafNode(getEntry().getRes().id(), repospy, getEntry().getRes().id().kind().getParts()
                 .get(0), list.size() - 1);
         leaf.addChangeHistory(null);
-        getEntry().refreshLeaves(repospy);
+        getEntry().refreshNode(repospy);
         updateUI();
     }
 
@@ -43,7 +45,7 @@ public class IndexedLayout extends AggregateLayout {
         Resource<?> subres = (Resource<?>) leaf.getFieldValue();
         list.remove(subres);
         leaf.addChangeHistory(null);
-        getEntry().refreshLeaves(repospy);
+        getEntry().refreshNode(repospy);
         updateUI();
     }
 }

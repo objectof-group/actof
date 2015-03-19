@@ -40,6 +40,11 @@ public class IAggregateNode implements TreeNode {
         return res;
     }
 
+    @SuppressWarnings("unchecked")
+    public Aggregate<Object, Resource<?>> getAggregate() {
+        return (Aggregate<Object, Resource<?>>) getRes();
+    }
+
     public String getEntityKind() {
         throw new UnsupportedOperationException();
     }
@@ -81,7 +86,14 @@ public class IAggregateNode implements TreeNode {
         return leaves;
     }
 
-    public void refreshLeaves(RepoSpyController repospy) {
+    /**
+     * Updates the child tree nodes and leaf entries. This should be called when
+     * direct modification of the Aggregate object has caused it to become out
+     * of sync with the IAggregateNode's model.
+     * 
+     * @param repospy
+     */
+    public void refreshNode(RepoSpyController repospy) {
         getLeafEntries(repospy);
     }
 
@@ -93,26 +105,26 @@ public class IAggregateNode implements TreeNode {
     private void getLeafEntries(RepoSpyController controller) {
         initalized = true;
         if (this.getStereotype() == Stereotype.COMPOSED) {
-            leafEntriesForComposite(this, controller);
+            leafEntriesForComposite(controller);
         } else {
-            leafEntriesForAggregate(this, controller);
+            leafEntriesForAggregate(controller);
         }
 
     }
 
-    private static void leafEntriesForAggregate(IAggregateNode parent, RepoSpyController controller) {
+    private void leafEntriesForAggregate(RepoSpyController controller) {
 
         @SuppressWarnings("unchecked")
-        Aggregate<?, Resource<?>> agg = (Aggregate<?, Resource<?>>) parent.getRes();
-        Set<?> keys = agg.keySet();
+        Aggregate<Object, Resource<?>> agg = getAggregate();
+        Set<Object> keys = agg.keySet();
 
-        Kind<?> kind = parent.getRes().id().kind().getParts().get(0);
+        Kind<?> kind = getRes().id().kind().getParts().get(0);
 
-        parent.leaves = new ArrayList<>();
-        parent.subresources.clear();
+        leaves = new ArrayList<>();
+        subresources.clear();
         for (Object key : keys) {
 
-            ILeafNode entry = new ILeafNode(parent.getRes().id(), controller, kind, key);
+            ILeafNode entry = new ILeafNode(getRes().id(), controller, kind, key);
             if (entry.getFieldValue() == null) {
                 if (RepoUtils.isAggregateStereotype(entry.getKind().getStereotype())) {
                     entry.createFromNull();
@@ -122,23 +134,23 @@ public class IAggregateNode implements TreeNode {
             if (RepoUtils.isAggregateStereotype(entry.getStereotype())) {
                 RepoSpyTreeItem subentry = new RepoSpyTreeItem(new IAggregateNode((Resource<?>) entry.getFieldValue()),
                         controller);
-                parent.subresources.add(subentry);
+                subresources.add(subentry);
                 entry.setTreeNode(subentry);
             }
 
-            parent.leaves.add(entry);
+            leaves.add(entry);
         }
 
     }
 
-    private static void leafEntriesForComposite(IAggregateNode parent, RepoSpyController controller) {
+    private void leafEntriesForComposite(RepoSpyController controller) {
 
-        parent.leaves = new ArrayList<>();
-        parent.subresources.clear();
-        for (Kind<?> kind : parent.getRes().id().kind().getParts()) {
+        leaves = new ArrayList<>();
+        subresources.clear();
+        for (Kind<?> kind : getRes().id().kind().getParts()) {
             IKind<?> ikind = (IKind<?>) kind;
             Object key = ikind.getSelector();
-            ILeafNode entry = new ILeafNode(parent.getRes().id(), controller, kind, key);
+            ILeafNode entry = new ILeafNode(getRes().id(), controller, kind, key);
             if (entry.getFieldValue() == null && RepoUtils.isAggregateStereotype(kind.getStereotype())) {
                 entry.createFromNull();
             }
@@ -146,11 +158,11 @@ public class IAggregateNode implements TreeNode {
             if (RepoUtils.isAggregateStereotype(entry.getStereotype())) {
                 RepoSpyTreeItem subentry = new RepoSpyTreeItem(new IAggregateNode((Resource<?>) entry.getFieldValue()),
                         controller);
-                parent.subresources.add(subentry);
+                subresources.add(subentry);
                 entry.setTreeNode(subentry);
             }
 
-            parent.leaves.add(entry);
+            leaves.add(entry);
         }
 
     }
