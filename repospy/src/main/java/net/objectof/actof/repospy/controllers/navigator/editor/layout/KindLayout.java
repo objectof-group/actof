@@ -36,9 +36,8 @@ public class KindLayout extends AbstractLayout {
         add.setOnAction(event -> {
             Resource<?> newEntity = repospy.repository.getStagingTx().create(node.getKind().getComponentName());
             EntityCreatedChange change = new EntityCreatedChange(newEntity);
-            repospy.getChangeBus().broadcast(change);
             repospy.repository.addTransientEntity(newEntity);
-            repospy.repository.getChangeBus().broadcast(change);
+            repospy.getChangeBus().broadcast(change);
             treeitem.updateChildren();
             updateUI();
         });
@@ -73,6 +72,8 @@ public class KindLayout extends AbstractLayout {
             rem.getStyleClass().add("tool-bar-button");
             rem.setOnAction(action -> {
                 aggChild.delete();
+                treeitem.updateChildren();
+                updateUI();
             });
             HBox box = new HBox(10, desc, rem);
             card.setDescription(box);

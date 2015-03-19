@@ -10,6 +10,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
 import net.objectof.actof.common.util.RepoUtils;
 import net.objectof.actof.repospy.RepoSpyController;
+import net.objectof.actof.repospy.changes.EntityDeletedChange;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.RepoSpyTreeItem;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.TreeNode;
 import net.objectof.aggr.Aggregate;
@@ -111,6 +112,8 @@ public class IAggregateNode extends AbstractTreeNode {
 
         // remove this aggregate from the parent
         getParent().refreshNode();
+
+        getRepospy().getChangeBus().broadcast(new EntityDeletedChange(getRes()));
 
     }
 
