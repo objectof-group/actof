@@ -1,7 +1,6 @@
 package net.objectof.actof.repospy.controllers.navigator.treemodel.nodes;
 
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -24,7 +23,7 @@ public class IAggregateNode extends AbstractTreeNode {
 
     private Resource<?> res;
 
-    private List<ILeafNode> leaves;
+    private ObservableList<ILeafNode> leaves = FXCollections.observableArrayList();
     private ObservableList<TreeItem<TreeNode>> subresources = FXCollections.observableArrayList();
     private boolean initalized = false;
 
@@ -142,7 +141,7 @@ public class IAggregateNode extends AbstractTreeNode {
 
         Kind<?> kind = getRes().id().kind().getParts().get(0);
 
-        leaves = new ArrayList<>();
+        leaves.clear();
         subresources.clear();
         for (Object key : keys) {
 
@@ -167,7 +166,7 @@ public class IAggregateNode extends AbstractTreeNode {
 
     private void leafEntriesForComposite() {
 
-        leaves = new ArrayList<>();
+        leaves.clear();
         subresources.clear();
         for (Kind<?> kind : getRes().id().kind().getParts()) {
             IKind<?> ikind = (IKind<?>) kind;

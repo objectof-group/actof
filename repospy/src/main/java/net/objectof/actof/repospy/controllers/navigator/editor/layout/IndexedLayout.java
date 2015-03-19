@@ -36,7 +36,6 @@ public class IndexedLayout extends AggregateLayout {
                 .get(0), list.size() - 1);
         leaf.addChangeHistory(null);
         getEntry().refreshNode();
-        updateUI();
     }
 
     @Override
@@ -46,6 +45,5 @@ public class IndexedLayout extends AggregateLayout {
         list.remove(subres);
         leaf.addChangeHistory(null);
         getEntry().refreshNode();
-        updateUI();
     }
 }

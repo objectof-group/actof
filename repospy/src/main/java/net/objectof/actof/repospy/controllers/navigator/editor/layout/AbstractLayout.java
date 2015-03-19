@@ -1,6 +1,7 @@
 package net.objectof.actof.repospy.controllers.navigator.editor.layout;
 
 
+import javafx.beans.Observable;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import net.objectof.actof.repospy.RepoSpyController;
@@ -19,6 +20,10 @@ public abstract class AbstractLayout extends BorderPane {
 
         this.repospy = repospy;
         this.treeitem = treeitem;
+
+        treeitem.getChildren().addListener((Observable obs) -> {
+            updateUI();
+        });
 
         scroll.setStyle("-fx-background-color:transparent;");
         scroll.setFitToWidth(true);

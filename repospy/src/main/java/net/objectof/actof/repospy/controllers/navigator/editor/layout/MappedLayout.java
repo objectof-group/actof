@@ -38,7 +38,6 @@ public class MappedLayout extends AggregateLayout {
         leaf.addChangeHistory(null);
 
         getEntry().refreshNode();
-        updateUI();
     }
 
     @Override
@@ -47,7 +46,6 @@ public class MappedLayout extends AggregateLayout {
         map.remove(leaf.getKey());
         leaf.addChangeHistory(null);
         getEntry().refreshNode();
-        updateUI();
     }
 
 }

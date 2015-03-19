@@ -39,7 +39,6 @@ public class KindLayout extends AbstractLayout {
             repospy.repository.addTransientEntity(newEntity);
             repospy.getChangeBus().broadcast(change);
             treeitem.updateChildren();
-            updateUI();
         });
 
         controlCard.setPadding(new Insets(0));
