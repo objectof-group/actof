@@ -21,22 +21,15 @@ public class ILeafNode extends ObservableValueBase<ILeafNode> {
     private Id<?> parentId;
     private Kind<?> kind; // kind from the perspective of the parent. eg
                           // Person.job, rather than Job
-    public Resource<?> parent; // calculated
-
     private Object key;
+    private RepoSpyTreeItem treeNode;
 
-    public IAggregateNode parentTreeEntry;
-    public RepoSpyTreeItem treeNode;
-
-    public ILeafNode(IAggregateNode parentTreeEntry, RepoSpyController repospy, Kind<?> kind, Object key) {
-
-        this.parentTreeEntry = parentTreeEntry;
+    public ILeafNode(Id<?> parentId, RepoSpyController repospy, Kind<?> kind, Object key) {
         this.repospy = repospy;
-        this.parentId = parentTreeEntry.getRes().id();
+        this.parentId = parentId;
         this.kind = kind;
         this.key = key;
         fireValueChangedEvent();
-
     }
 
     @Override
@@ -53,10 +46,9 @@ public class ILeafNode extends ObservableValueBase<ILeafNode> {
     }
 
     public Object getFieldValue() {
-        Transaction tx = repospy.repository.getStagingTx();
-        Resource<?> res = tx.retrieve(parentId);
+        Resource<?> parent = getParent();
         @SuppressWarnings("unchecked")
-        Aggregate<Object, Object> agg = (Aggregate<Object, Object>) res;
+        Aggregate<Object, Object> agg = (Aggregate<Object, Object>) parent;
         return agg.get(getKey());
     }
 
@@ -73,7 +65,7 @@ public class ILeafNode extends ObservableValueBase<ILeafNode> {
     }
 
     public String getName() {
-        String record = RepoUtils.resToString(parent);
+        String record = RepoUtils.resToString(getParent());
         Object field = key;
         if (field == null) { return record; }
         return record + "." + field;
@@ -100,16 +92,16 @@ public class ILeafNode extends ObservableValueBase<ILeafNode> {
     }
 
     /**
-     * Returns the kind of the resource from it's own perspective. If this
-     * CompositeEntry was modeling Person.job, kind would be Person.job, whereas
-     * this would return Job
+     * Returns the kind of the resource from it's own perspective. If this node
+     * represented Person.job, getKind would return Person.job, whereas this
+     * method would return Job
      * 
-     * @return null if this is not a Resource type, or if it is null, Kind of
-     *         the resource otherwise TODO: Fix Me, currently checking the kind
-     *         of the existing value, but when value is null, no way to
-     *         determine this.
+     * @return null if this is not a Resource type, (or if the current value is
+     *         null -- a known limitation), Kind of the resource otherwise TODO:
+     *         Fix Me, currently checking the kind of the existing value, but
+     *         when value is null, no way to determine this.
      */
-    public Kind<?> resourceKind() {
+    public Kind<?> getCanonicalKind() {
         Object value = getFieldValue();
         if (value == null) { return null; }
         if (!(value instanceof Resource)) { return null; }
@@ -127,6 +119,20 @@ public class ILeafNode extends ObservableValueBase<ILeafNode> {
         @SuppressWarnings("unchecked")
         Aggregate<Object, Object> agg = (Aggregate<Object, Object>) cleanParent;
         return agg.get(key);
+    }
+
+    public Resource<?> getParent() {
+        Transaction tx = repospy.repository.getStagingTx();
+        Resource<?> parent = tx.retrieve(parentId);
+        return parent;
+    }
+
+    public RepoSpyTreeItem getTreeNode() {
+        return treeNode;
+    }
+
+    public void setTreeNode(RepoSpyTreeItem treeNode) {
+        this.treeNode = treeNode;
     }
 
 }

@@ -31,7 +31,9 @@ public class MappedLayout extends AggregateLayout {
         }
         map.put(key, null);
 
-        ILeafNode leaf = new ILeafNode(entry, repospy, entry.getRes().id().kind().getParts().get(0), key);
+        // TODO: There has to be a better way than creating a dummy leaf node
+        // just to set the hisotry?
+        ILeafNode leaf = new ILeafNode(entry.getRes().id(), repospy, entry.getRes().id().kind().getParts().get(0), key);
         leaf.addChangeHistory(null);
 
         entry.refreshLeaves(repospy);

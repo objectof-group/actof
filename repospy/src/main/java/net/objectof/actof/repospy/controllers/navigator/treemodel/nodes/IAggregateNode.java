@@ -90,12 +90,12 @@ public class IAggregateNode implements TreeNode {
         if (parent.getStereotype() == Stereotype.COMPOSED) {
             leafEntriesForComposite(parent, controller);
         } else {
-            leafEntriesForAggredate(parent, controller);
+            leafEntriesForAggregate(parent, controller);
         }
 
     }
 
-    private static void leafEntriesForAggredate(IAggregateNode parent, RepoSpyController controller) {
+    private static void leafEntriesForAggregate(IAggregateNode parent, RepoSpyController controller) {
 
         @SuppressWarnings("unchecked")
         Aggregate<?, Resource<?>> agg = (Aggregate<?, Resource<?>>) parent.getRes();
@@ -106,7 +106,7 @@ public class IAggregateNode implements TreeNode {
         parent.leaves = new ArrayList<>();
         parent.subresources = new ArrayList<>();
         for (Object key : keys) {
-            ILeafNode entry = new ILeafNode(parent, controller, kind, key);
+            ILeafNode entry = new ILeafNode(parent.getRes().id(), controller, kind, key);
             if (entry.getFieldValue() == null) {
                 if (RepoUtils.isAggregateStereotype(entry.getKind().getStereotype())) {
                     entry.createFromNull();
@@ -117,7 +117,7 @@ public class IAggregateNode implements TreeNode {
                 RepoSpyTreeItem subentry = new RepoSpyTreeItem(new IAggregateNode((Resource<?>) entry.getFieldValue()),
                         controller);
                 parent.subresources.add(subentry);
-                entry.treeNode = subentry;
+                entry.setTreeNode(subentry);
             }
 
             parent.leaves.add(entry);
@@ -132,7 +132,7 @@ public class IAggregateNode implements TreeNode {
         for (Kind<?> kind : parent.getRes().id().kind().getParts()) {
             IKind<?> ikind = (IKind<?>) kind;
             Object key = ikind.getSelector();
-            ILeafNode entry = new ILeafNode(parent, controller, kind, key);
+            ILeafNode entry = new ILeafNode(parent.getRes().id(), controller, kind, key);
             if (entry.getFieldValue() == null && RepoUtils.isAggregateStereotype(kind.getStereotype())) {
                 entry.createFromNull();
             }
@@ -141,7 +141,7 @@ public class IAggregateNode implements TreeNode {
                 RepoSpyTreeItem subentry = new RepoSpyTreeItem(new IAggregateNode((Resource<?>) entry.getFieldValue()),
                         controller);
                 parent.subresources.add(subentry);
-                entry.treeNode = subentry;
+                entry.setTreeNode(subentry);
             }
 
             parent.leaves.add(entry);

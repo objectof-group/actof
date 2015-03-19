@@ -14,9 +14,9 @@ public class EntryLinkCard extends LeafCard {
         Hyperlink node = new Hyperlink(getLeafTitle(capitalize));
         node.setPadding(new Insets(0));
         node.setStyle("-fx-font-size: 13pt");
-        entry.treeNode.getChildren();
+        entry.getTreeNode().getChildren();
         node.setOnAction(event -> {
-            entry.getController().getChangeBus().broadcast(new ResourceSelectedChange(entry.treeNode));
+            entry.getController().getChangeBus().broadcast(new ResourceSelectedChange(entry.getTreeNode()));
         });
         setTitle(node);
 

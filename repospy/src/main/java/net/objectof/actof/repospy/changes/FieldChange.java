@@ -55,7 +55,7 @@ public class FieldChange extends EditingChange {
 
     @Override
     public String getName() {
-        return RepoUtils.prettyPrint(leafnode.parent) + " " + leafnode.getKey().toString();
+        return RepoUtils.prettyPrint(leafnode.getParent()) + " " + leafnode.getKey().toString();
     }
 
 }
