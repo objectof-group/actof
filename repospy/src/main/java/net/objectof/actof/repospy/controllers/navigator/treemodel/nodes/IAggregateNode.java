@@ -7,6 +7,7 @@ import java.util.Set;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
+import javafx.scene.image.Image;
 import net.objectof.actof.common.util.RepoUtils;
 import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.actof.repospy.changes.EntityDeletedChange;
@@ -30,6 +31,12 @@ public class IAggregateNode extends AbstractTreeNode {
     public IAggregateNode(TreeNode parent, Resource<?> res) {
         super(parent);
         this.res = res;
+    }
+
+    @Override
+    public Image getImage() {
+        return new Image(IAggregateNode.class.getResourceAsStream("icons/" + getStereotype().toString().toLowerCase()
+                + ".png"));
     }
 
     @Override

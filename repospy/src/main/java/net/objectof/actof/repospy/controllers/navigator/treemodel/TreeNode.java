@@ -3,6 +3,7 @@ package net.objectof.actof.repospy.controllers.navigator.treemodel;
 
 import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
+import javafx.scene.image.Image;
 import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.model.Resource;
 import net.objectof.model.Stereotype;
@@ -10,9 +11,9 @@ import net.objectof.model.Stereotype;
 
 public interface TreeNode {
 
-    public boolean hasChildren();
+    boolean hasChildren();
 
-    public ObservableList<TreeItem<TreeNode>> getChildren();
+    ObservableList<TreeItem<TreeNode>> getChildren();
 
     /**
      * Updates the child tree nodes and leaf entries. This should be called when
@@ -21,16 +22,20 @@ public interface TreeNode {
      * 
      * @param repospy
      */
-    public void refreshNode();
+    void refreshNode();
 
-    public String getEntityKind();
+    String getEntityKind();
 
-    public Stereotype getStereotype();
+    Stereotype getStereotype();
 
-    public Resource<?> getRes();
+    Resource<?> getRes();
 
-    public RepoSpyController getRepospy();
+    RepoSpyController getRepospy();
 
-    public TreeNode getParent();
+    TreeNode getParent();
+
+    default Image getImage() {
+        return null;
+    }
 
 }
