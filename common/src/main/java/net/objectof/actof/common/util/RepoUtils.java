@@ -36,6 +36,10 @@ public class RepoUtils {
         return res instanceof Resource;
     }
 
+    public static boolean isResourceTransient(Resource<?> res) {
+        return res.id().label().toString().startsWith("-");
+    }
+
     public static boolean isEmptyAggregate(Object o) {
         if (!isAggregate(o)) { return false; }
         Aggregate<Object, Resource<?>> agg = (Aggregate<Object, Resource<?>>) o;

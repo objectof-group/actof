@@ -23,7 +23,7 @@ public class CompositeLayout extends AbstractLayout {
 
         cards.getChildren().clear();
 
-        for (ILeafNode leaf : entry.getLeaves(repospy)) {
+        for (ILeafNode leaf : entry.getLeaves()) {
             LeafCard editor = LeafCard.createEditor(leaf);
             cards.getChildren().add(editor);
         }

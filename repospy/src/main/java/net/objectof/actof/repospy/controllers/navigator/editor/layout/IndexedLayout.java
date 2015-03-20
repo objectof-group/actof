@@ -30,6 +30,7 @@ public class IndexedLayout extends AggregateLayout {
 
     @Override
     protected void onAdd() {
+
         Listing<?> list = (Listing<?>) getEntry().getRes();
         list.add(null);
 

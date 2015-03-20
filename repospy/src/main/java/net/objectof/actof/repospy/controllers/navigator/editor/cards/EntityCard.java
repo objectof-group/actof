@@ -37,7 +37,7 @@ public class EntityCard extends Card {
 
         setDescription(RepoUtils.prettyPrint(node.getStereotype()));
 
-        for (ILeafNode child : node.getLeaves(repospy)) {
+        for (ILeafNode child : node.getLeaves()) {
 
             String keyString = child.getKey().toString();
             String valueString = RepoUtils.prettyPrint(child.getFieldValue());

@@ -34,7 +34,7 @@ public class ILeafNode extends ObservableValueBase<ILeafNode> {
 
     @Override
     public String toString() {
-        return RepoUtils.resToString(getFieldValue());
+        return "LeafNode:" + getStereotype() + " = " + RepoUtils.resToString(getFieldValue());
     }
 
     public Object getKey() {

@@ -54,7 +54,7 @@ public abstract class AggregateLayout extends AbstractLayout {
 
         cards.getChildren().clear();
 
-        for (ILeafNode leaf : entry.getLeaves(repospy)) {
+        for (ILeafNode leaf : entry.getLeaves()) {
             LeafCard editor = LeafCard.createEditor(leaf);
 
             Node desc = editor.getDescription();

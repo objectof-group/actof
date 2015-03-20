@@ -2,6 +2,7 @@ package net.objectof.actof.repospy.changes;
 
 
 import net.objectof.actof.common.util.RepoUtils;
+import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.model.Kind;
 import net.objectof.model.Resource;
 import net.objectof.model.Stereotype;
@@ -11,8 +12,8 @@ public class EntityDeletedChange extends EditingChange {
 
     Resource<?> value;
 
-    public EntityDeletedChange(Resource<?> res) {
-        this.value = res;
+    public EntityDeletedChange(RepoSpyController repospy, Resource<?> res) {
+        value = res;
     }
 
     @Override
@@ -54,4 +55,9 @@ public class EntityDeletedChange extends EditingChange {
         return RepoUtils.prettyPrint(value);
     }
 
+    public boolean isChanged() {
+        if (super.isChanged() == false) { return false; }
+        if (newValue() == null && RepoUtils.isResourceTransient(value)) { return false; }
+        return true;
+    }
 }
