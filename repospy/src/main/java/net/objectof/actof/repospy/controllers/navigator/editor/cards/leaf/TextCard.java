@@ -62,6 +62,7 @@ public class TextCard extends LeafCard {
             getEntry().setFieldValue(n);
         });
         setContent(textBox);
+        textBox.requestFocus();
     }
 
     @Override
