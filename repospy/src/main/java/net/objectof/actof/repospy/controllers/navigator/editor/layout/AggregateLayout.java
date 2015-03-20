@@ -4,6 +4,7 @@ package net.objectof.actof.repospy.controllers.navigator.editor.layout;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import net.objectof.actof.common.icons.ActofIcons;
@@ -28,6 +29,7 @@ public abstract class AggregateLayout extends AbstractLayout {
         this.entry = (IAggregateNode) treeitem.getValue();
 
         Button add = new Button("", ActofIcons.getIconView(Icon.ADD, Size.BUTTON));
+        add.setTooltip(new Tooltip("Add Entry"));
         add.getStyleClass().add("tool-bar-button");
         add.setOnAction(action -> {
             onAdd();
@@ -64,6 +66,7 @@ public abstract class AggregateLayout extends AbstractLayout {
 
             Button rem = new Button("", ActofIcons.getIconView(Icon.REMOVE, Size.BUTTON));
             rem.getStyleClass().add("tool-bar-button");
+            rem.setTooltip(new Tooltip("Remove Entry"));
             rem.setOnAction(action -> {
                 onRemove(leaf);
             });

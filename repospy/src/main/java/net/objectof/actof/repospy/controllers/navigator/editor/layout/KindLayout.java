@@ -4,6 +4,7 @@ package net.objectof.actof.repospy.controllers.navigator.editor.layout;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -33,6 +34,7 @@ public class KindLayout extends AbstractLayout {
 
         Button add = new Button("", ActofIcons.getIconView(Icon.ADD, Size.BUTTON));
         add.getStyleClass().add("tool-bar-button");
+        add.setTooltip(new Tooltip("Create Entity"));
         add.setOnAction(event -> {
             Resource<?> newEntity = repospy.repository.getStagingTx().create(node.getKind().getComponentName());
             EntityCreatedChange change = new EntityCreatedChange(newEntity);
@@ -69,6 +71,7 @@ public class KindLayout extends AbstractLayout {
 
             Button rem = new Button("", ActofIcons.getIconView(Icon.REMOVE, Size.BUTTON));
             rem.getStyleClass().add("tool-bar-button");
+            rem.setTooltip(new Tooltip("Delete Entity"));
             rem.setOnAction(action -> {
                 aggChild.delete();
                 treeitem.updateChildren();
