@@ -137,7 +137,7 @@ public class NavigatorController extends IActofUIController {
 
     /* FXML Hook */
     public void doReview() throws IOException {
-        repospy.showReview(repospy.history.get());
+        repospy.showReview();
     }
 
     /* FXML Hook */
@@ -256,7 +256,7 @@ public class NavigatorController extends IActofUIController {
 
     private void onChange(Change change) {
 
-        boolean hasHistory = repospy.history.get().size() > 0;
+        boolean hasHistory = repospy.history.getChanges().size() > 0;
         commit.setDisable(!hasHistory);
         review.setDisable(!hasHistory);
 

@@ -1,7 +1,16 @@
 package net.objectof.actof.repospy.controllers.navigator.editor.cards.leaf;
 
 
+import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import net.objectof.actof.common.icons.ActofIcons;
+import net.objectof.actof.common.icons.ActofIcons.Icon;
+import net.objectof.actof.common.icons.ActofIcons.Size;
 import net.objectof.actof.common.util.RepoUtils;
+import net.objectof.actof.repospy.changes.EditingChange;
+import net.objectof.actof.repospy.changes.FieldChange;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.ILeafNode;
 import net.objectof.actof.widgets.card.Card;
 
@@ -10,6 +19,7 @@ public abstract class LeafCard extends Card {
 
     private ILeafNode entry;
     private boolean isUpdating = false;
+    private Button undo;
 
     public LeafCard(ILeafNode entry) {
         this.entry = entry;
@@ -22,6 +32,41 @@ public abstract class LeafCard extends Card {
         });
         setTitle(getLeafTitle());
         setDescription(RepoUtils.prettyPrint(entry.getStereotype()));
+
+        Node desc = getDescription();
+        AnchorPane.setTopAnchor(desc, 0d);
+        AnchorPane.setBottomAnchor(desc, 0d);
+        AnchorPane.setLeftAnchor(desc, 0d);
+        AnchorPane.setRightAnchor(desc, 0d);
+        desc = new AnchorPane(desc);
+
+        undo = new Button("", ActofIcons.getIconView(Icon.UNDO, Size.BUTTON));
+        undo.getStyleClass().add("tool-bar-button");
+        undo.setOnAction(action -> {
+            undoable().undo();
+        });
+        undo.setVisible(false);
+        HBox box = new HBox(10, undo, desc);
+        setDescription(box);
+
+        entry.getController().getChangeBus().listen(FieldChange.class, change -> {
+            if (undo.isFocused()) {
+                getTitle().requestFocus();
+            }
+            undo.setVisible(undoable() != null);
+        });
+
+    }
+
+    private FieldChange undoable() {
+        for (EditingChange edit : getEntry().getController().history.getChanges()) {
+            if (!(edit instanceof FieldChange)) {
+                continue;
+            }
+            FieldChange fieldChange = (FieldChange) edit;
+            if (fieldChange.getLeafNode().equals(entry)) { return fieldChange; }
+        }
+        return null;
     }
 
     protected String getLeafTitle() {

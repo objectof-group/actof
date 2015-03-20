@@ -2,7 +2,9 @@ package net.objectof.actof.repospy.controllers.history;
 
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -46,8 +48,8 @@ public class HistoryController {
         changes.broadcast(new HistoryChange());
     }
 
-    public ObservableList<EditingChange> get() {
-        return history;
+    public List<EditingChange> getChanges() {
+        return history.stream().filter(edit -> edit.isChanged()).collect(Collectors.toList());
     }
 
 }

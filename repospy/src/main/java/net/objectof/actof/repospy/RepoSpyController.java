@@ -3,7 +3,6 @@ package net.objectof.actof.repospy;
 
 import java.io.IOException;
 
-import javafx.collections.ObservableList;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
@@ -14,7 +13,6 @@ import net.objectof.actof.common.controller.ITopController;
 import net.objectof.actof.common.controller.repository.RepositoryController;
 import net.objectof.actof.common.controller.search.SearchController;
 import net.objectof.actof.connectorui.ConnectionController;
-import net.objectof.actof.repospy.changes.EditingChange;
 import net.objectof.actof.repospy.controllers.history.HistoryController;
 import net.objectof.actof.repospy.controllers.navigator.NavigatorController;
 import net.objectof.actof.repospy.controllers.review.ReviewController;
@@ -68,7 +66,7 @@ public class RepoSpyController extends ITopController {
         primaryStage.getIcons().add(new Image(RepoSpy.class.getResource("RepoSpy.png").openStream()));
 
         primaryStage.setOnCloseRequest(event -> {
-            if (history.get().isEmpty()) { return; }
+            if (history.getChanges().isEmpty()) { return; }
 
             Action reallyquit = Dialogs.create().title("Exit RepoSpy")
                     .message("Exit RepoSpy with ununcommitted changes?").masthead("You have uncommittted changes")
@@ -85,7 +83,7 @@ public class RepoSpyController extends ITopController {
         return controller;
     }
 
-    public void showReview(ObservableList<EditingChange> changes) throws IOException {
+    public void showReview() throws IOException {
 
         ReviewController review = new ReviewController(history, getChangeBus());
         ScrollPane scroll = new ScrollPane(review);

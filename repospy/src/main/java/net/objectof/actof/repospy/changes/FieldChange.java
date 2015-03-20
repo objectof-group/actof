@@ -50,7 +50,7 @@ public class FieldChange extends EditingChange {
         return leafnode.getName();
     }
 
-    public ILeafNode getLeafnode() {
+    public ILeafNode getLeafNode() {
         return leafnode;
     }
 
@@ -58,6 +58,10 @@ public class FieldChange extends EditingChange {
     public String getName() {
         return RepoUtils.prettyPrint(leafnode.getParent(), PrintStyle.LONG) + RepoUtils.SEPARATOR
                 + leafnode.getKey().toString();
+    }
+
+    public void undo() {
+        getLeafNode().setFieldValue(oldValue());
     }
 
 }

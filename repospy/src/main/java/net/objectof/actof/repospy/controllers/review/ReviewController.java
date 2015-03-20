@@ -6,7 +6,6 @@ import java.net.URL;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.TableCell;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import net.objectof.actof.common.controller.change.ChangeController;
@@ -26,15 +25,13 @@ import net.objectof.actof.widgets.card.CardsPane;
 public class ReviewController extends CardsPane {
 
     private HistoryController history;
-    private ChangeController changes;
 
     public ReviewController(HistoryController history, ChangeController changes) {
 
         URL css = ReviewController.class.getResource("style.css");
         getStylesheets().add(css.toString());
-
         this.history = history;
-        this.changes = changes;
+
         changes.listen(HistoryChange.class, this::updateUI);
         updateUI();
     }
@@ -42,17 +39,7 @@ public class ReviewController extends CardsPane {
     private void updateUI() {
 
         getChildren().clear();
-        for (EditingChange change : history.get()) {
-
-            if (change.oldValue() == null && change.newValue() == null) {
-                // same
-                continue;
-            } else if (change.oldValue() == null || change.newValue() == null) {
-                // exactly one is null, don't skip
-            } else if (change.oldValue().equals(change.newValue())) {
-                // neither are null, but they're equal
-                continue;
-            }
+        for (EditingChange change : history.getChanges()) {
 
             Card card = new Card();
             card.setShadowRadius(5);
@@ -74,7 +61,7 @@ public class ReviewController extends CardsPane {
                 revert.getStyleClass().add("tool-bar-button");
                 revert.setOnAction(event -> {
                     if (change instanceof FieldChange) {
-                        doRevert((FieldChange) change);
+                        ((FieldChange) change).undo();;
                     }
                 });
 
@@ -89,33 +76,6 @@ public class ReviewController extends CardsPane {
             card.setContent(fields);
 
             getChildren().add(card);
-        }
-    }
-
-    private void doRevert(FieldChange change) {
-        FieldChange fieldChange = (FieldChange) change;
-        fieldChange.getLeafnode().setFieldValue(fieldChange.oldValue());
-    }
-
-    class StyledTableCell<S, T> extends TableCell<S, T> {
-
-        private String style;
-
-        public StyledTableCell(String style) {
-            this.style = style;
-        }
-
-        @Override
-        protected void updateItem(T item, boolean empty) {
-            super.updateItem(item, empty);
-
-            setStyle(style);
-
-            if (item == null || empty) {
-                setText(null);
-            } else {
-                setText(item.toString());
-            }
         }
     }
 
