@@ -92,6 +92,14 @@ public class BlankCard extends AnchorPane {
         buildStyle();
     }
 
+    public void setInnerPadding(Insets padding) {
+        card.setPadding(padding);
+    }
+
+    public Insets getInnerPadding() {
+        return card.getPadding();
+    }
+
     private void buildStyle() {
         if (!hasShadow) {
 

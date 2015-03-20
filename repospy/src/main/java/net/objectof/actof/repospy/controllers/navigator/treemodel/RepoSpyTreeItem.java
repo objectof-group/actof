@@ -4,7 +4,6 @@ package net.objectof.actof.repospy.controllers.navigator.treemodel;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
-import javafx.scene.image.ImageView;
 import net.objectof.actof.common.controller.DynamicTreeItem;
 import net.objectof.actof.common.util.AlphaNumericComparitor;
 import net.objectof.actof.common.util.RepoUtils;
@@ -22,9 +21,6 @@ public class RepoSpyTreeItem extends DynamicTreeItem<TreeNode> {
         if (kv instanceof IAggregateNode) {
             getChildren();
         }
-
-        setGraphic(new ImageView(kv.getImage()));
-
     }
 
     @Override

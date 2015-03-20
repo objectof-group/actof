@@ -3,7 +3,6 @@ package net.objectof.actof.repospy.controllers.navigator.treemodel;
 
 import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
-import javafx.scene.image.Image;
 import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.model.Resource;
 import net.objectof.model.Stereotype;
@@ -33,9 +32,5 @@ public interface TreeNode {
     RepoSpyController getRepospy();
 
     TreeNode getParent();
-
-    default Image getImage() {
-        return null;
-    }
 
 }

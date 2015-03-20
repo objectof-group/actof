@@ -67,6 +67,11 @@ public class TextCard extends LeafCard {
     @Override
     public void updateUIFromEntry() {
         String value = (String) getEntry().getFieldValue();
+        if (value == null) {
+            textBox.setPromptText("None");
+        } else {
+            textBox.setPromptText("");
+        }
         textBox.setText(value);
     }
 

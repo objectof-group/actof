@@ -21,7 +21,10 @@ public class EntityCard extends Card {
     public EntityCard(RepoSpyTreeItem treeitem, RepoSpyController repospy) {
         this.node = (IAggregateNode) treeitem.getValue();
 
+        setInnerPadding(new Insets(12));
+
         Hyperlink link = new Hyperlink(node.toString());
+        link.setPadding(new Insets(0));
         link.setStyle("-fx-font-size: 13pt");
         link.setOnAction(event -> {
             repospy.getChangeBus().broadcast(new ResourceSelectedChange(treeitem));

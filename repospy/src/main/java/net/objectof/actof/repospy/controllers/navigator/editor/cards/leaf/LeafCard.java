@@ -65,6 +65,14 @@ public abstract class LeafCard extends Card {
     public void updateFromEntry() {
         try {
             isUpdating = true;
+
+            if (getEntry().getFieldValue() == null) {
+                setShadowColour("#802020");
+            } else {
+                setShadowColour("#777777");
+
+            }
+
             updateUIFromEntry();
         }
         finally {
