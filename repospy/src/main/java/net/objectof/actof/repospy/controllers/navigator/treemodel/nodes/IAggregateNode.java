@@ -63,7 +63,7 @@ public class IAggregateNode extends AbstractTreeNode {
     public ObservableList<TreeItem<TreeNode>> getChildren() {
 
         if (!initalized) {
-            getLeafEntries();
+            generateLeafEntries();
         }
 
         return subresources;
@@ -74,7 +74,7 @@ public class IAggregateNode extends AbstractTreeNode {
     public ObservableList<ILeafNode> getLeaves() {
 
         if (!initalized) {
-            getLeafEntries();
+            generateLeafEntries();
         }
 
         return leaves;
@@ -88,7 +88,7 @@ public class IAggregateNode extends AbstractTreeNode {
      * @param repospy
      */
     public void refreshNode() {
-        getLeafEntries();
+        generateLeafEntries();
     }
 
     /**
@@ -96,11 +96,21 @@ public class IAggregateNode extends AbstractTreeNode {
      */
     public void delete() {
 
-        // clear the aggregate of any values
-        Aggregate<Object, Resource<?>> agg = getAggregate();
-        for (Object key : agg.keySet()) {
-            agg.set(key, null);
+        // go through any child IAggregateNodes and delete them as well.
+        for (TreeItem<TreeNode> childitem : getChildren()) {
+            IAggregateNode child = (IAggregateNode) childitem.getValue();
+            child.delete();
         }
+
+        for (ILeafNode leaf : getLeaves()) {
+            leaf.setFieldValue(null);
+        }
+
+        // clear the aggregate of any values
+        // Aggregate<Object, Resource<?>> agg = getAggregate();
+        // for (Object key : agg.keySet()) {
+        // agg.set(key, null);
+        // }
 
         // if this resource is a transient resources, remove it
         getRepospy().repository.removeTransientEntity(getRes());
@@ -108,7 +118,7 @@ public class IAggregateNode extends AbstractTreeNode {
         // remove this aggregate from the parent
         getParent().refreshNode();
 
-        getRepospy().getChangeBus().broadcast(new EntityDeletedChange(getRepospy(), getRes()));
+        getRepospy().getChangeBus().broadcast(new EntityDeletedChange(getRes()));
 
     }
 
@@ -117,7 +127,7 @@ public class IAggregateNode extends AbstractTreeNode {
         return res.id().kind().getStereotype();
     }
 
-    private void getLeafEntries() {
+    private void generateLeafEntries() {
         initalized = true;
         if (this.getStereotype() == Stereotype.COMPOSED) {
             leafEntriesForComposite();

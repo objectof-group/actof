@@ -4,6 +4,7 @@ package net.objectof.actof.repospy.controllers.navigator.treemodel.nodes;
 import javafx.beans.value.ObservableValueBase;
 import net.objectof.actof.common.util.RepoUtils;
 import net.objectof.actof.repospy.RepoSpyController;
+import net.objectof.actof.repospy.changes.EntityCreatedChange;
 import net.objectof.actof.repospy.changes.FieldChange;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.RepoSpyTreeItem;
 import net.objectof.aggr.Aggregate;
@@ -74,6 +75,7 @@ public class ILeafNode extends ObservableValueBase<ILeafNode> {
     public Object createFromNull() {
         Transaction tx = getController().repository.getStagingTx();
         Object newValue = tx.create(kind.getComponentName());
+        repospy.getChangeBus().broadcast(new EntityCreatedChange((Resource<?>) newValue));
         setFieldValue(newValue);
         return newValue;
     }
