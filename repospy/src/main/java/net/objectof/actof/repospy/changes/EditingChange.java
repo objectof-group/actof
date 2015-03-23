@@ -20,6 +20,10 @@ public abstract class EditingChange extends Change {
 
     public abstract Object newValue();
 
+    public boolean showValues() {
+        return false;
+    }
+
     public boolean isChanged() {
         if (oldValue() == null && newValue() == null) { return false; }
         if (oldValue() == null || newValue() == null) { return true; }

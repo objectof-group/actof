@@ -13,6 +13,7 @@ import net.objectof.actof.common.icons.ActofIcons;
 import net.objectof.actof.common.icons.ActofIcons.Icon;
 import net.objectof.actof.common.icons.ActofIcons.Size;
 import net.objectof.actof.common.util.RepoUtils;
+import net.objectof.actof.common.util.RepoUtils.PrintStyle;
 import net.objectof.actof.repospy.changes.EditingChange;
 import net.objectof.actof.repospy.changes.FieldChange;
 import net.objectof.actof.repospy.changes.HistoryChange;
@@ -69,11 +70,13 @@ public class ReviewController extends CardsPane {
                 card.setDescription(box);
             }
 
-            PropertiesPane fields = new PropertiesPane();
-            fields.setPadding(new Insets(0, 0, 0, 20));
-            fields.addProperty("Old", RepoUtils.prettyPrint(change.oldValue()));
-            fields.addProperty("New", RepoUtils.prettyPrint(change.newValue()));
-            card.setContent(fields);
+            if (change.showValues()) {
+                PropertiesPane fields = new PropertiesPane();
+                fields.setPadding(new Insets(0, 0, 0, 20));
+                fields.addProperty("Old", RepoUtils.prettyPrint(change.oldValue(), PrintStyle.LONG));
+                fields.addProperty("New", RepoUtils.prettyPrint(change.newValue(), PrintStyle.LONG));
+                card.setContent(fields);
+            }
 
             getChildren().add(card);
         }

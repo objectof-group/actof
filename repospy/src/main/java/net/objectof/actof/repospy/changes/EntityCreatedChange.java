@@ -2,6 +2,7 @@ package net.objectof.actof.repospy.changes;
 
 
 import net.objectof.actof.common.util.RepoUtils;
+import net.objectof.actof.common.util.RepoUtils.PrintStyle;
 import net.objectof.model.Kind;
 import net.objectof.model.Resource;
 import net.objectof.model.Stereotype;
@@ -51,7 +52,7 @@ public class EntityCreatedChange extends EditingChange {
 
     @Override
     public String getName() {
-        return RepoUtils.prettyPrint(value);
+        return "Created " + RepoUtils.prettyPrint(value, PrintStyle.LONG);
     }
 
 }

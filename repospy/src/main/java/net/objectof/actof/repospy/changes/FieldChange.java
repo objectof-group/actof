@@ -54,9 +54,13 @@ public class FieldChange extends EditingChange {
         return leafnode;
     }
 
+    public boolean showValues() {
+        return true;
+    }
+
     @Override
     public String getName() {
-        return RepoUtils.prettyPrint(leafnode.getParent(), PrintStyle.LONG) + RepoUtils.SEPARATOR
+        return "Edited " + RepoUtils.prettyPrint(leafnode.getParent(), PrintStyle.LONG) + RepoUtils.SEPARATOR
                 + leafnode.getKey().toString();
     }
 

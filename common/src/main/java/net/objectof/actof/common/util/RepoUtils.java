@@ -105,7 +105,11 @@ public class RepoUtils {
         if (st == Stereotype.COMPOSED) {
             return name + " #" + res.id().label().toString();
         } else {
-            return name;
+            if (style == PrintStyle.SHORT) {
+                return name;
+            } else {
+                return name + " #" + res.id().label().toString();
+            }
         }
     }
 
