@@ -56,7 +56,8 @@ public class TextCard extends LeafCard {
     }
 
     private void createTextArea(ILeafNode entry) {
-        textBox = new TextArea();
+        String text = textBox.getText();
+        textBox = new TextArea(text);
         textBox.textProperty().addListener((obs, o, n) -> {
             if (isUpdating()) { return; }
             getEntry().setFieldValue(n);
