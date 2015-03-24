@@ -18,7 +18,7 @@ import net.objectof.actof.repospy.changes.EditingChange;
 import net.objectof.actof.repospy.changes.FieldChange;
 import net.objectof.actof.repospy.changes.HistoryChange;
 import net.objectof.actof.repospy.controllers.history.HistoryController;
-import net.objectof.actof.widgets.PropertiesPane;
+import net.objectof.actof.widgets.KeyValuePane;
 import net.objectof.actof.widgets.card.Card;
 import net.objectof.actof.widgets.card.CardsPane;
 
@@ -71,10 +71,10 @@ public class ReviewController extends CardsPane {
             }
 
             if (change.showValues()) {
-                PropertiesPane fields = new PropertiesPane();
+                KeyValuePane fields = new KeyValuePane();
                 fields.setPadding(new Insets(0, 0, 0, 20));
-                fields.addProperty("Old", RepoUtils.prettyPrint(change.oldValue(), PrintStyle.LONG));
-                fields.addProperty("New", RepoUtils.prettyPrint(change.newValue(), PrintStyle.LONG));
+                fields.put("Old", RepoUtils.prettyPrint(change.oldValue(), PrintStyle.LONG));
+                fields.put("New", RepoUtils.prettyPrint(change.newValue(), PrintStyle.LONG));
                 card.setContent(fields);
             }
 

@@ -33,7 +33,6 @@ public class HistoryController {
     private void edit(EditingChange edit) {
         String key = edit.getQualifiedName();
         history.put(key, edit);
-        System.out.println(this);
         changes.broadcast(new HistoryChange());
     }
 

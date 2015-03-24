@@ -14,8 +14,10 @@ import java.util.Optional;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.TreeItem;
@@ -50,8 +52,10 @@ import net.objectof.actof.common.util.AlphaNumericComparitor;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.actof.schemaspy.SchemaSpyController;
+import net.objectof.actof.schemaspy.controller.cards.ChildEntryCard;
 import net.objectof.actof.schemaspy.controller.cards.SchemaSpyCard;
 import net.objectof.actof.schemaspy.util.CodeGen;
+import net.objectof.actof.widgets.card.Card;
 import net.objectof.connector.Connector;
 
 import org.controlsfx.control.action.Action;
@@ -179,6 +183,8 @@ public class SchemaViewController extends IActofUIController {
         });
 
         change.when(SchemaStereotypeChange.class, this::doCardsLayout);
+        change.when(SchemaInsertChange.class, this::doCardsLayout);
+        change.when(SchemaRemovalChange.class, this::doCardsLayout);
         change.when(AttributeCreationChange.class, this::doCardsLayout);
         change.when(AttributeRemovalChange.class, this::doCardsLayout);
 
@@ -382,21 +388,39 @@ public class SchemaViewController extends IActofUIController {
         if (selected == null) { return; }
         SchemaEntry entry = selected.getValue();
 
-        if (entry == null || entry.isRoot()) {
+        if (entry == null) {
             removeentity.setDisable(true);
             return;
         }
 
-        removeentity.setDisable(false);
+        // attribute cards for non-root entries
+        if (entry.isRoot()) {
+            removeentity.setDisable(true);
+        } else {
 
-        List<AttributeEntry> unhandledAttributes = entry.getAttributes();
-        for (SchemaSpyCard card : SchemaSpyCard.allCards()) {
-            if (!card.appliesTo(entry, unhandledAttributes)) {
-                continue;
+            removeentity.setDisable(false);
+
+            List<AttributeEntry> unhandledAttributes = entry.getAttributes();
+            for (SchemaSpyCard card : SchemaSpyCard.allCards()) {
+                if (!card.appliesTo(entry, unhandledAttributes)) {
+                    continue;
+                }
+                card.initialize(schemaspy, entry, unhandledAttributes);
+                unhandledAttributes.removeAll(card.attributes(unhandledAttributes));
+                cardpane.getChildren().add(card);
             }
-            card.initialize(schemaspy, entry, unhandledAttributes);
-            unhandledAttributes.removeAll(card.attributes(unhandledAttributes));
-            cardpane.getChildren().add(card);
+
+            if (selected.getChildren().size() > 0) {
+                Separator sep = new Separator();
+                sep.setPadding(new Insets(10, 25, 10, 25));
+                cardpane.getChildren().add(sep);
+            }
+        }
+
+        // child node cards
+        for (TreeItem<SchemaEntry> subitem : selected.getChildren()) {
+            Card childCard = new ChildEntryCard(tree, subitem);
+            cardpane.getChildren().add(childCard);
         }
 
     }

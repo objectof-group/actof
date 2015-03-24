@@ -10,7 +10,7 @@ import net.objectof.actof.repospy.controllers.navigator.ResourceSelectedChange;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.RepoSpyTreeItem;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.IAggregateNode;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.ILeafNode;
-import net.objectof.actof.widgets.PropertiesPane;
+import net.objectof.actof.widgets.KeyValuePane;
 import net.objectof.actof.widgets.card.Card;
 
 
@@ -31,7 +31,7 @@ public class EntityCard extends Card {
         });
         setTitle(link);
 
-        PropertiesPane fields = new PropertiesPane();
+        KeyValuePane fields = new KeyValuePane();
         fields.setPadding(new Insets(0, 0, 0, 20));
         setContent(fields);
 
@@ -45,7 +45,7 @@ public class EntityCard extends Card {
                 valueString = valueString.substring(0, 100);
             }
 
-            fields.addProperty(keyString, valueString);
+            fields.put(keyString, valueString);
 
         }
 

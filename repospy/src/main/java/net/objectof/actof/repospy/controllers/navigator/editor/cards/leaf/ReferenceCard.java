@@ -11,7 +11,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.util.StringConverter;
 import net.objectof.actof.common.util.RepoUtils;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.ILeafNode;
-import net.objectof.actof.widgets.PropertiesPane;
+import net.objectof.actof.widgets.KeyValuePane;
 import net.objectof.aggr.Composite;
 import net.objectof.model.Resource;
 import net.objectof.model.impl.IKind;
@@ -20,7 +20,7 @@ import net.objectof.model.impl.IKind;
 public class ReferenceCard extends LeafCard {
 
     private ChoiceBox<Resource<?>> refs;
-    private PropertiesPane fields;
+    private KeyValuePane fields;
 
     public ReferenceCard(ILeafNode entry) {
         super(entry);
@@ -39,7 +39,7 @@ public class ReferenceCard extends LeafCard {
             }
         });
 
-        fields = new PropertiesPane();
+        fields = new KeyValuePane();
         fields.setPadding(new Insets(10, 0, 0, 20));
         ColumnConstraints constraints;
         constraints = new ColumnConstraints();
@@ -60,12 +60,12 @@ public class ReferenceCard extends LeafCard {
 
     private void updateGrid() {
         Resource<?> res = refs.getSelectionModel().getSelectedItem();
-        fields.clearProperties();
+        fields.clear();
         if (res == null) { return; }
 
         Composite composite = (Composite) res;
         for (String key : composite.keySet()) {
-            fields.addProperty(key, RepoUtils.prettyPrint(composite.get(key)));
+            fields.put(key, RepoUtils.prettyPrint(composite.get(key)));
         }
 
     }

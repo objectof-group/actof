@@ -1,8 +1,10 @@
 package net.objectof.actof.widgets;
 
 
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleStringProperty;
@@ -11,29 +13,37 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 
 
-public class PropertiesPane extends GridPane {
+public class KeyValuePane extends GridPane {
 
     private Map<String, String> properties = new LinkedHashMap<>();
     private SimpleStringProperty keyStyle = new SimpleStringProperty("-fx-text-fill: #999999;");
     private SimpleStringProperty valueStyle = new SimpleStringProperty("-fx-text-fill: #555555;");
     private HPos keyAlignment = HPos.LEFT;
 
-    public PropertiesPane() {}
+    public KeyValuePane() {}
 
-    public void addProperty(String key, String value) {
+    public void put(String key, String value) {
         properties.put(key, value);
         setHgap(10);
         updateUI();
     }
 
-    public void removeProperty(String key) {
+    public void remove(String key) {
         properties.remove(key);
         updateUI();
     }
 
-    public void clearProperties() {
+    public void clear() {
         properties.clear();
         updateUI();
+    }
+
+    public Set<String> keySet() {
+        return properties.keySet();
+    }
+
+    public Collection<String> values() {
+        return properties.values();
     }
 
     private void updateUI() {

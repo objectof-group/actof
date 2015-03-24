@@ -9,7 +9,7 @@ import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.actof.repospy.controllers.navigator.ResourceSelectedChange;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.RepoSpyTreeItem;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.IKindNode;
-import net.objectof.actof.widgets.PropertiesPane;
+import net.objectof.actof.widgets.KeyValuePane;
 import net.objectof.actof.widgets.card.Card;
 import net.objectof.model.Kind;
 
@@ -31,7 +31,7 @@ public class KindCard extends Card {
         });
         setTitle(link);
 
-        PropertiesPane fields = new PropertiesPane();
+        KeyValuePane fields = new KeyValuePane();
         fields.setPadding(new Insets(0, 0, 0, 20));
         setContent(fields);
 
@@ -40,7 +40,7 @@ public class KindCard extends Card {
             String[] keyParts = keyString.split("\\.");
             keyString = keyParts[keyParts.length - 1];
             String valueString = RepoUtils.prettyPrint(part.getStereotype());
-            fields.addProperty(keyString, valueString);
+            fields.put(keyString, valueString);
         }
 
         ColumnConstraints constraints;
