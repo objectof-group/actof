@@ -10,12 +10,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
@@ -24,10 +24,14 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.control.cell.TextFieldTreeTableCell;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import javafx.util.StringConverter;
 
 import javax.management.modelmbean.XMLParseException;
@@ -48,6 +52,9 @@ import net.objectof.actof.common.controller.schema.changes.SchemaRemovalChange;
 import net.objectof.actof.common.controller.schema.changes.SchemaReplacedChange;
 import net.objectof.actof.common.controller.schema.changes.SchemaStereotypeChange;
 import net.objectof.actof.common.controller.schema.schemaentry.SchemaEntry;
+import net.objectof.actof.common.icons.ActofIcons;
+import net.objectof.actof.common.icons.ActofIcons.Icon;
+import net.objectof.actof.common.icons.ActofIcons.Size;
 import net.objectof.actof.common.util.AlphaNumericComparitor;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.repospy.RepoSpyController;
@@ -58,9 +65,9 @@ import net.objectof.actof.schemaspy.util.CodeGen;
 import net.objectof.actof.widgets.card.Card;
 import net.objectof.connector.Connector;
 
+import org.controlsfx.control.BreadCrumbBar;
 import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialog;
-import org.controlsfx.dialog.DialogStyle;
 import org.controlsfx.dialog.Dialogs;
 import org.xml.sax.SAXException;
 
@@ -74,13 +81,16 @@ public class SchemaViewController extends IActofUIController {
     private TreeTableView<SchemaEntry> tree;
     @FXML
     private TreeTableColumn<SchemaEntry, String> field;
+    private BreadCrumbBar<SchemaEntry> breadcrumb;
     @FXML
-    private Button addentity, removeentity;
+    private HBox breadcrumbBox;
 
     @FXML
     private VBox cardpane;
     @FXML
     private ScrollPane cardscroller;
+    @FXML
+    private BorderPane editor;
 
     @FXML
     private TextField pkgdomain, pkgversion, pkgpath;
@@ -89,6 +99,7 @@ public class SchemaViewController extends IActofUIController {
     private TitledPane namespacepane;
 
     SchemaSpyController schemaspy;
+    Card addChildCard;
 
     TreeItem<SchemaEntry> root;
     Map<SchemaEntry, TreeItem<String>> schemaElements = new HashMap<>();
@@ -103,8 +114,31 @@ public class SchemaViewController extends IActofUIController {
         cardscroller.setStyle("-fx-background-color:transparent;");
         cardscroller.setFitToWidth(true);
 
-        addentity.setDisable(true);
-        removeentity.setDisable(true);
+        createAddChildBar();
+
+        breadcrumb = new BreadCrumbBar<>();
+        breadcrumb.setFocusTraversable(false);
+        breadcrumb.setAutoNavigationEnabled(false);
+        breadcrumb.setOnCrumbAction(event -> {
+            TreeItem<SchemaEntry> node = event.getSelectedCrumb();
+            tree.getSelectionModel().select(node);
+        });
+        breadcrumbBox.getChildren().add(breadcrumb);
+        breadcrumb.selectedCrumbProperty().bind(tree.getSelectionModel().selectedItemProperty());
+        Callback<TreeItem<SchemaEntry>, Button> breadCrumbFactory = breadcrumb.getCrumbFactory();
+        breadcrumb.setCrumbFactory(item -> {
+            Button b = breadCrumbFactory.call(item);
+            b.setText("");
+            Label label = new Label();
+
+            if (item.getValue() != null) {
+                label.setText(item.getValue().getName());
+            }
+
+            b.setGraphic(label);
+            label.setPadding(new Insets(3, 10, 3, 10));
+            return b;
+        });
 
         tree.getSelectionModel().selectedItemProperty().addListener(change -> doCardsLayout());
         doCardsLayout();
@@ -167,6 +201,36 @@ public class SchemaViewController extends IActofUIController {
             ParserConfigurationException {
         this.schemaspy = schemaspy;
         onNewSchema();
+    }
+
+    private void createAddChildBar() {
+        addChildCard = new Card();
+        addChildCard.setRadius(0);
+        addChildCard.setPadding(new Insets(0));
+        addChildCard.setTitle("Add Child");
+
+        TextField addChildName = new TextField();
+        addChildCard.setTitleContent(addChildName);
+
+        Button addChildButton = new Button("", ActofIcons.getIconView(Icon.ADD, Size.BUTTON));
+        addChildButton.getStyleClass().add("tool-bar-button");
+        addChildCard.setDescription(addChildButton);
+
+        Runnable create = () -> {
+            String name = addChildName.getText();
+            if (name.length() == 0) { return; }
+            addChildName.setText("");
+            addEntity(name);
+        };
+
+        addChildName.setOnKeyReleased(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                create.run();
+            }
+        });
+        addChildButton.setOnAction(event -> create.run());
+
+        editor.setTop(addChildCard);
     }
 
     private void onSchemaChange(Change change) {
@@ -267,39 +331,16 @@ public class SchemaViewController extends IActofUIController {
         writer.close();
     }
 
-    public void onAddEntity() {
+    private void addEntity(String name) {
         TreeItem<SchemaEntry> treeitem = tree.getSelectionModel().getSelectedItem();
-        if (treeitem == null) {
-            treeitem = root;
-        }
         SchemaEntry entry = treeitem.getValue();
-        if (entry == null) {
-            entry = root.getValue();
-        }
-
-        Optional<String> response = Dialogs.create()
-                // .owner()
-                .title("Create Entry").message("Entry name").lightweight().style(DialogStyle.UNDECORATED)
-                .showTextInput("");
-
-        if (!response.isPresent()) { return; }
-        entry.addChild(response.get());
-
-    }
-
-    public void onRemoveEntity() {
-        TreeItem<SchemaEntry> treeitem = tree.getSelectionModel().getSelectedItem();
-        if (treeitem == null) { return; }
-        SchemaEntry entry = treeitem.getValue();
-        SchemaEntry parent = entry.getParent();
-        parent.removeChild(entry);
+        entry.addChild(name);
     }
 
     private void onSchemaReplace() {
         populateTree();
         save.setDisable(false);
         create.setDisable(false);
-        addentity.setDisable(false);
 
         pkgdomain.setText(schemaspy.getSchema().getPackageDomain());
         pkgversion.setText(schemaspy.getSchema().getPackageVersion());
@@ -325,6 +366,7 @@ public class SchemaViewController extends IActofUIController {
         }
 
         sortTreeNode(root);
+        tree.getSelectionModel().select(root);
 
     }
 
@@ -388,17 +430,8 @@ public class SchemaViewController extends IActofUIController {
         if (selected == null) { return; }
         SchemaEntry entry = selected.getValue();
 
-        if (entry == null) {
-            removeentity.setDisable(true);
-            return;
-        }
-
         // attribute cards for non-root entries
-        if (entry.isRoot()) {
-            removeentity.setDisable(true);
-        } else {
-
-            removeentity.setDisable(false);
+        if (!entry.isRoot()) {
 
             List<AttributeEntry> unhandledAttributes = entry.getAttributes();
             for (SchemaSpyCard card : SchemaSpyCard.allCards()) {
