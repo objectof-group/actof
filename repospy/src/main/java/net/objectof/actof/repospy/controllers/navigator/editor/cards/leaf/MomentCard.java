@@ -17,10 +17,11 @@ public class MomentCard extends LeafCard {
     public MomentCard(ILeafNode entry) {
         super(entry);
 
+        picker.setAllowNull(false);
         picker.setShowTime(true);
         picker.calendarProperty().addListener(change -> {
             if (isUpdating()) { return; }
-            IMoment newMoment = new IMoment(picker.getCalendar().getTime().getTime(), zulu);
+            IMoment newMoment = new IMoment(picker.getCalendar().getTime().getTime());
             getEntry().setFieldValue(newMoment);
         });
 
@@ -36,7 +37,7 @@ public class MomentCard extends LeafCard {
         if (moment == null) {
             moment = new IMoment();
         }
-        Calendar cal = Calendar.getInstance(zulu);
+        Calendar cal = Calendar.getInstance();
         cal.setTime(moment);
         picker.setCalendar(cal);
 
