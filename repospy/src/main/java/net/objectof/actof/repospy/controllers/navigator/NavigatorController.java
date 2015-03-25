@@ -16,7 +16,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
@@ -41,6 +40,9 @@ import net.objectof.actof.common.controller.change.Change;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.controller.repository.RepositoryReplacedChange;
 import net.objectof.actof.common.controller.search.QueryChange;
+import net.objectof.actof.common.icons.ActofIcons;
+import net.objectof.actof.common.icons.ActofIcons.Icon;
+import net.objectof.actof.common.icons.ActofIcons.Size;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.actof.repospy.controllers.navigator.editor.layout.CompositeLayout;
@@ -59,6 +61,7 @@ import net.objectof.model.Resource;
 import net.objectof.model.Stereotype;
 
 import org.controlsfx.control.BreadCrumbBar;
+import org.controlsfx.control.textfield.CustomTextField;
 import org.controlsfx.dialog.Dialogs;
 
 
@@ -69,11 +72,12 @@ public class NavigatorController extends IActofUIController {
     @FXML
     private HBox breadcrumbBox;
     @FXML
-    private VBox sidebar;
+    private VBox sidebar, searchVBox;
     @FXML
     private Node editorBox;
-    @FXML
-    private TextField querytext;
+
+    private CustomTextField querytext;
+
     @FXML
     private Button connect, commit, review, revert;
     @FXML
@@ -240,6 +244,17 @@ public class NavigatorController extends IActofUIController {
         records.setShowRoot(false);
         records.setRoot(root);
         records.getSelectionModel().selectedItemProperty().addListener((ov, o, n) -> onRecordSelect(n));
+
+        querytext = new CustomTextField();
+        searchVBox.getChildren().add(querytext);
+        querytext.setPromptText("Search Query");
+
+        Button doquery = new Button("", ActofIcons.getIconView(Icon.SEARCH, Size.BUTTON));
+        doquery.setStyle("-fx-background-color: null; -fx-padding: 0px;");
+        doquery.setOnAction(event -> {
+            repospy.doQuery(querytext.getText());
+        });
+        querytext.setRight(doquery);
 
         querytext.setOnKeyReleased(event -> {
             if (event.getCode() != KeyCode.ENTER) { return; }

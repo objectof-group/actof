@@ -94,10 +94,9 @@
          <children>
             <TitledPane fx:id="searchPane" style="-fx-alignment: center;" text="Search" textAlignment="CENTER" VBox.vgrow="ALWAYS">
                <content>
-                  <VBox spacing="6.0">
+                  <VBox fx:id="searchVBox" spacing="6.0">
                      <children>
                         <ChoiceBox fx:id="queryEntity" maxWidth="1.7976931348623157E308" />
-                        <TextField fx:id="querytext" promptText="Enter Query" />
                      </children>
                   </VBox>
                </content>
