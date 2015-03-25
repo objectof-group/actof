@@ -157,6 +157,7 @@ public class SavedConnections {
 
         if (connection.getType() == null) { return null; }
         Connector connector = Connectors.getConnectorByType(connection.getType());
+        if (connector == null) { return null; }
 
         connector.setName(connection.getName());
 

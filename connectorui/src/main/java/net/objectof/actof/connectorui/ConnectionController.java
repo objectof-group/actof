@@ -10,8 +10,9 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
@@ -45,7 +46,7 @@ public class ConnectionController extends IActofUIController {
     private BorderPane window;
 
     @FXML
-    private ComboBox<ConnectorUI> backend;
+    private ChoiceBox<Connector> backend;
 
     @FXML
     Button connect, cancel;
@@ -82,6 +83,11 @@ public class ConnectionController extends IActofUIController {
         // load any saved connections
         backend.getItems().addAll(SavedConnections.getSavedConnectors());
 
+        // Because we've used generics for this ChoiceBox everywhere else, we
+        // need to cast it to a non-generic choicebox in order to get it to
+        // accept a separator
+        ((ChoiceBox) backend).getItems().add(new Separator());
+
         // load new/template connections
         for (Connector newconn : Connectors.getConnectors()) {
             ConnectorUI newconnui = new ConnectorUI(newconn);
@@ -108,7 +114,11 @@ public class ConnectionController extends IActofUIController {
         if (requested != null) {
             backend.getSelectionModel().select(requested);
         } else if (last != null) {
-            for (ConnectorUI conn : backend.getItems()) {
+            for (Object o : backend.getItems()) {
+                if (!(o instanceof Connector)) {
+                    continue;
+                }
+                Connector conn = (Connector) o;
                 if (conn.equals(last)) {
                     backend.getSelectionModel().select(conn);
                 }
@@ -138,7 +148,7 @@ public class ConnectionController extends IActofUIController {
     }
 
     private Connector getSelectedConnector() {
-        return backend.getSelectionModel().getSelectedItem();
+        return (Connector) backend.getSelectionModel().getSelectedItem();
     }
 
     private void layout() {

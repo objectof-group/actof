@@ -43,7 +43,7 @@
          <children>
             <AnchorPane HBox.hgrow="ALWAYS">
                <children>
-                  <ComboBox fx:id="backend" prefWidth="250.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <ChoiceBox fx:id="backend" prefWidth="250.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
             <Button mnemonicParsing="false" onAction="#add" styleClass="tool-bar-button">
