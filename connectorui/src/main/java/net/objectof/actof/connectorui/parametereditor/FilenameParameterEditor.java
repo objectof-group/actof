@@ -13,7 +13,6 @@ import javafx.stage.Window;
 import net.objectof.connector.parameter.Parameter;
 
 
-
 public class FilenameParameterEditor extends HBox implements ParameterEditor {
 
     private TextField text = new TextField();
@@ -45,11 +44,8 @@ public class FilenameParameterEditor extends HBox implements ParameterEditor {
         });
 
         text.setOnKeyReleased(event -> {
-            System.out.println(text.getText());
             param.setValue(text.getText());
-            System.out.println(param.getValue());
         });
-
 
         browse.setStyle("-fx-padding: 5;");
         getChildren().add(text);
@@ -68,7 +64,6 @@ public class FilenameParameterEditor extends HBox implements ParameterEditor {
     public Parameter getParameter() {
         return param;
     }
-
 
     @Override
     public void setCreate(boolean create) {
