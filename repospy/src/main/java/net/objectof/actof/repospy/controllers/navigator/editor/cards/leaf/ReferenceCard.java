@@ -71,7 +71,7 @@ public class ReferenceCard extends LeafCard {
     }
 
     private List<Resource<?>> getElements() {
-        IKind<?> ikind = (IKind<?>) getEntry().getKind();
+        IKind<?> ikind = (IKind<?>) getEntry().getCanonicalKind();
         String title = ikind.getTitle();
         Iterable<Resource<?>> resiter = getEntry().getController().repository.getStagingTx().enumerate(title);
         List<Resource<?>> resources = StreamSupport.stream(resiter.spliterator(), false).collect(Collectors.toList());

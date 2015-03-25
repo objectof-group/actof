@@ -107,7 +107,7 @@ public class ConnectionController extends IActofUIController {
         if (last != null) {
             if (!backend.getItems().contains(last)) {
                 // last.setDisplayName("< Last Connection >");
-                backend.getItems().add(last);
+                backend.getItems().add(0, last);
             }
         }
 

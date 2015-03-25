@@ -105,7 +105,12 @@ public class ILeafNode extends ObservableValueBase<ILeafNode> {
      */
     public Kind<?> getCanonicalKind() {
         Object value = getFieldValue();
-        if (value == null) { return null; }
+        if (value == null) {
+            // TODO: This is a bad solution, and will cause issues when a the
+            // field value is null and the relative kind name doesn't match the
+            // canonical kind name.
+            return getKind();
+        }
         if (!(value instanceof Resource)) { return null; }
         return ((Resource<?>) value).id().kind();
     }
