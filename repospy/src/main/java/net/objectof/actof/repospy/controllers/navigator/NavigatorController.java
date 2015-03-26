@@ -309,6 +309,7 @@ public class NavigatorController extends IActofUIController {
     private void showSearchBar(boolean show) {
     	menuItemSearch.setSelected(show);
     	searchPane.setExpanded(show);
+    	repospy.doQuery("");
     }
     
     private void onChange(Change change) {
