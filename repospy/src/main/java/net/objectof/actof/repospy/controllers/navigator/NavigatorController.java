@@ -13,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContentDisplay;
@@ -90,6 +91,8 @@ public class NavigatorController extends IActofUIController {
     @FXML
     private MenuItem dump, load;
     @FXML
+    private CheckMenuItem menuItemSearch;
+    @FXML
     private ImageView revert_image;
     @FXML
     private Tooltip revert_tooltip;
@@ -114,7 +117,6 @@ public class NavigatorController extends IActofUIController {
     public void ready() {
         getChangeBus().listen(this::onChange);
         getChangeBus().listen(ResourceSelectedChange.class, this::onResourceSelect);
-        // sidebar.getChildren().remove(searchPane);
     }
 
     private void onResourceSelect(ResourceSelectedChange change) {
@@ -294,11 +296,21 @@ public class NavigatorController extends IActofUIController {
             title.setMaxHeight(0);
         }
 
-        shortcut(toppane, () -> {searchPane.setExpanded(!searchPane.isExpanded());}, KeyCode.F, KeyCombination.CONTROL_DOWN);
+        shortcut(toppane, () -> showSearchBar(!searchPane.isExpanded()), KeyCode.F, KeyCombination.CONTROL_DOWN);
+        shortcut(searchBox, () -> showSearchBar(false), KeyCode.ESCAPE);
         shortcut(records, this::recordCopy, KeyCode.C, KeyCombination.CONTROL_DOWN);
 
     }
 
+    public void onMenuItemSearch() {
+    	showSearchBar(menuItemSearch.isSelected());
+    }
+    
+    private void showSearchBar(boolean show) {
+    	menuItemSearch.setSelected(show);
+    	searchPane.setExpanded(show);
+    }
+    
     private void onChange(Change change) {
 
         boolean hasHistory = repospy.history.getChanges().size() > 0;
