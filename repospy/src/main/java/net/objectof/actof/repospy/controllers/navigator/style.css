@@ -44,12 +44,12 @@
 }
 
 
-.titled-pane > .title {
-	    -fx-background-insets: -1 0 0 -1, 0 1 1 0, 1 2 2 1;
+.entities > .title {
+	-fx-background-insets: -1 0 0 -1, 0 1 1 0, 1 2 2 1;
     -fx-background-radius: 0 0 0 0, 0 0 0 0, 0 0 0 0;
 }
 
-.titled-pane > *.content {
+.entities > *.content {
     -fx-border-insets: -1 0 -1 -1;
 }
 
@@ -75,4 +75,13 @@
 
 .menu-button > .label {
 	-fx-padding: 0px;
+}
+
+.search-pane {
+	-fx-background: derive(-fx-base,-5%);
+	-fx-border-insets: -1 -1 -1 -1;
+}
+
+.search-pane > *.content {
+    -fx-border-insets: -1 -1 0 -1;
 }

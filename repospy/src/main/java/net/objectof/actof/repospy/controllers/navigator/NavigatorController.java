@@ -15,6 +15,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.MenuItem;
@@ -22,6 +23,7 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
@@ -33,6 +35,8 @@ import javafx.scene.input.KeyCombination.Modifier;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -72,9 +76,9 @@ public class NavigatorController extends IActofUIController {
     @FXML
     private BorderPane toppane, fieldEditor;
     @FXML
-    private HBox breadcrumbBox;
+    private HBox breadcrumbBox, searchBox;
     @FXML
-    private VBox sidebar, searchVBox;
+    private VBox sidebar;
     @FXML
     private Node editorBox;
 
@@ -246,43 +250,51 @@ public class NavigatorController extends IActofUIController {
         records.setRoot(root);
         records.getSelectionModel().selectedItemProperty().addListener((ov, o, n) -> onRecordSelect(n));
 
-        querytext = new CustomTextField();
-        searchVBox.getChildren().add(querytext);
-        querytext.setPromptText("Search Query");
-
-        Button doquery = new Button("", ActofIcons.getIconView(Icon.SEARCH, Size.BUTTON));
-        doquery.setStyle("-fx-background-color: null; -fx-padding: 0px;");
-        doquery.setOnAction(event -> {
-            repospy.doQuery(querytext.getText());
-        });
-        querytext.setRight(doquery);
         
+        //Kind selection combobox
         kindCombo = new ComboBox<>();
-        kindCombo.setPrefWidth(0);
-        kindCombo.setMinWidth(20);
-        kindCombo.setMaxWidth(0);
-        kindCombo.setPadding(new Insets(0));
-        kindCombo.setStyle("-fx-background-color: null; -fx-padding: 0px;");
-        
-        ListCell<String> kindComboCell = new ListCell<>();
-        kindComboCell.setPrefWidth(0);
-        kindComboCell.setMinWidth(0);
-        kindComboCell.setMaxWidth(0);
-        kindComboCell.setPadding(new Insets(0));
-        
-        kindCombo.setButtonCell(kindComboCell);
-        
+        kindCombo.setMinWidth(150);
         kindCombo.valueProperty().addListener(change -> {
         	repospy.search.setKind(kindCombo.getValue());
         });
+        searchBox.getChildren().add(kindCombo);
         
-        querytext.setLeft(kindCombo);
-
+        //search text field
+        querytext = new CustomTextField();
+        HBox.setHgrow(querytext, Priority.ALWAYS);
+        searchBox.getChildren().add(querytext);
+        querytext.setPromptText("Search Query");
         querytext.setOnKeyReleased(event -> {
             if (event.getCode() != KeyCode.ENTER) { return; }
             repospy.doQuery(querytext.getText());
         });
 
+        //Do clear button
+        Button doclear = new Button("", new ImageView(new Image(NavigatorController.class.getResourceAsStream("./icons/clear.png"))));
+        doclear.setStyle("-fx-background-color: null; -fx-padding: 3px;");
+        doclear.setOnAction(event -> {
+            querytext.setText("");
+            repospy.doQuery(querytext.getText());
+        });
+        querytext.setRight(doclear);
+        
+        //do query button
+        Button doquery = new Button("", ActofIcons.getIconView(Icon.SEARCH, Size.BUTTON));
+        doquery.getStyleClass().add("tool-bar-button");
+        doquery.setOnAction(event -> {
+            repospy.doQuery(querytext.getText());
+        });
+        searchBox.getChildren().add(doquery);
+        
+        Pane title = (Pane) searchPane.lookup(".title");
+        if (title != null) {
+            title.setVisible(false);
+            title.setMinHeight(0);
+            title.setPrefHeight(0);
+            title.setMaxHeight(0);
+        }
+
+        shortcut(toppane, () -> {searchPane.setExpanded(!searchPane.isExpanded());}, KeyCode.F, KeyCombination.CONTROL_DOWN);
         shortcut(records, this::recordCopy, KeyCode.C, KeyCombination.CONTROL_DOWN);
 
     }
