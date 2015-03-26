@@ -14,7 +14,9 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.Tooltip;
@@ -77,13 +79,12 @@ public class NavigatorController extends IActofUIController {
     private Node editorBox;
 
     private CustomTextField querytext;
+    private ComboBox<String> kindCombo;
 
     @FXML
     private Button connect, commit, review, revert;
     @FXML
     private MenuItem dump, load;
-    @FXML
-    private ChoiceBox<String> queryEntity;
     @FXML
     private ImageView revert_image;
     @FXML
@@ -255,14 +256,31 @@ public class NavigatorController extends IActofUIController {
             repospy.doQuery(querytext.getText());
         });
         querytext.setRight(doquery);
+        
+        kindCombo = new ComboBox<>();
+        kindCombo.setPrefWidth(0);
+        kindCombo.setMinWidth(20);
+        kindCombo.setMaxWidth(0);
+        kindCombo.setPadding(new Insets(0));
+        kindCombo.setStyle("-fx-background-color: null; -fx-padding: 0px;");
+        
+        ListCell<String> kindComboCell = new ListCell<>();
+        kindComboCell.setPrefWidth(0);
+        kindComboCell.setMinWidth(0);
+        kindComboCell.setMaxWidth(0);
+        kindComboCell.setPadding(new Insets(0));
+        
+        kindCombo.setButtonCell(kindComboCell);
+        
+        kindCombo.valueProperty().addListener(change -> {
+        	repospy.search.setKind(kindCombo.getValue());
+        });
+        
+        querytext.setLeft(kindCombo);
 
         querytext.setOnKeyReleased(event -> {
             if (event.getCode() != KeyCode.ENTER) { return; }
             repospy.doQuery(querytext.getText());
-        });
-
-        queryEntity.valueProperty().addListener(change -> {
-            repospy.search.setKind(queryEntity.getValue());
         });
 
         shortcut(records, this::recordCopy, KeyCode.C, KeyCombination.CONTROL_DOWN);
@@ -336,9 +354,9 @@ public class NavigatorController extends IActofUIController {
     }
 
     private void populateQueryEntityChoice() {
-        queryEntity.getItems().clear();
+        kindCombo.getItems().clear();
         for (Kind<?> kind : repospy.repository.getEntities()) {
-            queryEntity.getItems().add(kind.getComponentName());
+            kindCombo.getItems().add(kind.getComponentName());
         }
     }
 
