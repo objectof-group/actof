@@ -5,17 +5,15 @@ import java.io.IOException;
 import java.util.Optional;
 
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -28,6 +26,7 @@ import net.objectof.actof.connectorui.parametereditor.FilenameParameterEditor;
 import net.objectof.actof.connectorui.parametereditor.ParameterEditor;
 import net.objectof.actof.connectorui.parametereditor.PasswordParameterEditor;
 import net.objectof.actof.connectorui.parametereditor.TextParameterEditor;
+import net.objectof.actof.widgets.KeyValuePane;
 import net.objectof.connector.AbstractConnector;
 import net.objectof.connector.Connector;
 import net.objectof.connector.Connectors;
@@ -42,14 +41,13 @@ public class ConnectionController extends IActofUIController {
     private Stage stage;
     private boolean create;
 
-    ComboBox<String> repoChoice;
+    private ComboBox<String> repoChoice;
+    private KeyValuePane grid = new KeyValuePane();;
 
-    @FXML
-    private GridPane grid;
     @FXML
     private BorderPane window;
     @FXML
-    private VBox gridBox;
+    private AnchorPane gridBox;
     @FXML
     private ChoiceBox<Connector> backend;
 
@@ -72,7 +70,16 @@ public class ConnectionController extends IActofUIController {
     }
 
     @Override
-    public void ready() {}
+    public void ready() {
+        grid.setHgap(5);
+        grid.setVgap(5);
+        grid.setPadding(new Insets(10));
+        AnchorPane.setBottomAnchor(grid, 0d);
+        AnchorPane.setTopAnchor(grid, 0d);
+        AnchorPane.setLeftAnchor(grid, 0d);
+        AnchorPane.setRightAnchor(grid, 0d);
+        gridBox.getChildren().add(grid);
+    }
 
     private void populateChoiceBox() {
         populateChoiceBox(null);
@@ -154,7 +161,7 @@ public class ConnectionController extends IActofUIController {
     }
 
     private void layout() {
-        grid.getChildren().clear();
+        grid.clear();
 
         int row = 0;
         Connector conn = getSelectedConnector();
@@ -191,11 +198,7 @@ public class ConnectionController extends IActofUIController {
             }
 
             editor.setCreate(create);
-
-            Label label = new Label(parameter.getTitle());
-            label.setStyle("-fx-text-fill: #666;");
-            grid.add(label, 0, row);
-            grid.add(editor.asNode(), 1, row++);
+            grid.put(parameter.getTitle(), editor.asNode());
         }
 
         // Repository parameter
@@ -217,10 +220,7 @@ public class ConnectionController extends IActofUIController {
         AnchorPane.setRightAnchor(repoChoice, 0d);
         repoAnchor.getChildren().add(repoChoice);
 
-        Label label = new Label(repoParameter.getTitle());
-        label.setStyle("-fx-text-fill: #666;");
-        grid.add(label, 0, row);
-        grid.add(repoAnchor, 1, row++);
+        grid.put(repoParameter.getTitle(), repoAnchor);
 
         if (stage != null) {
             stage.sizeToScene();

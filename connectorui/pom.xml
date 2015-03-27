@@ -35,6 +35,11 @@
 			<artifactId>controlsfx</artifactId>
 			<version>8.20.8</version>
 		</dependency>
+		<dependency>
+			<groupId>net.objectof.actof</groupId>
+			<artifactId>actof-widgets</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<build>

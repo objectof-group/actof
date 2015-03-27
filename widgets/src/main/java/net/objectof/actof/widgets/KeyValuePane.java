@@ -12,6 +12,7 @@ import javafx.geometry.HPos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 
 
 public class KeyValuePane extends GridPane {
@@ -56,6 +57,7 @@ public class KeyValuePane extends GridPane {
             Object value = properties.get(key);
 
             Label lKey = new Label(key);
+            lKey.setMinWidth(Label.USE_PREF_SIZE);
             Node lValue = null;
             if (value instanceof Node) {
                 lValue = (Node) value;
@@ -66,6 +68,7 @@ public class KeyValuePane extends GridPane {
             GridPane.setHalignment(lKey, keyAlignment);
 
             add(lKey, 0, row);
+            GridPane.setHgrow(lValue, Priority.ALWAYS);
             add(lValue, 1, row);
             row++;
 
