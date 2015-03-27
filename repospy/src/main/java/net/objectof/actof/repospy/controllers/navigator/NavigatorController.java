@@ -238,8 +238,7 @@ public class NavigatorController extends IActofUIController {
             return b;
         });
 
-        // breadcrumb.setStyle("-fx-background-color: -fx-color; -fx-effect: dropshadow(gaussian, #777, 8, -2, 0, 1)");
-        // breadcrumb.setPadding(new Insets(10));
+        //breadcrumb
         breadcrumb.setAutoNavigationEnabled(false);
         breadcrumb.setOnCrumbAction(event -> {
             TreeItem<TreeNode> node = event.getSelectedCrumb();
@@ -248,6 +247,7 @@ public class NavigatorController extends IActofUIController {
         breadcrumb.setSelectedCrumb(root);
         breadcrumbBox.getChildren().add(breadcrumb);
 
+        //sidebar
         records.setShowRoot(false);
         records.setRoot(root);
         records.getSelectionModel().selectedItemProperty().addListener((ov, o, n) -> onRecordSelect(n));
@@ -271,7 +271,7 @@ public class NavigatorController extends IActofUIController {
             repospy.doQuery(querytext.getText());
         });
 
-        //Do clear button
+        //search clear button
         Button doclear = new Button("", new ImageView(new Image(NavigatorController.class.getResourceAsStream("./icons/clear.png"))));
         doclear.setStyle("-fx-background-color: null; -fx-padding: 3px;");
         doclear.setOnAction(event -> {
@@ -280,7 +280,7 @@ public class NavigatorController extends IActofUIController {
         });
         querytext.setRight(doclear);
         
-        //do query button
+        //search query button
         Button doquery = new Button("", ActofIcons.getIconView(Icon.SEARCH, Size.BUTTON));
         doquery.getStyleClass().add("tool-bar-button");
         doquery.setOnAction(event -> {
@@ -288,6 +288,7 @@ public class NavigatorController extends IActofUIController {
         });
         searchBox.getChildren().add(doquery);
         
+        //hide title component of search titledpane
         Pane title = (Pane) searchPane.lookup(".title");
         if (title != null) {
             title.setVisible(false);

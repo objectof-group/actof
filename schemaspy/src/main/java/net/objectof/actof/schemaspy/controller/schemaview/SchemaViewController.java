@@ -64,6 +64,7 @@ import net.objectof.actof.schemaspy.controller.cards.SchemaSpyCard;
 import net.objectof.actof.schemaspy.util.CodeGen;
 import net.objectof.actof.widgets.card.Card;
 import net.objectof.connector.Connector;
+import net.objectof.connector.Connector.Initialize;
 
 import org.controlsfx.control.BreadCrumbBar;
 import org.controlsfx.control.action.Action;
@@ -263,7 +264,7 @@ public class SchemaViewController extends IActofUIController {
         if (connect == null) { return; }
 
         try {
-            connect.createPackage(schemaspy.getSchema().getDocument());
+            connect.createPackage(schemaspy.getSchema().getDocument(), Initialize.WHEN_EMPTY);
 
             Action action = Dialogs.create().title("Repository Created")
                     .masthead("This Repository can be viewed in RepoSpy").message("Open RepoSpy now?").showConfirm();

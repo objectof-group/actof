@@ -28,7 +28,7 @@ import net.objectof.actof.connectorui.parametereditor.ParameterEditor;
 import net.objectof.actof.connectorui.parametereditor.PasswordParameterEditor;
 import net.objectof.actof.connectorui.parametereditor.TextParameterEditor;
 import net.objectof.connector.Connector;
-import net.objectof.connector.impl.Connectors;
+import net.objectof.connector.Connectors;
 import net.objectof.connector.parameter.Parameter;
 
 import org.controlsfx.dialog.Dialogs;

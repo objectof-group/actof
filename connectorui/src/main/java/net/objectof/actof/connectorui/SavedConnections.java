@@ -11,7 +11,8 @@ import net.objectof.actof.connectorui.beans.Connection;
 import net.objectof.actof.connectorui.beans.Last;
 import net.objectof.actof.connectorui.beans.Saved;
 import net.objectof.connector.Connector;
-import net.objectof.connector.impl.Connectors;
+import net.objectof.connector.Connectors;
+import net.objectof.connector.Connector.Initialize;
 import net.objectof.connector.impl.ISQLiteConnector;
 import net.objectof.connector.parameter.Parameter;
 import net.objectof.model.Package;
@@ -38,7 +39,7 @@ public class SavedConnections {
 
             try {
                 InputStream input = SavedConnections.class.getResourceAsStream("/packages/connections.xml");
-                Package repo = settings.createPackage(input);
+                Package repo = settings.createPackage(input, Initialize.WHEN_EMPTY);
                 populate(repo);
                 return repo;
 

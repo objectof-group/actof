@@ -63,13 +63,13 @@ public class ConnectorUI implements Connector {
     }
 
     @Override
-    public Package createPackage(Document schema) throws ConnectorException {
-        return backer.createPackage(schema);
+    public Package createPackage(Document schema, Initialize initialize) throws ConnectorException {
+        return backer.createPackage(schema, initialize);
     }
 
     @Override
-    public Package createPackage(InputStream schema) throws ConnectorException {
-        return backer.createPackage(schema);
+    public Package createPackage(InputStream schema, Initialize initialize) throws ConnectorException {
+        return backer.createPackage(schema, initialize);
     }
 
     @Override
@@ -115,5 +115,15 @@ public class ConnectorUI implements Connector {
             setParameter(parameter, values.get(parameter));
         }
     }
+
+	@Override
+	public void initializeDatabase() throws ConnectorException {
+		backer.initializeDatabase();
+	}
+
+	@Override
+	public boolean isDatabaseEmpty() throws ConnectorException {
+		return backer.isDatabaseEmpty();
+	}
 
 }
