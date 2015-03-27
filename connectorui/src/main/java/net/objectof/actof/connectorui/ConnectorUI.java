@@ -116,14 +116,18 @@ public class ConnectorUI implements Connector {
         }
     }
 
-	@Override
-	public void initializeDatabase() throws ConnectorException {
-		backer.initializeDatabase();
-	}
+    @Override
+    public void initializeDatabase() throws ConnectorException {
+        backer.initializeDatabase();
+    }
 
-	@Override
-	public boolean isDatabaseEmpty() throws ConnectorException {
-		return backer.isDatabaseEmpty();
-	}
+    @Override
+    public boolean isDatabaseEmpty() throws ConnectorException {
+        return backer.isDatabaseEmpty();
+    }
 
+    @Override
+    public List<String> getSchemaNames() throws ConnectorException {
+        return backer.getSchemaNames();
+    }
 }

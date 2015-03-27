@@ -6,15 +6,19 @@ import java.util.List;
 import java.util.Optional;
 
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -27,6 +31,8 @@ import net.objectof.actof.connectorui.parametereditor.FilenameParameterEditor;
 import net.objectof.actof.connectorui.parametereditor.ParameterEditor;
 import net.objectof.actof.connectorui.parametereditor.PasswordParameterEditor;
 import net.objectof.actof.connectorui.parametereditor.TextParameterEditor;
+import net.objectof.actof.widgets.KeyValuePane;
+import net.objectof.connector.AbstractConnector;
 import net.objectof.connector.Connector;
 import net.objectof.connector.Connectors;
 import net.objectof.connector.parameter.Parameter;
@@ -40,11 +46,14 @@ public class ConnectionController extends IActofUIController {
     private Stage stage;
     private boolean create;
 
+    ComboBox<String> repoChoice;
+
     @FXML
     private GridPane grid;
     @FXML
     private BorderPane window;
-
+    @FXML
+    private VBox gridBox;
     @FXML
     private ChoiceBox<Connector> backend;
 
@@ -67,10 +76,7 @@ public class ConnectionController extends IActofUIController {
     }
 
     @Override
-    public void ready() {
-        // TODO Auto-generated method stub
-
-    }
+    public void ready() {}
 
     private void populateChoiceBox() {
         populateChoiceBox(null);
@@ -152,21 +158,22 @@ public class ConnectionController extends IActofUIController {
     }
 
     private void layout() {
-        List<Node> children = grid.getChildren();
-        while (!children.isEmpty()) {
-            children.remove(0);
-        }
+        grid.getChildren().clear();
 
         int row = 0;
-
         Connector conn = getSelectedConnector();
-
         ParameterEditor editor = null;
         if (conn == null) { return; }
+        
         for (Parameter parameter : conn.getParameters()) {
             if (parameter.getType() == null) {
                 continue;
             }
+            // We do something special for this parameter below
+            if (parameter.getTitle().equals(AbstractConnector.KEY_REPOSITORY)) {
+                continue;
+            }
+
             switch (parameter.getType()) {
                 case FILE:
                     editor = new FilenameParameterEditor(parameter, stage);
@@ -195,10 +202,50 @@ public class ConnectionController extends IActofUIController {
             grid.add(editor.asNode(), 1, row++);
         }
 
+        // Repository parameter
+        Parameter repoParameter = conn.getParameter(AbstractConnector.KEY_REPOSITORY);
+        repoChoice = new ComboBox<>();
+        updateRepoChoice(repoParameter.getValue());
+        repoChoice.getSelectionModel().select(repoParameter.getValue());
+        repoChoice.focusedProperty().addListener(change -> updateRepoChoice(repoParameter.getValue()));
+        repoChoice.getSelectionModel().selectedItemProperty().addListener(change -> {
+            String selection = repoChoice.getSelectionModel().getSelectedItem();
+            if (selection == null) { return; }
+            repoParameter.setValue(selection);
+        });
+
+        AnchorPane repoAnchor = new AnchorPane();
+        AnchorPane.setBottomAnchor(repoChoice, 0d);
+        AnchorPane.setTopAnchor(repoChoice, 0d);
+        AnchorPane.setLeftAnchor(repoChoice, 0d);
+        AnchorPane.setRightAnchor(repoChoice, 0d);
+        repoAnchor.getChildren().add(repoChoice);
+
+        Label label = new Label(repoParameter.getTitle());
+        label.setStyle("-fx-text-fill: #666;");
+        grid.add(label, 0, row);
+        grid.add(repoAnchor, 1, row++);
+        
+
         if (stage != null) {
             stage.sizeToScene();
         }
 
+    }
+
+    private void updateRepoChoice(String def) {
+        try {
+            String selection = repoChoice.getSelectionModel().getSelectedItem();
+            repoChoice.getItems().setAll(getSelectedConnector().getSchemaNames());
+            if (selection != null) {
+                repoChoice.getSelectionModel().select(selection);
+            } else {
+                repoChoice.getSelectionModel().select(def);
+            }
+        }
+        catch (Exception e) {
+            repoChoice.getItems().clear();
+        }
     }
 
     public void setDialogStage(Stage dialogStage) {

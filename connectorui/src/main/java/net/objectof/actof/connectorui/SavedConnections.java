@@ -11,8 +11,8 @@ import net.objectof.actof.connectorui.beans.Connection;
 import net.objectof.actof.connectorui.beans.Last;
 import net.objectof.actof.connectorui.beans.Saved;
 import net.objectof.connector.Connector;
-import net.objectof.connector.Connectors;
 import net.objectof.connector.Connector.Initialize;
+import net.objectof.connector.Connectors;
 import net.objectof.connector.impl.ISQLiteConnector;
 import net.objectof.connector.parameter.Parameter;
 import net.objectof.model.Package;
@@ -29,8 +29,7 @@ public class SavedConnections {
 
         Connector settings = new ISQLiteConnector();
         settings.getParameter("Filename").setValue(appdir.getAbsolutePath() + "/connections.sqlite");
-        settings.getParameter("Repository").setValue("Connectors");
-        settings.getParameter("Version").setValue("1402");
+        settings.getParameter("Repository").setValue("objectof.net:1512/Connectors");
 
         try {
             return settings.getPackage();
