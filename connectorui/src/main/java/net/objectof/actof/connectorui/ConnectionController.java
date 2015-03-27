@@ -2,12 +2,9 @@ package net.objectof.actof.connectorui;
 
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -31,7 +28,6 @@ import net.objectof.actof.connectorui.parametereditor.FilenameParameterEditor;
 import net.objectof.actof.connectorui.parametereditor.ParameterEditor;
 import net.objectof.actof.connectorui.parametereditor.PasswordParameterEditor;
 import net.objectof.actof.connectorui.parametereditor.TextParameterEditor;
-import net.objectof.actof.widgets.KeyValuePane;
 import net.objectof.connector.AbstractConnector;
 import net.objectof.connector.Connector;
 import net.objectof.connector.Connectors;
@@ -164,7 +160,7 @@ public class ConnectionController extends IActofUIController {
         Connector conn = getSelectedConnector();
         ParameterEditor editor = null;
         if (conn == null) { return; }
-        
+
         for (Parameter parameter : conn.getParameters()) {
             if (parameter.getType() == null) {
                 continue;
@@ -225,7 +221,6 @@ public class ConnectionController extends IActofUIController {
         label.setStyle("-fx-text-fill: #666;");
         grid.add(label, 0, row);
         grid.add(repoAnchor, 1, row++);
-        
 
         if (stage != null) {
             stage.sizeToScene();
