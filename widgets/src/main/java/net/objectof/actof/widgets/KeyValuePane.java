@@ -9,20 +9,21 @@ import java.util.Set;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.HPos;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 
 
 public class KeyValuePane extends GridPane {
 
-    private Map<String, String> properties = new LinkedHashMap<>();
+    private Map<String, Object> properties = new LinkedHashMap<>();
     private SimpleStringProperty keyStyle = new SimpleStringProperty("-fx-text-fill: #999999;");
     private SimpleStringProperty valueStyle = new SimpleStringProperty("-fx-text-fill: #555555;");
     private HPos keyAlignment = HPos.LEFT;
 
     public KeyValuePane() {}
 
-    public void put(String key, String value) {
+    public void put(String key, Object value) {
         properties.put(key, value);
         setHgap(10);
         updateUI();
@@ -42,7 +43,7 @@ public class KeyValuePane extends GridPane {
         return properties.keySet();
     }
 
-    public Collection<String> values() {
+    public Collection<Object> values() {
         return properties.values();
     }
 
@@ -52,10 +53,15 @@ public class KeyValuePane extends GridPane {
         int row = 0;
 
         for (String key : properties.keySet()) {
-            String value = properties.get(key);
+            Object value = properties.get(key);
 
             Label lKey = new Label(key);
-            Label lValue = new Label(value);
+            Node lValue = null;
+            if (value instanceof Node) {
+                lValue = (Node) value;
+            } else {
+                lValue = new Label(value.toString());
+            }
 
             GridPane.setHalignment(lKey, keyAlignment);
 
