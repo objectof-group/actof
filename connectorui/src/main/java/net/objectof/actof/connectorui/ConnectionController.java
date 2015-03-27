@@ -199,7 +199,10 @@ public class ConnectionController extends IActofUIController {
         repoChoice = new ComboBox<>();
         updateRepoChoice(repoParameter.getValue());
         repoChoice.getSelectionModel().select(repoParameter.getValue());
-        repoChoice.focusedProperty().addListener(change -> updateRepoChoice(repoParameter.getValue()));
+        repoChoice.focusedProperty().addListener(change -> {
+            if (!repoChoice.isFocused()) { return; }
+            updateRepoChoice(repoParameter.getValue());
+        });
         repoChoice.getSelectionModel().selectedItemProperty().addListener(change -> {
             String selection = repoChoice.getSelectionModel().getSelectedItem();
             if (selection == null) { return; }
