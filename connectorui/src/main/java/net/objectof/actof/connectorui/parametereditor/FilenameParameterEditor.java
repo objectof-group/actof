@@ -67,7 +67,7 @@ public class FilenameParameterEditor extends HBox implements ParameterEditor {
 
     @Override
     public void setCreate(boolean create) {
-        create = true;
+        this.create = create;
     }
 
 }

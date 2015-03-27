@@ -17,10 +17,19 @@ public class ConnectorUI implements Connector {
 
     private Connector backer;
     private String displayName;
+    private boolean isTemplate = false;
 
     public ConnectorUI(Connector backer) {
         this.backer = backer;
         setDisplayName(backer.getName());
+    }
+
+    public boolean isTemplate() {
+        return isTemplate;
+    }
+
+    public void setTemplate(boolean isTemplate) {
+        this.isTemplate = isTemplate;
     }
 
     /**
@@ -54,7 +63,7 @@ public class ConnectorUI implements Connector {
 
     @Override
     public String toString() {
-        return getDisplayName() + " (" + getType() + ")";
+        return getDisplayName();
     }
 
     @Override

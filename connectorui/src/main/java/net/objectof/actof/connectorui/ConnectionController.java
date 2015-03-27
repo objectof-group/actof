@@ -40,14 +40,14 @@ public class ConnectionController extends IActofUIController {
     private boolean create;
 
     private ComboBox<String> repoChoice;
-    private KeyValuePane grid = new KeyValuePane();;
+    private KeyValuePane grid = new KeyValuePane();
 
     @FXML
     private BorderPane window;
     @FXML
     private AnchorPane gridBox;
     @FXML
-    private ComboBox<Connector> backend;
+    private ComboBox<ConnectorUI> backend;
 
     @FXML
     Button connect, cancel;
@@ -58,17 +58,11 @@ public class ConnectionController extends IActofUIController {
 
     @Override
     @FXML
-    protected void initialize() {
-        try {
-            populateChoiceBox();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    protected void initialize() {}
 
     @Override
     public void ready() {
+
         grid.setHgap(5);
         grid.setVgap(5);
         grid.setPadding(new Insets(10));
@@ -77,6 +71,14 @@ public class ConnectionController extends IActofUIController {
         AnchorPane.setLeftAnchor(grid, 0d);
         AnchorPane.setRightAnchor(grid, 0d);
         gridBox.getChildren().add(grid);
+
+        try {
+            populateChoiceBox();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void populateChoiceBox() {
@@ -93,7 +95,8 @@ public class ConnectionController extends IActofUIController {
         // load new/template connections
         for (Connector newconn : Connectors.getConnectors()) {
             ConnectorUI newconnui = new ConnectorUI(newconn);
-            newconnui.setDisplayName("New Connection");
+            newconnui.setDisplayName("New " + newconn.getType() + " Connection");
+            newconnui.setTemplate(true);
             backend.getItems().add(newconnui);
         }
 
@@ -120,7 +123,7 @@ public class ConnectionController extends IActofUIController {
                 if (!(o instanceof Connector)) {
                     continue;
                 }
-                Connector conn = (Connector) o;
+                ConnectorUI conn = (ConnectorUI) o;
                 if (conn.equals(last)) {
                     backend.getSelectionModel().select(conn);
                 }
@@ -156,7 +159,6 @@ public class ConnectionController extends IActofUIController {
     private void layout() {
         grid.clear();
 
-        int row = 0;
         Connector conn = getSelectedConnector();
         ParameterEditor editor = null;
         if (conn == null) { return; }
@@ -197,6 +199,9 @@ public class ConnectionController extends IActofUIController {
         // Repository parameter
         Parameter repoParameter = conn.getParameter(AbstractConnector.KEY_REPOSITORY);
         repoChoice = new ComboBox<>();
+        if (create) {
+            repoChoice.setEditable(true);
+        }
         updateRepoChoice(repoParameter.getValue());
         repoChoice.getSelectionModel().select(repoParameter.getValue());
         repoChoice.focusedProperty().addListener(change -> {
@@ -270,27 +275,32 @@ public class ConnectionController extends IActofUIController {
         return connectSelected;
     }
 
-    public static ConnectionController load(boolean create) throws IOException {
-        return load(create, new IChangeController());
+    public static ConnectionController load() throws IOException {
+        return load(new IChangeController());
     }
 
-    public static ConnectionController load(boolean create, ChangeController changes) throws IOException {
+    public boolean isCreate() {
+        return create;
+    }
+
+    public void setCreate(boolean create) {
+        connect.setText("Create");
+        this.create = create;
+        layout();
+    }
+
+    public static ConnectionController load(ChangeController changes) throws IOException {
 
         ConnectionController controller = FXUtil.load(ConnectionController.class, "ConnectionDialog.fxml", changes);
-
-        controller.create = create;
-        if (create) {
-            controller.connect.setText("Create");
-        }
         controller.cancel.setVisible(false);
-
         return controller;
 
     }
 
     public static Connector showDialog(Window owner, boolean create) throws IOException {
 
-        ConnectionController controller = load(create, new IChangeController());
+        ConnectionController controller = load(new IChangeController());
+        controller.setCreate(create);
 
         Stage connectStage = new Stage(StageStyle.DECORATED);
         connectStage.setTitle(create ? "Create Repository" : "Connect to Repository");
