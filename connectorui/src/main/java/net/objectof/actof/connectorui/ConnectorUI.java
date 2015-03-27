@@ -54,7 +54,7 @@ public class ConnectorUI implements Connector {
 
     @Override
     public String toString() {
-        return getDisplayName();
+        return getDisplayName() + " (" + getType() + ")";
     }
 
     @Override
