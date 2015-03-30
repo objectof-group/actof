@@ -115,7 +115,7 @@ public class CardsPane extends Pane {
         columnCount = Math.max(columnCount, 1);
 
         // only as many columns as nodes
-        // columnCount = Math.min(columnCount, getManagedChildren().size());
+        columnCount = Math.min(columnCount, getManagedChildren().size());
 
         return columnCount;
     }
