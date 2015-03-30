@@ -11,11 +11,11 @@ public class BlankCard extends AnchorPane {
     protected BorderPane card;
 
     private double radius = 5;
-    private String colour = "#ffffff";
+    private String colour = "transparent";
     private String shadowColour = "#777";
     private double shadowRadius = 8;
     private double shadowOffsetX = 1, shadowOffsetY = 0;
-    private boolean hasShadow = true;
+    private boolean hasShadow = false;
 
     public BlankCard() {
         card = new BorderPane();

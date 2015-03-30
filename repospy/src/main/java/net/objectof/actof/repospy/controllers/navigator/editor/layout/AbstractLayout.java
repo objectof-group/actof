@@ -2,6 +2,7 @@ package net.objectof.actof.repospy.controllers.navigator.editor.layout;
 
 
 import javafx.beans.Observable;
+import javafx.geometry.Insets;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import net.objectof.actof.repospy.RepoSpyController;
@@ -12,13 +13,15 @@ import net.objectof.actof.widgets.card.CardsPane;
 
 public abstract class AbstractLayout extends BorderPane {
 
-    protected CardsPane cards = new CardsPane();
+    protected CardsPane cards;
     protected ScrollPane scroll = new ScrollPane(cards);
     protected RepoSpyController repospy;
     protected RepoSpyTreeItem treeitem;
 
-    public AbstractLayout(RepoSpyTreeItem treeitem, RepoSpyController repospy) {
-
+    public AbstractLayout(RepoSpyTreeItem treeitem, RepoSpyController repospy, double columnWidth) {
+        this.cards = new CardsPane(columnWidth);
+        cards.setPadding(new Insets(6));
+        cards.setSpacing(6);
         this.repospy = repospy;
         this.treeitem = treeitem;
 

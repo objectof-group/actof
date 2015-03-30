@@ -12,7 +12,7 @@ import net.objectof.actof.widgets.card.Card;
 public class PackageLayout extends AbstractLayout {
 
     public PackageLayout(RepoSpyTreeItem treeitem, RepoSpyController repospy) {
-        super(treeitem, repospy);
+        super(treeitem, repospy, 350);
         updateUI();
     }
 

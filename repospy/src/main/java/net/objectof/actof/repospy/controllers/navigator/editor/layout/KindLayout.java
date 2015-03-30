@@ -28,7 +28,7 @@ public class KindLayout extends AbstractLayout {
     private Card controlCard = new Card();
 
     public KindLayout(RepoSpyTreeItem treeitem, RepoSpyController repospy) {
-        super(treeitem, repospy);
+        super(treeitem, repospy, 350);
         this.node = (IKindNode) treeitem.getValue();
         this.treeitem = treeitem;
 
@@ -47,6 +47,8 @@ public class KindLayout extends AbstractLayout {
         controlCard.setRadius(0);
         controlCard.setTitle("Add Entity");
         controlCard.setDescription(add);
+        controlCard.setHasShadow(true);
+        controlCard.setColour("#ffffff");
 
         setTop(controlCard);
 

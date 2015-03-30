@@ -28,7 +28,7 @@ public class ReviewController extends CardsPane {
     private HistoryController history;
 
     public ReviewController(HistoryController history, ChangeController changes) {
-
+        super(Double.MAX_VALUE);
         URL css = ReviewController.class.getResource("style.css");
         getStylesheets().add(css.toString());
         this.history = history;

@@ -25,7 +25,7 @@ public abstract class AggregateLayout extends AbstractLayout {
     private IAggregateNode entry;
 
     public AggregateLayout(RepoSpyTreeItem treeitem, RepoSpyController repospy) {
-        super(treeitem, repospy);
+        super(treeitem, repospy, 350);
         this.entry = (IAggregateNode) treeitem.getValue();
 
         Button add = new Button("", ActofIcons.getIconView(Icon.ADD, Size.BUTTON));
@@ -38,6 +38,8 @@ public abstract class AggregateLayout extends AbstractLayout {
         controlCard.setTitle("Add Entry");
         controlCard.setRadius(0);
         controlCard.setPadding(new Insets(0));
+        controlCard.setHasShadow(true);
+        controlCard.setColour("#ffffff");
         setTop(controlCard);
     }
 
