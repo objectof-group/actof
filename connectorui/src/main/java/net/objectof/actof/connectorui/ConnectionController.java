@@ -10,6 +10,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.cell.TextFieldListCell;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
@@ -79,6 +82,25 @@ public class ConnectionController extends IActofUIController {
             e.printStackTrace();
         }
 
+        backend.setCellFactory(listview -> {
+            return new TextFieldListCell<ConnectorUI>() {
+
+                @Override
+                public void updateItem(ConnectorUI item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    ImageView node;
+                    if (!empty && item.isTemplate()) {
+                        node = new ImageView(new Image(ConnectionController.class
+                                .getResourceAsStream("icons/blank.png")));
+                    } else {
+                        node = new ImageView(
+                                new Image(ConnectionController.class.getResourceAsStream("icons/repo.png")));
+                    }
+                    this.setGraphic(node);
+                }
+            };
+        });
     }
 
     private void populateChoiceBox() {
