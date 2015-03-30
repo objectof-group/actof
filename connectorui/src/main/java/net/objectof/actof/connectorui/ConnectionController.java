@@ -82,25 +82,8 @@ public class ConnectionController extends IActofUIController {
             e.printStackTrace();
         }
 
-        backend.setCellFactory(listview -> {
-            return new TextFieldListCell<ConnectorUI>() {
-
-                @Override
-                public void updateItem(ConnectorUI item, boolean empty) {
-                    super.updateItem(item, empty);
-
-                    ImageView node;
-                    if (!empty && item.isTemplate()) {
-                        node = new ImageView(new Image(ConnectionController.class
-                                .getResourceAsStream("icons/blank.png")));
-                    } else {
-                        node = new ImageView(
-                                new Image(ConnectionController.class.getResourceAsStream("icons/repo.png")));
-                    }
-                    this.setGraphic(node);
-                }
-            };
-        });
+        backend.setButtonCell(new ConnectorCell());
+        backend.setCellFactory(listview -> new ConnectorCell());
     }
 
     private void populateChoiceBox() {
@@ -341,4 +324,20 @@ public class ConnectionController extends IActofUIController {
         }
     }
 
+}
+
+class ConnectorCell extends TextFieldListCell<ConnectorUI> {
+
+    @Override
+    public void updateItem(ConnectorUI item, boolean empty) {
+        super.updateItem(item, empty);
+
+        ImageView node;
+        if (!empty && item.isTemplate()) {
+            node = new ImageView(new Image(ConnectionController.class.getResourceAsStream("icons/blank.png")));
+        } else {
+            node = new ImageView(new Image(ConnectionController.class.getResourceAsStream("icons/repo.png")));
+        }
+        this.setGraphic(node);
+    }
 }
