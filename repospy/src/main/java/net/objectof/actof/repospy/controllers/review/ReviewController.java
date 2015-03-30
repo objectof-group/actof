@@ -8,6 +8,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.icons.ActofIcons;
 import net.objectof.actof.common.icons.ActofIcons.Icon;
@@ -20,15 +21,14 @@ import net.objectof.actof.repospy.changes.HistoryChange;
 import net.objectof.actof.repospy.controllers.history.HistoryController;
 import net.objectof.actof.widgets.KeyValuePane;
 import net.objectof.actof.widgets.card.Card;
-import net.objectof.actof.widgets.card.CardsPane;
 
 
-public class ReviewController extends CardsPane {
+public class ReviewController extends VBox {
 
     private HistoryController history;
 
     public ReviewController(HistoryController history, ChangeController changes) {
-        super(Double.MAX_VALUE);
+        super();
         URL css = ReviewController.class.getResource("style.css");
         getStylesheets().add(css.toString());
         this.history = history;
