@@ -1,6 +1,7 @@
 package net.objectof.actof.repospy.controllers.navigator.treemodel.nodes;
 
 
+import java.util.ArrayList;
 import java.util.Set;
 
 import javafx.collections.FXCollections;
@@ -97,7 +98,7 @@ public class IAggregateNode extends AbstractTreeNode {
     public void delete() {
 
         // go through any child IAggregateNodes and delete them as well.
-        for (TreeItem<TreeNode> childitem : getChildren()) {
+        for (TreeItem<TreeNode> childitem : new ArrayList<>(getChildren())) {
             IAggregateNode child = (IAggregateNode) childitem.getValue();
             child.delete();
         }
