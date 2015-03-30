@@ -54,11 +54,11 @@ public class CardsPane extends Pane {
     public CardsPane(double columnWidth) {
         this.columnWidth = columnWidth;
         nodeSpacing.addListener((Observable change) -> requestLayout());
+        layout.addListener((Observable change) -> requestLayout());
     }
 
     public void setSpacing(double spacing) {
         nodeSpacing.set(spacing);
-        requestLayout();
     }
 
     public double getSpacing() {
