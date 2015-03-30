@@ -62,7 +62,7 @@
                 </TitledPane>
               </panes>
             </Accordion>
-            <TreeTableView fx:id="tree" editable="true" prefWidth="200.0" styleClass="schema">
+            <TreeTableView fx:id="tree" editable="true" prefWidth="200.0" styleClass="schema" VBox.vgrow="ALWAYS">
               <columns>
                 <TreeTableColumn fx:id="field" prefWidth="231.0" text="Entities" />
               </columns>
