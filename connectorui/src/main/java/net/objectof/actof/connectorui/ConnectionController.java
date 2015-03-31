@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.geometry.VPos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -69,6 +70,7 @@ public class ConnectionController extends IActofUIController {
         grid.setHgap(5);
         grid.setVgap(5);
         grid.setPadding(new Insets(10));
+        grid.setKeyVAlignment(VPos.CENTER);
         AnchorPane.setBottomAnchor(grid, 0d);
         AnchorPane.setTopAnchor(grid, 0d);
         AnchorPane.setLeftAnchor(grid, 0d);

@@ -21,7 +21,8 @@ public class KeyValuePane extends GridPane {
     private Map<String, Object> properties = new LinkedHashMap<>();
     private SimpleStringProperty keyStyle = new SimpleStringProperty("-fx-text-fill: #999999;");
     private SimpleStringProperty valueStyle = new SimpleStringProperty("-fx-text-fill: #555555;");
-    private HPos keyAlignment = HPos.LEFT;
+    private HPos keyHAlignment = HPos.LEFT;
+    private VPos keyVAlignment = VPos.TOP;
 
     public KeyValuePane() {}
 
@@ -66,8 +67,8 @@ public class KeyValuePane extends GridPane {
                 lValue = new Label(value.toString());
             }
 
-            GridPane.setHalignment(lKey, keyAlignment);
-            GridPane.setValignment(lKey, VPos.TOP);
+            GridPane.setHalignment(lKey, keyHAlignment);
+            GridPane.setValignment(lKey, keyVAlignment);
 
             add(lKey, 0, row);
             GridPane.setHgrow(lValue, Priority.ALWAYS);
@@ -104,12 +105,21 @@ public class KeyValuePane extends GridPane {
         return valueStyle;
     }
 
-    public HPos getKeyAlignment() {
-        return keyAlignment;
+    public HPos getKeyHAlignment() {
+        return keyHAlignment;
     }
 
-    public void setKeyAlignment(HPos keyAlignment) {
-        this.keyAlignment = keyAlignment;
+    public void setKeyHAlignment(HPos keyAlignment) {
+        this.keyHAlignment = keyAlignment;
+        updateUI();
+    }
+
+    public VPos getKeyVAlignment() {
+        return keyVAlignment;
+    }
+
+    public void setKeyVAlignment(VPos keyAlignment) {
+        this.keyVAlignment = keyAlignment;
         updateUI();
     }
 
