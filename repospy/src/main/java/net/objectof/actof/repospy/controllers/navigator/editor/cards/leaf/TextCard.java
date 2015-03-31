@@ -49,6 +49,7 @@ public class TextCard extends LeafCard {
         expand.getStyleClass().add("tool-bar-button");
         expand.setOnAction(action -> {
             createTextArea(entry);
+            updateFromEntry();
         });
 
         HBox content = new HBox(6, textBox, expand);
@@ -56,8 +57,7 @@ public class TextCard extends LeafCard {
     }
 
     private void createTextArea(ILeafNode entry) {
-        String text = textBox.getText();
-        textBox = new TextArea(text);
+        textBox = new TextArea();
         textBox.textProperty().addListener((obs, o, n) -> {
             if (isUpdating()) { return; }
             getEntry().setFieldValue(n);
