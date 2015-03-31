@@ -8,6 +8,7 @@ import java.util.Date;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
@@ -15,6 +16,7 @@ import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.util.StringConverter;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.ILeafNode;
+import net.objectof.actof.widgets.KeyValuePane;
 import net.objectof.model.impl.IMoment;
 
 
@@ -24,7 +26,7 @@ public class MomentCard extends LeafCard {
     DatePicker picker = new DatePicker();
     Calendar cal = Calendar.getInstance();
 
-    // KeyValuePane pane = new KeyValuePane();
+    KeyValuePane pane = new KeyValuePane();
 
     public MomentCard(ILeafNode entry) {
         super(entry);
@@ -34,7 +36,6 @@ public class MomentCard extends LeafCard {
         second = new TimeSpinner(0, 59);
 
         picker.setPromptText("Date");
-        // picker.setPrefWidth(72);
         picker.setConverter(new StringConverter<LocalDate>() {
 
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(IMoment.DATE_FORMAT);
@@ -52,13 +53,11 @@ public class MomentCard extends LeafCard {
 
         HBox timebox = new HBox(0, hour, new Label(":"), minute, new Label(":"), second);
         timebox.setAlignment(Pos.CENTER_LEFT);
-        HBox datebox = new HBox(6, picker, timebox);
-        datebox.setAlignment(Pos.CENTER_LEFT);
 
-        // pane.setVgap(6);
-        // pane.setKeyVAlignment(VPos.CENTER);
-        // pane.put("Date", picker);
-        // pane.put("Time", timebox);
+        pane.setVgap(6);
+        pane.setKeyVAlignment(VPos.CENTER);
+        pane.put("Date", picker);
+        pane.put("Time", timebox);
 
         picker.valueProperty().addListener(change -> updateModel());
         hour.valueProperty().addListener(change -> updateModel());
@@ -66,8 +65,7 @@ public class MomentCard extends LeafCard {
         second.valueProperty().addListener(change -> updateModel());
 
         updateFromEntry();
-        // setContent(pane, false);
-        setTitleContent(datebox);
+        setContent(pane, false);
 
     }
 
@@ -78,9 +76,6 @@ public class MomentCard extends LeafCard {
 
     @Override
     public void updateUIFromEntry() {
-
-        System.out.println(getEntry().getFieldValue());
-
         IMoment moment = (IMoment) getEntry().getFieldValue();
         if (moment == null) {
             moment = new IMoment();
