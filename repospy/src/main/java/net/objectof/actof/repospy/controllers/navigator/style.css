@@ -43,6 +43,15 @@
 	-fx-background-color: -fx-focus-color, -fx-inner-border, -fx-body-color, -fx-faint-focus-color, -fx-body-color;
 }
 
+.bread-crumb-button {
+	-fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, transparent;
+}
+
+.bread-crumb-button:focused {
+		-fx-background-color: -fx-focus-color, -fx-inner-border, transparent, transparent, transparent;
+}
+
+
 
 .entities > .title {
 	-fx-background-insets: -1 0 0 -1, 0 1 1 0, 1 2 2 1;

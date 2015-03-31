@@ -130,6 +130,7 @@ public class SchemaViewController extends IActofUIController {
         breadcrumb.setCrumbFactory(item -> {
             Button b = breadCrumbFactory.call(item);
             b.setText("");
+            b.getStyleClass().add("bread-crumb-button");
             Label label = new Label();
 
             if (item.getValue() != null) {
