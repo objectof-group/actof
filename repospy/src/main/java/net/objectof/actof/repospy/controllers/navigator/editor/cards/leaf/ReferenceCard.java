@@ -54,7 +54,6 @@ public class ReferenceCard extends LeafCard {
             getEntry().setFieldValue(newval);
         });
         setTitleContent(refs);
-        setContent(fields);
 
     }
 
@@ -84,8 +83,10 @@ public class ReferenceCard extends LeafCard {
         refs.getItems().setAll(getElements());
         Resource<?> selected = (Resource<?>) getEntry().getFieldValue();
         if (selected == null) {
+            setContent(null);
             refs.getSelectionModel().select(0);
         } else {
+            setContent(fields);
             refs.getSelectionModel().select(selected);
         }
         updateGrid();

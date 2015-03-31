@@ -99,7 +99,10 @@ public class Card extends BlankCard {
 
     public void setContent(Node node, boolean expanding) {
         contentBox.getChildren().clear();
-        if (node == null) { return; }
+        if (node == null) {
+            fixPadding();
+            return;
+        }
 
         BorderPane.setAlignment(node, Pos.CENTER_LEFT);
         if (expanding) {
