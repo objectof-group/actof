@@ -1,29 +1,26 @@
 package net.objectof.actof.repospy.controllers.navigator.editor.cards.leaf;
 
 
-import java.math.BigDecimal;
-import java.text.NumberFormat;
-
-import jfxtras.labs.scene.control.BigDecimalField;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.ILeafNode;
 
 
 public class RealCard extends LeafCard {
 
-    BigDecimalField field = new BigDecimalField();
+    Spinner<Double> spinner;
 
     public RealCard(ILeafNode entry) {
         super(entry);
 
-        field.setFormat(NumberFormat.getNumberInstance());
-        field.setStepwidth(new BigDecimal(1));
-        field.numberProperty().addListener((obs, oldval, newval) -> {
+        spinner = new Spinner<>(new SpinnerValueFactory.DoubleSpinnerValueFactory(Double.MIN_VALUE, Double.MAX_VALUE));
+        spinner.valueProperty().addListener(change -> {
             if (isUpdating()) { return; }
-            entry.setFieldValue(newval.doubleValue());
+            entry.setFieldValue(spinner.getValue());
         });
 
         updateFromEntry();
-        setTitleContent(field);
+        setTitleContent(spinner);
 
     }
 
@@ -33,7 +30,7 @@ public class RealCard extends LeafCard {
         if (value == null) {
             value = 0d;
         }
-        field.setNumber(new BigDecimal(value));
+        spinner.getValueFactory().setValue(value);
     }
 
 }
