@@ -49,8 +49,7 @@ public class KindLayout extends AbstractLayout {
         controlCard.setRadius(0);
         controlCard.setTitle("Add Entity");
         controlCard.setDescription(add);
-        controlCard.setHasShadow(true);
-        controlCard.setColour("#ffffff");
+        controlCard.setShadowRadius(8);
 
         setTop(controlCard);
 

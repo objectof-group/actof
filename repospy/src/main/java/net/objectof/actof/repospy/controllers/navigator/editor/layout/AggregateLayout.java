@@ -37,9 +37,8 @@ public abstract class AggregateLayout extends AbstractLayout {
         controlCard.setDescription(add);
         controlCard.setTitle("Add Entry");
         controlCard.setRadius(0);
+        controlCard.setShadowRadius(8);
         controlCard.setPadding(new Insets(0));
-        controlCard.setHasShadow(true);
-        controlCard.setColour("#ffffff");
         setTop(controlCard);
     }
 

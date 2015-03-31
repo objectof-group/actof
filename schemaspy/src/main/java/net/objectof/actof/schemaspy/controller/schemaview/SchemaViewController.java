@@ -210,8 +210,7 @@ public class SchemaViewController extends IActofUIController {
         addChildCard.setRadius(0);
         addChildCard.setPadding(new Insets(0));
         addChildCard.setTitle("Add Child");
-        addChildCard.setColour("#ffffff");
-        addChildCard.setHasShadow(true);
+        addChildCard.setShadowRadius(8);
 
         TextField addChildName = new TextField();
         addChildCard.setTitleContent(addChildName);

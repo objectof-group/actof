@@ -27,12 +27,6 @@ public class CompositeLayout extends AbstractLayout {
 
         for (ILeafNode leaf : entry.getLeaves()) {
             LeafCard editor = LeafCard.createEditor(leaf);
-            // editor.setColour("derive(-fx-background, -3%)");
-            editor.setHasShadow(true);
-            editor.setShadowRadius(3);
-            editor.setShadowColour("derive(-fx-background, -15%)");
-            // editor.setColour("#ffffff");
-            editor.setColour("linear-gradient(from 0px 0px to 0px 8px, derive(-fx-background, 50%), -fx-background)");
             cards.getChildren().add(editor);
         }
     }
