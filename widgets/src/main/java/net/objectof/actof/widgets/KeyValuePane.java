@@ -9,6 +9,7 @@ import java.util.Set;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.HPos;
+import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
@@ -66,6 +67,7 @@ public class KeyValuePane extends GridPane {
             }
 
             GridPane.setHalignment(lKey, keyAlignment);
+            GridPane.setValignment(lKey, VPos.TOP);
 
             add(lKey, 0, row);
             GridPane.setHgrow(lValue, Priority.ALWAYS);
