@@ -109,7 +109,10 @@ public class CardsPane extends Pane {
 
         performingLayout = true;
 
-        double heights[] = new double[columnCount()];
+        double heights[] = new double[columnCount(getWidth())];
+        for (int i = 0; i < heights.length; i++) {
+            heights[i] = getInsets().getTop();
+        }
 
         int lastColumn = -1; // round robin will increments
         double clearance = 0; // determines min y position, useful for grid
@@ -122,8 +125,8 @@ public class CardsPane extends Pane {
             lastColumn = selectedColumn;
 
             // calculate position/size of node
-            double width = realColumnWidth();
-            double height = nodePrefHeight(node, -1, VBox.getMargin(node), realColumnWidth());
+            double width = realColumnWidth(getWidth());
+            double height = nodePrefHeight(node, -1, VBox.getMargin(node), realColumnWidth(getWidth()));
             double y = yForNode(selectedColumn, heights, clearance);
             double x = xForColumn(selectedColumn);
 
@@ -139,8 +142,12 @@ public class CardsPane extends Pane {
 
     }
 
-    private int columnCount() {
-        int columnCount = (int) Math.floor(getWidth() / columnWidth);
+    private int columnCount(double width) {
+
+        int columnCount = 1;
+        if (columnWidth > 0) {
+            columnCount = (int) Math.floor(width / columnWidth);
+        }
 
         // always at least 1 column
         columnCount = Math.max(columnCount, 1);
@@ -151,24 +158,24 @@ public class CardsPane extends Pane {
         return columnCount;
     }
 
-    private double realColumnWidth() {
-        int count = columnCount();
+    private double realColumnWidth(double width) {
+        int count = columnCount(width);
         double spacing = nodeSpacing.get() * (count - 1);
         double insets = getInsets().getLeft() + getInsets().getRight();
-        double available = getWidth() - insets - spacing;
+        double available = width - insets - spacing;
         return available / (double) count;
     }
 
     private double xForColumn(int column) {
         double inset = getInsets().getLeft();
-        double columnOffset = realColumnWidth() + nodeSpacing.get();
+        double columnOffset = realColumnWidth(getWidth()) + nodeSpacing.get();
         return snapSize(inset + column * columnOffset);
     }
 
     private double yForNode(int column, double heights[], double clearance) {
         double y = Math.max(clearance, heights[column]);
         double spacingHeight = y == 0 ? 0 : nodeSpacing.get();
-        return getInsets().getTop() + spacingHeight + y;
+        return spacingHeight + y;
     }
 
     @Override
@@ -196,9 +203,10 @@ public class CardsPane extends Pane {
     protected double computePrefHeight(double width) {
         Insets insets = getInsets();
 
-        int columnCount = (int) Math.floor(width / columnWidth);
-        columnCount = Math.max(columnCount, 1);
-        double heights[] = new double[columnCount];
+        double heights[] = new double[columnCount(width)];
+        for (int i = 0; i < heights.length; i++) {
+            heights[i] = getInsets().getTop();
+        }
 
         int lastColumn = -1; // round robin will increments
         double clearance = 0; // determines min y position, useful for grid
@@ -211,20 +219,19 @@ public class CardsPane extends Pane {
             lastColumn = selectedColumn;
 
             // calculate position/size of node (w/o x/width)
-            double height = nodePrefHeight(node, -1, VBox.getMargin(node), realColumnWidth());
+            double height = nodePrefHeight(node, -1, VBox.getMargin(node), realColumnWidth(width));
             double y = yForNode(selectedColumn, heights, clearance);
 
             // update the height value for this column
             heights[selectedColumn] = y + height;
-
         }
 
         double height = 0;
-        for (int i = 0; i < heights.length; i++) {
-            height = Math.max(height, heights[i]);
+        for (double h : heights) {
+            height = Math.max(height, h);
         }
 
-        return snapSpace(insets.getTop() + snapSpace(height) + insets.getBottom());
+        return snapSpace(snapSpace(height) + insets.getBottom());
     }
 
     @Override
