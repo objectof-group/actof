@@ -5,6 +5,7 @@ import javafx.scene.control.TextField;
 import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.RepoSpyTreeItem;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.ILeafNode;
+import net.objectof.actof.widgets.card.CardsPane.Layout;
 import net.objectof.aggr.Mapping;
 
 import org.controlsfx.dialog.Dialogs;
@@ -16,6 +17,7 @@ public class MappedLayout extends AggregateLayout {
 
     public MappedLayout(RepoSpyTreeItem treeitem, RepoSpyController repospy) {
         super(treeitem, repospy);
+        cards.setLayout(Layout.GRID);
         getControlCard().setTitleContent(keyField);
         updateUI();
     }

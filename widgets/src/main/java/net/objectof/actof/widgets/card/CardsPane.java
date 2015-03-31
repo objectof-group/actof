@@ -27,6 +27,26 @@ public class CardsPane extends Pane {
             }
         },
 
+        GRID {
+
+            public int pickColumn(double heights[], int lastColumn) {
+                return ROUND_ROBIN.pickColumn(heights, lastColumn);
+            }
+
+            public double clearance(double heights[], double lastClearance, int column) {
+                // only compute new clearance if we're starting a new row
+                if (column == 0) {
+                    double height = 0;
+                    for (double h : heights) {
+                        height = Math.max(height, h);
+                    }
+                    return height;
+                } else {
+                    return lastClearance;
+                }
+            }
+        },
+
         SHORTEST_COLUMN {
 
             public int pickColumn(double heights[], int lastColumn) {
@@ -42,6 +62,10 @@ public class CardsPane extends Pane {
 
         public int pickColumn(double heights[], int lastColumn) {
             return 0;
+        }
+
+        public double clearance(double heights[], double lastClearance, int column) {
+            return 0d;
         }
     }
 
@@ -88,20 +112,27 @@ public class CardsPane extends Pane {
         double heights[] = new double[columnCount()];
 
         int lastColumn = -1; // round robin will increments
+        double clearance = 0; // determines min y position, useful for grid
+        int selectedColumn = 0;
         for (Node node : getManagedChildren()) {
-            int selectedColumn = layout.get().pickColumn(heights, lastColumn);
+            // figure out which column this node should go into, and what the
+            // clearance for this row is
+            selectedColumn = layout.get().pickColumn(heights, lastColumn);
+            clearance = layout.get().clearance(heights, clearance, selectedColumn);
             lastColumn = selectedColumn;
 
+            // calculate position/size of node
+            double width = realColumnWidth();
             double height = nodePrefHeight(node, -1, VBox.getMargin(node), realColumnWidth());
+            double y = yForNode(selectedColumn, heights, clearance);
+            double x = xForColumn(selectedColumn);
 
-            node.resize(snapSpace(realColumnWidth()), snapSpace(height));
-            node.relocate(xForColumn(selectedColumn), yForNode(selectedColumn, heights));
+            // position the node
+            node.resize(snapSize(width), snapSize(height));
+            node.relocate(snapSpace(x), snapSpace(y));
 
-            if (heights[selectedColumn] > 0) {
-                heights[selectedColumn] = (int) (heights[selectedColumn] + snapSpace(nodeSpacing.get() + height));
-            } else {
-                heights[selectedColumn] = (int) (heights[selectedColumn] + snapSpace(+height));
-            }
+            // update the height value for this column
+            heights[selectedColumn] = y + height;
         }
 
         performingLayout = false;
@@ -134,9 +165,10 @@ public class CardsPane extends Pane {
         return snapSize(inset + column * columnOffset);
     }
 
-    private double yForNode(int column, double height[]) {
-        double spacingHeight = height[column] == 0 ? 0 : nodeSpacing.get();
-        return snapSpace(getInsets().getTop() + spacingHeight + height[column]);
+    private double yForNode(int column, double heights[], double clearance) {
+        double y = Math.max(clearance, heights[column]);
+        double spacingHeight = y == 0 ? 0 : nodeSpacing.get();
+        return getInsets().getTop() + spacingHeight + y;
     }
 
     @Override
@@ -167,20 +199,24 @@ public class CardsPane extends Pane {
         int columnCount = (int) Math.floor(width / columnWidth);
         columnCount = Math.max(columnCount, 1);
         double heights[] = new double[columnCount];
-        double realColumnWidth = width / columnCount;
 
         int lastColumn = -1; // round robin will increments
+        double clearance = 0; // determines min y position, useful for grid
+        int selectedColumn = 0;
         for (Node node : getManagedChildren()) {
-            int selectedColumn = layout.get().pickColumn(heights, lastColumn);
+            // figure out which column this node should go into, and what the
+            // clearance for this row is
+            selectedColumn = layout.get().pickColumn(heights, lastColumn);
+            clearance = layout.get().clearance(heights, clearance, selectedColumn);
             lastColumn = selectedColumn;
 
-            double height = nodePrefHeight(node, -1, VBox.getMargin(node), realColumnWidth);
+            // calculate position/size of node (w/o x/width)
+            double height = nodePrefHeight(node, -1, VBox.getMargin(node), realColumnWidth());
+            double y = yForNode(selectedColumn, heights, clearance);
 
-            if (heights[selectedColumn] > 0) {
-                heights[selectedColumn] = (int) (heights[selectedColumn] + snapSpace(nodeSpacing.get() + height));
-            } else {
-                heights[selectedColumn] = (int) (heights[selectedColumn] + snapSpace(+height));
-            }
+            // update the height value for this column
+            heights[selectedColumn] = y + height;
+
         }
 
         double height = 0;

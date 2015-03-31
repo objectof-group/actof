@@ -14,7 +14,7 @@ public class CompositeLayout extends AbstractLayout {
     private IAggregateNode entry;
 
     public CompositeLayout(RepoSpyTreeItem treeitem, RepoSpyController repospy) {
-        super(treeitem, repospy, 500);
+        super(treeitem, repospy, 400);
         cards.setLayout(Layout.ROUND_ROBIN);
         this.entry = (IAggregateNode) treeitem.getValue();
         updateUI();
