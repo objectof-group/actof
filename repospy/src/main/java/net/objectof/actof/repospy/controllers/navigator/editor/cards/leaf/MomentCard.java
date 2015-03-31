@@ -1,46 +1,149 @@
 package net.objectof.actof.repospy.controllers.navigator.editor.cards.leaf;
 
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
-import java.util.TimeZone;
+import java.util.Date;
 
-import jfxtras.scene.control.CalendarPicker;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.layout.HBox;
+import javafx.util.StringConverter;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.ILeafNode;
 import net.objectof.model.impl.IMoment;
 
 
 public class MomentCard extends LeafCard {
 
-    CalendarPicker picker = new CalendarPicker();
-    TimeZone zulu = TimeZone.getTimeZone("GMT");
+    Spinner<Integer> hour, minute, second;
+    DatePicker picker = new DatePicker();
+    Calendar cal = Calendar.getInstance();
+
+    // KeyValuePane pane = new KeyValuePane();
 
     public MomentCard(ILeafNode entry) {
         super(entry);
 
-        picker.setAllowNull(false);
-        picker.setShowTime(true);
-        picker.calendarProperty().addListener(change -> {
-            if (isUpdating()) { return; }
-            IMoment newMoment = new IMoment(picker.getCalendar().getTime().getTime());
-            getEntry().setFieldValue(newMoment);
+        hour = new TimeSpinner(0, 23);
+        minute = new TimeSpinner(0, 59);
+        second = new TimeSpinner(0, 59);
+
+        picker.setPromptText("Date");
+        // picker.setPrefWidth(72);
+        picker.setConverter(new StringConverter<LocalDate>() {
+
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(IMoment.DATE_FORMAT);
+
+            @Override
+            public String toString(LocalDate localDate) {
+                return dateFormatter.format(localDate);
+            }
+
+            @Override
+            public LocalDate fromString(String string) {
+                return fromMoment(new IMoment(string));
+            }
         });
 
-        updateFromEntry();
-        setContent(picker, false);
+        HBox timebox = new HBox(0, hour, new Label(":"), minute, new Label(":"), second);
+        timebox.setAlignment(Pos.CENTER_LEFT);
+        HBox datebox = new HBox(6, picker, timebox);
+        datebox.setAlignment(Pos.CENTER_LEFT);
 
+        // pane.setVgap(6);
+        // pane.setKeyVAlignment(VPos.CENTER);
+        // pane.put("Date", picker);
+        // pane.put("Time", timebox);
+
+        picker.valueProperty().addListener(change -> updateModel());
+        hour.valueProperty().addListener(change -> updateModel());
+        minute.valueProperty().addListener(change -> updateModel());
+        second.valueProperty().addListener(change -> updateModel());
+
+        updateFromEntry();
+        // setContent(pane, false);
+        setTitleContent(datebox);
+
+    }
+
+    private void updateModel() {
+        if (isUpdating()) { return; }
+        getEntry().setFieldValue(buildMoment());
     }
 
     @Override
     public void updateUIFromEntry() {
 
+        System.out.println(getEntry().getFieldValue());
+
         IMoment moment = (IMoment) getEntry().getFieldValue();
         if (moment == null) {
             moment = new IMoment();
         }
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(moment);
-        picker.setCalendar(cal);
 
+        cal.setTime(moment);
+        picker.setValue(fromMoment(moment));
+        hour.getValueFactory().setValue(cal.get(Calendar.HOUR_OF_DAY));
+        minute.getValueFactory().setValue(cal.get(Calendar.MINUTE));
+        second.getValueFactory().setValue(cal.get(Calendar.SECOND));
+
+    }
+
+    private LocalDate fromMoment(IMoment moment) {
+        if (moment == null) {
+            moment = new IMoment();
+        }
+        cal.setTime(moment);
+        return LocalDate.of(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DATE));
+    }
+
+    private IMoment buildMoment() {
+
+        cal.setTime(new Date());
+        cal.set(Calendar.YEAR, picker.getValue().getYear());
+        cal.set(Calendar.MONTH, picker.getValue().getMonthValue() - 1);
+        cal.set(Calendar.DATE, picker.getValue().getDayOfMonth());
+        cal.set(Calendar.HOUR_OF_DAY, hour.getValue());
+        cal.set(Calendar.MINUTE, minute.getValue());
+        cal.set(Calendar.SECOND, second.getValue());
+
+        return new IMoment(cal.getTime().getTime());
+    }
+}
+
+class TimeSpinner extends Spinner<Integer> {
+
+    public TimeSpinner(int min, int max) {
+        super(new SpinnerValueFactory.IntegerSpinnerValueFactory(min, max));
+        setEditable(true);
+        getStyleClass().add(Spinner.STYLE_CLASS_SPLIT_ARROWS_VERTICAL);
+        setPrefWidth(32);
+        getEditor().setPadding(new Insets(2));
+        getEditor().setAlignment(Pos.CENTER);
+
+        getEditor().textProperty().addListener(change -> {
+            if (getEditor().getText().length() == 1) {
+                getEditor().setText("0" + getEditor().getText());
+            }
+        });
+
+        focusedProperty().addListener(change -> {
+            if (!isFocused()) {
+                try {
+
+                    Integer value = Integer.parseInt(getEditor().getText());
+                    getValueFactory().setValue(value);
+                }
+                catch (NumberFormatException e) {
+                    getEditor().setText(getValue().toString());
+                }
+            }
+        });
     }
 
 }
