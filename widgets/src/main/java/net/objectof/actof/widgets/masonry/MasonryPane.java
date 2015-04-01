@@ -109,7 +109,7 @@ public class MasonryPane extends Pane {
 
             // position the node
             node.resize(snapSize(width), snapSize(height));
-            node.relocate(snapSpace(x), snapSpace(getInsets().getTop() + y));
+            node.relocate(snapPosition(x), snapPosition(getInsets().getTop() + y));
 
             // update the height value for this column
             heights[selectedColumn] = y + height;
@@ -137,7 +137,7 @@ public class MasonryPane extends Pane {
     @Override
     protected double computePrefWidth(double height) {
         Insets insets = getInsets();
-        return snapSpace(insets.getLeft()) + columnWidth + snapSpace(insets.getRight());
+        return snapSize(insets.getLeft() + columnWidth + insets.getRight());
     }
 
     @Override
@@ -169,7 +169,7 @@ public class MasonryPane extends Pane {
             height = Math.max(height, h);
         }
 
-        return snapSpace(insets.getTop() + snapSpace(height) + insets.getBottom());
+        return snapSize(insets.getTop() + height + insets.getBottom());
     }
 
     @Override
@@ -209,7 +209,7 @@ public class MasonryPane extends Pane {
     private double xForColumn(int column) {
         double inset = getInsets().getLeft();
         double columnOffset = realColumnWidth(getWidth()) + nodeSpacing.get();
-        return snapSize(inset + column * columnOffset);
+        return snapPosition(inset + column * columnOffset);
     }
 
     private double yForNode(int column, double heights[], double clearance) {
