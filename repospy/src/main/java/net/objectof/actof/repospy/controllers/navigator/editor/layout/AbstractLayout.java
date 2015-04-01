@@ -8,18 +8,18 @@ import javafx.scene.layout.BorderPane;
 import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.RepoSpyTreeItem;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.TreeNode;
-import net.objectof.actof.widgets.card.CardsPane;
+import net.objectof.actof.widgets.masonry.MasonryPane;
 
 
 public abstract class AbstractLayout extends BorderPane {
 
-    protected CardsPane cards;
+    protected MasonryPane cards;
     protected ScrollPane scroll = new ScrollPane(cards);
     protected RepoSpyController repospy;
     protected RepoSpyTreeItem treeitem;
 
     public AbstractLayout(RepoSpyTreeItem treeitem, RepoSpyController repospy, double columnWidth) {
-        this.cards = new CardsPane(columnWidth);
+        this.cards = new MasonryPane(columnWidth);
         cards.setPadding(new Insets(6));
         cards.setSpacing(6);
         this.repospy = repospy;

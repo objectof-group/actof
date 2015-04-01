@@ -6,7 +6,7 @@ import net.objectof.actof.repospy.controllers.navigator.editor.cards.leaf.LeafCa
 import net.objectof.actof.repospy.controllers.navigator.treemodel.RepoSpyTreeItem;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.IAggregateNode;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.ILeafNode;
-import net.objectof.actof.widgets.card.CardsPane.Layout;
+import net.objectof.actof.widgets.masonry.MasonryPane;
 
 
 public class CompositeLayout extends AbstractLayout {
@@ -15,7 +15,7 @@ public class CompositeLayout extends AbstractLayout {
 
     public CompositeLayout(RepoSpyTreeItem treeitem, RepoSpyController repospy) {
         super(treeitem, repospy, 400);
-        cards.setLayout(Layout.ROUND_ROBIN);
+        cards.setLayout(MasonryPane.LAYOUT_ROUND_ROBIN);
         this.entry = (IAggregateNode) treeitem.getValue();
         updateUI();
     }

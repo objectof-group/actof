@@ -1,4 +1,4 @@
-package net.objectof.actof.widgets.card;
+package net.objectof.actof.widgets.masonry;
 
 
 import javafx.beans.Observable;
@@ -11,75 +11,48 @@ import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import net.objectof.actof.widgets.masonry.layout.GridMasonryLayout;
+import net.objectof.actof.widgets.masonry.layout.MasonryLayout;
+import net.objectof.actof.widgets.masonry.layout.RoundRobinMasonryLayout;
+import net.objectof.actof.widgets.masonry.layout.ShortestColumnMasonryLayout;
 
 
-public class CardsPane extends Pane {
+public class MasonryPane extends Pane {
 
-    public enum Layout {
-        ROUND_ROBIN {
+    /******************************************************
+     * Static Layout Fields
+     ******************************************************/
 
-            public int pickColumn(double heights[], int lastColumn) {
-                int selectedColumn = lastColumn + 1;
-                if (selectedColumn >= heights.length) {
-                    selectedColumn = 0;
-                }
-                return selectedColumn;
-            }
-        },
+    public static final MasonryLayout LAYOUT_SHORTEST_COLUMN = new ShortestColumnMasonryLayout();
+    public static final MasonryLayout LAYOUT_ROUND_ROBIN = new RoundRobinMasonryLayout();
+    public static final MasonryLayout LAYOUT_GRID = new GridMasonryLayout();
 
-        GRID {
-
-            public int pickColumn(double heights[], int lastColumn) {
-                return ROUND_ROBIN.pickColumn(heights, lastColumn);
-            }
-
-            public double clearance(double heights[], double lastClearance, int column) {
-                // only compute new clearance if we're starting a new row
-                if (column == 0) {
-                    double height = 0;
-                    for (double h : heights) {
-                        height = Math.max(height, h);
-                    }
-                    return height;
-                } else {
-                    return lastClearance;
-                }
-            }
-        },
-
-        SHORTEST_COLUMN {
-
-            public int pickColumn(double heights[], int lastColumn) {
-                int selectedColumn = 0;
-                for (int i = 1; i < heights.length; i++) {
-                    if (heights[i] < heights[selectedColumn]) {
-                        selectedColumn = i;
-                    }
-                }
-                return selectedColumn;
-            }
-        };
-
-        public int pickColumn(double heights[], int lastColumn) {
-            return 0;
-        }
-
-        public double clearance(double heights[], double lastClearance, int column) {
-            return 0d;
-        }
-    }
-
-    private double columnWidth = 400;
+    /******************************************************
+     * Private Fields
+     ******************************************************/
+    private static final double DEFAULT_COLUMN_WIDTH = 400;
+    private double columnWidth = DEFAULT_COLUMN_WIDTH;
     private boolean performingLayout = false;
 
-    private SimpleObjectProperty<Layout> layout = new SimpleObjectProperty<CardsPane.Layout>(Layout.SHORTEST_COLUMN);
-    private SimpleDoubleProperty nodeSpacing = new SimpleDoubleProperty(0);
+    /******************************************************
+     * Public Properties
+     ******************************************************/
 
-    public CardsPane(double columnWidth) {
-        this.columnWidth = columnWidth;
-        nodeSpacing.addListener((Observable change) -> requestLayout());
-        layout.addListener((Observable change) -> requestLayout());
+    private SimpleObjectProperty<MasonryLayout> layout = new SimpleObjectProperty<MasonryLayout>(LAYOUT_SHORTEST_COLUMN);
+
+    public void setLayout(MasonryLayout layout) {
+        this.layout.set(layout);
     }
+
+    public MasonryLayout getLayout() {
+        return layout.get();
+    }
+
+    public ObjectProperty<MasonryLayout> layoutProperty() {
+        return layout;
+    }
+
+    private SimpleDoubleProperty nodeSpacing = new SimpleDoubleProperty(0);
 
     public void setSpacing(double spacing) {
         nodeSpacing.set(spacing);
@@ -93,18 +66,25 @@ public class CardsPane extends Pane {
         return nodeSpacing;
     }
 
-    public void setLayout(Layout layout) {
-        this.layout.set(layout);
+    /******************************************************
+     * Constructor
+     ******************************************************/
+
+    public MasonryPane() {
+        this(DEFAULT_COLUMN_WIDTH);
     }
 
-    public Layout getLayout() {
-        return layout.get();
+    public MasonryPane(double columnWidth) {
+        this.columnWidth = columnWidth;
+        nodeSpacing.addListener((Observable change) -> requestLayout());
+        layout.addListener((Observable change) -> requestLayout());
     }
 
-    public ObjectProperty<Layout> layoutProperty() {
-        return layout;
-    }
+    /******************************************************
+     * Override/Inherited methods
+     ******************************************************/
 
+    @Override
     protected void layoutChildren() {
 
         performingLayout = true;
@@ -140,42 +120,6 @@ public class CardsPane extends Pane {
 
         performingLayout = false;
 
-    }
-
-    private int columnCount(double width) {
-
-        int columnCount = 1;
-        if (columnWidth > 0) {
-            columnCount = (int) Math.floor(width / columnWidth);
-        }
-
-        // always at least 1 column
-        columnCount = Math.max(columnCount, 1);
-
-        // only as many columns as nodes
-        columnCount = Math.min(columnCount, getManagedChildren().size());
-
-        return columnCount;
-    }
-
-    private double realColumnWidth(double width) {
-        int count = columnCount(width);
-        double spacing = nodeSpacing.get() * (count - 1);
-        double insets = getInsets().getLeft() + getInsets().getRight();
-        double available = width - insets - spacing;
-        return available / (double) count;
-    }
-
-    private double xForColumn(int column) {
-        double inset = getInsets().getLeft();
-        double columnOffset = realColumnWidth(getWidth()) + nodeSpacing.get();
-        return snapSize(inset + column * columnOffset);
-    }
-
-    private double yForNode(int column, double heights[], double clearance) {
-        double y = Math.max(clearance, heights[column]);
-        double spacingHeight = y == 0 ? 0 : nodeSpacing.get();
-        return spacingHeight + y;
     }
 
     @Override
@@ -240,6 +184,47 @@ public class CardsPane extends Pane {
         super.requestLayout();
     }
 
+    private int columnCount(double width) {
+
+        int columnCount = 1;
+        if (columnWidth > 0) {
+            columnCount = (int) Math.floor(width / columnWidth);
+        }
+
+        // always at least 1 column
+        columnCount = Math.max(columnCount, 1);
+
+        // only as many columns as nodes
+        columnCount = Math.min(columnCount, getManagedChildren().size());
+
+        return columnCount;
+    }
+
+    /******************************************************
+     * Private Methods
+     ******************************************************/
+
+    private double realColumnWidth(double width) {
+        int count = columnCount(width);
+        double spacing = nodeSpacing.get() * (count - 1);
+        double insets = getInsets().getLeft() + getInsets().getRight();
+        double available = width - insets - spacing;
+        return available / (double) count;
+    }
+
+    private double xForColumn(int column) {
+        double inset = getInsets().getLeft();
+        double columnOffset = realColumnWidth(getWidth()) + nodeSpacing.get();
+        return snapSize(inset + column * columnOffset);
+    }
+
+    private double yForNode(int column, double heights[], double clearance) {
+        double y = Math.max(clearance, heights[column]);
+        double spacingHeight = y == 0 ? 0 : nodeSpacing.get();
+        return spacingHeight + y;
+    }
+
+    // borrowed from Region computeChildPrefAreaHeight
     private double nodePrefHeight(Node child, double prefBaselineComplement, Insets margin, double width) {
         double top = margin != null ? snapSpace(margin.getTop()) : 0;
         double bottom = margin != null ? snapSpace(margin.getBottom()) : 0;
@@ -276,6 +261,7 @@ public class CardsPane extends Pane {
         }
     }
 
+    // Borrowed from Region
     private static double boundedSize(double min, double pref, double max) {
         double a = pref >= min ? pref : min;
         double b = min >= max ? min : max;
