@@ -90,9 +90,6 @@ public class MasonryPane extends Pane {
         performingLayout = true;
 
         double heights[] = new double[columnCount(getWidth())];
-        for (int i = 0; i < heights.length; i++) {
-            heights[i] = getInsets().getTop();
-        }
 
         int lastColumn = -1; // round robin will increments
         double clearance = 0; // determines min y position, useful for grid
@@ -112,7 +109,7 @@ public class MasonryPane extends Pane {
 
             // position the node
             node.resize(snapSize(width), snapSize(height));
-            node.relocate(snapSpace(x), snapSpace(y));
+            node.relocate(snapSpace(x), snapSpace(getInsets().getTop() + y));
 
             // update the height value for this column
             heights[selectedColumn] = y + height;
@@ -148,9 +145,6 @@ public class MasonryPane extends Pane {
         Insets insets = getInsets();
 
         double heights[] = new double[columnCount(width)];
-        for (int i = 0; i < heights.length; i++) {
-            heights[i] = getInsets().getTop();
-        }
 
         int lastColumn = -1; // round robin will increments
         double clearance = 0; // determines min y position, useful for grid
@@ -175,7 +169,7 @@ public class MasonryPane extends Pane {
             height = Math.max(height, h);
         }
 
-        return snapSpace(snapSpace(height) + insets.getBottom());
+        return snapSpace(insets.getTop() + snapSpace(height) + insets.getBottom());
     }
 
     @Override
