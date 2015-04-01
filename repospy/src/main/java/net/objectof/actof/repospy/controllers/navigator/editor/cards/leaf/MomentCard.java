@@ -121,11 +121,8 @@ class TimeSpinner extends Spinner<Integer> {
         getEditor().setPadding(new Insets(2));
         getEditor().setAlignment(Pos.CENTER);
 
-        getEditor().textProperty().addListener(change -> {
-            if (getEditor().getText().length() == 1) {
-                getEditor().setText("0" + getEditor().getText());
-            }
-        });
+        format();
+        getEditor().textProperty().addListener(change -> format());
 
         focusedProperty().addListener(change -> {
             if (!isFocused()) {
@@ -139,6 +136,13 @@ class TimeSpinner extends Spinner<Integer> {
                 }
             }
         });
+    }
+
+    private void format() {
+        System.out.println(getEditor().getText());
+        if (getEditor().getText().length() == 1) {
+            getEditor().setText("0" + getEditor().getText());
+        }
     }
 
 }
