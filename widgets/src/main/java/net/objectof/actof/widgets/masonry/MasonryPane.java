@@ -11,10 +11,10 @@ import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import net.objectof.actof.widgets.masonry.layout.GridMasonryLayout;
-import net.objectof.actof.widgets.masonry.layout.MasonryLayout;
-import net.objectof.actof.widgets.masonry.layout.RoundRobinMasonryLayout;
-import net.objectof.actof.widgets.masonry.layout.ShortestColumnMasonryLayout;
+import net.objectof.actof.widgets.masonry.masonrylayout.GridMasonryLayout;
+import net.objectof.actof.widgets.masonry.masonrylayout.MasonryLayout;
+import net.objectof.actof.widgets.masonry.masonrylayout.RoundRobinMasonryLayout;
+import net.objectof.actof.widgets.masonry.masonrylayout.ShortestColumnMasonryLayout;
 
 
 public class MasonryPane extends Pane {

@@ -1,4 +1,4 @@
-package net.objectof.actof.widgets.masonry.layout;
+package net.objectof.actof.widgets.masonry.masonrylayout;
 
 
 public class GridMasonryLayout implements MasonryLayout {
