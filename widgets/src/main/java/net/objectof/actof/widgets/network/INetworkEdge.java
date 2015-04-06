@@ -2,7 +2,10 @@ package net.objectof.actof.widgets.network;
 
 
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.paint.Color;
 
 
 public class INetworkEdge implements NetworkEdge {
@@ -13,6 +16,9 @@ public class INetworkEdge implements NetworkEdge {
     private DoubleProperty sourceOffsetY = new SimpleDoubleProperty(0);
     private DoubleProperty destOffsetX = new SimpleDoubleProperty(0);
     private DoubleProperty destOffsetY = new SimpleDoubleProperty(0);
+
+    private ObjectProperty<Color> color = new SimpleObjectProperty<Color>(Color.BLACK);
+    private DoubleProperty width = new SimpleDoubleProperty(2);
 
     public INetworkEdge(NetworkVertex from, NetworkVertex to) {
         this.from = from;
@@ -87,6 +93,36 @@ public class INetworkEdge implements NetworkEdge {
     @Override
     public final void setDestOffsetY(final double destOffsetY) {
         this.destOffsetYProperty().set(destOffsetY);
+    }
+
+    @Override
+    public final ObjectProperty<Color> colorProperty() {
+        return this.color;
+    }
+
+    @Override
+    public final Color getColor() {
+        return this.colorProperty().get();
+    }
+
+    @Override
+    public final void setColor(final Color color) {
+        this.colorProperty().set(color);
+    }
+
+    @Override
+    public final DoubleProperty widthProperty() {
+        return this.width;
+    }
+
+    @Override
+    public final double getWidth() {
+        return this.widthProperty().get();
+    }
+
+    @Override
+    public final void setWidth(final double width) {
+        this.widthProperty().set(width);
     }
 
     // @Override

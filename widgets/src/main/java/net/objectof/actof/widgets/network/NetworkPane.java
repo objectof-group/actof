@@ -19,7 +19,6 @@ import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.CubicCurveTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
@@ -137,18 +136,18 @@ public class NetworkPane extends Pane {
         move.yProperty().bind(vSource.yProperty().add(edge.sourceOffsetYProperty()));
         path.getElements().add(move);
 
-        // LineTo curve = new LineTo();
-
-        // double dx = centerTo.getX() - centerFrom.getX();
-        // double dy = centerTo.getY() - centerFrom.getY();
-        // double slope = dx / dy;
+        // calculate total slope to determine how to build curve
         DoubleBinding offsetDx = edge.destOffsetXProperty().subtract(edge.sourceOffsetXProperty());
         DoubleBinding offsetDy = edge.destOffsetYProperty().subtract(edge.sourceOffsetYProperty());
         DoubleBinding dx = vDest.xProperty().add(offsetDx).subtract(vSource.xProperty());
         DoubleBinding dy = vDest.yProperty().add(offsetDy).subtract(vSource.yProperty());
         DoubleBinding slope = dx.divide(dy);
+
+        // is the curve/line more horizontal or vertical
         BooleanBinding vertical = slope.greaterThan(1).or(slope.lessThan(-1));
 
+        // number bindings using boolean binding to change value based on value
+        // of variable 'vertical'
         NumberBinding cx1 = new When(vertical).then(vSource.xProperty()).otherwise(
                 vSource.xProperty().add(dx.divide(3)));
         NumberBinding cx2 = new When(vertical).then(vDest.xProperty()).otherwise(
@@ -160,29 +159,18 @@ public class NetworkPane extends Pane {
                 vDest.yProperty());
 
         CubicCurveTo curve = new CubicCurveTo();
-        //
         curve.controlX1Property().bind(cx1);
         curve.controlY1Property().bind(cy1);
         curve.controlX2Property().bind(cx2);
         curve.controlY2Property().bind(cy2);
 
-        //
-        // if (slope.get() > 1) {
-        // // more x than y
-        // curve.setControlY1(from.getY() + dy.get() / 3);
-        // curve.setControlY2(to.getY() - dy.get() / 3);
-        // } else {
-        // // more y than x
-        // curve.setControlX1(from.getX() + dx.get() / 3);
-        // curve.setControlX2(to.getX() - dx.get() / 3);
-        // }
-
+        // set end point of curve
         curve.xProperty().bind(vDest.xProperty().add(edge.destOffsetXProperty()));
         curve.yProperty().bind(vDest.yProperty().add(edge.destOffsetYProperty()));
         path.getElements().add(curve);
 
-        path.setStrokeWidth(2);
-        path.setStroke(Color.web("#424242"));
+        path.strokeWidthProperty().bind(edge.widthProperty());
+        path.strokeProperty().bind(edge.colorProperty());
         return path;
     }
 

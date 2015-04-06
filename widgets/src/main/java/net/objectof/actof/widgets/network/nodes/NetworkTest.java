@@ -24,7 +24,7 @@ public class NetworkTest extends Application {
             INetworkVertex child = new HandlerNode();
             child.setX(rand(0, 600));
             child.setY(rand(0, 600));
-            child.setOpacity(0.5);
+            // child.setOpacity(0.5);
 
             while (rand() > 0.25) {
                 if (pane.getVertices().size() > 0) {

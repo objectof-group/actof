@@ -2,6 +2,8 @@ package net.objectof.actof.widgets.network;
 
 
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.scene.paint.Color;
 
 
 public interface NetworkEdge {
@@ -43,5 +45,17 @@ public interface NetworkEdge {
     double getSourceOffsetX();
 
     DoubleProperty sourceOffsetXProperty();
+
+    public abstract void setColor(final Color color);
+
+    public abstract Color getColor();
+
+    public abstract ObjectProperty<Color> colorProperty();
+
+    public abstract void setWidth(final double width);
+
+    public abstract double getWidth();
+
+    public abstract DoubleProperty widthProperty();
 
 }
