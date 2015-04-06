@@ -2,18 +2,20 @@ package net.objectof.actof.widgets.network;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.binding.NumberBinding;
 import javafx.beans.binding.When;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
+import javafx.collections.SetChangeListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
@@ -27,20 +29,41 @@ import javafx.scene.shape.Path;
 public class NetworkPane extends Pane {
 
     private boolean performingLayout = false;
+    private Map<NetworkVertex, SetChangeListener<NetworkEdge>> edgeListeners = new HashMap<>();
 
     private ObservableList<NetworkVertex> vertices = FXCollections.observableArrayList();
 
     public NetworkPane() {
         setStyle("-fx-background-color: #ffffff;");
-        vertices.addListener(new InvalidationListener() {
-
-            @Override
-            public void invalidated(Observable observable) {
-                regenerateChildren();
-                requestLayout();
-            }
-        });
+        vertices.addListener(this::verticesChanged);
         regenerateChildren();
+    }
+
+    private void verticesChanged(Change<? extends NetworkVertex> c) {
+
+        regenerateChildren();
+        requestLayout();
+
+        while (c.next()) {
+            if (!c.wasAdded() && !c.wasRemoved()) {
+                continue;
+            }
+
+            for (NetworkVertex v : c.getAddedSubList()) {
+                SetChangeListener<NetworkEdge> listener = this::edgesChanged;
+                v.getEdges().addListener(listener);
+                edgeListeners.put(v, listener);
+            }
+
+            for (NetworkVertex v : c.getRemoved()) {
+                v.getEdges().removeListener(edgeListeners.remove(v));
+            }
+        }
+    }
+
+    private void edgesChanged(SetChangeListener.Change<? extends NetworkEdge> change) {
+        regenerateChildren();
+        requestLayout();
     }
 
     public ObservableList<NetworkVertex> getVertices() {
@@ -51,10 +74,6 @@ public class NetworkPane extends Pane {
     public void requestLayout() {
         if (performingLayout) { return; }
         super.requestLayout();
-    }
-
-    public void add(NetworkVertex vertex) {
-        vertices.add(vertex);
     }
 
     @Override

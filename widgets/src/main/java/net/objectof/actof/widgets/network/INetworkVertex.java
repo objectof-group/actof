@@ -30,8 +30,6 @@ public class INetworkVertex extends AnchorPane implements NetworkVertex {
             }
         });
 
-        setStyle("-fx-effect: dropshadow(gaussian, #000000, 5, -2, 0, 1); -fx-background-color: -fx-background; -fx-background-radius: 5px;");
-
         setOnMousePressed(event -> {
             requestFocus();
             mouseDown = new Point2D(event.getX(), event.getY());

@@ -1,15 +1,14 @@
 package net.objectof.actof.widgets.network;
 
 
-import java.util.Set;
-
 import javafx.beans.property.DoubleProperty;
+import javafx.collections.ObservableSet;
 import javafx.scene.Node;
 
 
 public interface NetworkVertex {
 
-    Set<NetworkEdge> getEdges();
+    ObservableSet<NetworkEdge> getEdges();
 
     Node getFXNode();
 
