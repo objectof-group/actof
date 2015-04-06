@@ -19,6 +19,9 @@ public class HandlerNode extends INetworkVertex {
 
         ListView<String> list = new ListView<>();
         pane.setCenter(list);
+        list.setPrefSize(100, 100);
+
+        setStyle("-fx-effect: dropshadow(gaussian, #000000, 5, -2, 0, 1); -fx-background-color: -fx-background; -fx-background-radius: 5px;");
 
         setContent(pane);
 
