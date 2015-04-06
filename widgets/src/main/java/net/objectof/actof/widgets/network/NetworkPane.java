@@ -136,27 +136,27 @@ public class NetworkPane extends Pane {
         move.yProperty().bind(vSource.yProperty().add(edge.sourceOffsetYProperty()));
         path.getElements().add(move);
 
+        // actual x/y positions for source and destination of line based on node
+        // position and line offset
+        DoubleBinding destX = vDest.xProperty().add(edge.destOffsetXProperty());
+        DoubleBinding destY = vDest.yProperty().add(edge.destOffsetYProperty());
+        DoubleBinding sourceX = vSource.xProperty().add(edge.sourceOffsetXProperty());
+        DoubleBinding sourceY = vSource.yProperty().add(edge.sourceOffsetYProperty());
+
         // calculate total slope to determine how to build curve
-        DoubleBinding offsetDx = edge.destOffsetXProperty().subtract(edge.sourceOffsetXProperty());
-        DoubleBinding offsetDy = edge.destOffsetYProperty().subtract(edge.sourceOffsetYProperty());
-        DoubleBinding dx = vDest.xProperty().add(offsetDx).subtract(vSource.xProperty());
-        DoubleBinding dy = vDest.yProperty().add(offsetDy).subtract(vSource.yProperty());
+        DoubleBinding dx = destX.subtract(sourceX);
+        DoubleBinding dy = destY.subtract(sourceY);
         DoubleBinding slope = dx.divide(dy);
 
         // is the curve/line more horizontal or vertical
         BooleanBinding vertical = slope.greaterThan(1).or(slope.lessThan(-1));
 
-        // number bindings using boolean binding to change value based on value
-        // of variable 'vertical'
-        NumberBinding cx1 = new When(vertical).then(vSource.xProperty()).otherwise(
-                vSource.xProperty().add(dx.divide(3)));
-        NumberBinding cx2 = new When(vertical).then(vDest.xProperty()).otherwise(
-                vDest.xProperty().subtract(dx.divide(3)));
-
-        NumberBinding cy1 = new When(vertical).then(vSource.yProperty().add(dy.divide(3))).otherwise(
-                vSource.yProperty());
-        NumberBinding cy2 = new When(vertical).then(vDest.yProperty().subtract(dy.divide(3))).otherwise(
-                vDest.yProperty());
+        // control point positions using boolean binding to change value based
+        // on value of variable 'vertical'
+        NumberBinding cx1 = new When(vertical).then(sourceX).otherwise(sourceX.add(dx.divide(3)));
+        NumberBinding cx2 = new When(vertical).then(destX).otherwise(destX.subtract(dx.divide(3)));
+        NumberBinding cy1 = new When(vertical).then(sourceY.add(dy.divide(3))).otherwise(sourceY);
+        NumberBinding cy2 = new When(vertical).then(destY.subtract(dy.divide(3))).otherwise(destY);
 
         CubicCurveTo curve = new CubicCurveTo();
         curve.controlX1Property().bind(cx1);
