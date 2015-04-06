@@ -76,17 +76,15 @@ public class NetworkPane extends Pane {
                 double height = nodePrefHeight(fxNode);
                 double width = nodePrefWidth(fxNode);
 
-                Coordinate position = vertex.getPosition();
-
                 // position the node
                 fxNode.resize(snapSize(width), snapSize(height));
 
                 // bind the node layout position to the Coordinate returned by
                 // the position function
                 fxNode.layoutXProperty().bind(
-                        position.xProperty().add(getInsets().getLeft()).subtract(fxNode.getLayoutBounds().getMinX()));
+                        vertex.xProperty().add(getInsets().getLeft()).subtract(fxNode.getLayoutBounds().getMinX()));
                 fxNode.layoutYProperty().bind(
-                        position.yProperty().add(getInsets().getLeft()).subtract(fxNode.getLayoutBounds().getMinY()));
+                        vertex.yProperty().add(getInsets().getLeft()).subtract(fxNode.getLayoutBounds().getMinY()));
 
                 // remove this node from the list of nodes remaining to lay out.
                 fxNodes.remove(fxNode);
@@ -129,13 +127,10 @@ public class NetworkPane extends Pane {
 
     public Path createReferenceLine(NetworkVertex vFrom, NetworkVertex vTo) {
 
-        Coordinate from = vFrom.getPosition();
-        Coordinate to = vTo.getPosition();
-
         Path path = new Path();
         MoveTo move = new MoveTo();
-        move.xProperty().bind(from.xProperty().add(5));
-        move.yProperty().bind(from.yProperty().add(5));
+        move.xProperty().bind(vFrom.xProperty().add(5));
+        move.yProperty().bind(vFrom.yProperty().add(5));
         path.getElements().add(move);
 
         // LineTo curve = new LineTo();
@@ -143,16 +138,16 @@ public class NetworkPane extends Pane {
         // double dx = centerTo.getX() - centerFrom.getX();
         // double dy = centerTo.getY() - centerFrom.getY();
         // double slope = dx / dy;
-        DoubleBinding dx = to.xProperty().subtract(from.xProperty());
-        DoubleBinding dy = to.yProperty().subtract(from.yProperty());
+        DoubleBinding dx = vTo.xProperty().subtract(vFrom.xProperty());
+        DoubleBinding dy = vTo.yProperty().subtract(vFrom.yProperty());
         DoubleBinding slope = dx.divide(dy);
         BooleanBinding vertical = slope.greaterThan(1).or(slope.lessThan(-1));
 
-        NumberBinding cx1 = new When(vertical).then(from.xProperty()).otherwise(from.xProperty().add(dx.divide(3)));
-        NumberBinding cx2 = new When(vertical).then(to.xProperty()).otherwise(to.xProperty().subtract(dx.divide(3)));
+        NumberBinding cx1 = new When(vertical).then(vFrom.xProperty()).otherwise(vFrom.xProperty().add(dx.divide(3)));
+        NumberBinding cx2 = new When(vertical).then(vTo.xProperty()).otherwise(vTo.xProperty().subtract(dx.divide(3)));
 
-        NumberBinding cy1 = new When(vertical).then(from.yProperty().add(dy.divide(3))).otherwise(from.yProperty());
-        NumberBinding cy2 = new When(vertical).then(to.yProperty().subtract(dy.divide(3))).otherwise(to.yProperty());
+        NumberBinding cy1 = new When(vertical).then(vFrom.yProperty().add(dy.divide(3))).otherwise(vFrom.yProperty());
+        NumberBinding cy2 = new When(vertical).then(vTo.yProperty().subtract(dy.divide(3))).otherwise(vTo.yProperty());
 
         CubicCurveTo curve = new CubicCurveTo();
         //
@@ -172,8 +167,8 @@ public class NetworkPane extends Pane {
         // curve.setControlX2(to.getX() - dx.get() / 3);
         // }
 
-        curve.xProperty().bind(to.xProperty().add(5));
-        curve.yProperty().bind(to.yProperty().add(5));
+        curve.xProperty().bind(vTo.xProperty().add(5));
+        curve.yProperty().bind(vTo.yProperty().add(5));
         path.getElements().add(curve);
 
         path.setStrokeWidth(2);

@@ -21,7 +21,8 @@ public class NetworkTest extends Application {
 
         for (int i = 0; i < 10; i++) {
             INetworkVertex child = new HandlerNode();
-            child.getPosition().set(rand(0, 600), rand(0, 600));
+            child.setX(rand(0, 600));
+            child.setY(rand(0, 600));
 
             while (rand() > 0.25) {
                 if (pane.getVertices().size() > 0) {

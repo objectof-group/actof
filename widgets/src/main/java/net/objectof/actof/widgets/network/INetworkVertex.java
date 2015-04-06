@@ -3,17 +3,22 @@ package net.objectof.actof.widgets.network;
 
 import java.util.HashSet;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 
 
 public class INetworkVertex extends AnchorPane implements NetworkVertex {
 
+    private DoubleProperty xPos = new SimpleDoubleProperty(0);
+    private DoubleProperty yPos = new SimpleDoubleProperty(0);
+
     private ObservableSet<NetworkEdge> edges = FXCollections.observableSet(new HashSet<>());
-    private Coordinate position = new Coordinate(0, 0);
-    private Coordinate mouseDown = null;
+    private Point2D mouseDown = null;
 
     public INetworkVertex() {
 
@@ -29,7 +34,7 @@ public class INetworkVertex extends AnchorPane implements NetworkVertex {
 
         setOnMousePressed(event -> {
             requestFocus();
-            mouseDown = new Coordinate(event.getX(), event.getY());
+            mouseDown = new Point2D(event.getX(), event.getY());
         });
 
         setOnMouseReleased(event -> {
@@ -38,10 +43,10 @@ public class INetworkVertex extends AnchorPane implements NetworkVertex {
 
         setOnMouseDragged(event -> {
             if (mouseDown == null) { return; }
-            double dx = position.getX() - (mouseDown.getX() - event.getX());
-            double dy = position.getY() - (mouseDown.getY() - event.getY());
-            position.setX(dx);
-            position.setY(dy);
+            double dx = xPos.get() - (mouseDown.getX() - event.getX());
+            double dy = yPos.get() - (mouseDown.getY() - event.getY());
+            xPos.set(dx);
+            yPos.set(dy);
         });
 
     }
@@ -55,10 +60,6 @@ public class INetworkVertex extends AnchorPane implements NetworkVertex {
         getChildren().add(node);
     }
 
-    public Coordinate getPosition() {
-        return position;
-    }
-
     public ObservableSet<NetworkEdge> getEdges() {
         return edges;
     }
@@ -66,6 +67,36 @@ public class INetworkVertex extends AnchorPane implements NetworkVertex {
     @Override
     public Node getFXNode() {
         return this;
+    }
+
+    @Override
+    public double getX() {
+        return xPos.get();
+    }
+
+    @Override
+    public void setX(double x) {
+        xPos.set(x);
+    }
+
+    @Override
+    public DoubleProperty xProperty() {
+        return xPos;
+    }
+
+    @Override
+    public double getY() {
+        return yPos.get();
+    }
+
+    @Override
+    public void setY(double y) {
+        yPos.set(y);
+    }
+
+    @Override
+    public DoubleProperty yProperty() {
+        return yPos;
     }
 
 }
