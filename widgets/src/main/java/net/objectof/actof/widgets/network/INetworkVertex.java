@@ -9,13 +9,13 @@ import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 
 
-public class NetworkNode extends AnchorPane {
+public class INetworkVertex extends AnchorPane implements NetworkVertex {
 
-    private ObservableSet<NetworkEdge<NetworkNode>> edges = FXCollections.observableSet(new HashSet<>());
+    private ObservableSet<NetworkEdge> edges = FXCollections.observableSet(new HashSet<>());
     private Coordinate position = new Coordinate(0, 0);
     private Coordinate mouseDown = null;
 
-    public NetworkNode() {
+    public INetworkVertex() {
 
         setFocusTraversable(true);
         focusedProperty().addListener(change -> {
@@ -59,8 +59,13 @@ public class NetworkNode extends AnchorPane {
         return position;
     }
 
-    public ObservableSet<NetworkEdge<NetworkNode>> getEdges() {
+    public ObservableSet<NetworkEdge> getEdges() {
         return edges;
+    }
+
+    @Override
+    public Node getFXNode() {
+        return this;
     }
 
 }

@@ -1,7 +1,9 @@
 package net.objectof.actof.widgets.network;
 
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javafx.beans.InvalidationListener;
@@ -23,17 +25,15 @@ import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 
 
-public abstract class NetworkPane<T extends Node> extends Pane {
+public class NetworkPane extends Pane {
 
     private boolean performingLayout = false;
 
-    private ObservableList<T> nodes = FXCollections.observableArrayList();
-
-    // private Pane lines = new NetworkLinesPane();
+    private ObservableList<NetworkVertex> vertices = FXCollections.observableArrayList();
 
     public NetworkPane() {
         setStyle("-fx-background-color: #ffffff;");
-        nodes.addListener(new InvalidationListener() {
+        vertices.addListener(new InvalidationListener() {
 
             @Override
             public void invalidated(Observable observable) {
@@ -44,12 +44,8 @@ public abstract class NetworkPane<T extends Node> extends Pane {
         regenerateChildren();
     }
 
-    protected abstract Coordinate position(T node);
-
-    protected abstract Set<NetworkEdge<T>> edges(T node);
-
-    public ObservableList<T> getNodes() {
-        return nodes;
+    public ObservableList<NetworkVertex> getVertices() {
+        return vertices;
     }
 
     @Override
@@ -58,8 +54,8 @@ public abstract class NetworkPane<T extends Node> extends Pane {
         super.requestLayout();
     }
 
-    public void add(T node) {
-        nodes.add(node);
+    public void add(NetworkVertex vertex) {
+        vertices.add(vertex);
     }
 
     @Override
@@ -67,32 +63,40 @@ public abstract class NetworkPane<T extends Node> extends Pane {
 
         performingLayout = true;
 
-        for (Node fxnode : getManagedChildren()) {
+        // make a copy of all managed children, removing them if they match a
+        // vertex's node. Any remaining must be connector lines
+        List<Node> fxNodes = new ArrayList<>(getManagedChildren());
 
-            if (nodes.contains(fxnode)) {
+        for (NetworkVertex vertex : getVertices()) {
 
-                T node = (T) fxnode;
+            if (fxNodes.contains(vertex.getFXNode())) {
+
+                Node fxNode = vertex.getFXNode();
                 // calculate position/size of node
-                double height = nodePrefHeight(node);
-                double width = nodePrefWidth(node);
+                double height = nodePrefHeight(fxNode);
+                double width = nodePrefWidth(fxNode);
 
-                Coordinate position = position(node);
+                Coordinate position = vertex.getPosition();
 
                 // position the node
-                node.resize(snapSize(width), snapSize(height));
+                fxNode.resize(snapSize(width), snapSize(height));
 
                 // bind the node layout position to the Coordinate returned by
                 // the position function
-                node.layoutXProperty().bind(
-                        position.xProperty().add(getInsets().getLeft()).subtract(node.getLayoutBounds().getMinX()));
-                node.layoutYProperty().bind(
-                        position.yProperty().add(getInsets().getLeft()).subtract(node.getLayoutBounds().getMinY()));
+                fxNode.layoutXProperty().bind(
+                        position.xProperty().add(getInsets().getLeft()).subtract(fxNode.getLayoutBounds().getMinX()));
+                fxNode.layoutYProperty().bind(
+                        position.yProperty().add(getInsets().getLeft()).subtract(fxNode.getLayoutBounds().getMinY()));
 
-            } else {
-                fxnode.setTranslateX(getInsets().getLeft());
-                fxnode.setTranslateY(getInsets().getTop());
+                // remove this node from the list of nodes remaining to lay out.
+                fxNodes.remove(fxNode);
             }
 
+        }
+
+        for (Node fxNode : fxNodes) {
+            fxNode.setTranslateX(getInsets().getLeft());
+            fxNode.setTranslateY(getInsets().getTop());
         }
 
         performingLayout = false;
@@ -101,33 +105,32 @@ public abstract class NetworkPane<T extends Node> extends Pane {
 
     private void regenerateChildren() {
         getChildren().clear();
-        // getChildren().add(lines);
 
         // build a list of all edges so that undirected graphs don't repeat
         // themselves
-        Set<NetworkEdge<T>> allEdges = new HashSet<>();
-        for (T node : nodes) {
-            allEdges.addAll(edges(node));
+        Set<NetworkEdge> allEdges = new HashSet<>();
+        for (NetworkVertex v : vertices) {
+            allEdges.addAll(v.getEdges());
         }
 
         // create + add lines
         // lines.getChildren().clear();
-        for (NetworkEdge<T> e : allEdges) {
+        for (NetworkEdge e : allEdges) {
             Path line = createReferenceLine(e.from(), e.to());
             getChildren().add(line);
         }
 
         // add nodes
-        for (Node n : nodes) {
-            getChildren().add(n);
+        for (NetworkVertex v : getVertices()) {
+            getChildren().add(v.getFXNode());
         }
 
     }
 
-    public Path createReferenceLine(T nodeFrom, T nodeTo) {
+    public Path createReferenceLine(NetworkVertex vFrom, NetworkVertex vTo) {
 
-        Coordinate from = position(nodeFrom);
-        Coordinate to = position(nodeTo);
+        Coordinate from = vFrom.getPosition();
+        Coordinate to = vTo.getPosition();
 
         Path path = new Path();
         MoveTo move = new MoveTo();

@@ -1,32 +1,29 @@
 package net.objectof.actof.widgets.network;
 
 
-import javafx.scene.Node;
+public class INetworkEdge implements NetworkEdge {
 
+    private NetworkVertex from, to;
 
-public class INetworkEdge<T extends Node> implements NetworkEdge<T> {
-
-    private T from, to;
-
-    public INetworkEdge(T from, T to) {
+    public INetworkEdge(NetworkVertex from, NetworkVertex to) {
         this.from = from;
         this.to = to;
     }
 
     @Override
-    public T from() {
+    public NetworkVertex from() {
         return from;
     }
 
     @Override
-    public T to() {
+    public NetworkVertex to() {
         return to;
     }
 
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof NetworkEdge)) { return false; }
-        NetworkEdge<?> other = (NetworkEdge<?>) o;
+        NetworkEdge other = (NetworkEdge) o;
         return from.equals(other.from()) && to.equals(other.to());
     }
 

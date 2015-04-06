@@ -3,10 +3,10 @@ package net.objectof.actof.widgets.network.nodes;
 
 import javafx.scene.control.ListView;
 import javafx.scene.layout.BorderPane;
-import net.objectof.actof.widgets.network.NetworkNode;
+import net.objectof.actof.widgets.network.INetworkVertex;
 
 
-public class HandlerNode extends NetworkNode {
+public class HandlerNode extends INetworkVertex {
 
     private WindowBar windowBar = new WindowBar();
 
