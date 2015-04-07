@@ -20,8 +20,8 @@ public abstract class AbstractLayout extends BorderPane {
 
     public AbstractLayout(RepoSpyTreeItem treeitem, RepoSpyController repospy, double columnWidth) {
         this.cards = new MasonryPane(columnWidth);
-        cards.setPadding(new Insets(6));
-        cards.setSpacing(6);
+        cards.setPadding(new Insets(8));
+        cards.setSpacing(8);
         this.repospy = repospy;
         this.treeitem = treeitem;
 
@@ -29,7 +29,7 @@ public abstract class AbstractLayout extends BorderPane {
         treenode.getLeaves().addListener((Observable obs) -> updateUI());
         treeitem.getChildren().addListener((Observable obs) -> updateUI());
 
-        scroll.setStyle("-fx-background-color:transparent;");
+        scroll.setStyle("-fx-background-color: transparent;");
         scroll.setFitToWidth(true);
         scroll.setContent(cards);
 

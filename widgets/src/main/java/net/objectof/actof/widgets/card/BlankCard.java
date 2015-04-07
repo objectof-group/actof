@@ -10,10 +10,10 @@ public class BlankCard extends AnchorPane {
 
     protected BorderPane card;
 
-    private double radius = 5;
+    private double radius = 3;
     private String colour = "#ffffff";
-    private String shadowColour = "#666";
-    private double shadowRadius = 4;
+    private String shadowColour = "#000000a0";
+    private double shadowRadius = 5;
     private double shadowOffsetX = 1, shadowOffsetY = 0;
     private boolean hasShadow = true;
 
@@ -24,7 +24,7 @@ public class BlankCard extends AnchorPane {
         AnchorPane.setLeftAnchor(card, 0d);
         AnchorPane.setRightAnchor(card, 0d);
         getChildren().add(card);
-        setPadding(new Insets(6));
+        setPadding(new Insets(0));
         card.setPadding(new Insets(10));
         buildStyle();
     }
@@ -101,9 +101,7 @@ public class BlankCard extends AnchorPane {
     }
 
     private void buildStyle() {
-        if (!hasShadow) {
 
-        }
         String rad = "-fx-background-radius: " + radius + "px; ";
         String col = "-fx-background-color: " + colour + "; ";
         String shadow = "";
