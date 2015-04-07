@@ -138,6 +138,8 @@ public class NetworkPane extends Pane {
 
     }
 
+    // scrub the list of children and rebuild it. This includes adding the nodes
+    // for all vertices, as well an generating all lines representing edges
     private void regenerateChildren() {
         getChildren().clear();
 

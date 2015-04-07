@@ -21,6 +21,10 @@ public class INetworkVertex extends AnchorPane implements NetworkVertex {
     private Point2D mouseDown = null;
 
     public INetworkVertex() {
+        this(false);
+    }
+
+    public INetworkVertex(boolean draggable) {
 
         setFocusTraversable(true);
         focusedProperty().addListener(change -> {
@@ -32,21 +36,31 @@ public class INetworkVertex extends AnchorPane implements NetworkVertex {
 
         setOnMousePressed(event -> {
             requestFocus();
+        });
+
+        if (draggable) {
+            makeHandle(this);
+        }
+    }
+
+    protected void makeHandle(Node node) {
+
+        node.setOnMousePressed(event -> {
+            requestFocus();
             mouseDown = new Point2D(event.getX(), event.getY());
         });
 
-        setOnMouseReleased(event -> {
+        node.setOnMouseReleased(event -> {
             mouseDown = null;
         });
 
-        setOnMouseDragged(event -> {
+        node.setOnMouseDragged(event -> {
             if (mouseDown == null) { return; }
             double dx = xPos.get() - (mouseDown.getX() - event.getX());
             double dy = yPos.get() - (mouseDown.getY() - event.getY());
             xPos.set(dx);
             yPos.set(dy);
         });
-
     }
 
     public void setContent(Node node) {
