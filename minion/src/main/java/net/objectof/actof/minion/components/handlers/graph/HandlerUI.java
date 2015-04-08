@@ -42,9 +42,9 @@ public class HandlerUI extends BorderPane {
         panel.setPadding(new Insets(6));
         borderpane.setCenter(panel);
 
-        Label title = new Label(handler.getTitle());
-        title.setTextFill(Color.WHITE);
+        TextField title = new TextField(handler.getTitle());
         title.setPadding(new Insets(0, 0, 0, 28));
+        title.setStyle("-fx-border: none; -fx-background-color: null; -fx-text-fill: white;");
 
         MenuButton colorButton = new MenuButton("\u25BE");
         colorButton.getStyleClass().add("menu-button");
@@ -70,7 +70,7 @@ public class HandlerUI extends BorderPane {
             Label graphic = new Label("");
             graphic.setBackground(new Background(new BackgroundFill(color.toColor(), null, null)));
             graphic.setPrefWidth(24);
-            MenuItem item = new MenuItem(color.name(), graphic);
+            MenuItem item = new MenuItem(color.prettyName(), graphic);
             item.setOnAction(event -> {
                 node.setColor(color.toColor());
             });
