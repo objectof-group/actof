@@ -48,4 +48,8 @@ public class HistoryController {
         }
         return sb.toString();
     }
+
+    public boolean hasHistory() {
+        return getChanges().size() > 0;
+    }
 }

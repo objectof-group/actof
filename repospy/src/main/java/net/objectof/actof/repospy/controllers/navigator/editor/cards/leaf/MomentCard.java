@@ -139,7 +139,6 @@ class TimeSpinner extends Spinner<Integer> {
     }
 
     private void format() {
-        System.out.println(getEditor().getText());
         if (getEditor().getText().length() == 1) {
             getEditor().setText("0" + getEditor().getText());
         }

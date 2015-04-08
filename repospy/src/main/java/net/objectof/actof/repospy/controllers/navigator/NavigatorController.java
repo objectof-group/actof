@@ -7,12 +7,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Optional;
 import java.util.Scanner;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -156,8 +160,15 @@ public class NavigatorController extends IActofUIController {
 
     /* FXML Hook */
     public void doRevert() {
-        repospy.repository.makeFresh();
-        // refreshEntityTree();
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Discard Changes?");
+        alert.setHeaderText("Discard uncommitted changes?");
+        alert.setContentText("You cannot undo this operation.");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            repospy.repository.makeFresh();
+        }
     }
 
     public void onLoad() throws FileNotFoundException {
@@ -189,6 +200,17 @@ public class NavigatorController extends IActofUIController {
 
     /* FXML Hook */
     public void doConnect() throws Exception {
+
+        if (repospy.history.hasHistory()) {
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            alert.setTitle("Discard Changes?");
+            alert.setHeaderText("Discard uncommitted changes?");
+            alert.setContentText("You cannot undo this operation.");
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() != ButtonType.OK) { return; }
+        }
+
         Connector conn = repospy.showConnect();
         if (conn == null) { return; }
 
@@ -316,7 +338,7 @@ public class NavigatorController extends IActofUIController {
 
     private void onChange(Change change) {
 
-        boolean hasHistory = repospy.history.getChanges().size() > 0;
+        boolean hasHistory = repospy.history.hasHistory();
         commit.setDisable(!hasHistory);
         review.setDisable(!hasHistory);
 
