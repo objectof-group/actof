@@ -14,6 +14,12 @@ public class MinionHandler {
         simplename = cls.getSimpleName();
     }
 
+    public MinionHandler(MinionHandler other) {
+        this.name = other.name;
+        this.simplename = other.simplename;
+        this.icon = other.icon;
+    }
+
     public String getName() {
         return name;
     }

@@ -43,7 +43,7 @@ public class INetworkVertex extends AnchorPane implements NetworkVertex {
         }
     }
 
-    protected void makeHandle(Node node) {
+    public void makeHandle(Node node) {
 
         node.setOnMousePressed(event -> {
             requestFocus();

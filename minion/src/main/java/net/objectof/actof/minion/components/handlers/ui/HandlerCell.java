@@ -3,11 +3,11 @@ package net.objectof.actof.minion.components.handlers.ui;
 
 import java.io.IOException;
 
-import javafx.scene.control.TableCell;
+import javafx.scene.control.ListCell;
 import net.objectof.actof.minion.classpath.MinionHandler;
 
 
-public class HandlerCell extends TableCell<MinionHandler, MinionHandler> {
+public class HandlerCell extends ListCell<MinionHandler> {
 
     HandlerUI ui;
 

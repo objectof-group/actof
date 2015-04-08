@@ -6,50 +6,51 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.web.WebView;
+import javafx.scene.control.ListView;
+import javafx.scene.layout.BorderPane;
 import net.objectof.actof.common.controller.IActofUIController;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.minion.classpath.MinionHandler;
 import net.objectof.actof.minion.classpath.sources.MinionSource;
 import net.objectof.actof.minion.components.classpath.change.ClasspathChange;
+import net.objectof.actof.minion.components.handlers.graph.HandlerNode;
 import net.objectof.actof.minion.components.handlers.ui.HandlerCell;
-import netscape.javascript.JSObject;
+import net.objectof.actof.widgets.network.NetworkPane;
+import net.objectof.actof.widgets.network.NetworkVertex;
 
 
 public class HandlerController extends IActofUIController {
 
     @FXML
-    TableView<MinionHandler> handlers;
+    ListView<MinionHandler> handlers;
 
     @FXML
-    TableColumn<MinionHandler, MinionHandler> handlerColumn;
-
-    @FXML
-    private WebView webview;
-    @FXML
-    private TextField address;
+    private BorderPane top;
 
     @Override
     @FXML
     protected void initialize() throws IOException, URISyntaxException {
 
-        address.setOnKeyPressed(event -> {
-            if (event.getCode() != KeyCode.ENTER) { return; }
-            webview.getEngine().load(address.getText());
+        NetworkPane network = new NetworkPane();
+        top.setCenter(network);
+
+        handlers.setCellFactory(listview -> new HandlerCell());
+        handlers.setOnMouseClicked(event -> {
+            if (event.getClickCount() != 2) { return; }
+
+            MinionHandler handler = new MinionHandler(handlers.getSelectionModel().getSelectedItem());
+            try {
+                NetworkVertex v = new HandlerNode(handler);
+                network.getVertices().add(v);
+            }
+            catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
         });
-
-        JSObject jsobj = (JSObject) webview.getEngine().executeScript("window");
-        jsobj.setMember("java", this);
-
-        handlerColumn.setCellFactory(column -> new HandlerCell());
-        handlerColumn.setCellValueFactory(value -> new SimpleObjectProperty<MinionHandler>(value.getValue()));
 
     }
 
@@ -73,7 +74,7 @@ public class HandlerController extends IActofUIController {
 
         for (MinionSource source : change.getClasspath()) {
             for (MinionHandler handler : source.getHandlers()) {
-                File icon = new File(getClass().getResource("icons/generic-24.png").toURI());
+                File icon = new File(getClass().getResource("icons/generic.png").toURI());
                 handler.setIcon(icon);
                 handlers.getItems().add(handler);
             }
