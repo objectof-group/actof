@@ -3,11 +3,14 @@ package net.objectof.actof.minion.classpath;
 
 import java.io.File;
 
+import net.objectof.actof.minion.components.handlers.style.HandlerCategory;
+
 
 public class MinionHandler {
 
     String name, simplename;
     File icon;
+    HandlerCategory category;
 
     public MinionHandler(Class<?> cls) {
         name = cls.getName();
@@ -38,6 +41,14 @@ public class MinionHandler {
 
     public String toString() {
         return getTitle();
+    }
+
+    public HandlerCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(HandlerCategory category) {
+        this.category = category;
     }
 
 }

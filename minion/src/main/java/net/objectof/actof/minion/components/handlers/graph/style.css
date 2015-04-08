@@ -1,0 +1,25 @@
+.menu-button > .arrow-button > .arrow {
+    -fx-background-color: transparent, transparent;
+    -fx-background-insets: 0 0 0 0, 0;
+    -fx-padding: 0;
+}
+
+.menu-button:openvertically > .arrow-button > .arrow {
+    -fx-background-color: transparent, transparent;
+    -fx-background-insets: 0 0 0 0, 0;
+    -fx-padding: 0;
+}
+
+.menu-button > .arrow-button {
+    -fx-padding: 0;
+}
+
+.menu-button {
+	-fx-background-color: null; 
+	-fx-padding: 3px 6px 3px 6px;
+}
+
+.menu-button > .label {
+	-fx-padding: 0px; 
+	-fx-text-fill: #ffffff;
+}

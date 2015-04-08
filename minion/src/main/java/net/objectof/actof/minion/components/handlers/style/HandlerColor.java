@@ -1,10 +1,10 @@
-package net.objectof.actof.minion.components.handlers.graph;
+package net.objectof.actof.minion.components.handlers.style;
 
 
 import javafx.scene.paint.Color;
 
 
-public enum HandlerIconColor {
+public enum HandlerColor {
 
     RED {
 
