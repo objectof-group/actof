@@ -160,15 +160,16 @@ public class NavigatorController extends IActofUIController {
 
     /* FXML Hook */
     public void doRevert() {
-        Alert alert = new Alert(AlertType.CONFIRMATION);
-        alert.setTitle("Discard Changes?");
-        alert.setHeaderText("Discard uncommitted changes?");
-        alert.setContentText("You cannot undo this operation.");
+        if (repospy.history.hasHistory()) {
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            alert.setTitle("Discard Changes?");
+            alert.setHeaderText("Discard uncommitted changes?");
+            alert.setContentText("You cannot undo this operation.");
 
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
-            repospy.repository.makeFresh();
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() != ButtonType.OK) { return; }
         }
+        repospy.repository.makeFresh();
     }
 
     public void onLoad() throws FileNotFoundException {
