@@ -4,7 +4,9 @@ package net.objectof.actof.minion.components.handlers.ui;
 import java.io.IOException;
 
 import javafx.scene.control.ListCell;
-import net.objectof.actof.minion.classpath.MinionHandler;
+import net.objectof.actof.minion.classpath.minionhandler.MinionHandler;
+import net.objectof.actof.minion.classpath.minionhandler.MinionHandler.IconSize;
+import net.objectof.actof.minion.classpath.minionhandler.MinionHandler.IconStyle;
 
 
 public class HandlerCell extends ListCell<MinionHandler> {
@@ -27,7 +29,7 @@ public class HandlerCell extends ListCell<MinionHandler> {
             setGraphic(null);
         } else {
             ui.setText(item.getTitle());
-            ui.setIcon(item.getIcon());
+            ui.setIcon(item.getIcon(IconStyle.BLACK, IconSize.SIZE_16));
             setGraphic(ui.getNode());
         }
     }

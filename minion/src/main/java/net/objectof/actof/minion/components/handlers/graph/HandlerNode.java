@@ -6,8 +6,8 @@ import java.io.FileNotFoundException;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import net.objectof.actof.minion.classpath.MinionHandler;
-import net.objectof.actof.minion.components.handlers.style.HandlerColor;
+import net.objectof.actof.minion.classpath.minionhandler.MinionHandler;
+import net.objectof.actof.minion.classpath.minionhandler.MinionHandlerColor;
 import net.objectof.actof.widgets.network.INetworkVertex;
 import net.objectof.actof.widgets.network.NetworkPane;
 
@@ -25,7 +25,7 @@ public class HandlerNode extends INetworkVertex {
         setPrefSize(0, 0);
         this.parent = parent;
 
-        badge = new HandlerIcon(handler, HandlerColor.BLUE.toColor());
+        badge = new HandlerIcon(handler, MinionHandlerColor.BLUE.toColor());
         badge.setPickOnBounds(false);
 
         mainPanel = new HandlerUI(this, handler);

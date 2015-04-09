@@ -18,7 +18,7 @@ import net.objectof.actof.common.controller.config.Env;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.minion.Settings;
 import net.objectof.actof.minion.classpath.MinionClasspath;
-import net.objectof.actof.minion.classpath.MinionHandler;
+import net.objectof.actof.minion.classpath.minionhandler.MinionHandler;
 import net.objectof.actof.minion.classpath.sources.MinionJarSource;
 import net.objectof.actof.minion.classpath.sources.MinionSource;
 import net.objectof.actof.minion.components.classpath.change.ClasspathChange;

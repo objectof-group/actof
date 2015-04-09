@@ -9,7 +9,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import net.objectof.actof.minion.classpath.MinionHandler;
+import net.objectof.actof.minion.classpath.minionhandler.MinionHandler;
+import net.objectof.actof.minion.classpath.minionhandler.MinionHandler.IconSize;
+import net.objectof.actof.minion.classpath.minionhandler.MinionHandler.IconStyle;
 
 
 public class HandlerIcon extends Pane {
@@ -47,7 +49,7 @@ public class HandlerIcon extends Pane {
 
         });
 
-        setImage(handler.getIcon());
+        setImage(handler.getIcon(IconStyle.WHITE, IconSize.SIZE_24));
         setColor(color);
 
         getChildren().addAll(iconSpace, icon);
