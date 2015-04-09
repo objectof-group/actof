@@ -43,8 +43,13 @@ public class HandlerUI extends BorderPane {
         borderpane.setCenter(panel);
 
         TextField title = new TextField(handler.getTitle());
-        title.setPadding(new Insets(0, 0, 0, 28));
         title.setStyle("-fx-border: none; -fx-background-color: null; -fx-text-fill: white;");
+        title.setPadding(new Insets(0));
+
+        Button closeButton = new Button("\u2716");
+        closeButton.setStyle("-fx-padding: 3px 6px 3px 6px; -fx-text-fill: #ffffff; -fx-background-color: null");
+        closeButton.setOnAction(event -> node.remove());
+        AnchorPane closeAnchor = anchor(closeButton);
 
         MenuButton colorButton = new MenuButton("\u25BE");
         colorButton.getStyleClass().add("menu-button");
@@ -53,9 +58,9 @@ public class HandlerUI extends BorderPane {
 
         AnchorPane titleAnchor = anchor(title);
         HBox.setHgrow(titleAnchor, Priority.ALWAYS);
-        titleBox = new HBox(titleAnchor, colorAnchor);
+        titleBox = new HBox(titleAnchor, colorAnchor, closeAnchor);
+        title.setPadding(new Insets(0, 0, 0, 28));
 
-        node.makeHandle(titleBox);
         setColor(HandlerColor.BLUE.toColor());
         titleBox.setPrefHeight(24);
         borderpane.setTop(titleBox);

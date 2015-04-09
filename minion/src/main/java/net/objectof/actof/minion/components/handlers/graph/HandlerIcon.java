@@ -3,11 +3,13 @@ package net.objectof.actof.minion.components.handlers.graph;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import net.objectof.actof.minion.classpath.MinionHandler;
 
 
 public class HandlerIcon extends Pane {
@@ -18,8 +20,11 @@ public class HandlerIcon extends Pane {
     private ObjectProperty<Image> image = new SimpleObjectProperty<>(null);
     private ObjectProperty<Color> color = new SimpleObjectProperty<>(Color.BLACK);
 
-    public HandlerIcon(Image img, Color color) {
+    public HandlerIcon(MinionHandler handler, Color color) {
         setPrefSize(0, 0);
+
+        Tooltip tip = new Tooltip(handler.getClass().getSimpleName());
+        Tooltip.install(this, tip);
 
         icon = new ImageView();
         iconSpace = new Circle(0);
@@ -40,7 +45,7 @@ public class HandlerIcon extends Pane {
 
         });
 
-        setImage(img);
+        setImage(handler.getIcon());
         setColor(color);
 
         getChildren().addAll(iconSpace, icon);

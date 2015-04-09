@@ -63,7 +63,7 @@ public class ClasspathController extends IActofUIController {
             if (val instanceof MinionSource) {
                 result = ((MinionSource) val).getPath();
             } else if (val instanceof MinionHandler) {
-                result = ((MinionHandler) val).getName();
+                result = ((MinionHandler) val).getClass().getName();
             }
             return new SimpleStringProperty(result);
         });

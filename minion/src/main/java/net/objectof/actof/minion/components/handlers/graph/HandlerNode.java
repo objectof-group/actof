@@ -1,31 +1,31 @@
 package net.objectof.actof.minion.components.handlers.graph;
 
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 import javafx.scene.Node;
-import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import net.objectof.actof.minion.classpath.MinionHandler;
 import net.objectof.actof.minion.components.handlers.style.HandlerColor;
 import net.objectof.actof.widgets.network.INetworkVertex;
+import net.objectof.actof.widgets.network.NetworkPane;
 
 
 public class HandlerNode extends INetworkVertex {
 
     private HandlerIcon badge;
     private HandlerUI mainPanel;
+    private NetworkPane parent;
 
-    public HandlerNode(MinionHandler handler) throws FileNotFoundException {
+    public HandlerNode(NetworkPane parent, MinionHandler handler) throws FileNotFoundException {
 
         setStyle("-fx-background-color: null;");
         setPickOnBounds(false);
         setPrefSize(0, 0);
+        this.parent = parent;
 
-        Image img = new Image(new FileInputStream(handler.getIcon()));
-        badge = new HandlerIcon(img, HandlerColor.BLUE.toColor());
+        badge = new HandlerIcon(handler, HandlerColor.BLUE.toColor());
         badge.setPickOnBounds(false);
 
         mainPanel = new HandlerUI(this, handler);
@@ -52,6 +52,10 @@ public class HandlerNode extends INetworkVertex {
 
         super.setContent(pane);
 
+    }
+
+    public void remove() {
+        parent.getVertices().remove(this);
     }
 
     public void setContent(Node node) {

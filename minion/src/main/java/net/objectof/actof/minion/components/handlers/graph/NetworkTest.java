@@ -23,7 +23,7 @@ public class NetworkTest extends Application {
         // pane.setPadding(new Insets(6));
 
         for (int i = 0; i < 10; i++) {
-            INetworkVertex child = new HandlerNode(null);
+            INetworkVertex child = new HandlerNode(pane, null);
             child.setX(rand(0, 600));
             child.setY(rand(0, 600));
 

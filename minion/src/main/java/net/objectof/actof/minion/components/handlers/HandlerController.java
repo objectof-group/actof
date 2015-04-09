@@ -1,7 +1,6 @@
 package net.objectof.actof.minion.components.handlers;
 
 
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -42,7 +41,7 @@ public class HandlerController extends IActofUIController {
 
             MinionHandler handler = new MinionHandler(handlers.getSelectionModel().getSelectedItem());
             try {
-                NetworkVertex v = new HandlerNode(handler);
+                NetworkVertex v = new HandlerNode(network, handler);
                 network.getVertices().add(v);
             }
             catch (Exception e) {
@@ -74,8 +73,6 @@ public class HandlerController extends IActofUIController {
 
         for (MinionSource source : change.getClasspath()) {
             for (MinionHandler handler : source.getHandlers()) {
-                File icon = new File(getClass().getResource("icons/generic.png").toURI());
-                handler.setIcon(icon);
                 handlers.getItems().add(handler);
             }
         }

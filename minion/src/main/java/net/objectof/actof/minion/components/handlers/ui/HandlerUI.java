@@ -1,9 +1,6 @@
 package net.objectof.actof.minion.components.handlers.ui;
 
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javafx.fxml.FXML;
@@ -42,14 +39,8 @@ public class HandlerUI extends IActofUIController {
         label.setText(text);
     }
 
-    public void setIcon(File file) {
-        try {
-            icon.setImage(new Image(new FileInputStream(file)));
-        }
-        catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+    public void setIcon(Image image) {
+        icon.setImage(image);
     }
 
     public static HandlerUI load() throws IOException {

@@ -12,6 +12,7 @@ import java.util.List;
 
 import net.objectof.actof.minion.classpath.IsolatedClassLoader;
 import net.objectof.actof.minion.classpath.MinionHandler;
+import net.objectof.actof.minion.components.handlers.style.HandlerCategory;
 
 import org.reflections.Reflections;
 import org.reflections.ReflectionsException;
@@ -74,7 +75,7 @@ public class MinionJarSource implements MinionSource {
                 if (Modifier.isAbstract(cls.getModifiers())) continue;
                 if (cls.isAnonymousClass()) continue;
 
-                MinionHandler handler = new MinionHandler(cls);
+                MinionHandler handler = new MinionHandler(cls, HandlerCategory.GENERIC);
                 handlers.add(handler);
             }
 
