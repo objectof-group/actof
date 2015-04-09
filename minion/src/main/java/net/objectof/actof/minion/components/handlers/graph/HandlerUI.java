@@ -45,6 +45,7 @@ public class HandlerUI extends BorderPane {
         TextField title = new TextField(handler.getTitle());
         title.setStyle("-fx-border: none; -fx-background-color: null; -fx-text-fill: white;");
         title.setPadding(new Insets(0));
+        title.textProperty().addListener(change -> handler.setTitle(title.getText()));
 
         Button closeButton = new Button("\u2716");
         closeButton.setStyle("-fx-padding: 3px 6px 3px 6px; -fx-text-fill: #ffffff; -fx-background-color: null");

@@ -23,7 +23,9 @@ public class HandlerIcon extends Pane {
     public HandlerIcon(MinionHandler handler, Color color) {
         setPrefSize(0, 0);
 
-        Tooltip tip = new Tooltip(handler.getClass().getSimpleName());
+        Tooltip tip = new Tooltip();
+        String handlerClass = handler.getHandlerClass().getSimpleName();
+        tip.textProperty().bind(handler.titleProperty().concat(" (").concat(handlerClass).concat(")"));
         Tooltip.install(this, tip);
 
         icon = new ImageView();
