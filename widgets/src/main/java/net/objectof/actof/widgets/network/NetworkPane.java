@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -106,26 +108,34 @@ public class NetworkPane extends Pane {
 
         for (NetworkVertex vertex : getVertices()) {
 
-            if (fxNodes.contains(vertex.getFXNode())) {
-
-                Node fxNode = vertex.getFXNode();
-                // calculate position/size of node
-                double height = nodePrefHeight(fxNode);
-                double width = nodePrefWidth(fxNode);
-
-                // position the node
-                fxNode.resize(snapSize(width), snapSize(height));
-
-                // bind the node layout position to the Coordinate returned by
-                // the position function
-                fxNode.layoutXProperty().bind(
-                        vertex.xProperty().add(getInsets().getLeft()).subtract(fxNode.getLayoutBounds().getMinX()));
-                fxNode.layoutYProperty().bind(
-                        vertex.yProperty().add(getInsets().getLeft()).subtract(fxNode.getLayoutBounds().getMinY()));
-
-                // remove this node from the list of nodes remaining to lay out.
-                fxNodes.remove(fxNode);
+            if (!fxNodes.contains(vertex.getFXNode())) {
+                continue;
             }
+
+            Node fxNode = vertex.getFXNode();
+            // calculate position/size of node
+            double height = nodePrefHeight(fxNode);
+            double width = nodePrefWidth(fxNode);
+
+            // position the node
+            fxNode.resize(snapSize(width), snapSize(height));
+
+            // bind the node layout position to the Coordinate returned by
+            // the position function
+            NumberBinding px = vertex.xProperty().add(getInsets().getLeft());
+            NumberBinding py = vertex.yProperty().add(getInsets().getLeft());
+
+            px = px.subtract(fxNode.getLayoutBounds().getMinX());
+            py = py.subtract(fxNode.getLayoutBounds().getMinY());
+
+            px = Bindings.min(Bindings.max(0, px), widthProperty());
+            py = Bindings.min(Bindings.max(0, py), heightProperty());
+
+            fxNode.layoutXProperty().bind(px);
+            fxNode.layoutYProperty().bind(py);
+
+            // remove this node from the list of nodes remaining to lay out.
+            fxNodes.remove(fxNode);
 
         }
 

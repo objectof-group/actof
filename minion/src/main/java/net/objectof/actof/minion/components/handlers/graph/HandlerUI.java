@@ -28,7 +28,6 @@ public class HandlerUI extends BorderPane {
     public HandlerUI(HandlerNode node, MinionHandler handler) {
 
         String cssurl = HandlerUI.class.getResource("style.css").toExternalForm();
-        System.out.println(cssurl);
         getStylesheets().add(cssurl);
 
         BorderPane borderpane = new BorderPane();
