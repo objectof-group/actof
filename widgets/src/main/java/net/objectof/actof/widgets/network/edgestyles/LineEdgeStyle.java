@@ -16,8 +16,9 @@ public class LineEdgeStyle implements EdgeStyle {
     public Path createReferenceLine(NetworkEdge edge) {
 
         NetworkVertex vSource, vDest;
-        vSource = edge.sourceVertex();
-        vDest = edge.destVertex();
+        vSource = edge.getSourceVertex();
+        vDest = edge.getDestinationVertex();
+        if (vSource == null || vDest == null) { return null; }
 
         // actual x/y positions for source and destination of line based on node
         // position and line offset

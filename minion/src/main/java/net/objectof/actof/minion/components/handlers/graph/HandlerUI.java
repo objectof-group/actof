@@ -4,6 +4,7 @@ package net.objectof.actof.minion.components.handlers.graph;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
@@ -19,13 +20,21 @@ import javafx.scene.paint.Color;
 import net.objectof.actof.minion.classpath.minionhandler.MinionHandler;
 import net.objectof.actof.minion.classpath.minionhandler.MinionHandlerColor;
 import net.objectof.actof.widgets.KeyValuePane;
+import net.objectof.actof.widgets.network.INetworkEdge;
+import net.objectof.actof.widgets.network.NetworkEdge;
+import net.objectof.actof.widgets.network.NetworkPane;
+import net.objectof.actof.widgets.network.NetworkVertex;
 
 
 public class HandlerUI extends BorderPane {
 
     HBox titleBox;
+    NetworkEdge edge = null;
 
-    public HandlerUI(HandlerNode node, MinionHandler handler) {
+    public HandlerUI(NetworkPane parent, HandlerNode node, MinionHandler handler) {
+
+        edge = new INetworkEdge(node, null);
+        node.getEdges().add(edge);
 
         String cssurl = HandlerUI.class.getResource("style.css").toExternalForm();
         getStylesheets().add(cssurl);

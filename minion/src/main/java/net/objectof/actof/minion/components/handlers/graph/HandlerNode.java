@@ -17,8 +17,11 @@ public class HandlerNode extends INetworkVertex {
     private HandlerIcon badge;
     private HandlerUI mainPanel;
     private NetworkPane parent;
+    private MinionHandler handler;
 
     public HandlerNode(NetworkPane parent, MinionHandler handler) throws FileNotFoundException {
+
+        this.handler = handler;
 
         setStyle("-fx-background-color: null;");
         setPickOnBounds(false);
@@ -28,7 +31,7 @@ public class HandlerNode extends INetworkVertex {
         badge = new HandlerIcon(handler, MinionHandlerColor.BLUE.toColor());
         badge.setPickOnBounds(false);
 
-        mainPanel = new HandlerUI(this, handler);
+        mainPanel = new HandlerUI(parent, this, handler);
 
         Pane pane = new Pane(badge);
         pane.setStyle("-fx-background-color: null;");
@@ -66,4 +69,9 @@ public class HandlerNode extends INetworkVertex {
         badge.setColor(color);
         mainPanel.setColor(color);
     }
+
+    public MinionHandler getHandler() {
+        return handler;
+    }
+
 }

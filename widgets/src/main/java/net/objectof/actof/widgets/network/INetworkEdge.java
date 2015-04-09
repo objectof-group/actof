@@ -10,7 +10,7 @@ import javafx.scene.paint.Color;
 
 public class INetworkEdge implements NetworkEdge {
 
-    private NetworkVertex from, to;
+    private ObjectProperty<NetworkVertex> sourceVertex, destinationVertex;
 
     private DoubleProperty sourceOffsetX = new SimpleDoubleProperty(0);
     private DoubleProperty sourceOffsetY = new SimpleDoubleProperty(0);
@@ -20,19 +20,9 @@ public class INetworkEdge implements NetworkEdge {
     private ObjectProperty<Color> color = new SimpleObjectProperty<Color>(Color.BLACK);
     private DoubleProperty width = new SimpleDoubleProperty(2);
 
-    public INetworkEdge(NetworkVertex from, NetworkVertex to) {
-        this.from = from;
-        this.to = to;
-    }
-
-    @Override
-    public NetworkVertex sourceVertex() {
-        return from;
-    }
-
-    @Override
-    public NetworkVertex destVertex() {
-        return to;
+    public INetworkEdge(NetworkVertex source, NetworkVertex destination) {
+        this.sourceVertex = new SimpleObjectProperty<>(source);
+        this.destinationVertex = new SimpleObjectProperty<>(destination);
     }
 
     @Override
@@ -123,6 +113,36 @@ public class INetworkEdge implements NetworkEdge {
     @Override
     public final void setWidth(final double width) {
         this.widthProperty().set(width);
+    }
+
+    @Override
+    public final ObjectProperty<NetworkVertex> sourceVertexProperty() {
+        return this.sourceVertex;
+    }
+
+    @Override
+    public final NetworkVertex getSourceVertex() {
+        return this.sourceVertexProperty().get();
+    }
+
+    @Override
+    public final void setSourceVertex(final NetworkVertex sourceVertex) {
+        this.sourceVertexProperty().set(sourceVertex);
+    }
+
+    @Override
+    public final ObjectProperty<NetworkVertex> destinationVertexProperty() {
+        return this.destinationVertex;
+    }
+
+    @Override
+    public final NetworkVertex getDestinationVertex() {
+        return this.destinationVertexProperty().get();
+    }
+
+    @Override
+    public final void setDestinationVertex(final NetworkVertex destinationVertex) {
+        this.destinationVertexProperty().set(destinationVertex);
     }
 
     // @Override

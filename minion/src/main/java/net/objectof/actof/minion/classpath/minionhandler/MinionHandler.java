@@ -66,6 +66,7 @@ public class MinionHandler {
             default:
                 String dir = size.getSize() + "-" + style.name().toLowerCase();
                 String filename = "icons/" + dir + "/" + category.name().toLowerCase() + ".png";
+                System.out.println(filename);
                 return new Image(MinionHandler.class.getResourceAsStream(filename));
 
         }

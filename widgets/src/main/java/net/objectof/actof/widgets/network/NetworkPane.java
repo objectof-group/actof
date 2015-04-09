@@ -164,7 +164,9 @@ public class NetworkPane extends Pane {
         // lines.getChildren().clear();
         for (NetworkEdge e : allEdges) {
             Path line = getEdgeStyle().createReferenceLine(e);
-            getChildren().add(line);
+            if (line != null) {
+                getChildren().add(line);
+            }
         }
 
         // add nodes

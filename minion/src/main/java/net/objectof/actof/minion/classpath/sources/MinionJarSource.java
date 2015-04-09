@@ -75,7 +75,9 @@ public class MinionJarSource implements MinionSource {
                 if (Modifier.isAbstract(cls.getModifiers())) continue;
                 if (cls.isAnonymousClass()) continue;
 
-                MinionHandler handler = new MinionHandler(cls, MinionHandlerCategory.GENERIC);
+                MinionHandlerCategory cat;
+                cat = MinionHandlerCategory.values()[(int) (Math.random() * MinionHandlerCategory.values().length)];
+                MinionHandler handler = new MinionHandler(cls, cat);
                 handlers.add(handler);
             }
 

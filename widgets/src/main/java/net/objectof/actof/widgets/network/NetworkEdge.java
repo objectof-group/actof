@@ -8,10 +8,6 @@ import javafx.scene.paint.Color;
 
 public interface NetworkEdge {
 
-    NetworkVertex sourceVertex();
-
-    NetworkVertex destVertex();
-
     default void setDestOffset(final double destOffsetX, final double destOffsetY) {
         setDestOffsetX(destOffsetX);
         setDestOffsetY(destOffsetY);
@@ -46,16 +42,28 @@ public interface NetworkEdge {
 
     DoubleProperty sourceOffsetXProperty();
 
-    public abstract void setColor(final Color color);
+    void setColor(final Color color);
 
-    public abstract Color getColor();
+    Color getColor();
 
-    public abstract ObjectProperty<Color> colorProperty();
+    ObjectProperty<Color> colorProperty();
 
-    public abstract void setWidth(final double width);
+    void setWidth(final double width);
 
-    public abstract double getWidth();
+    double getWidth();
 
-    public abstract DoubleProperty widthProperty();
+    DoubleProperty widthProperty();
+
+    void setDestinationVertex(final NetworkVertex destinationVertex);
+
+    NetworkVertex getDestinationVertex();
+
+    ObjectProperty<NetworkVertex> destinationVertexProperty();
+
+    void setSourceVertex(final NetworkVertex sourceVertex);
+
+    NetworkVertex getSourceVertex();
+
+    ObjectProperty<NetworkVertex> sourceVertexProperty();
 
 }
