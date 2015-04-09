@@ -4,6 +4,7 @@ package net.objectof.actof.minion.components.handlers.graph;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
@@ -19,14 +20,20 @@ import javafx.scene.paint.Color;
 import net.objectof.actof.minion.classpath.minionhandler.MinionHandler;
 import net.objectof.actof.minion.classpath.minionhandler.MinionHandlerColor;
 import net.objectof.actof.widgets.KeyValuePane;
+import net.objectof.actof.widgets.network.INetworkEdge;
+import net.objectof.actof.widgets.network.NetworkEdge;
 import net.objectof.actof.widgets.network.NetworkPane;
 
 
 public class HandlerUI extends BorderPane {
 
     HBox titleBox;
+    NetworkEdge edge;
 
     public HandlerUI(NetworkPane<MinionHandler> parent, MinionHandler handler) {
+
+        edge = new INetworkEdge(handler, null);
+        handler.getEdges().add(edge);
 
         String cssurl = HandlerUI.class.getResource("style.css").toExternalForm();
         getStylesheets().add(cssurl);
@@ -34,9 +41,7 @@ public class HandlerUI extends BorderPane {
         BorderPane borderpane = new BorderPane();
 
         KeyValuePane panel = new KeyValuePane();
-        panel.put("name", new TextField("Name"));
-        panel.put("date", new TextField("Date"));
-        panel.put("", new Button("OK"));
+        panel.put("ref", refBox(parent, handler));
         panel.setHgap(3);
         panel.setVgap(3);
         panel.setPadding(new Insets(6));
@@ -62,6 +67,7 @@ public class HandlerUI extends BorderPane {
         titleBox = new HBox(titleAnchor, colorAnchor, closeAnchor);
         title.setPadding(new Insets(0, 0, 0, 28));
 
+        handler.colorProperty().addListener(change -> setColor(handler.getColor()));
         setColor(MinionHandlerColor.BLUE.toColor());
         titleBox.setPrefHeight(24);
         borderpane.setTop(titleBox);
@@ -69,6 +75,18 @@ public class HandlerUI extends BorderPane {
         setContent(borderpane);
         setStyle("-fx-effect: dropshadow(gaussian, #000000C0, 4, 0, 0, 1); -fx-background-color: #ffffff; -fx-background-radius: 3px;");
 
+    }
+
+    private ComboBox<MinionHandler> refBox(NetworkPane<MinionHandler> parent, MinionHandler handler) {
+
+        ComboBox<MinionHandler> box = new ComboBox<>(parent.getVertices());
+
+        box.getSelectionModel().selectedItemProperty().addListener(change -> {
+            handler.getEdges().remove(edge);
+            edge = new INetworkEdge(handler, box.getSelectionModel().getSelectedItem());
+            handler.getEdges().add(edge);
+        });
+        return box;
     }
 
     private void colorMenu(MenuButton menu, MinionHandler handler) {
@@ -100,6 +118,7 @@ public class HandlerUI extends BorderPane {
     }
 
     public void setColor(Color color) {
-        titleBox.setBackground(new Background(new BackgroundFill(color, new CornerRadii(3, 3, 0, 0, false), null)));
+        BackgroundFill fill = new BackgroundFill(color, new CornerRadii(3, 3, 0, 0, false), null);
+        titleBox.setBackground(new Background(fill));
     }
 }

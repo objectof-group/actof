@@ -54,16 +54,8 @@ public interface NetworkEdge {
 
     DoubleProperty widthProperty();
 
-    void setDestinationVertex(final NetworkVertex destinationVertex);
-
     NetworkVertex getDestinationVertex();
 
-    ObjectProperty<NetworkVertex> destinationVertexProperty();
-
-    void setSourceVertex(final NetworkVertex sourceVertex);
-
     NetworkVertex getSourceVertex();
-
-    ObjectProperty<NetworkVertex> sourceVertexProperty();
 
 }

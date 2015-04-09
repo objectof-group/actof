@@ -17,6 +17,7 @@ import net.objectof.actof.minion.components.classpath.change.ClasspathChange;
 import net.objectof.actof.minion.components.handlers.graph.HandlerNode;
 import net.objectof.actof.minion.components.handlers.ui.HandlerCell;
 import net.objectof.actof.widgets.network.NetworkPane;
+import net.objectof.actof.widgets.network.edgestyles.CubicEdgeStyle;
 
 
 public class HandlerController extends IActofUIController {
@@ -33,6 +34,7 @@ public class HandlerController extends IActofUIController {
 
         NetworkPane<MinionHandler> network = new NetworkPane<>();
         network.setNodeFunction(handler -> new HandlerNode(handler, network));
+        network.setEdgeStyle(new CubicEdgeStyle());
         top.setCenter(network);
 
         handlers.setCellFactory(listview -> new HandlerCell());
