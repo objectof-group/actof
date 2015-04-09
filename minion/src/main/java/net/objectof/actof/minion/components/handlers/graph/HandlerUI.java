@@ -4,7 +4,6 @@ package net.objectof.actof.minion.components.handlers.graph;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
@@ -20,21 +19,14 @@ import javafx.scene.paint.Color;
 import net.objectof.actof.minion.classpath.minionhandler.MinionHandler;
 import net.objectof.actof.minion.classpath.minionhandler.MinionHandlerColor;
 import net.objectof.actof.widgets.KeyValuePane;
-import net.objectof.actof.widgets.network.INetworkEdge;
-import net.objectof.actof.widgets.network.NetworkEdge;
 import net.objectof.actof.widgets.network.NetworkPane;
-import net.objectof.actof.widgets.network.NetworkVertex;
 
 
 public class HandlerUI extends BorderPane {
 
     HBox titleBox;
-    NetworkEdge edge = null;
 
-    public HandlerUI(NetworkPane parent, HandlerNode node, MinionHandler handler) {
-
-        edge = new INetworkEdge(node, null);
-        node.getEdges().add(edge);
+    public HandlerUI(NetworkPane<MinionHandler> parent, MinionHandler handler) {
 
         String cssurl = HandlerUI.class.getResource("style.css").toExternalForm();
         getStylesheets().add(cssurl);
@@ -57,12 +49,12 @@ public class HandlerUI extends BorderPane {
 
         Button closeButton = new Button("\u2716");
         closeButton.setStyle("-fx-padding: 3px 6px 3px 6px; -fx-text-fill: #ffffff; -fx-background-color: null");
-        closeButton.setOnAction(event -> node.remove());
+        closeButton.setOnAction(event -> parent.getVertices().remove(handler));
         AnchorPane closeAnchor = anchor(closeButton);
 
         MenuButton colorButton = new MenuButton("\u25BE");
         colorButton.getStyleClass().add("menu-button");
-        colorMenu(colorButton, node);
+        colorMenu(colorButton, handler);
         AnchorPane colorAnchor = anchor(colorButton);
 
         AnchorPane titleAnchor = anchor(title);
@@ -79,14 +71,14 @@ public class HandlerUI extends BorderPane {
 
     }
 
-    private void colorMenu(MenuButton menu, HandlerNode node) {
+    private void colorMenu(MenuButton menu, MinionHandler handler) {
         for (MinionHandlerColor color : MinionHandlerColor.values()) {
             Label graphic = new Label("");
             graphic.setBackground(new Background(new BackgroundFill(color.toColor(), null, null)));
             graphic.setPrefWidth(24);
             MenuItem item = new MenuItem(color.prettyName(), graphic);
             item.setOnAction(event -> {
-                node.setColor(color.toColor());
+                handler.setColor(color.toColor());
             });
             menu.getItems().add(item);
         }

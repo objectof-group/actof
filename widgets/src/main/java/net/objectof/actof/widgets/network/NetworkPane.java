@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.NumberBinding;
@@ -25,7 +26,7 @@ import javafx.scene.shape.Path;
 import net.objectof.actof.widgets.network.edgestyles.LineEdgeStyle;
 
 
-public class NetworkPane extends Pane {
+public class NetworkPane<V extends NetworkVertex> extends Pane {
 
     public interface EdgeStyle {
 
@@ -34,9 +35,11 @@ public class NetworkPane extends Pane {
 
     private ObjectProperty<EdgeStyle> edgeStyle = new SimpleObjectProperty<>(new LineEdgeStyle());
     private boolean performingLayout = false;
-    private Map<NetworkVertex, SetChangeListener<NetworkEdge>> edgeListeners = new HashMap<>();
+    private Map<V, SetChangeListener<NetworkEdge>> edgeListeners = new HashMap<>();
+    private ObservableList<V> vertices = FXCollections.observableArrayList();
 
-    private ObservableList<NetworkVertex> vertices = FXCollections.observableArrayList();
+    private Function<V, Node> vertexFunction = vertex -> new INetworkNode(vertex);
+    private Map<V, Node> vertexNodes = new HashMap<>();
 
     public NetworkPane() {
         setStyle("-fx-background-color: #ffffff;");
@@ -48,26 +51,31 @@ public class NetworkPane extends Pane {
         regenerateChildren();
     }
 
-    private void verticesChanged(Change<? extends NetworkVertex> c) {
-
-        regenerateChildren();
-        requestLayout();
+    private void verticesChanged(Change<? extends V> c) {
 
         while (c.next()) {
             if (!c.wasAdded() && !c.wasRemoved()) {
                 continue;
             }
 
-            for (NetworkVertex v : c.getAddedSubList()) {
+            for (V vertex : c.getAddedSubList()) {
+                // call getVertexNode to generate thw new node *before* we start
+                // listening for edge changes, otherwise a node changing edges
+                // during construction will cause a call cycle
+                getVertexNode(vertex);
                 SetChangeListener<NetworkEdge> listener = this::edgesChanged;
-                v.getEdges().addListener(listener);
-                edgeListeners.put(v, listener);
+                vertex.getEdges().addListener(listener);
+                edgeListeners.put(vertex, listener);
             }
 
-            for (NetworkVertex v : c.getRemoved()) {
-                v.getEdges().removeListener(edgeListeners.remove(v));
+            for (V vertex : c.getRemoved()) {
+                vertex.getEdges().removeListener(edgeListeners.remove(vertex));
+                vertexNodes.remove(vertex);
             }
         }
+
+        regenerateChildren();
+        requestLayout();
     }
 
     private void edgesChanged(SetChangeListener.Change<? extends NetworkEdge> change) {
@@ -75,7 +83,7 @@ public class NetworkPane extends Pane {
         requestLayout();
     }
 
-    public ObservableList<NetworkVertex> getVertices() {
+    public ObservableList<V> getVertices() {
         return vertices;
     }
 
@@ -97,6 +105,14 @@ public class NetworkPane extends Pane {
         super.requestLayout();
     }
 
+    public Function<V, Node> getVertexFunction() {
+        return vertexFunction;
+    }
+
+    public void setNodeFunction(Function<V, Node> vertexFunction) {
+        this.vertexFunction = vertexFunction;
+    }
+
     @Override
     protected void layoutChildren() {
 
@@ -106,13 +122,9 @@ public class NetworkPane extends Pane {
         // vertex's node. Any remaining must be connector lines
         List<Node> fxNodes = new ArrayList<>(getManagedChildren());
 
-        for (NetworkVertex vertex : getVertices()) {
+        for (V vertex : getVertices()) {
+            Node fxNode = getVertexNode(vertex);
 
-            if (!fxNodes.contains(vertex.getFXNode())) {
-                continue;
-            }
-
-            Node fxNode = vertex.getFXNode();
             // calculate position/size of node
             double height = nodePrefHeight(fxNode);
             double width = nodePrefWidth(fxNode);
@@ -156,7 +168,7 @@ public class NetworkPane extends Pane {
         // build a list of all edges so that undirected graphs don't repeat
         // themselves
         Set<NetworkEdge> allEdges = new HashSet<>();
-        for (NetworkVertex v : vertices) {
+        for (V v : vertices) {
             allEdges.addAll(v.getEdges());
         }
 
@@ -170,8 +182,8 @@ public class NetworkPane extends Pane {
         }
 
         // add nodes
-        for (NetworkVertex v : getVertices()) {
-            getChildren().add(v.getFXNode());
+        for (V v : getVertices()) {
+            getChildren().add(getVertexNode(v));
         }
 
     }
@@ -182,6 +194,13 @@ public class NetworkPane extends Pane {
 
     private double nodePrefWidth(Node child) {
         return nodePrefHeight(child, -1, VBox.getMargin(child), getWidth());
+    }
+
+    private Node getVertexNode(V v) {
+        if (!vertexNodes.containsKey(v)) {
+            vertexNodes.put(v, vertexFunction.apply(v));
+        }
+        return vertexNodes.get(v);
     }
 
     // borrowed from Region computeChildPrefAreaHeight

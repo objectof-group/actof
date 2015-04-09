@@ -1,37 +1,33 @@
 package net.objectof.actof.minion.components.handlers.graph;
 
 
-import java.io.FileNotFoundException;
-
-import javafx.scene.Node;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import net.objectof.actof.minion.classpath.minionhandler.MinionHandler;
-import net.objectof.actof.minion.classpath.minionhandler.MinionHandlerColor;
-import net.objectof.actof.widgets.network.INetworkVertex;
+import net.objectof.actof.widgets.network.INetworkNode;
 import net.objectof.actof.widgets.network.NetworkPane;
 
 
-public class HandlerNode extends INetworkVertex {
+public class HandlerNode extends INetworkNode {
 
     private HandlerIcon badge;
     private HandlerUI mainPanel;
     private NetworkPane parent;
     private MinionHandler handler;
 
-    public HandlerNode(NetworkPane parent, MinionHandler handler) throws FileNotFoundException {
+    public HandlerNode(MinionHandler handler, NetworkPane<MinionHandler> parent) {
+        super(handler);
 
         this.handler = handler;
+        this.parent = parent;
 
         setStyle("-fx-background-color: null;");
         setPickOnBounds(false);
         setPrefSize(0, 0);
-        this.parent = parent;
 
-        badge = new HandlerIcon(handler, MinionHandlerColor.BLUE.toColor());
+        badge = new HandlerIcon(handler);
         badge.setPickOnBounds(false);
 
-        mainPanel = new HandlerUI(parent, this, handler);
+        mainPanel = new HandlerUI(parent, handler);
 
         Pane pane = new Pane(badge);
         pane.setStyle("-fx-background-color: null;");
@@ -55,19 +51,6 @@ public class HandlerNode extends INetworkVertex {
 
         super.setContent(pane);
 
-    }
-
-    public void remove() {
-        parent.getVertices().remove(this);
-    }
-
-    public void setContent(Node node) {
-        mainPanel.setContent(node);
-    }
-
-    public void setColor(Color color) {
-        badge.setColor(color);
-        mainPanel.setColor(color);
     }
 
     public MinionHandler getHandler() {

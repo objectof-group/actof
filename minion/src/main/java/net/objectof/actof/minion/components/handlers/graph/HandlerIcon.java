@@ -7,7 +7,6 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import net.objectof.actof.minion.classpath.minionhandler.MinionHandler;
 import net.objectof.actof.minion.classpath.minionhandler.MinionHandler.IconSize;
@@ -20,9 +19,8 @@ public class HandlerIcon extends Pane {
     private ImageView icon;
 
     private ObjectProperty<Image> image = new SimpleObjectProperty<>(null);
-    private ObjectProperty<Color> color = new SimpleObjectProperty<>(Color.BLACK);
 
-    public HandlerIcon(MinionHandler handler, Color color) {
+    public HandlerIcon(MinionHandler handler) {
         setPrefSize(0, 0);
 
         Tooltip tip = new Tooltip();
@@ -44,13 +42,8 @@ public class HandlerIcon extends Pane {
             iconSpace.setRadius(size);
         });
 
-        this.color.addListener(change -> {
-            iconSpace.setFill(this.color.get());
-
-        });
-
+        iconSpace.fillProperty().bind(handler.colorProperty());
         setImage(handler.getIcon(IconStyle.WHITE, IconSize.SIZE_24));
-        setColor(color);
 
         getChildren().addAll(iconSpace, icon);
 
@@ -66,18 +59,6 @@ public class HandlerIcon extends Pane {
 
     public final void setImage(final Image image) {
         this.imageProperty().set(image);
-    }
-
-    public final ObjectProperty<Color> colorProperty() {
-        return this.color;
-    }
-
-    public final Color getColor() {
-        return this.colorProperty().get();
-    }
-
-    public final void setColor(final Color color) {
-        this.colorProperty().set(color);
     }
 
 }

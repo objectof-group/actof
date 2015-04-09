@@ -17,7 +17,6 @@ import net.objectof.actof.minion.components.classpath.change.ClasspathChange;
 import net.objectof.actof.minion.components.handlers.graph.HandlerNode;
 import net.objectof.actof.minion.components.handlers.ui.HandlerCell;
 import net.objectof.actof.widgets.network.NetworkPane;
-import net.objectof.actof.widgets.network.NetworkVertex;
 
 
 public class HandlerController extends IActofUIController {
@@ -32,23 +31,15 @@ public class HandlerController extends IActofUIController {
     @FXML
     protected void initialize() throws IOException, URISyntaxException {
 
-        NetworkPane network = new NetworkPane();
+        NetworkPane<MinionHandler> network = new NetworkPane<>();
+        network.setNodeFunction(handler -> new HandlerNode(handler, network));
         top.setCenter(network);
 
         handlers.setCellFactory(listview -> new HandlerCell());
         handlers.setOnMouseClicked(event -> {
             if (event.getClickCount() != 2) { return; }
-
             MinionHandler handler = new MinionHandler(handlers.getSelectionModel().getSelectedItem());
-            try {
-                NetworkVertex v = new HandlerNode(network, handler);
-                network.getVertices().add(v);
-            }
-            catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
+            network.getVertices().add(handler);
         });
 
     }
