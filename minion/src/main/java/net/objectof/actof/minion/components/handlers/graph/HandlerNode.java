@@ -2,7 +2,7 @@ package net.objectof.actof.minion.components.handlers.graph;
 
 
 import javafx.scene.layout.Pane;
-import net.objectof.actof.minion.classpath.minionhandler.MinionHandler;
+import net.objectof.actof.minion.common.minionhandler.MinionHandler;
 import net.objectof.actof.widgets.network.INetworkNode;
 import net.objectof.actof.widgets.network.NetworkPane;
 
@@ -10,7 +10,7 @@ import net.objectof.actof.widgets.network.NetworkPane;
 public class HandlerNode extends INetworkNode {
 
     private HandlerIcon badge;
-    private HandlerUI mainPanel;
+    private HandlerBody mainPanel;
     private NetworkPane parent;
     private MinionHandler handler;
 
@@ -27,7 +27,7 @@ public class HandlerNode extends INetworkNode {
         badge = new HandlerIcon(handler);
         badge.setPickOnBounds(false);
 
-        mainPanel = new HandlerUI(parent, handler);
+        mainPanel = new HandlerBody(parent, handler);
 
         Pane pane = new Pane(badge);
         pane.setStyle("-fx-background-color: null;");

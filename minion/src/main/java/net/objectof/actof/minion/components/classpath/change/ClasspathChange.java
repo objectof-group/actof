@@ -2,7 +2,7 @@ package net.objectof.actof.minion.components.classpath.change;
 
 
 import net.objectof.actof.common.controller.change.Change;
-import net.objectof.actof.minion.classpath.MinionClasspath;
+import net.objectof.actof.minion.common.classpath.sources.MinionClasspath;
 
 
 public class ClasspathChange extends Change {

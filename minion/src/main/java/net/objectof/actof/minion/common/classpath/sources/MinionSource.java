@@ -1,11 +1,11 @@
-package net.objectof.actof.minion.classpath.sources;
+package net.objectof.actof.minion.common.classpath.sources;
 
 
 import java.net.URL;
 import java.util.Collection;
 
-import net.objectof.actof.minion.classpath.IsolatedClassLoader;
-import net.objectof.actof.minion.classpath.minionhandler.MinionHandler;
+import net.objectof.actof.minion.common.classpath.IsolatedClassLoader;
+import net.objectof.actof.minion.common.minionhandler.MinionHandler;
 
 
 public interface MinionSource {

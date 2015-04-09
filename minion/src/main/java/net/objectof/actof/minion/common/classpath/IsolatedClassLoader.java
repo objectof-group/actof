@@ -1,4 +1,4 @@
-package net.objectof.actof.minion.classpath;
+package net.objectof.actof.minion.common.classpath;
 
 
 import java.net.URL;

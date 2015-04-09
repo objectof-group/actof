@@ -1,11 +1,11 @@
-package net.objectof.actof.minion.classpath;
+package net.objectof.actof.minion.common.classpath.sources;
 
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import net.objectof.actof.minion.classpath.sources.MinionSource;
+import net.objectof.actof.minion.common.classpath.IsolatedClassLoader;
 
 
 public class MinionClasspath implements Iterable<MinionSource> {

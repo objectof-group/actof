@@ -1,4 +1,4 @@
-package net.objectof.actof.minion.components.handlers.ui;
+package net.objectof.actof.minion.components.handlers.sidebar;
 
 
 import java.io.IOException;

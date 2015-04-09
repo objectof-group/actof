@@ -1,4 +1,4 @@
-package net.objectof.actof.minion.classpath.sources;
+package net.objectof.actof.minion.common.classpath.sources;
 
 
 import java.io.File;
@@ -10,9 +10,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import net.objectof.actof.minion.classpath.IsolatedClassLoader;
-import net.objectof.actof.minion.classpath.minionhandler.MinionHandler;
-import net.objectof.actof.minion.classpath.minionhandler.MinionHandlerCategory;
+import net.objectof.actof.minion.common.classpath.IsolatedClassLoader;
+import net.objectof.actof.minion.common.minionhandler.MinionHandler;
+import net.objectof.actof.minion.common.minionhandler.MinionHandler.Category;
 
 import org.reflections.Reflections;
 import org.reflections.ReflectionsException;
@@ -75,8 +75,8 @@ public class MinionJarSource implements MinionSource {
                 if (Modifier.isAbstract(cls.getModifiers())) continue;
                 if (cls.isAnonymousClass()) continue;
 
-                MinionHandlerCategory cat;
-                cat = MinionHandlerCategory.values()[(int) (Math.random() * MinionHandlerCategory.values().length)];
+                Category cat;
+                cat = Category.values()[(int) (Math.random() * Category.values().length)];
                 MinionHandler handler = new MinionHandler(cls, cat);
                 handlers.add(handler);
             }

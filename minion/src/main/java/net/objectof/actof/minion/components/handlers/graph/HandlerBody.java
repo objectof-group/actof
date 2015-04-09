@@ -17,25 +17,25 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
-import net.objectof.actof.minion.classpath.minionhandler.MinionHandler;
-import net.objectof.actof.minion.classpath.minionhandler.MinionHandlerColor;
+import net.objectof.actof.minion.common.minionhandler.MinionHandler;
+import net.objectof.actof.minion.common.minionhandler.MinionHandlerColor;
 import net.objectof.actof.widgets.KeyValuePane;
 import net.objectof.actof.widgets.network.INetworkEdge;
 import net.objectof.actof.widgets.network.NetworkEdge;
 import net.objectof.actof.widgets.network.NetworkPane;
 
 
-public class HandlerUI extends BorderPane {
+public class HandlerBody extends BorderPane {
 
     HBox titleBox;
     NetworkEdge edge;
 
-    public HandlerUI(NetworkPane<MinionHandler> parent, MinionHandler handler) {
+    public HandlerBody(NetworkPane<MinionHandler> parent, MinionHandler handler) {
 
         edge = new INetworkEdge(handler, null);
         handler.getEdges().add(edge);
 
-        String cssurl = HandlerUI.class.getResource("style.css").toExternalForm();
+        String cssurl = HandlerBody.class.getResource("style.css").toExternalForm();
         getStylesheets().add(cssurl);
 
         BorderPane borderpane = new BorderPane();
@@ -68,7 +68,7 @@ public class HandlerUI extends BorderPane {
         title.setPadding(new Insets(0, 0, 0, 28));
 
         handler.colorProperty().addListener(change -> setColor(handler.getColor()));
-        setColor(MinionHandlerColor.BLUE.toColor());
+        setColor(MinionHandlerColor.BLUE.toFXColor());
         titleBox.setPrefHeight(24);
         borderpane.setTop(titleBox);
 
@@ -92,11 +92,11 @@ public class HandlerUI extends BorderPane {
     private void colorMenu(MenuButton menu, MinionHandler handler) {
         for (MinionHandlerColor color : MinionHandlerColor.values()) {
             Label graphic = new Label("");
-            graphic.setBackground(new Background(new BackgroundFill(color.toColor(), null, null)));
+            graphic.setBackground(new Background(new BackgroundFill(color.toFXColor(), null, null)));
             graphic.setPrefWidth(24);
             MenuItem item = new MenuItem(color.prettyName(), graphic);
             item.setOnAction(event -> {
-                handler.setColor(color.toColor());
+                handler.setColor(color.toFXColor());
             });
             menu.getItems().add(item);
         }

@@ -1,12 +1,12 @@
-package net.objectof.actof.minion.components.handlers.ui;
+package net.objectof.actof.minion.components.handlers.sidebar;
 
 
 import java.io.IOException;
 
 import javafx.scene.control.ListCell;
-import net.objectof.actof.minion.classpath.minionhandler.MinionHandler;
-import net.objectof.actof.minion.classpath.minionhandler.MinionHandler.IconSize;
-import net.objectof.actof.minion.classpath.minionhandler.MinionHandler.IconStyle;
+import net.objectof.actof.minion.common.minionhandler.MinionHandler;
+import net.objectof.actof.minion.common.minionhandler.MinionHandler.IconSize;
+import net.objectof.actof.minion.common.minionhandler.MinionHandler.IconStyle;
 
 
 public class HandlerCell extends ListCell<MinionHandler> {

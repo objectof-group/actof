@@ -8,9 +8,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
-import net.objectof.actof.minion.classpath.minionhandler.MinionHandler;
-import net.objectof.actof.minion.classpath.minionhandler.MinionHandler.IconSize;
-import net.objectof.actof.minion.classpath.minionhandler.MinionHandler.IconStyle;
+import net.objectof.actof.minion.common.minionhandler.MinionHandler;
+import net.objectof.actof.minion.common.minionhandler.MinionHandler.IconSize;
+import net.objectof.actof.minion.common.minionhandler.MinionHandler.IconStyle;
 
 
 public class HandlerIcon extends Pane {

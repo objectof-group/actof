@@ -11,11 +11,11 @@ import javafx.scene.layout.BorderPane;
 import net.objectof.actof.common.controller.IActofUIController;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.util.FXUtil;
-import net.objectof.actof.minion.classpath.minionhandler.MinionHandler;
-import net.objectof.actof.minion.classpath.sources.MinionSource;
+import net.objectof.actof.minion.common.classpath.sources.MinionSource;
+import net.objectof.actof.minion.common.minionhandler.MinionHandler;
 import net.objectof.actof.minion.components.classpath.change.ClasspathChange;
 import net.objectof.actof.minion.components.handlers.graph.HandlerNode;
-import net.objectof.actof.minion.components.handlers.ui.HandlerCell;
+import net.objectof.actof.minion.components.handlers.sidebar.HandlerCell;
 import net.objectof.actof.widgets.network.NetworkPane;
 import net.objectof.actof.widgets.network.edgestyles.CubicEdgeStyle;
 

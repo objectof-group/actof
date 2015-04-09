@@ -1,4 +1,4 @@
-package net.objectof.actof.minion.classpath.minionhandler;
+package net.objectof.actof.minion.common.minionhandler;
 
 
 import javafx.beans.property.ObjectProperty;
@@ -11,6 +11,10 @@ import net.objectof.actof.widgets.network.INetworkVertex;
 
 
 public class MinionHandler extends INetworkVertex {
+
+    public enum Category {
+        ADAPTER, AUTHENTICATOR, AUTHORIZER, BRANCH, BROADCASTER, COLLECTOR, ENDPOINT, FORWARDER, GENERIC, HIERARCHY, INSTRUMENTATION, INTERFACE, PERSIST, QUEUE, REGISTER, ROUTER, SCHEDULE, SERVICE, STEP, STREAMING, TIMER, TRANSFORM;
+    }
 
     public enum IconStyle {
         WHITE, BLACK
@@ -26,11 +30,11 @@ public class MinionHandler extends INetworkVertex {
 
     StringProperty title;
     Class<?> handlerClass;
-    MinionHandlerCategory category;
+    Category category;
 
-    private ObjectProperty<Color> color = new SimpleObjectProperty<Color>(MinionHandlerColor.BLUE.toColor());
+    private ObjectProperty<Color> color = new SimpleObjectProperty<Color>(MinionHandlerColor.BLUE.toFXColor());
 
-    public MinionHandler(Class<?> cls, MinionHandlerCategory category) {
+    public MinionHandler(Class<?> cls, Category category) {
         this.handlerClass = cls;
         this.category = category;
         title = new SimpleStringProperty(cls.getSimpleName());
@@ -46,7 +50,7 @@ public class MinionHandler extends INetworkVertex {
         return getTitle();
     }
 
-    public MinionHandlerCategory getCategory() {
+    public Category getCategory() {
         return category;
     }
 

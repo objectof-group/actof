@@ -1,4 +1,4 @@
-package net.objectof.actof.minion.classpath.sources;
+package net.objectof.actof.minion.common.classpath;
 
 
 import java.lang.reflect.Modifier;
@@ -9,9 +9,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import net.objectof.actof.minion.classpath.IsolatedClassLoader;
-import net.objectof.actof.minion.classpath.minionhandler.MinionHandler;
-import net.objectof.actof.minion.classpath.minionhandler.MinionHandlerCategory;
+import net.objectof.actof.minion.common.classpath.sources.MinionSource;
+import net.objectof.actof.minion.common.minionhandler.MinionHandler;
+import net.objectof.actof.minion.common.minionhandler.MinionHandler.Category;
 
 import org.reflections.Reflections;
 
@@ -62,7 +62,7 @@ public class MinionBaseSource implements MinionSource {
                 if (Modifier.isAbstract(cls.getModifiers())) continue;
                 if (cls.isAnonymousClass()) continue;
 
-                MinionHandler handler = new MinionHandler(cls, MinionHandlerCategory.GENERIC);
+                MinionHandler handler = new MinionHandler(cls, Category.GENERIC);
                 handlers.add(handler);
 
             }
