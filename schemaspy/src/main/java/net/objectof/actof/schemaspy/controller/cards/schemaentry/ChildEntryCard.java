@@ -1,71 +1,31 @@
-package net.objectof.actof.schemaspy.controller.cards;
+package net.objectof.actof.schemaspy.controller.cards.schemaentry;
 
 
 import java.util.List;
 
 import javafx.geometry.Insets;
-import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import net.objectof.actof.common.controller.schema.AttributeEntry;
 import net.objectof.actof.common.controller.schema.schemaentry.ISchemaEntry;
 import net.objectof.actof.common.controller.schema.schemaentry.SchemaEntry;
-import net.objectof.actof.common.icons.ActofIcons;
-import net.objectof.actof.common.icons.ActofIcons.Icon;
-import net.objectof.actof.common.icons.ActofIcons.Size;
 import net.objectof.actof.common.util.RepoUtils;
 import net.objectof.actof.widgets.KeyValuePane;
-import net.objectof.actof.widgets.card.Card;
 import net.objectof.model.Stereotype;
 
 
-public class ChildEntryCard extends Card {
+public class ChildEntryCard extends ChildEntryBase {
 
     public ChildEntryCard(TreeTableView<SchemaEntry> tree, TreeItem<SchemaEntry> treeitem) {
+        super(tree, treeitem);
 
         ISchemaEntry entry = (ISchemaEntry) treeitem.getValue();
-
-        setInnerPadding(new Insets(12));
-
         List<AttributeEntry> attrs = entry.getAttributes();
 
-        if (entry.getStereotype() == Stereotype.REF) {
-            String st = RepoUtils.prettyPrint(entry.getStereotype());
-            AttributeEntry href = entry.getAttribute("m:href");
-            attrs.remove(href);
-            setDescription(st + " to " + href.getValue());
-        } else {
-            setDescription(RepoUtils.prettyPrint(entry.getStereotype()));
-        }
-
-        Node desc = getDescription();
-        AnchorPane.setTopAnchor(desc, 0d);
-        AnchorPane.setBottomAnchor(desc, 0d);
-        AnchorPane.setLeftAnchor(desc, 0d);
-        AnchorPane.setRightAnchor(desc, 0d);
-        desc = new AnchorPane(desc);
-        Button rem = new Button("", ActofIcons.getIconView(Icon.REMOVE, Size.BUTTON));
-        rem.setOnAction(event -> {
-            treeitem.getParent().getValue().removeChild(entry);
-        });
-        rem.getStyleClass().add("tool-bar-button");
-        HBox box = new HBox(10, desc, rem);
-        setDescription(box);
-
-        Hyperlink node = new Hyperlink(entry.getName());
-        node.setPadding(new Insets(0));
-        node.setStyle("-fx-font-size: 13pt");
-        node.setOnAction(event -> {
-            tree.getSelectionModel().select(treeitem);
-        });
-        setTitle(node);
+        titleNode.setStyle("-fx-font-size: 13pt");
 
         VBox panes = new VBox();
 
@@ -125,4 +85,5 @@ public class ChildEntryCard extends Card {
         }
 
     }
+
 }

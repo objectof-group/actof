@@ -8,7 +8,7 @@ import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.actof.repospy.controllers.navigator.editor.cards.leaf.LeafCard;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.RepoSpyTreeItem;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.ILeafNode;
-import net.objectof.actof.widgets.masonry.MasonryPane;
+import net.objectof.actof.widgets.masonry.MasonryPane.Layout;
 import net.objectof.aggr.Listing;
 import net.objectof.model.Resource;
 
@@ -17,7 +17,7 @@ public class IndexedLayout extends AggregateLayout {
 
     public IndexedLayout(RepoSpyTreeItem treeitem, RepoSpyController repospy) {
         super(treeitem, repospy);
-        cards.setLayout(MasonryPane.LAYOUT_GRID);
+        cards.setLayout(Layout.GRID);
         updateUI();
     }
 

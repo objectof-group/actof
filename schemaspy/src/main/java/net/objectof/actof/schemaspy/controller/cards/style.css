@@ -9,3 +9,8 @@
 .tool-bar-button:focused {
 	-fx-background-color: -fx-focus-color, -fx-inner-border, -fx-body-color, -fx-faint-focus-color, -fx-body-color;
 }
+
+.entry-separator .line {
+    -fx-border-color: transparent transparent #dddddd transparent, transparent;
+    -fx-border-insets: 0 0 1 0, 0 0 0 0;
+}

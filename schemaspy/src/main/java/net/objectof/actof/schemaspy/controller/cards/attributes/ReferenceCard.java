@@ -1,4 +1,4 @@
-package net.objectof.actof.schemaspy.controller.cards;
+package net.objectof.actof.schemaspy.controller.cards.attributes;
 
 
 import java.util.ArrayList;

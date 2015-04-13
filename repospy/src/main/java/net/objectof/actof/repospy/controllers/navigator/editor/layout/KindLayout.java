@@ -19,7 +19,7 @@ import net.objectof.actof.repospy.controllers.navigator.treemodel.TreeNode;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.IAggregateNode;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.IKindNode;
 import net.objectof.actof.widgets.card.Card;
-import net.objectof.actof.widgets.masonry.MasonryPane;
+import net.objectof.actof.widgets.masonry.MasonryPane.Layout;
 import net.objectof.model.Resource;
 
 
@@ -30,7 +30,7 @@ public class KindLayout extends AbstractLayout {
 
     public KindLayout(RepoSpyTreeItem treeitem, RepoSpyController repospy) {
         super(treeitem, repospy, 350);
-        cards.setLayout(MasonryPane.LAYOUT_GRID);
+        cards.setLayout(Layout.GRID);
         this.node = (IKindNode) treeitem.getValue();
         this.treeitem = treeitem;
 

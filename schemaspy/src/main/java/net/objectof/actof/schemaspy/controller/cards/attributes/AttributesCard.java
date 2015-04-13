@@ -1,4 +1,4 @@
-package net.objectof.actof.schemaspy.controller.cards;
+package net.objectof.actof.schemaspy.controller.cards.attributes;
 
 
 import java.io.IOException;
@@ -45,7 +45,7 @@ public class AttributesCard extends SchemaSpyCard {
     @Override
     public void init(SchemaSpyController schemaspy, List<AttributeEntry> unhandled) {
 
-        URL css = AttributesCard.class.getResource("style.css");
+        URL css = AttributesCard.class.getResource("../style.css");
         this.getStylesheets().add(css.toString());
 
         add = new Button("", ActofIcons.getIconView(Icon.ADD, Size.BUTTON));

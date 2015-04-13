@@ -17,9 +17,9 @@
               <content>
                 <AnchorPane fx:id="cardanchor">
                      <children>
-                        <VBox fx:id="cardpane" spacing="6.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <VBox fx:id="cardpane" spacing="12.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <padding>
-                              <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
+                              <Insets bottom="12.0" left="8.0" right="8.0" top="12.0" />
                            </padding>
                         </VBox>
                      </children>

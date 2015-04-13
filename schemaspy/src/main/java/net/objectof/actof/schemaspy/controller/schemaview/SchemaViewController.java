@@ -17,7 +17,6 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.TreeItem;
@@ -59,10 +58,14 @@ import net.objectof.actof.common.util.AlphaNumericComparitor;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.actof.schemaspy.SchemaSpyController;
-import net.objectof.actof.schemaspy.controller.cards.ChildEntryCard;
-import net.objectof.actof.schemaspy.controller.cards.SchemaSpyCard;
+import net.objectof.actof.schemaspy.controller.cards.attributes.SchemaSpyCard;
+import net.objectof.actof.schemaspy.controller.cards.schemaentry.ChildEntryCard;
+import net.objectof.actof.schemaspy.controller.cards.schemaentry.ChildEntryLine;
 import net.objectof.actof.schemaspy.util.CodeGen;
+import net.objectof.actof.widgets.card.BlankCard;
 import net.objectof.actof.widgets.card.Card;
+import net.objectof.actof.widgets.masonry.MasonryPane;
+import net.objectof.actof.widgets.masonry.MasonryPane.Layout;
 import net.objectof.connector.Connector;
 import net.objectof.connector.Connector.Initialize;
 
@@ -447,16 +450,31 @@ public class SchemaViewController extends IActofUIController {
             }
 
             if (selected.getChildren().size() > 0) {
-                Separator sep = new Separator();
-                sep.setPadding(new Insets(10, 25, 10, 25));
-                cardpane.getChildren().add(sep);
-            }
-        }
 
-        // child node cards
-        for (TreeItem<SchemaEntry> subitem : selected.getChildren()) {
-            Card childCard = new ChildEntryCard(tree, subitem);
-            cardpane.getChildren().add(childCard);
+                // child node cards
+                MasonryPane childrenPane = new MasonryPane(350, Layout.SHORTEST_COLUMN);
+                childrenPane.setVerticalSpacing(0);
+                childrenPane.setHorizontalSpacing(8);
+                childrenPane.setPadding(new Insets(0, 0, 0, 16 + 2 + 2 + 2));
+                for (TreeItem<SchemaEntry> subitem : selected.getChildren()) {
+                    Card childCard = new ChildEntryLine(tree, subitem);
+                    childCard.setPadding(new Insets(0));
+                    childrenPane.getChildren().add(childCard);
+                }
+                BlankCard childrenCard = new BlankCard();
+                childrenCard.card.setCenter(childrenPane);
+                childrenCard.setInnerPadding(new Insets(8, 4, 8, 4));
+                cardpane.getChildren().add(childrenCard);
+
+            }
+
+        } else {
+
+            // child node cards
+            for (TreeItem<SchemaEntry> subitem : selected.getChildren()) {
+                Card childCard = new ChildEntryCard(tree, subitem);
+                cardpane.getChildren().add(childCard);
+            }
         }
 
     }

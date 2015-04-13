@@ -9,6 +9,7 @@ import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.RepoSpyTreeItem;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.TreeNode;
 import net.objectof.actof.widgets.masonry.MasonryPane;
+import net.objectof.actof.widgets.masonry.MasonryPane.Layout;
 
 
 public abstract class AbstractLayout extends BorderPane {
@@ -19,9 +20,9 @@ public abstract class AbstractLayout extends BorderPane {
     protected RepoSpyTreeItem treeitem;
 
     public AbstractLayout(RepoSpyTreeItem treeitem, RepoSpyController repospy, double columnWidth) {
-        this.cards = new MasonryPane(columnWidth);
-        cards.setPadding(new Insets(8));
-        cards.setSpacing(8);
+        this.cards = new MasonryPane(columnWidth, Layout.SHORTEST_COLUMN);
+        cards.setPadding(new Insets(10));
+        cards.setSpacing(10);
         this.repospy = repospy;
         this.treeitem = treeitem;
 

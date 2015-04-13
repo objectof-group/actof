@@ -8,7 +8,7 @@ import javafx.scene.layout.BorderPane;
 
 public class BlankCard extends AnchorPane {
 
-    protected BorderPane card;
+    public BorderPane card;
 
     private double radius = 3;
     private String colour = "#ffffff";

@@ -17,6 +17,7 @@ public class Card extends BlankCard {
 
     private HBox contentBox;
     private AnchorPane titleBox, descriptionBox, titleContentBox;
+    private Separator sep;
 
     public Card() {
 
@@ -24,11 +25,12 @@ public class Card extends BlankCard {
         contentBox = new HBox();
         titleBox = new AnchorPane();
         descriptionBox = new AnchorPane();
-        Separator sep = new Separator(Orientation.HORIZONTAL);
+        sep = new Separator(Orientation.HORIZONTAL);
 
-        HBox.setHgrow(sep, Priority.ALWAYS);
         sep.setVisible(false);
-        HBox top = new HBox(titleBox, titleContentBox, sep, descriptionBox);
+        AnchorPane sepAnchor = new AnchorPane(anchored(sep));
+        HBox.setHgrow(sepAnchor, Priority.ALWAYS);
+        HBox top = new HBox(titleBox, titleContentBox, sepAnchor, descriptionBox);
         card.setTop(top);
         card.setCenter(contentBox);
 
@@ -51,11 +53,7 @@ public class Card extends BlankCard {
     public void setTitle(Node titleNode) {
         titleBox.getChildren().clear();
         if (titleNode == null) { return; }
-        AnchorPane.setTopAnchor(titleNode, 0d);
-        AnchorPane.setBottomAnchor(titleNode, 0d);
-        AnchorPane.setLeftAnchor(titleNode, 0d);
-        AnchorPane.setRightAnchor(titleNode, 0d);
-        titleBox.getChildren().add(titleNode);
+        titleBox.getChildren().add(anchored(titleNode));
     }
 
     public Node getTitle() {
@@ -74,14 +72,8 @@ public class Card extends BlankCard {
     public void setDescription(Node descriptionNode) {
         descriptionBox.getChildren().clear();
         if (descriptionNode == null) { return; }
-        AnchorPane.setTopAnchor(descriptionNode, 0d);
-        AnchorPane.setBottomAnchor(descriptionNode, 0d);
-        AnchorPane.setLeftAnchor(descriptionNode, 0d);
-        AnchorPane.setRightAnchor(descriptionNode, 0d);
-        descriptionBox.getChildren().add(descriptionNode);
-
+        descriptionBox.getChildren().add(anchored(descriptionNode));
         fixPadding();
-
     }
 
     public Node getDescription() {
@@ -128,12 +120,7 @@ public class Card extends BlankCard {
     public void setTitleContent(Node node) {
         titleContentBox.getChildren().clear();
         if (node == null) { return; }
-
-        AnchorPane.setTopAnchor(node, 0d);
-        AnchorPane.setBottomAnchor(node, 0d);
-        AnchorPane.setLeftAnchor(node, 0d);
-        AnchorPane.setRightAnchor(node, 0d);
-        titleContentBox.getChildren().add(node);
+        titleContentBox.getChildren().add(anchored(node));
     }
 
     public Node getTitleContent() {
@@ -152,5 +139,17 @@ public class Card extends BlankCard {
             titleContentBox.setPadding(new Insets(0, 0, 6, 0));
         }
 
+    }
+
+    public Separator getSeparator() {
+        return sep;
+    }
+
+    private Node anchored(Node node) {
+        AnchorPane.setTopAnchor(node, 0d);
+        AnchorPane.setBottomAnchor(node, 0d);
+        AnchorPane.setLeftAnchor(node, 0d);
+        AnchorPane.setRightAnchor(node, 0d);
+        return node;
     }
 }
