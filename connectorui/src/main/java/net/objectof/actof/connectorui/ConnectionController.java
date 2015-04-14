@@ -24,6 +24,7 @@ import net.objectof.actof.common.controller.IActofUIController;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.controller.change.IChangeController;
 import net.objectof.actof.common.util.FXUtil;
+import net.objectof.actof.connectorui.parametereditor.DirectoryParameterEditor;
 import net.objectof.actof.connectorui.parametereditor.FilenameParameterEditor;
 import net.objectof.actof.connectorui.parametereditor.ParameterEditor;
 import net.objectof.actof.connectorui.parametereditor.PasswordParameterEditor;
@@ -182,6 +183,9 @@ public class ConnectionController extends IActofUIController {
             switch (parameter.getType()) {
                 case FILE:
                     editor = new FilenameParameterEditor(parameter, stage);
+                    break;
+                case DIRECTORY:
+                    editor = new DirectoryParameterEditor(parameter, stage);
                     break;
                 case INT:
                     editor = new TextParameterEditor(parameter);
