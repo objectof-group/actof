@@ -1,6 +1,12 @@
 package net.objectof.actof.minion.common.minionhandler;
 
 
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -8,6 +14,8 @@ import javafx.beans.property.StringProperty;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import net.objectof.actof.widgets.network.INetworkVertex;
+
+import org.apache.commons.beanutils.PropertyUtilsBean;
 
 
 public class MinionHandler extends INetworkVertex {
@@ -32,18 +40,22 @@ public class MinionHandler extends INetworkVertex {
     Class<?> handlerClass;
     Category category;
 
+    private List<PropertyDescriptor> properties;
+
     private ObjectProperty<Color> color = new SimpleObjectProperty<Color>(MinionHandlerColor.BLUE.toFXColor());
 
     public MinionHandler(Class<?> cls, Category category) {
         this.handlerClass = cls;
         this.category = category;
         title = new SimpleStringProperty(cls.getSimpleName());
+        properties = computeProperties();
     }
 
     public MinionHandler(MinionHandler other) {
         this.title = other.title;
         this.handlerClass = other.handlerClass;
         this.category = other.category;
+        properties = computeProperties();
     }
 
     public String toString() {
@@ -76,7 +88,6 @@ public class MinionHandler extends INetworkVertex {
             default:
                 String dir = size.getSize() + "-" + style.name().toLowerCase();
                 String filename = "icons/" + dir + "/" + category.name().toLowerCase() + ".png";
-                System.out.println(filename);
                 return new Image(MinionHandler.class.getResourceAsStream(filename));
 
         }
@@ -92,5 +103,38 @@ public class MinionHandler extends INetworkVertex {
 
     public final void setColor(final Color color) {
         this.colorProperty().set(color);
+    }
+
+    public List<PropertyDescriptor> getProperties() {
+        return properties;
+    }
+
+    private List<PropertyDescriptor> computeProperties() {
+
+        List<String> reserved = new ArrayList<>(Arrays.asList("returnClass", "actionClass", "argumentClass", "type",
+                "class"));
+        List<PropertyDescriptor> propertyList = new ArrayList<>();
+
+        PropertyUtilsBean util = new PropertyUtilsBean();
+        PropertyDescriptor[] properties = util.getPropertyDescriptors(handlerClass);
+        for (PropertyDescriptor property : properties) {
+
+            String name = property.getName();
+            Method read = property.getReadMethod();
+            Method write = property.getWriteMethod();
+
+            if (read == null || write == null) {
+                continue;
+            }
+
+            if (reserved.contains(name)) {
+                continue;
+            }
+
+            propertyList.add(property);
+        }
+
+        return propertyList;
+
     }
 }

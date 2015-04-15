@@ -61,12 +61,9 @@ public class MinionJarSource implements MinionSource {
 
                 URL url = ClasspathHelper.forClass(cls, loader);
                 if (!url.getProtocol().equals("jar")) continue;
-                System.out.println(url);
                 url = new URL(url.getPath());
                 String jarpath = url.getPath();
                 jarpath = jarpath.substring(0, jarpath.length() - 2);
-                System.out.println(jarpath);
-                System.out.println("------------------------------");
 
                 if (!jarpath.equals(jarfile.getAbsolutePath())) continue;
 

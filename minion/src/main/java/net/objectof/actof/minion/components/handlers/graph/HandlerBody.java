@@ -1,6 +1,8 @@
 package net.objectof.actof.minion.components.handlers.graph;
 
 
+import java.beans.PropertyDescriptor;
+
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -42,6 +44,9 @@ public class HandlerBody extends BorderPane {
 
         KeyValuePane panel = new KeyValuePane();
         panel.put("ref", refBox(parent, handler));
+        for (PropertyDescriptor property : handler.getProperties()) {
+            panel.put(property.getName(), refBox(parent, handler));
+        }
         panel.setHgap(3);
         panel.setVgap(3);
         panel.setPadding(new Insets(6));
