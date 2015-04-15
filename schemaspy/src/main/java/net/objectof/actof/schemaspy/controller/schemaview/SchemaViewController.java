@@ -26,7 +26,6 @@ import javafx.scene.control.cell.TextFieldTreeTableCell;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
@@ -62,7 +61,6 @@ import net.objectof.actof.schemaspy.controller.cards.attributes.SchemaSpyCard;
 import net.objectof.actof.schemaspy.controller.cards.schemaentry.ChildEntryCard;
 import net.objectof.actof.schemaspy.controller.cards.schemaentry.ChildEntryLine;
 import net.objectof.actof.schemaspy.util.CodeGen;
-import net.objectof.actof.widgets.card.BlankCard;
 import net.objectof.actof.widgets.card.Card;
 import net.objectof.actof.widgets.masonry.MasonryPane;
 import net.objectof.actof.widgets.masonry.MasonryPane.Layout;
@@ -90,9 +88,8 @@ public class SchemaViewController extends IActofUIController {
     private HBox breadcrumbBox;
 
     @FXML
-    private VBox cardpane;
-    @FXML
     private ScrollPane cardscroller;
+    private MasonryPane cardpane;
     @FXML
     private BorderPane editor;
 
@@ -115,6 +112,11 @@ public class SchemaViewController extends IActofUIController {
     @FXML
     protected void initialize() throws SAXException, IOException, ParserConfigurationException, XMLParseException {
 
+        cardpane = new MasonryPane(0, Layout.ROUND_ROBIN);
+        cardpane.setPadding(new Insets(12, 8, 12, 8));
+        cardpane.setVerticalSpacing(12);
+        cardpane.setHorizontalSpacing(12);
+        cardscroller.setContent(cardpane);
         cardscroller.setStyle("-fx-background-color:transparent;");
         cardscroller.setFitToWidth(true);
 
@@ -454,16 +456,18 @@ public class SchemaViewController extends IActofUIController {
                 // child node cards
                 MasonryPane childrenPane = new MasonryPane(350, Layout.SHORTEST_COLUMN);
                 childrenPane.setVerticalSpacing(0);
-                childrenPane.setHorizontalSpacing(8);
-                childrenPane.setPadding(new Insets(0, 0, 0, 16 + 2 + 2 + 2));
+                childrenPane.setHorizontalSpacing(10);
+                childrenPane.setPadding(new Insets(0, 0, 0, 16 + 2 + 5 + 5));
                 for (TreeItem<SchemaEntry> subitem : selected.getChildren()) {
                     Card childCard = new ChildEntryLine(tree, subitem);
                     childCard.setPadding(new Insets(0));
                     childrenPane.getChildren().add(childCard);
                 }
-                BlankCard childrenCard = new BlankCard();
-                childrenCard.card.setCenter(childrenPane);
-                childrenCard.setInnerPadding(new Insets(8, 4, 8, 4));
+
+                Card childrenCard = new Card();
+                childrenCard.setTitle("Children");
+                childrenCard.setContent(childrenPane);
+                // childrenCard.setInnerPadding(new Insets(8, 4, 8, 4));
                 cardpane.getChildren().add(childrenCard);
 
             }

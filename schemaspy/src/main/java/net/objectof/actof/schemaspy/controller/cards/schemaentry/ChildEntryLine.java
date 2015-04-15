@@ -26,5 +26,11 @@ public class ChildEntryLine extends ChildEntryBase {
         setOnMouseEntered(event -> rem.setVisible(true));
         setOnMouseExited(event -> rem.setVisible(false));
 
+        StereotypeChooser st = new StereotypeChooser(treeitem.getValue());
+        st.getStyleClass().add("stereotype-selector");
+
+        descriptionBox.getChildren().setAll(st, rem);
+        descriptionBox.setPadding(new Insets(0));
+
     }
 }

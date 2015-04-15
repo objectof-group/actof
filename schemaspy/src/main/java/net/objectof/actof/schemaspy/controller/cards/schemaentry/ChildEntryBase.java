@@ -28,6 +28,7 @@ public class ChildEntryBase extends Card {
 
     protected Hyperlink titleNode;
     protected Button rem;
+    protected HBox descriptionBox;
 
     public ChildEntryBase(TreeTableView<SchemaEntry> tree, TreeItem<SchemaEntry> treeitem) {
 
@@ -59,9 +60,9 @@ public class ChildEntryBase extends Card {
             treeitem.getParent().getValue().removeChild(entry);
         });
         rem.getStyleClass().add("tool-bar-button");
-        HBox box = new HBox(2, desc, rem);
-        box.setPadding(new Insets(0, 0, 0, 10));
-        setDescription(box);
+        descriptionBox = new HBox(2, desc, rem);
+        descriptionBox.setPadding(new Insets(0, 0, 0, 10));
+        setDescription(descriptionBox);
 
         titleNode = new Hyperlink(entry.getName());
         titleNode.setPadding(new Insets(0));

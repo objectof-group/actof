@@ -21,6 +21,9 @@ public class Card extends BlankCard {
 
     public Card() {
 
+        BorderPane card = new BorderPane();
+        super.setContent(card);
+
         titleContentBox = new AnchorPane();
         contentBox = new HBox();
         titleBox = new AnchorPane();

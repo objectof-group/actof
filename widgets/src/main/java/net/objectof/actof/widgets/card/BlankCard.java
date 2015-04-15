@@ -2,13 +2,13 @@ package net.objectof.actof.widgets.card;
 
 
 import javafx.geometry.Insets;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;
 
 
-public class BlankCard extends AnchorPane {
+public class BlankCard extends BorderPane {
 
-    public BorderPane card;
+    public BorderPane inner;
 
     private double radius = 3;
     private String colour = "#ffffff";
@@ -18,15 +18,22 @@ public class BlankCard extends AnchorPane {
     private boolean hasShadow = true;
 
     public BlankCard() {
-        card = new BorderPane();
-        AnchorPane.setTopAnchor(card, 0d);
-        AnchorPane.setBottomAnchor(card, 0d);
-        AnchorPane.setLeftAnchor(card, 0d);
-        AnchorPane.setRightAnchor(card, 0d);
-        getChildren().add(card);
+
         setPadding(new Insets(0));
-        card.setPadding(new Insets(10));
+
+        inner = new BorderPane();
+        setCenter(inner);
+        inner.setPadding(new Insets(10));
+
         buildStyle();
+    }
+
+    public void setContent(Node card) {
+        inner.setCenter(card);
+    }
+
+    public Node getContent() {
+        return inner.getCenter();
     }
 
     public void setRadius(double radius) {
@@ -93,11 +100,11 @@ public class BlankCard extends AnchorPane {
     }
 
     public void setInnerPadding(Insets padding) {
-        card.setPadding(padding);
+        inner.setPadding(padding);
     }
 
     public Insets getInnerPadding() {
-        return card.getPadding();
+        return inner.getPadding();
     }
 
     private void buildStyle() {
@@ -109,6 +116,7 @@ public class BlankCard extends AnchorPane {
             shadow = "-fx-effect: dropshadow(gaussian, " + shadowColour + " , " + shadowRadius + ", -2, "
                     + shadowOffsetY + "," + shadowOffsetX + ")";
         }
-        card.setStyle(rad + col + shadow);
+        inner.setStyle(rad + col + shadow);
     }
+
 }

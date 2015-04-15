@@ -14,3 +14,22 @@
     -fx-border-color: transparent transparent #dddddd transparent, transparent;
     -fx-border-insets: 0 0 1 0, 0 0 0 0;
 }
+
+
+.stereotype-selector {
+	-fx-background-color: transparent;
+}
+
+.stereotype-selector:focused {
+	-fx-border-insets: 0 0 -1 0;
+	-fx-border-width: 0 0 1 0;
+	-fx-border-color: -fx-focus-color;
+}
+
+.stereotype-selector > .label {
+	-fx-text-fill: #777777;
+}
+
+.stereotype-selector .arrow {
+	-fx-background-color: #777777;
+}
