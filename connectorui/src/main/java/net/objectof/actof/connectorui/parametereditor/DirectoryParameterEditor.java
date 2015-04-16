@@ -10,7 +10,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Window;
-import net.objectof.connector.parameter.Parameter;
+import net.objectof.connector.Parameter;
 
 
 public class DirectoryParameterEditor extends HBox implements ParameterEditor {

@@ -11,10 +11,10 @@ import net.objectof.actof.connectorui.beans.Connection;
 import net.objectof.actof.connectorui.beans.Last;
 import net.objectof.actof.connectorui.beans.Saved;
 import net.objectof.connector.Connector;
+import net.objectof.connector.Parameter;
 import net.objectof.connector.Connector.Initialize;
 import net.objectof.connector.Connectors;
 import net.objectof.connector.impl.IH2Connector;
-import net.objectof.connector.parameter.Parameter;
 import net.objectof.model.Package;
 import net.objectof.model.Transaction;
 

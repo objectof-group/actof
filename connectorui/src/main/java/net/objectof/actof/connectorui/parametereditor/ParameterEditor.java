@@ -2,7 +2,7 @@ package net.objectof.actof.connectorui.parametereditor;
 
 
 import javafx.scene.Node;
-import net.objectof.connector.parameter.Parameter;
+import net.objectof.connector.Parameter;
 
 
 public interface ParameterEditor {

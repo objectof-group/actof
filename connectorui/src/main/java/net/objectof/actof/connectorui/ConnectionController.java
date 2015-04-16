@@ -33,7 +33,7 @@ import net.objectof.actof.widgets.KeyValuePane;
 import net.objectof.connector.AbstractConnector;
 import net.objectof.connector.Connector;
 import net.objectof.connector.Connectors;
-import net.objectof.connector.parameter.Parameter;
+import net.objectof.connector.Parameter;
 
 import org.controlsfx.dialog.Dialogs;
 
@@ -172,37 +172,12 @@ public class ConnectionController extends IActofUIController {
         if (conn == null) { return; }
 
         for (Parameter parameter : conn.getParameters()) {
-            if (parameter.getType() == null) {
-                continue;
-            }
             // We do something special for this parameter below
             if (parameter.getTitle().equals(AbstractConnector.KEY_REPOSITORY)) {
                 continue;
             }
 
-            switch (parameter.getType()) {
-                case FILE:
-                    editor = new FilenameParameterEditor(parameter, stage);
-                    break;
-                case DIRECTORY:
-                    editor = new DirectoryParameterEditor(parameter, stage);
-                    break;
-                case INT:
-                    editor = new TextParameterEditor(parameter);
-                    break;
-                case PASSWORD:
-                    editor = new PasswordParameterEditor(parameter);
-                    break;
-                case REAL:
-                    editor = new TextParameterEditor(parameter);
-                    break;
-                case STRING:
-                    editor = new TextParameterEditor(parameter);
-                    break;
-                default:
-                    break;
-            }
-
+            editor = getEditorForHint(parameter);
             editor.setCreate(create);
             grid.put(parameter.getTitle(), editor.asNode());
         }
@@ -236,6 +211,23 @@ public class ConnectionController extends IActofUIController {
 
         if (stage != null) {
             stage.sizeToScene();
+        }
+
+    }
+
+    public ParameterEditor getEditorForHint(Parameter parameter) {
+
+        if (parameter.getHint() == null) { return new TextParameterEditor(parameter); }
+
+        switch (parameter.getHint()) {
+            case FILE:
+                return new FilenameParameterEditor(parameter, stage);
+            case DIRECTORY:
+                return new DirectoryParameterEditor(parameter, stage);
+            case PASSWORD:
+                return new PasswordParameterEditor(parameter);
+            default:
+                return new TextParameterEditor(parameter);
         }
 
     }

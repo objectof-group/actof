@@ -7,7 +7,7 @@ import java.util.Map;
 
 import net.objectof.connector.Connector;
 import net.objectof.connector.ConnectorException;
-import net.objectof.connector.parameter.Parameter;
+import net.objectof.connector.Parameter;
 import net.objectof.model.Package;
 
 import org.w3c.dom.Document;
