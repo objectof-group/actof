@@ -3,12 +3,12 @@ package net.objectof.actof.widgets.card;
 
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 
 
-public class BlankCard extends BorderPane {
+public class BlankCard extends StackPane {
 
-    public BorderPane inner;
+    public StackPane inner;
 
     private double radius = 3;
     private String colour = "#ffffff";
@@ -21,19 +21,20 @@ public class BlankCard extends BorderPane {
 
         setPadding(new Insets(0));
 
-        inner = new BorderPane();
-        setCenter(inner);
+        inner = new StackPane();
+        getChildren().setAll(inner);
         inner.setPadding(new Insets(10));
 
         buildStyle();
     }
 
     public void setContent(Node card) {
-        inner.setCenter(card);
+        inner.getChildren().setAll(card);
     }
 
     public Node getContent() {
-        return inner.getCenter();
+        if (inner.getChildren().isEmpty()) { return null; }
+        return inner.getChildren().get(0);
     }
 
     public void setRadius(double radius) {
