@@ -4,7 +4,7 @@ package net.objectof.actof.minion.common.minionhandler;
 import javafx.scene.paint.Color;
 
 
-public enum MinionHandlerColor {
+public enum MinionColor {
 
     RED {
 

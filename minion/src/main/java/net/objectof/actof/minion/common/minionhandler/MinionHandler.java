@@ -42,7 +42,7 @@ public class MinionHandler extends INetworkVertex {
 
     private List<PropertyDescriptor> properties;
 
-    private ObjectProperty<Color> color = new SimpleObjectProperty<Color>(MinionHandlerColor.BLUE.toFXColor());
+    private ObjectProperty<Color> color = new SimpleObjectProperty<Color>(MinionColor.BLUE.toFXColor());
 
     public MinionHandler(Class<?> cls, Category category) {
         this.handlerClass = cls;

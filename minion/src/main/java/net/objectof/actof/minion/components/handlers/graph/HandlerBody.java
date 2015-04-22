@@ -20,7 +20,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 import net.objectof.actof.minion.common.minionhandler.MinionHandler;
-import net.objectof.actof.minion.common.minionhandler.MinionHandlerColor;
+import net.objectof.actof.minion.common.minionhandler.MinionColor;
 import net.objectof.actof.widgets.KeyValuePane;
 import net.objectof.actof.widgets.network.INetworkEdge;
 import net.objectof.actof.widgets.network.NetworkEdge;
@@ -73,7 +73,7 @@ public class HandlerBody extends BorderPane {
         title.setPadding(new Insets(0, 0, 0, 28));
 
         handler.colorProperty().addListener(change -> setColor(handler.getColor()));
-        setColor(MinionHandlerColor.BLUE.toFXColor());
+        setColor(MinionColor.BLUE.toFXColor());
         titleBox.setPrefHeight(24);
         borderpane.setTop(titleBox);
 
@@ -95,7 +95,7 @@ public class HandlerBody extends BorderPane {
     }
 
     private void colorMenu(MenuButton menu, MinionHandler handler) {
-        for (MinionHandlerColor color : MinionHandlerColor.values()) {
+        for (MinionColor color : MinionColor.values()) {
             Label graphic = new Label("");
             graphic.setBackground(new Background(new BackgroundFill(color.toFXColor(), null, null)));
             graphic.setPrefWidth(24);
