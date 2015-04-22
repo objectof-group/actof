@@ -296,7 +296,7 @@ public class NavigatorController extends IActofUIController {
 
         // search clear button
         Button doclear = new Button("", new ImageView(new Image(
-                NavigatorController.class.getResourceAsStream("./icons/clear.png"))));
+                NavigatorController.class.getResourceAsStream("icons/clear.png"))));
         doclear.setStyle("-fx-background-color: null; -fx-padding: 3px;");
         doclear.setOnAction(event -> {
             querytext.setText("");
