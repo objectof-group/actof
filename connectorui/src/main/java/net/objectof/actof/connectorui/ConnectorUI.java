@@ -136,7 +136,12 @@ public class ConnectorUI implements Connector {
     }
 
     @Override
-    public List<String> getSchemaNames() throws ConnectorException {
-        return backer.getSchemaNames();
+    public List<String> getRepositoryNames() throws ConnectorException {
+        return backer.getRepositoryNames();
+    }
+
+    @Override
+    public boolean hasRepository(String name) throws ConnectorException {
+        return backer.hasRepository(name);
     }
 }

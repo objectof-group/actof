@@ -235,7 +235,7 @@ public class ConnectionController extends IActofUIController {
     private void updateRepoChoice(String def) {
         try {
             String selection = repoChoice.getSelectionModel().getSelectedItem();
-            repoChoice.getItems().setAll(getSelectedConnector().getSchemaNames());
+            repoChoice.getItems().setAll(getSelectedConnector().getRepositoryNames());
             if (selection != null) {
                 repoChoice.getSelectionModel().select(selection);
             } else {
