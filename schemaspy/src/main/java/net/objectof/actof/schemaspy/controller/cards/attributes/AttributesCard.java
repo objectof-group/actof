@@ -45,7 +45,7 @@ public class AttributesCard extends SchemaSpyCard {
     @Override
     public void init(SchemaSpyController schemaspy, List<AttributeEntry> unhandled) {
 
-        URL css = AttributesCard.class.getResource("../style.css");
+        URL css = AttributesCard.class.getResource("style.css");
         this.getStylesheets().add(css.toString());
 
         add = new Button("", ActofIcons.getIconView(Icon.ADD, Size.BUTTON));

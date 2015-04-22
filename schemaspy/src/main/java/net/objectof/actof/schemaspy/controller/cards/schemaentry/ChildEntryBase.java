@@ -19,7 +19,6 @@ import net.objectof.actof.common.icons.ActofIcons;
 import net.objectof.actof.common.icons.ActofIcons.Icon;
 import net.objectof.actof.common.icons.ActofIcons.Size;
 import net.objectof.actof.common.util.RepoUtils;
-import net.objectof.actof.schemaspy.controller.cards.attributes.AttributesCard;
 import net.objectof.actof.widgets.card.Card;
 import net.objectof.model.Stereotype;
 
@@ -32,7 +31,7 @@ public class ChildEntryBase extends Card {
 
     public ChildEntryBase(TreeTableView<SchemaEntry> tree, TreeItem<SchemaEntry> treeitem) {
 
-        URL css = AttributesCard.class.getResource("../style.css");
+        URL css = ChildEntryBase.class.getResource("style.css");
         this.getStylesheets().add(css.toString());
 
         ISchemaEntry entry = (ISchemaEntry) treeitem.getValue();
