@@ -30,10 +30,10 @@ import net.objectof.actof.connectorui.parametereditor.ParameterEditor;
 import net.objectof.actof.connectorui.parametereditor.PasswordParameterEditor;
 import net.objectof.actof.connectorui.parametereditor.TextParameterEditor;
 import net.objectof.actof.widgets.KeyValuePane;
-import net.objectof.connector.AbstractConnector;
 import net.objectof.connector.Connector;
 import net.objectof.connector.Connectors;
 import net.objectof.connector.Parameter;
+import net.objectof.connector.sql.AbstractSQLConnector;
 
 import org.controlsfx.dialog.Dialogs;
 
@@ -173,7 +173,7 @@ public class ConnectionController extends IActofUIController {
 
         for (Parameter parameter : conn.getParameters()) {
             // We do something special for this parameter below
-            if (parameter.getTitle().equals(AbstractConnector.KEY_REPOSITORY)) {
+            if (parameter.getTitle().equals(AbstractSQLConnector.KEY_REPOSITORY)) {
                 continue;
             }
 
@@ -183,31 +183,35 @@ public class ConnectionController extends IActofUIController {
         }
 
         // Repository parameter
-        Parameter repoParameter = conn.getParameter(AbstractConnector.KEY_REPOSITORY);
-        repoChoice = new ComboBox<>();
-        if (create) {
-            repoChoice.setEditable(true);
-        }
-        updateRepoChoice(repoParameter.getValue());
-        repoChoice.getSelectionModel().select(repoParameter.getValue());
-        repoChoice.focusedProperty().addListener(change -> {
-            if (!repoChoice.isFocused()) { return; }
+        Parameter repoParameter = conn.getParameter(AbstractSQLConnector.KEY_REPOSITORY);
+        if (repoParameter != null) {
+
+            repoChoice = new ComboBox<>();
+            if (create) {
+                repoChoice.setEditable(true);
+            }
             updateRepoChoice(repoParameter.getValue());
-        });
-        repoChoice.getSelectionModel().selectedItemProperty().addListener(change -> {
-            String selection = repoChoice.getSelectionModel().getSelectedItem();
-            if (selection == null) { return; }
-            repoParameter.setValue(selection);
-        });
+            repoChoice.getSelectionModel().select(repoParameter.getValue());
+            repoChoice.focusedProperty().addListener(change -> {
+                if (!repoChoice.isFocused()) { return; }
+                updateRepoChoice(repoParameter.getValue());
+            });
+            repoChoice.getSelectionModel().selectedItemProperty().addListener(change -> {
+                String selection = repoChoice.getSelectionModel().getSelectedItem();
+                if (selection == null) { return; }
+                repoParameter.setValue(selection);
+            });
 
-        AnchorPane repoAnchor = new AnchorPane();
-        AnchorPane.setBottomAnchor(repoChoice, 0d);
-        AnchorPane.setTopAnchor(repoChoice, 0d);
-        AnchorPane.setLeftAnchor(repoChoice, 0d);
-        AnchorPane.setRightAnchor(repoChoice, 0d);
-        repoAnchor.getChildren().add(repoChoice);
+            AnchorPane repoAnchor = new AnchorPane();
+            AnchorPane.setBottomAnchor(repoChoice, 0d);
+            AnchorPane.setTopAnchor(repoChoice, 0d);
+            AnchorPane.setLeftAnchor(repoChoice, 0d);
+            AnchorPane.setRightAnchor(repoChoice, 0d);
+            repoAnchor.getChildren().add(repoChoice);
 
-        grid.put(repoParameter.getTitle(), repoAnchor);
+            grid.put(repoParameter.getTitle(), repoAnchor);
+
+        }
 
         if (stage != null) {
             stage.sizeToScene();
@@ -235,7 +239,7 @@ public class ConnectionController extends IActofUIController {
     private void updateRepoChoice(String def) {
         try {
             String selection = repoChoice.getSelectionModel().getSelectedItem();
-            repoChoice.getItems().setAll(getSelectedConnector().getRepositoryNames());
+            repoChoice.getItems().setAll(getSelectedConnector().getPackageNames());
             if (selection != null) {
                 repoChoice.getSelectionModel().select(selection);
             } else {

@@ -126,22 +126,22 @@ public class ConnectorUI implements Connector {
     }
 
     @Override
-    public void initializeDatabase() throws ConnectorException {
-        backer.initializeDatabase();
+    public void initializeContainer() throws ConnectorException {
+        backer.initializeContainer();
     }
 
     @Override
-    public boolean isDatabaseEmpty() throws ConnectorException {
-        return backer.isDatabaseEmpty();
+    public boolean isContainerEmpty() throws ConnectorException {
+        return backer.isContainerEmpty();
     }
 
     @Override
-    public List<String> getRepositoryNames() throws ConnectorException {
-        return backer.getRepositoryNames();
+    public List<String> getPackageNames() throws ConnectorException {
+        return backer.getPackageNames();
     }
 
     @Override
-    public boolean hasRepository(String name) throws ConnectorException {
-        return backer.hasRepository(name);
+    public boolean hasPackage(String name) throws ConnectorException {
+        return backer.hasPackage(name);
     }
 }

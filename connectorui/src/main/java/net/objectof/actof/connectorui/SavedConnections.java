@@ -11,10 +11,10 @@ import net.objectof.actof.connectorui.beans.Connection;
 import net.objectof.actof.connectorui.beans.Last;
 import net.objectof.actof.connectorui.beans.Saved;
 import net.objectof.connector.Connector;
-import net.objectof.connector.Parameter;
 import net.objectof.connector.Connector.Initialize;
 import net.objectof.connector.Connectors;
-import net.objectof.connector.impl.IH2Connector;
+import net.objectof.connector.Parameter;
+import net.objectof.connector.sql.IH2Connector;
 import net.objectof.model.Package;
 import net.objectof.model.Transaction;
 
@@ -137,7 +137,7 @@ public class SavedConnections {
         Last last = tx.retrieve("Last", "1");
         Connection connection = last.getConnection();
         connectorToConnection(tx, connector, connection);
-        connection.setName("< Last Connection >");
+        connection.setName("\u25C2 Last Connection \u25B8");
         tx.post();
     }
 
