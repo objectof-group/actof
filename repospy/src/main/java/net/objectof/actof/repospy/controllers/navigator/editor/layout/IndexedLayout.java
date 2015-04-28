@@ -3,7 +3,6 @@ package net.objectof.actof.repospy.controllers.navigator.editor.layout;
 
 import javafx.scene.control.Labeled;
 import net.objectof.actof.common.util.RepoUtils;
-import net.objectof.actof.common.util.RepoUtils.PrintStyle;
 import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.actof.repospy.controllers.navigator.editor.cards.leaf.LeafCard;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.RepoSpyTreeItem;
@@ -24,7 +23,7 @@ public class IndexedLayout extends AggregateLayout {
     @Override
     protected void customizeCard(ILeafNode node, LeafCard card) {
         if (RepoUtils.isAggregateStereotype(node.getStereotype())) {
-            card.setTitleContent(RepoUtils.prettyPrint(node.getFieldValue(), PrintStyle.LONG));
+            card.setTitleContent(RepoUtils.prettyPrint(node.getFieldValue()));
             Labeled title = (Labeled) card.getTitle();
             title.setText("#" + title.getText());
         }

@@ -42,8 +42,12 @@ public class ChildEntryBase extends Card {
         if (entry.getStereotype() == Stereotype.REF) {
             String st = RepoUtils.prettyPrint(entry.getStereotype());
             AttributeEntry href = entry.getAttribute("m:href");
-            attrs.remove(href);
-            setDescription(st + " to " + href.getValue());
+            if (href != null) {
+                attrs.remove(href);
+                setDescription(st + " to " + href.getValue());
+            } else {
+                setDescription(st);
+            }
         } else {
             setDescription(RepoUtils.prettyPrint(entry.getStereotype()));
         }

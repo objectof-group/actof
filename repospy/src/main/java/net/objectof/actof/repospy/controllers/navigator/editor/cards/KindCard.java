@@ -12,6 +12,7 @@ import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.IKindNod
 import net.objectof.actof.widgets.KeyValuePane;
 import net.objectof.actof.widgets.card.Card;
 import net.objectof.model.Kind;
+import net.objectof.model.impl.IKind;
 
 
 public class KindCard extends Card {
@@ -39,7 +40,7 @@ public class KindCard extends Card {
             String keyString = part.getComponentName();
             String[] keyParts = keyString.split("\\.");
             keyString = keyParts[keyParts.length - 1];
-            String valueString = RepoUtils.prettyPrint(part.getStereotype());
+            String valueString = RepoUtils.prettyPrintLongStereotype((IKind<?>) part);
             fields.put(keyString, valueString);
         }
 

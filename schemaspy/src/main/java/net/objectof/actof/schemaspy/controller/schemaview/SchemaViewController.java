@@ -71,6 +71,7 @@ import org.controlsfx.control.BreadCrumbBar;
 import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
+import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 
@@ -271,7 +272,8 @@ public class SchemaViewController extends IActofUIController {
         if (connect == null) { return; }
 
         try {
-            connect.createPackage(schemaspy.getSchema().getDocument(), Initialize.WHEN_EMPTY);
+            Document schema = schemaspy.getSchema().getDocument();
+            connect.createPackage(schema, Initialize.WHEN_EMPTY);
 
             Action action = Dialogs.create().title("Repository Created")
                     .masthead("This Repository can be viewed in RepoSpy").message("Open RepoSpy now?").showConfirm();

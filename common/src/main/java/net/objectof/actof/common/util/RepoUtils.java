@@ -5,6 +5,7 @@ import net.objectof.aggr.Aggregate;
 import net.objectof.model.Id;
 import net.objectof.model.Resource;
 import net.objectof.model.Stereotype;
+import net.objectof.model.impl.IKind;
 
 
 public class RepoUtils {
@@ -73,6 +74,26 @@ public class RepoUtils {
         }
 
         return o.toString();
+    }
+
+    public static String prettyPrintLongStereotype(IKind<?> kind) {
+        IKind<?> child;
+        String title = prettyPrint(kind.getStereotype());
+        switch (kind.getStereotype()) {
+            case REF:
+                child = (IKind<?>) kind.getParts().get(0);
+                return "\u2794" + prettyPrintLongStereotype(child);
+            case MAPPED:
+                child = (IKind<?>) kind.getParts().get(0);
+                return "{" + prettyPrintLongStereotype(child) + "}";
+            case INDEXED:
+                child = (IKind<?>) kind.getParts().get(0);
+                return "[" + prettyPrintLongStereotype(child) + "]";
+            case COMPOSED:
+                return kind.getTitle();
+            default:
+                return title;
+        }
     }
 
     public static String prettyPrint(Object o) {

@@ -13,6 +13,7 @@ import net.objectof.actof.repospy.changes.EditingChange;
 import net.objectof.actof.repospy.changes.FieldChange;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.ILeafNode;
 import net.objectof.actof.widgets.card.Card;
+import net.objectof.model.impl.IKind;
 
 
 public abstract class LeafCard extends Card {
@@ -31,7 +32,7 @@ public abstract class LeafCard extends Card {
             updateFromEntry();
         });
         setTitle(getLeafTitle());
-        setDescription(RepoUtils.prettyPrint(entry.getStereotype()));
+        setDescription(RepoUtils.prettyPrintLongStereotype((IKind<?>) entry.getKind()));
 
         Node desc = getDescription();
         AnchorPane.setTopAnchor(desc, 0d);

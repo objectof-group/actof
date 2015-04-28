@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.management.modelmbean.XMLParseException;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
@@ -24,6 +23,7 @@ import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.controller.schema.changes.SchemaReplacedChange;
 import net.objectof.actof.common.controller.schema.schemaentry.RootSchemaEntry;
 import net.objectof.actof.common.controller.schema.schemaentry.SchemaEntry;
+import net.objectof.model.impl.facets.ISourcePackage;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -60,10 +60,10 @@ public class ISchemaController extends IActofController implements SchemaControl
         setModel(aDocument);
     }
 
-
     private void setModel(InputStream aStream) throws XMLParseException, SAXException, IOException,
             ParserConfigurationException {
-        setModel(DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(aStream));
+        Document newdoc = ISourcePackage.parseStream(aStream);
+        setModel(newdoc);
     }
 
     private void setModel(Document doc) throws XMLParseException {
@@ -72,8 +72,6 @@ public class ISchemaController extends IActofController implements SchemaControl
         populateNamespaces();
         getChangeBus().broadcast(new SchemaReplacedChange());
     }
-
-
 
     @Override
     public SchemaEntry getRoot() {
@@ -95,7 +93,6 @@ public class ISchemaController extends IActofController implements SchemaControl
         return namespaces;
     }
 
-
     @Override
     public String toXML() throws TransformerFactoryConfigurationError, TransformerException {
 
@@ -110,9 +107,6 @@ public class ISchemaController extends IActofController implements SchemaControl
         return writer.toString();
 
     }
-
-
-
 
     void renameElement(Element e, String name) {
         document.renameNode(e, null, name);
@@ -186,7 +180,6 @@ public class ISchemaController extends IActofController implements SchemaControl
         String name = domain + ":" + version + path;
         getSchemaNode().setAttribute("id", name);
     }
-
 
     @Override
     public void setPackageDomain(String domain) {
