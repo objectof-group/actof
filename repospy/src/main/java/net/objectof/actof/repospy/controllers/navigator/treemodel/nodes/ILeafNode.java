@@ -93,26 +93,9 @@ public class ILeafNode extends ObservableValueBase<ILeafNode> {
         return kind;
     }
 
-    /**
-     * Returns the kind of the resource from it's own perspective. If this node
-     * represented Person.job, getKind would return Person.job, whereas this
-     * method would return Job
-     * 
-     * @return null if this is not a Resource type, (or if the current value is
-     *         null -- a known limitation), Kind of the resource otherwise TODO:
-     *         Fix Me, currently checking the kind of the existing value, but
-     *         when value is null, no way to determine this.
-     */
-    public Kind<?> getCanonicalKind() {
-        Object value = getFieldValue();
-        if (value == null) {
-            // TODO: This is a bad solution, and will cause issues when a the
-            // field value is null and the relative kind name doesn't match the
-            // canonical kind name.
-            return getKind();
-        }
-        if (!(value instanceof Resource)) { return null; }
-        return ((Resource<?>) value).id().kind();
+    public Kind<?> getReferenceKind() {
+        if (getKind().getStereotype() != Stereotype.REF) { throw new UnsupportedOperationException(); }
+        return getKind().getParts().get(0);
     }
 
     public void addChangeHistory(Object newValue) {
