@@ -14,6 +14,7 @@ public class RealCard extends LeafCard {
         super(entry);
 
         spinner = new Spinner<>(new SpinnerValueFactory.DoubleSpinnerValueFactory(Double.MIN_VALUE, Double.MAX_VALUE));
+        spinner.setEditable(true);
         spinner.valueProperty().addListener(change -> {
             if (isUpdating()) { return; }
             entry.setFieldValue(spinner.getValue());

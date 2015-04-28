@@ -18,6 +18,7 @@ public class IntegerCard extends LeafCard {
         super(entry);
 
         spinner = new Spinner<>(new LongSpinnerValueFactory(Long.MIN_VALUE, Long.MAX_VALUE));
+        spinner.setEditable(true);
         spinner.valueProperty().addListener(change -> {
             if (isUpdating()) { return; }
             entry.setFieldValue(spinner.getValue());
