@@ -10,6 +10,7 @@ import net.objectof.model.impl.IKind;
 
 public class RepoUtils {
 
+    public static final String NULL_STRING = "None";
     public static final String SEPARATOR = " \u2023 ";
 
     public enum PrintStyle {
@@ -76,6 +77,15 @@ public class RepoUtils {
         return o.toString();
     }
 
+    // http://stackoverflow.com/questions/3758606/how-to-convert-byte-size-into-human-readable-format-in-java
+    public static String humanReadableByteCount(long bytes, boolean si) {
+        int unit = si ? 1000 : 1024;
+        if (bytes < unit) return bytes + " B";
+        int exp = (int) (Math.log(bytes) / Math.log(unit));
+        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
+        return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
+    }
+
     public static String prettyPrintLongStereotype(IKind<?> kind) {
         IKind<?> child;
         String title = prettyPrint(kind.getStereotype());
@@ -101,17 +111,18 @@ public class RepoUtils {
     }
 
     public static String prettyPrint(Object o, PrintStyle style) {
-        if (o == null) { return "None"; }
+        if (o == null) { return NULL_STRING; }
 
         if (isResource(o)) { return prettyPrintRes((Resource<?>) o, style); }
         if (o instanceof String) { return "\"" + o.toString() + "\""; }
+        if (o instanceof byte[]) { return humanReadableByteCount(((byte[]) o).length, true); }
         if (o instanceof Stereotype) { return prettyPrintStereotype((Stereotype) o); }
 
         return o.toString();
     }
 
     private static String prettyPrintRes(Resource<?> res, PrintStyle style) {
-        if (res == null) { return "None"; }
+        if (res == null) { return NULL_STRING; }
 
         String name = res.id().kind().getComponentName();
         if (style == PrintStyle.SHORT) {

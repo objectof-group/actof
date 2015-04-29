@@ -21,6 +21,7 @@ public abstract class LeafCard extends Card {
     private ILeafNode entry;
     private boolean isUpdating = false;
     private Button undo;
+    protected HBox descBox;
 
     public LeafCard(ILeafNode entry) {
         this.entry = entry;
@@ -35,11 +36,7 @@ public abstract class LeafCard extends Card {
         setDescription(RepoUtils.prettyPrintLongStereotype((IKind<?>) entry.getKind()));
 
         Node desc = getDescription();
-        AnchorPane.setTopAnchor(desc, 0d);
-        AnchorPane.setBottomAnchor(desc, 0d);
-        AnchorPane.setLeftAnchor(desc, 0d);
-        AnchorPane.setRightAnchor(desc, 0d);
-        desc = new AnchorPane(desc);
+        desc = new AnchorPane(anchor(desc));
 
         undo = new Button("", ActofIcons.getIconView(Icon.UNDO, Size.BUTTON));
         undo.getStyleClass().add("tool-bar-button");
@@ -47,8 +44,8 @@ public abstract class LeafCard extends Card {
             undoable().undo();
         });
         undo.setVisible(false);
-        HBox box = new HBox(10, undo, desc);
-        setDescription(box);
+        descBox = new HBox(10, undo, desc);
+        setDescription(descBox);
 
         entry.getController().getChangeBus().listen(FieldChange.class, change -> {
             if (undo.isFocused()) {
@@ -93,6 +90,8 @@ public abstract class LeafCard extends Card {
                 return new ReferenceCard(entry);
             case TEXT:
                 return new TextCard(entry);
+            case MEDIA:
+                return new MediaCard(entry);
 
             case MAPPED:
             case INDEXED:
@@ -100,7 +99,6 @@ public abstract class LeafCard extends Card {
             case SET:
                 return new EntryLinkCard(entry);
 
-            case MEDIA:
             case FN:
             default:
                 return new UnsupportedCard(entry);
@@ -123,6 +121,14 @@ public abstract class LeafCard extends Card {
 
     public boolean isUpdating() {
         return isUpdating;
+    }
+
+    protected Node anchor(Node node) {
+        AnchorPane.setTopAnchor(node, 0d);
+        AnchorPane.setBottomAnchor(node, 0d);
+        AnchorPane.setLeftAnchor(node, 0d);
+        AnchorPane.setRightAnchor(node, 0d);
+        return node;
     }
 
 }
