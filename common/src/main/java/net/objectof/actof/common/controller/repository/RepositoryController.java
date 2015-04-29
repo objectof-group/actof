@@ -119,13 +119,23 @@ public class RepositoryController extends IActofController {
     }
 
     // TODO: Relies on each .send call writing json without linebreaks!
-    public void load(Scanner scanner) {
+    /**
+     * Loads entities from json file into staging transaction and returns a list
+     * of the loaded entities
+     * 
+     * @param scanner
+     * @return
+     */
+    public List<Resource<?>> load(Scanner scanner) {
         scanner = scanner.useDelimiter("\n");
+        List<Resource<?>> loaded = new ArrayList<>();
         while (scanner.hasNext()) {
             String str = scanner.next();
             StringReader reader = new StringReader(str);
-            model.stagingTx.receive("application/json", reader);
+            Object received = model.stagingTx.receive("application/json", reader);
+            loaded.add((Resource<?>) received);
         }
+        return loaded;
     }
 
     // TODO: Relies on each .send call writing json without linebreaks!
