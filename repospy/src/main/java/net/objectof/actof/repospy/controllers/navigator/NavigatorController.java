@@ -381,11 +381,19 @@ public class NavigatorController extends IActofUIController {
         // if this is a valid query (maybe different than the last query),
         // or we were querying in the past (but no longer), we need to
         // repopulate the entity tree, otherwise, just refresh it
-        if (validQuery || isQuerying) {
+        if (validQuery) {
             querytext.setStyle("");
             populateEntityTree();
             repospy.getChangeBus().broadcast(new ResourceSelectedChange(root));
         } else {
+            // if we *did* have a valid query *last time*, but not anymore,
+            // repopulate the tree and send out an update
+            if (isQuerying) {
+                populateEntityTree();
+                repospy.getChangeBus().broadcast(new ResourceSelectedChange(root));
+            }
+            // if this is not a valid query, and also not the empty query, mark
+            // it as an error
             if (querytext.getText().length() > 0) {
                 querytext.setStyle("-fx-text-box-border: red; -fx-focus-color: red ;");
             } else {
