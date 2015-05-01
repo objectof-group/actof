@@ -40,7 +40,33 @@ public class EntityCard extends Card {
         for (ILeafNode child : node.getLeaves()) {
 
             String keyString = child.getKey().toString();
-            String valueString = RepoUtils.prettyPrint(child.getFieldValue());
+            String valueString = "";
+
+            switch (child.getStereotype()) {
+                case BOOL:
+                case FN:
+                case INT:
+                case MEDIA:
+                case MOMENT:
+                case NIL:
+                case NUM:
+                case REF:
+                case TEXT:
+                    valueString = RepoUtils.prettyPrint(child.getFieldValue());
+                    break;
+
+                case COMPOSED:
+                case INDEXED:
+                case MAPPED:
+                case SET:
+                    valueString = RepoUtils.prettyPrintKind(child.getKind());
+                    break;
+
+                default:
+                    break;
+
+            }
+
             if (valueString.length() > 100) {
                 valueString = valueString.substring(0, 100);
             }

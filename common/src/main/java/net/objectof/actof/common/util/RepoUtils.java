@@ -3,6 +3,7 @@ package net.objectof.actof.common.util;
 
 import net.objectof.aggr.Aggregate;
 import net.objectof.model.Id;
+import net.objectof.model.Kind;
 import net.objectof.model.Resource;
 import net.objectof.model.Stereotype;
 import net.objectof.model.impl.IKind;
@@ -86,21 +87,24 @@ public class RepoUtils {
         return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 
-    public static String prettyPrintLongStereotype(IKind<?> kind) {
+    public static String prettyPrintKind(Kind<?> kind) {
         IKind<?> child;
         String title = prettyPrint(kind.getStereotype());
         switch (kind.getStereotype()) {
             case REF:
                 child = (IKind<?>) kind.getParts().get(0);
-                return "\u2794" + prettyPrintLongStereotype(child);
+                return "\u2605" + prettyPrintKind(child);
+            case SET:
+                child = (IKind<?>) kind.getParts().get(0);
+                return "{" + prettyPrintKind(child) + "}";
             case MAPPED:
                 child = (IKind<?>) kind.getParts().get(0);
-                return "{" + prettyPrintLongStereotype(child) + "}";
+                return "Text \u2192 " + prettyPrintKind(child) + "";
             case INDEXED:
                 child = (IKind<?>) kind.getParts().get(0);
-                return "[" + prettyPrintLongStereotype(child) + "]";
+                return "[" + prettyPrintKind(child) + "]";
             case COMPOSED:
-                return kind.getTitle();
+                return ((IKind<?>) kind).getTitle();
             default:
                 return title;
         }
