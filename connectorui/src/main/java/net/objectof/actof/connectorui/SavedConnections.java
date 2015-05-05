@@ -29,7 +29,7 @@ public class SavedConnections {
 
         Connector settings = new IH2Connector();
         settings.getParameter(IH2Connector.KEY_DIRECTORY).setValue(appdir.getAbsolutePath() + "/Connections/");
-        settings.getParameter(IH2Connector.KEY_REPOSITORY).setValue("objectof.net:1512/Connectors");
+        settings.getParameter(IH2Connector.KEY_REPOSITORY).setValue("objectof.net:1517/Connectors");
 
         try {
             return settings.getPackage();

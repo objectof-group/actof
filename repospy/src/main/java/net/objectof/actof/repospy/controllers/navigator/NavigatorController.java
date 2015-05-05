@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -52,6 +53,7 @@ import net.objectof.actof.common.icons.ActofIcons.Icon;
 import net.objectof.actof.common.icons.ActofIcons.Size;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.repospy.RepoSpyController;
+import net.objectof.actof.repospy.changes.EntityCreatedChange;
 import net.objectof.actof.repospy.controllers.navigator.editor.layout.CompositeLayout;
 import net.objectof.actof.repospy.controllers.navigator.editor.layout.IndexedLayout;
 import net.objectof.actof.repospy.controllers.navigator.editor.layout.KindLayout;
@@ -180,7 +182,10 @@ public class NavigatorController extends IActofUIController {
         File file = chooser.showOpenDialog(repospy.primaryStage);
         if (file == null) { return; }
 
-        repospy.repository.load(new Scanner(file));
+        List<Resource<?>> loaded = repospy.repository.load(new Scanner(file));
+        for (Resource<?> res : loaded) {
+            getChangeBus().broadcast(new EntityCreatedChange(res));
+        }
 
     }
 
@@ -376,11 +381,19 @@ public class NavigatorController extends IActofUIController {
         // if this is a valid query (maybe different than the last query),
         // or we were querying in the past (but no longer), we need to
         // repopulate the entity tree, otherwise, just refresh it
-        if (validQuery || isQuerying) {
+        if (validQuery) {
             querytext.setStyle("");
             populateEntityTree();
             repospy.getChangeBus().broadcast(new ResourceSelectedChange(root));
         } else {
+            // if we *did* have a valid query *last time*, but not anymore,
+            // repopulate the tree and send out an update
+            if (isQuerying) {
+                populateEntityTree();
+                repospy.getChangeBus().broadcast(new ResourceSelectedChange(root));
+            }
+            // if this is not a valid query, and also not the empty query, mark
+            // it as an error
             if (querytext.getText().length() > 0) {
                 querytext.setStyle("-fx-text-box-border: red; -fx-focus-color: red ;");
             } else {

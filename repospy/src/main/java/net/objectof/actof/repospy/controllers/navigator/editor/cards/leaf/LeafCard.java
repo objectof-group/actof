@@ -33,7 +33,7 @@ public abstract class LeafCard extends Card {
             updateFromEntry();
         });
         setTitle(getLeafTitle());
-        setDescription(RepoUtils.prettyPrintLongStereotype((IKind<?>) entry.getKind()));
+        setDescription(RepoUtils.prettyPrintKind((IKind<?>) entry.getKind()));
 
         Node desc = getDescription();
         desc = new AnchorPane(anchor(desc));
