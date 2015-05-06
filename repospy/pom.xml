@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>net.objectof.actof</groupId>
 		<artifactId>actof</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.1</version>
 	</parent>
 
 	<artifactId>actof-repospy</artifactId>
@@ -22,7 +22,7 @@
 		<dependency>
 			<groupId>net.objectof.actof</groupId>
 			<artifactId>actof-common</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.controlsfx</groupId>
@@ -32,7 +32,7 @@
 		<dependency>
 			<groupId>net.objectof.actof</groupId>
 			<artifactId>actof-connectorui</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jfxtras</groupId>
@@ -47,7 +47,7 @@
 		<dependency>
 			<groupId>net.objectof.actof</groupId>
 			<artifactId>actof-widgets</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.1</version>
 		</dependency>
 	</dependencies>
 
