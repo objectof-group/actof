@@ -91,39 +91,5 @@
 	</build>
  -->
  
- <distributionManagement>
-		<repository>
-			<id>realm</id>
-			<name>REALM Remote Maven Repository</name>
-			<url>http://realmproject.net:8888/repository/realm/</url>
-		</repository>
-	</distributionManagement>
-
-	<repositories>
-		<repository>
-			<id>realm</id>
-			<name>REALM Remote Maven Repository</name>
-			<url>http://realmproject.net:8888/repository/realm/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>realm</id>
-			<name>REALM Remote Maven Repository</name>
-			<url>http://realmproject.net:8888/repository/realm/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
  
 </project>
