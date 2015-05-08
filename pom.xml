@@ -34,6 +34,33 @@
 		</plugins>
 	</build>
 
+
+        <repositories>
+                <repository>
+                        <id>objectof</id>
+                        <name>objectof Repository</name>
+                        <url>http://objectof.org:8888/repository/objectof/</url>
+                        <releases>
+                                <enabled>true</enabled>
+                        </releases>
+                        <snapshots>
+                                <enabled>true</enabled>
+                        </snapshots>
+                </repository>
+        </repositories>
+        <pluginRepositories>
+                <pluginRepository>
+                        <id>objectof</id>
+                        <name>objectof Repository</name>
+                        <url>http://objectof.org:8888/repository/objectof/</url>
+                        <releases>
+                                <enabled>true</enabled>
+                        </releases>
+                        <snapshots>
+                                <enabled>true</enabled>
+                        </snapshots>
+                </pluginRepository>
+        </pluginRepositories>
 	
 <!--  
 	<build>
