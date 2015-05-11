@@ -291,7 +291,7 @@ public class ConnectionController extends IActofUIController {
     }
 
     public void setCreate(boolean create) {
-        connect.setText("Create");
+        connect.setText(create ? "Create" : "Connect");
         this.create = create;
         layout();
     }
