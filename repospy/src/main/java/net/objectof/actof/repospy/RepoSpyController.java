@@ -70,9 +70,9 @@ public class RepoSpyController extends ITopController {
 
             Action reallyquit = Dialogs.create().title("Exit RepoSpy")
                     .message("Exit RepoSpy with ununcommitted changes?").masthead("You have uncommittted changes")
-                    .actions(Dialog.Actions.YES, Dialog.Actions.NO).showConfirm();
+                    .actions(Dialog.ACTION_YES, Dialog.ACTION_NO).showConfirm();
 
-            if (reallyquit != Dialog.Actions.YES) {
+            if (reallyquit != Dialog.ACTION_YES) {
                 event.consume();
             }
 

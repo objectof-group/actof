@@ -81,9 +81,9 @@ public class SchemaSpyController extends ITopController {
 
             Action reallyquit = Dialogs.create().title("Exit SchemaSpy")
                     .message("Exit SchemaSpy with unsaved changes?").masthead("You have unsaved changes")
-                    .actions(Dialog.Actions.YES, Dialog.Actions.NO).showConfirm();
+                    .actions(Dialog.ACTION_YES, Dialog.ACTION_NO).showConfirm();
 
-            if (reallyquit != Dialog.Actions.YES) {
+            if (reallyquit != Dialog.ACTION_YES) {
                 event.consume();
             }
 

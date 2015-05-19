@@ -278,7 +278,7 @@ public class SchemaViewController extends IActofUIController {
             Action action = Dialogs.create().title("Repository Created")
                     .masthead("This Repository can be viewed in RepoSpy").message("Open RepoSpy now?").showConfirm();
 
-            if (action == Dialog.Actions.YES) {
+            if (action == Dialog.ACTION_YES) {
                 RepoSpyController repospy = new RepoSpyController(new Stage());
                 repospy.initUI();
                 repospy.connect(connect);
