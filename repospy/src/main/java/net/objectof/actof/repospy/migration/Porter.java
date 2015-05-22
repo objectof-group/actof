@@ -119,19 +119,19 @@ public class Porter {
             System.out.println("Porting " + childKind.getComponentName());
             Object oldKey = childKind.getComponentName();
             Object oldValue = fromComposite.value().get(unqualify(oldKey, true));
+            RuleContext context = new RuleContext(oldKey, oldValue, childKind, fromTx, toTx);
 
             if (childKind.getStereotype().getModel() == Archetype.CONTAINER) {
                 Resource<?> oldRef = (Resource<?>) oldValue;
-                RuleContext context = new RuleContext(oldKey, oldRef, childKind, fromTx, toTx);
                 Object newKey = Rule.transformKey(rules, context);
                 Resource<?> newValue = toTx.create(newKey.toString());
                 idmap.put(oldRef.id(), newValue.id());
                 toComposite.value().set(unqualify(newKey, true), newValue);
                 portAggregate(oldRef.id(), fromTx, toTx);
             } else if (childKind.getStereotype() == Stereotype.REF) {
-                portReference(oldKey, oldValue, childKind, fromTx, toTx, toComposite.value(), true);
+                portReference(context, toComposite.value(), true);
             } else {
-                portLeaf(oldKey, oldValue, childKind, fromTx, toTx, toComposite.value(), true);
+                portLeaf(context, toComposite.value(), true);
             }
         }
     }
@@ -145,6 +145,7 @@ public class Porter {
 
         for (Object oldKey : fromAggr.value().keySet()) {
             Object oldValue = fromAggr.value().get(oldKey);
+            RuleContext context = new RuleContext(oldKey, oldValue, childKind, fromTx, toTx);
             Object newKey = Rule.transformKey(rules, new RuleContext(oldKey, oldValue, childKind, fromTx, toTx));
 
             if (childKind.getStereotype().getModel() == Archetype.CONTAINER) {
@@ -152,38 +153,34 @@ public class Porter {
                 // key transform, create it, and port it's contents
                 Resource<?> oldRes = (Resource<?>) oldValue;
                 Object oldComponentName = oldRes.id().kind().getComponentName();
-                RuleContext context = new RuleContext(oldComponentName, oldRes, oldRes.id().kind(), fromTx, toTx);
-                Object newComponentName = Rule.transformKey(rules, context);
+                RuleContext containerContext = context.copy().setKey(oldComponentName).setKind(oldRes.id().kind());
+                Object newComponentName = Rule.transformKey(rules, containerContext);
                 Resource<?> newValue = toTx.create(newComponentName.toString());
                 idmap.put(oldRes.id(), newValue.id());
                 toAggr.value().set(newKey, newValue);
                 // recurse into resource
                 port(oldRes.id(), fromTx, toTx);
             } else if (childKind.getStereotype() == Stereotype.REF) {
-                portReference(oldKey, oldValue, childKind, fromTx, toTx, toAggr.value(), false);
+                portReference(context, toAggr.value(), false);
             } else {
-                portLeaf(oldKey, oldValue, childKind, fromTx, toTx, toAggr.value(), false);
+                portLeaf(context, toAggr.value(), false);
             }
         }
     }
 
-    private void portReference(Object oldKey, Object oldValue, Kind<?> childKind, Transaction fromTx, Transaction toTx,
-            Aggregate<Object, Object> toParent, boolean qualified) {
+    private void portReference(RuleContext context, Aggregate<Object, Object> toParent, boolean qualified) {
         // get the old value as a resource so we can look up its id and
         // find the new id in the idmap
-        Resource<?> oldRef = (Resource<?>) oldValue;
+        Resource<?> oldRef = (Resource<?>) context.getValue();
         if (oldRef == null) { return; }
         Id<?> oldId = oldRef.id();
-        RuleContext context = new RuleContext(oldKey, oldRef, childKind, fromTx, toTx);
         Object newKey = Rule.transformKey(rules, context);
         Id<?> newId = idmap.get(oldId);
-        Object newValue = toTx.retrieve(newId);
+        Object newValue = context.getToTx().retrieve(newId);
         toParent.set(unqualify(newKey, qualified), newValue);
     }
 
-    private void portLeaf(Object oldKey, Object oldValue, Kind<?> kind, Transaction fromTx, Transaction toTx,
-            Aggregate<Object, Object> newParent, boolean qualified) {
-        RuleContext context = new RuleContext(oldKey, oldValue, kind, fromTx, toTx);
+    private void portLeaf(RuleContext context, Aggregate<Object, Object> newParent, boolean qualified) {
         Object newKey = Rule.transformKey(rules, context);
         Object newValue = Rule.transformValue(rules, context);
         newParent.set(unqualify(newKey, qualified), newValue);
