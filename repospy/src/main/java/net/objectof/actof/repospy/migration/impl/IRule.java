@@ -6,8 +6,8 @@ import java.util.List;
 
 import net.objectof.actof.repospy.migration.Rule;
 import net.objectof.actof.repospy.migration.rulecomponents.Matcher;
+import net.objectof.actof.repospy.migration.rulecomponents.RuleContext;
 import net.objectof.actof.repospy.migration.rulecomponents.Transformer;
-import net.objectof.model.Kind;
 
 
 public class IRule implements Rule {
@@ -31,27 +31,29 @@ public class IRule implements Rule {
     }
 
     @Override
-    public boolean match(Object key, Object value, Kind<?> kind) {
+    public boolean match(RuleContext context) {
         for (Matcher matcher : matchers) {
-            if (matcher.test(key, value, kind)) { return true; }
+            if (matcher.test(context)) { return true; }
         }
         return false;
     }
 
     @Override
-    public Object transformKey(Object key, Object value, Kind<?> kind) {
+    public Object transformKey(RuleContext context) {
+        RuleContext modContext = context.copy();
         for (Transformer keyTransformer : keyTransformers) {
-            key = keyTransformer.apply(key, value, kind);
+            modContext.setKey(keyTransformer.apply(modContext));
         }
-        return key;
+        return modContext.getKey();
     }
 
     @Override
-    public Object transformValue(Object key, Object value, Kind<?> kind) {
+    public Object transformValue(RuleContext context) {
+        RuleContext modContext = new RuleContext(context);
         for (Transformer valueTransformer : valueTransformers) {
-            value = valueTransformer.apply(key, value, kind);
+            modContext.setValue(valueTransformer.apply(modContext));
         }
-        return value;
+        return modContext.getValue();
     }
 
     public List<Matcher> getMatchers() {

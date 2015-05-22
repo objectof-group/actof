@@ -1,7 +1,7 @@
 package net.objectof.actof.repospy.migration.rulecomponents;
 
 
-import net.objectof.model.Kind;
+import java.util.function.Predicate;
 
 
-public interface Matcher extends TriPredicate<Object, Object, Kind<?>> {}
+public interface Matcher extends Predicate<RuleContext> {}

@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.objectof.actof.repospy.migration.impl.RuleBuilder;
+import net.objectof.actof.repospy.migration.rulecomponents.RuleContext;
 import net.objectof.aggr.Aggregate;
 import net.objectof.connector.Connector;
 import net.objectof.connector.Connector.Initialize;
@@ -52,7 +53,8 @@ public class Porter {
             Iterable<Resource<?>> resources = fromTx.enumerate(kind.getComponentName());
             for (Resource<?> oldResource : resources) {
                 Object oldKey = kind.getComponentName();
-                Object newKey = Rule.transformKey(rules, oldKey, oldResource, oldResource.id().kind());
+                RuleContext context = new RuleContext(oldKey, oldResource, oldResource.id().kind(), fromTx, toTx);
+                Object newKey = Rule.transformKey(rules, context);
                 Resource<?> newResource = toTx.create(newKey.toString());
                 idmap.put(oldResource.id(), newResource.id());
             }
@@ -120,15 +122,16 @@ public class Porter {
 
             if (childKind.getStereotype().getModel() == Archetype.CONTAINER) {
                 Resource<?> oldRef = (Resource<?>) oldValue;
-                Object newKey = Rule.transformKey(rules, oldKey, oldRef, childKind);
+                RuleContext context = new RuleContext(oldKey, oldRef, childKind, fromTx, toTx);
+                Object newKey = Rule.transformKey(rules, context);
                 Resource<?> newValue = toTx.create(newKey.toString());
                 idmap.put(oldRef.id(), newValue.id());
                 toComposite.value().set(unqualify(newKey, true), newValue);
                 portAggregate(oldRef.id(), fromTx, toTx);
             } else if (childKind.getStereotype() == Stereotype.REF) {
-                portReference(oldKey, oldValue, childKind, toTx, toComposite.value(), true);
+                portReference(oldKey, oldValue, childKind, fromTx, toTx, toComposite.value(), true);
             } else {
-                portLeaf(oldKey, oldValue, childKind, toComposite.value(), true);
+                portLeaf(oldKey, oldValue, childKind, fromTx, toTx, toComposite.value(), true);
             }
         }
     }
@@ -142,44 +145,47 @@ public class Porter {
 
         for (Object oldKey : fromAggr.value().keySet()) {
             Object oldValue = fromAggr.value().get(oldKey);
-            Object newKey = Rule.transformKey(rules, oldKey, oldValue, childKind);
+            Object newKey = Rule.transformKey(rules, new RuleContext(oldKey, oldValue, childKind, fromTx, toTx));
 
             if (childKind.getStereotype().getModel() == Archetype.CONTAINER) {
                 // determine the new component name from the resource id and the
                 // key transform, create it, and port it's contents
                 Resource<?> oldRes = (Resource<?>) oldValue;
                 Object oldComponentName = oldRes.id().kind().getComponentName();
-                Object newComponentName = Rule.transformKey(rules, oldComponentName, oldKey, oldRes.id().kind());
+                RuleContext context = new RuleContext(oldComponentName, oldRes, oldRes.id().kind(), fromTx, toTx);
+                Object newComponentName = Rule.transformKey(rules, context);
                 Resource<?> newValue = toTx.create(newComponentName.toString());
                 idmap.put(oldRes.id(), newValue.id());
                 toAggr.value().set(newKey, newValue);
                 // recurse into resource
                 port(oldRes.id(), fromTx, toTx);
             } else if (childKind.getStereotype() == Stereotype.REF) {
-                portReference(oldKey, oldValue, childKind, toTx, toAggr.value(), false);
+                portReference(oldKey, oldValue, childKind, fromTx, toTx, toAggr.value(), false);
             } else {
-                portLeaf(oldKey, oldValue, childKind, toAggr.value(), false);
+                portLeaf(oldKey, oldValue, childKind, fromTx, toTx, toAggr.value(), false);
             }
         }
     }
 
-    private void portReference(Object oldKey, Object oldValue, Kind<?> childKind, Transaction toTx,
+    private void portReference(Object oldKey, Object oldValue, Kind<?> childKind, Transaction fromTx, Transaction toTx,
             Aggregate<Object, Object> toParent, boolean qualified) {
         // get the old value as a resource so we can look up its id and
         // find the new id in the idmap
         Resource<?> oldRef = (Resource<?>) oldValue;
         if (oldRef == null) { return; }
         Id<?> oldId = oldRef.id();
-        Object newKey = Rule.transformKey(rules, oldKey, oldRef, childKind);
+        RuleContext context = new RuleContext(oldKey, oldRef, childKind, fromTx, toTx);
+        Object newKey = Rule.transformKey(rules, context);
         Id<?> newId = idmap.get(oldId);
         Object newValue = toTx.retrieve(newId);
         toParent.set(unqualify(newKey, qualified), newValue);
     }
 
-    private void portLeaf(Object oldKey, Object oldValue, Kind<?> kind, Aggregate<Object, Object> newParent,
-            boolean qualified) {
-        Object newKey = Rule.transformKey(rules, oldKey, oldValue, kind);
-        Object newValue = Rule.transformValue(rules, oldKey, oldValue, kind);
+    private void portLeaf(Object oldKey, Object oldValue, Kind<?> kind, Transaction fromTx, Transaction toTx,
+            Aggregate<Object, Object> newParent, boolean qualified) {
+        RuleContext context = new RuleContext(oldKey, oldValue, kind, fromTx, toTx);
+        Object newKey = Rule.transformKey(rules, context);
+        Object newValue = Rule.transformValue(rules, context);
         newParent.set(unqualify(newKey, qualified), newValue);
     }
 
@@ -227,7 +233,7 @@ public class Porter {
         
         Rule append = RuleBuilder.start()
                 .forStereotype(Stereotype.TEXT)
-                .valueTransform((k, v, kind) -> v.toString() + "...")
+                .valueTransform((context) -> context.getValue().toString() + "...")
                 .build();
         
         // @formatter:on
@@ -255,6 +261,8 @@ public class Porter {
                 "/home/nathaniel/Desktop/Porting/emptyapp/realm-port.xml"), Initialize.WHEN_EMPTY);
 
         // @formatter:off
+        
+        Rule role = RuleBuilder.start().forKey("Person.role").valueTransform((context) -> context.getValue()).build();
         
 //        Rule settings = RuleBuilder.start()
 //                .forKey("Setting")

@@ -1,9 +1,9 @@
 package net.objectof.actof.repospy.migration.rulecomponents;
 
 
-import net.objectof.model.Kind;
+import java.util.function.Function;
 
 
-public interface Transformer extends TriFunction<Object, Object, Kind<?>, Object> {
+public interface Transformer extends Function<RuleContext, Object> {
 
 }

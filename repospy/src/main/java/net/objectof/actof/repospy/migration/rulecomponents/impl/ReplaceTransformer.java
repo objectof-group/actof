@@ -1,8 +1,8 @@
 package net.objectof.actof.repospy.migration.rulecomponents.impl;
 
 
+import net.objectof.actof.repospy.migration.rulecomponents.RuleContext;
 import net.objectof.actof.repospy.migration.rulecomponents.Transformer;
-import net.objectof.model.Kind;
 
 
 public class ReplaceTransformer implements Transformer {
@@ -14,7 +14,7 @@ public class ReplaceTransformer implements Transformer {
     }
 
     @Override
-    public Object apply(Object t, Object u, Kind<?> v) {
+    public Object apply(RuleContext context) {
         return replace;
     }
 

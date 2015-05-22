@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.objectof.actof.repospy.migration.rulecomponents.Matcher;
-import net.objectof.model.Kind;
+import net.objectof.actof.repospy.migration.rulecomponents.RuleContext;
 
 
 public class KeyMatcher implements Matcher {
@@ -18,8 +18,8 @@ public class KeyMatcher implements Matcher {
     }
 
     @Override
-    public boolean test(Object key, Object value, Kind<?> kind) {
-        return matchingKeys.contains(key);
+    public boolean test(RuleContext context) {
+        return matchingKeys.contains(context.getKey());
     }
 
     public String toString() {

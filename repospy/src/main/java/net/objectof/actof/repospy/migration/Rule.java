@@ -3,33 +3,35 @@ package net.objectof.actof.repospy.migration;
 
 import java.util.List;
 
-import net.objectof.model.Kind;
+import net.objectof.actof.repospy.migration.rulecomponents.RuleContext;
 
 
 public interface Rule {
 
-    boolean match(Object key, Object value, Kind<?> kind);
+    boolean match(RuleContext context);
 
-    Object transformKey(Object key, Object value, Kind<?> kind);
+    Object transformKey(RuleContext context);
 
-    Object transformValue(Object key, Object value, Kind<?> kind);
+    Object transformValue(RuleContext context);
 
-    static Object transformKey(List<Rule> rules, Object key, Object value, Kind<?> kind) {
+    static Object transformKey(List<Rule> rules, RuleContext context) {
+        RuleContext modContext = context.copy();
         for (Rule rule : rules) {
-            if (rule.match(key, value, kind)) {
-                key = rule.transformKey(key, value, kind);
+            if (rule.match(modContext)) {
+                modContext.setKey(rule.transformKey(modContext));
             }
         }
-        return key;
+        return modContext.getKey();
     }
 
-    static Object transformValue(List<Rule> rules, Object key, Object value, Kind<?> kind) {
+    static Object transformValue(List<Rule> rules, RuleContext context) {
+        RuleContext modContext = context.copy();
         for (Rule rule : rules) {
-            if (rule.match(key, value, kind)) {
-                value = rule.transformValue(key, value, kind);
+            if (rule.match(modContext)) {
+                modContext.setValue(rule.transformValue(modContext));
             }
         }
-        return value;
+        return modContext.getValue();
     }
 
 }

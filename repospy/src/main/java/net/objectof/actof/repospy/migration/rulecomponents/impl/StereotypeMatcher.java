@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.objectof.actof.repospy.migration.rulecomponents.Matcher;
-import net.objectof.model.Kind;
+import net.objectof.actof.repospy.migration.rulecomponents.RuleContext;
 import net.objectof.model.Stereotype;
 
 
@@ -19,8 +19,8 @@ public class StereotypeMatcher implements Matcher {
     }
 
     @Override
-    public boolean test(Object t, Object u, Kind<?> kind) {
-        return stereotypes.contains(kind.getStereotype());
+    public boolean test(RuleContext context) {
+        return stereotypes.contains(context.getKind().getStereotype());
     }
 
     public String toString() {
