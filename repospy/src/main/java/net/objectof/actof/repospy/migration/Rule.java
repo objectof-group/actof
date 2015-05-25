@@ -3,8 +3,6 @@ package net.objectof.actof.repospy.migration;
 
 import java.util.List;
 
-import net.objectof.actof.repospy.migration.rulecomponents.PorterContext;
-
 
 public interface Rule {
 

@@ -1,4 +1,4 @@
-package net.objectof.actof.repospy.migration.rulecomponents;
+package net.objectof.actof.repospy.migration;
 
 
 import net.objectof.model.Kind;
@@ -78,6 +78,10 @@ public class PorterContext {
     public PorterContext setToTx(Transaction toTx) {
         this.toTx = toTx;
         return this;
+    }
+
+    public String toString() {
+        return "key = '" + key + "', value = '" + value + "', kind = " + kind;
     }
 
 }

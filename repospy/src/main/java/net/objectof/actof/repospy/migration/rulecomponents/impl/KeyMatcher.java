@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import net.objectof.actof.repospy.migration.PorterContext;
 import net.objectof.actof.repospy.migration.rulecomponents.Matcher;
-import net.objectof.actof.repospy.migration.rulecomponents.PorterContext;
 
 
 public class KeyMatcher implements Matcher {

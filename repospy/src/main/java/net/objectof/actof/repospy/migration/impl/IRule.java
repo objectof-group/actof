@@ -4,9 +4,9 @@ package net.objectof.actof.repospy.migration.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.objectof.actof.repospy.migration.PorterContext;
 import net.objectof.actof.repospy.migration.Rule;
 import net.objectof.actof.repospy.migration.rulecomponents.Matcher;
-import net.objectof.actof.repospy.migration.rulecomponents.PorterContext;
 import net.objectof.actof.repospy.migration.rulecomponents.Transformer;
 
 

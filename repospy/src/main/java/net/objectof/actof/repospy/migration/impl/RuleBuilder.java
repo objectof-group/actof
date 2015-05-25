@@ -5,6 +5,8 @@ import net.objectof.actof.repospy.migration.Rule;
 import net.objectof.actof.repospy.migration.rulecomponents.Matcher;
 import net.objectof.actof.repospy.migration.rulecomponents.Transformer;
 import net.objectof.actof.repospy.migration.rulecomponents.impl.KeyMatcher;
+import net.objectof.actof.repospy.migration.rulecomponents.impl.PrettyPrintMatcher;
+import net.objectof.actof.repospy.migration.rulecomponents.impl.PrettyPrintTransformer;
 import net.objectof.actof.repospy.migration.rulecomponents.impl.ReplaceTransformer;
 import net.objectof.actof.repospy.migration.rulecomponents.impl.StereotypeMatcher;
 import net.objectof.model.Stereotype;
@@ -49,17 +51,17 @@ public class RuleBuilder {
     // /////////////////////////////
 
     public RuleBuilder match(Matcher matcher) {
-        rule.getMatchers().add(matcher);
+        rule.getMatchers().add(new PrettyPrintMatcher(matcher));
         return this;
     }
 
     public RuleBuilder keyTransform(Transformer robotInDisguise) {
-        rule.getKeyTransformers().add(robotInDisguise);
+        rule.getKeyTransformers().add(new PrettyPrintTransformer(robotInDisguise));
         return this;
     }
 
     public RuleBuilder valueTransform(Transformer robotInDisguise) {
-        rule.getValueTransformers().add(robotInDisguise);
+        rule.getValueTransformers().add(new PrettyPrintTransformer(robotInDisguise));
         return this;
     }
 

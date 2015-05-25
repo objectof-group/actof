@@ -1,7 +1,7 @@
 package net.objectof.actof.repospy.migration.rulecomponents.impl;
 
 
-import net.objectof.actof.repospy.migration.rulecomponents.PorterContext;
+import net.objectof.actof.repospy.migration.PorterContext;
 import net.objectof.actof.repospy.migration.rulecomponents.Transformer;
 
 

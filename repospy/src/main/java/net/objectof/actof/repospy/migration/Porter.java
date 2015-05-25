@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.objectof.actof.repospy.migration.impl.RuleBuilder;
-import net.objectof.actof.repospy.migration.rulecomponents.PorterContext;
 import net.objectof.aggr.Aggregate;
 import net.objectof.aggr.Listing;
 import net.objectof.connector.Connector;
@@ -97,8 +96,6 @@ public class Porter {
 
     private void port(Id<?> fromId, Transaction fromTx, Transaction toTx) {
 
-        System.out.println("Porting " + fromId);
-
         // Archetype archetype = fromId.kind().getStereotype().getModel();
         Stereotype st = fromId.kind().getStereotype();
         switch (st) {
@@ -118,26 +115,20 @@ public class Porter {
 
     private void portComposite(Id<?> fromId, Transaction fromTx, Transaction toTx) {
 
-        System.out.println("Porting " + fromId + " as Composite");
-
         Resource<Aggregate<Object, Object>> fromComposite = fromTx.retrieve(fromId);
         Resource<Aggregate<Object, Object>> toComposite = toTx.retrieve(idmap.get(fromId));
-        // aggregates (non-composed) only have 1 part describing the contents
 
+        // aggregates (non-composed) only have 1 part describing the contents
         for (Kind<?> childKind : fromComposite.id().kind().getParts()) {
 
-            System.out.println("Porting " + childKind.getComponentName());
             Object oldKey = childKind.getComponentName();
             Object oldValue = fromComposite.value().get(unqualify(oldKey, true));
             PorterContext context = new PorterContext(oldKey, oldValue, childKind, fromTx, toTx);
 
+            // calls from here pass qualified=true, since composites use
+            // names like Entity.field that need to be parsed
             if (childKind.getStereotype().getModel() == Archetype.CONTAINER) {
-                Resource<?> oldRef = (Resource<?>) oldValue;
-                Object newKey = Rule.transformKey(rules, context);
-                Resource<?> newValue = toTx.create(newKey.toString());
-                idmap.put(oldRef.id(), newValue.id());
-                toComposite.value().set(unqualify(newKey, true), newValue);
-                portAggregate(oldRef.id(), fromTx, toTx);
+                portContainer(context, toComposite.value(), true);
             } else if (childKind.getStereotype() == Stereotype.REF) {
                 portReference(context, toComposite.value(), true);
             } else {
@@ -150,26 +141,18 @@ public class Porter {
 
         Resource<Aggregate<Object, Object>> fromAggr = fromTx.retrieve(fromId);
         Resource<Aggregate<Object, Object>> toAggr = toTx.retrieve(idmap.get(fromId));
+
         // aggregates (non-composed) only have 1 part describing the contents
         Kind<?> childKind = fromAggr.id().kind().getParts().get(0);
 
         for (Object oldKey : fromAggr.value().keySet()) {
             Object oldValue = fromAggr.value().get(oldKey);
             PorterContext context = new PorterContext(oldKey, oldValue, childKind, fromTx, toTx);
-            Object newKey = Rule.transformKey(rules, new PorterContext(oldKey, oldValue, childKind, fromTx, toTx));
 
+            // calls from here pass qualified=false, since aggregatges don't use
+            // names like Entity.field that need to be parsed
             if (childKind.getStereotype().getModel() == Archetype.CONTAINER) {
-                // determine the new component name from the resource id and the
-                // key transform, create it, and port it's contents
-                Resource<?> oldRes = (Resource<?>) oldValue;
-                Object oldComponentName = oldRes.id().kind().getComponentName();
-                PorterContext containerContext = context.copy().setKey(oldComponentName).setKind(oldRes.id().kind());
-                Object newComponentName = Rule.transformKey(rules, containerContext);
-                Resource<?> newValue = toTx.create(newComponentName.toString());
-                idmap.put(oldRes.id(), newValue.id());
-                toAggr.value().set(newKey, newValue);
-                // recurse into resource
-                port(oldRes.id(), fromTx, toTx);
+                portContainer(context, toAggr.value(), false);
             } else if (childKind.getStereotype() == Stereotype.REF) {
                 portReference(context, toAggr.value(), false);
             } else {
@@ -178,17 +161,48 @@ public class Porter {
         }
     }
 
+    private void portContainer(PorterContext context, Aggregate<Object, Object> toParent, boolean qualified) {
+        Resource<?> oldRef = (Resource<?>) context.getValue();
+        Object newKey = Rule.transformKey(rules, context);
+
+        // get the kind for the new key. Trivial case is that it's still a
+        // container, but if we're reducing a list to it's first entry, for
+        // example, we need to take different steps
+        Kind<?> newKind = kindFromKey(context, newKey.toString());
+
+        if (newKind.getStereotype().getModel() == Archetype.CONTAINER) {
+            // if it's still a container, create it first, then recurse into it
+            Resource<?> newRes = context.getToTx().create(newKey.toString());
+            idmap.put(oldRef.id(), newRes.id());
+            toParent.set(unqualify(newKey, qualified), newRes);
+            port(oldRef.id(), context.getFromTx(), context.getToTx());
+        } else if (newKind.getStereotype() == Stereotype.REF) {
+            // there's a chance that the user passed us a reference to something
+            // in the old repo.
+            referenceJobs.add(() -> {
+                Resource<Object> newRef = (Resource<Object>) Rule.transformValue(rules, context);
+                // just incase this is a ref to the old package
+                    newRef = updateRef(context, newRef);
+                    toParent.set(unqualify(newKey, qualified), newRef);
+                });
+        } else {
+            // otherwise, just rely on rules to port value
+            portLeaf(context, toParent, qualified);
+        }
+
+    }
+
     private void portReference(PorterContext context, Aggregate<Object, Object> toParent, boolean qualified) {
         referenceJobs.add(() -> {
+
+            Object newKey = Rule.transformKey(rules, context);
+
             // get the old value as a resource so we can look up its id and
             // find the new id in the idmap
-                Resource<?> oldRef = (Resource<?>) context.getValue();
+                Resource<Object> oldRef = (Resource<Object>) context.getValue();
                 if (oldRef == null) { return; }
-                Id<?> oldId = oldRef.id();
-                Object newKey = Rule.transformKey(rules, context);
-                // look up the reference target in the new repo
-                Id<?> newId = idmap.get(oldId);
-                Object newValue = context.getToTx().retrieve(newId);
+                Object newValue = updateRef(context, oldRef);
+
                 // create a new context where the value is not the old
                 // reference, but
                 // the old reference as ported into the new repo
@@ -196,6 +210,18 @@ public class Porter {
                 newValue = Rule.transformValue(rules, refContext);
                 toParent.set(unqualify(newKey, qualified), newValue);
             });
+    }
+
+    private Resource<Object> updateRef(PorterContext context, Resource<Object> ref) {
+        if (ref.tx().getPackage().equals(context.getFromTx().getPackage())) {
+            Id<?> oldId = ref.id();
+            // look up the reference target in the new repo
+            Id<?> newId = idmap.get(oldId);
+            Resource<Object> newValue = context.getToTx().retrieve(newId);
+            return newValue;
+        } else {
+            return ref;
+        }
     }
 
     private void portLeaf(PorterContext context, Aggregate<Object, Object> newParent, boolean qualified) {
@@ -213,8 +239,22 @@ public class Porter {
         return keyString.substring(lastIndex + 1);
     }
 
+    private Kind<?> kindFromKey(PorterContext context, String key) {
+        return kindFromKey(context.getToTx().getPackage().getParts(), key);
+    }
+
+    private Kind<?> kindFromKey(Iterable<? extends Kind<?>> kinds, String key) {
+        for (Kind<?> kind : kinds) {
+            if (kind.getComponentName().equals(key)) { return kind; }
+            if (key.startsWith(kind.getComponentName())) { return kindFromKey(kind.getParts(), key); }
+        }
+        return null;
+    }
+
     public static void main(String[] args) throws ConnectorException, FileNotFoundException {
-        testRealm();
+        // testRealm();
+        // testRulePrinting();
+        testRealmReversed();
     }
 
     private static void testSettings() throws ConnectorException, FileNotFoundException {
@@ -313,4 +353,83 @@ public class Porter {
 
     }
 
+    private static void testRealmReversed() throws ConnectorException, FileNotFoundException {
+        new File("/home/nathaniel/Desktop/Porting/rolereversal/empty-port.db").delete();
+
+        // old package
+        Connector oldConnector = new ISQLiteConnector();
+        oldConnector.setParameter(ISQLiteConnector.KEY_FILENAME,
+                "/home/nathaniel/Desktop/Porting/rolereversal/empty.db");
+        oldConnector.setParameter(ISQLiteConnector.KEY_REPOSITORY, "realmproject.net:1502/realm");
+        Package oldRepo = oldConnector.getPackage();
+
+        // new package
+        Connector newConnector = new ISQLiteConnector();
+        newConnector.setParameter(ISQLiteConnector.KEY_FILENAME,
+                "/home/nathaniel/Desktop/Porting/rolereversal/empty-port.db");
+        newConnector.setParameter(ISQLiteConnector.KEY_REPOSITORY, "realmproject.net:1502/realm");
+        Package newRepo = newConnector.createPackage(new FileInputStream(
+                "/home/nathaniel/Desktop/Porting/rolereversal/realm-port.xml"), Initialize.WHEN_EMPTY);
+
+        // @formatter:off
+        
+        Rule rolesToRole = RuleBuilder.start()
+            .forKey("Person.roles")
+            .setKey("Person.role")
+            .valueTransform(context -> {
+                Listing<Object> roles = (Listing<Object>) context.getValue();
+                if (roles.size() == 0) { return null; }
+                return roles.get(0);
+            })
+            .build();
+        
+//        Rule roleToRoles = RuleBuilder.start()
+//            .forKey("Person.role")
+//            .setKey("Person.roles")
+//            .valueTransform((context) -> {
+//                Listing<Object> roles = context.getToTx().create("Person.roles");
+//                roles.add(context.getValue());
+//                return roles;
+//            })
+//            .build();
+        
+        
+//        Rule settings = RuleBuilder.start()
+//                .forKey("Setting")
+//                .setKey("Preference")
+//                .build();
+//        
+//        Rule settingkey = RuleBuilder.start()
+//                .forKey("Setting.key")
+//                .setKey("Preference.name")
+//                .build();
+//        
+//        Rule append = RuleBuilder.start()
+//                .forStereotype(Stereotype.TEXT)
+//                .valueTransform((k, v, kind) -> v.toString() + "...")
+//                .build();
+        
+        // @formatter:on
+
+        Porter p = new Porter(rolesToRole);
+
+        System.out.println("-----------------------------");
+
+        p.port(oldRepo, newRepo);
+
+    }
+
+    private static void testRulePrinting() {
+        // @formatter:off
+        Rule testRule = RuleBuilder.start()
+                .forKey("asdf")
+                .forKey("qwerty")
+                .setKey("asdf++")
+                .match(context -> true)
+                .keyTransform(context -> context.getKey())
+                .valueTransform(context -> context.getValue())
+                .build();
+        System.out.println(testRule);
+        // @formatter:on
+    }
 }
