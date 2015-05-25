@@ -5,7 +5,7 @@ import net.objectof.model.Kind;
 import net.objectof.model.Transaction;
 
 
-public class RuleContext {
+public class PorterContext {
 
     private Object key;
     private Object value;
@@ -13,9 +13,9 @@ public class RuleContext {
     private Transaction fromTx;
     private Transaction toTx;
 
-    public RuleContext() {}
+    public PorterContext() {}
 
-    public RuleContext(Object key, Object value, Kind<?> kind, Transaction fromTx, Transaction toTx) {
+    public PorterContext(Object key, Object value, Kind<?> kind, Transaction fromTx, Transaction toTx) {
         this.key = key;
         this.value = value;
         this.kind = kind;
@@ -23,7 +23,7 @@ public class RuleContext {
         this.toTx = toTx;
     }
 
-    public RuleContext(RuleContext copy) {
+    public PorterContext(PorterContext copy) {
         key = copy.key;
         value = copy.value;
         kind = copy.kind;
@@ -31,15 +31,15 @@ public class RuleContext {
         toTx = copy.toTx;
     }
 
-    public RuleContext copy() {
-        return new RuleContext(this);
+    public PorterContext copy() {
+        return new PorterContext(this);
     }
 
     public Object getKey() {
         return key;
     }
 
-    public RuleContext setKey(Object key) {
+    public PorterContext setKey(Object key) {
         this.key = key;
         return this;
     }
@@ -48,7 +48,7 @@ public class RuleContext {
         return value;
     }
 
-    public RuleContext setValue(Object value) {
+    public PorterContext setValue(Object value) {
         this.value = value;
         return this;
     }
@@ -57,7 +57,7 @@ public class RuleContext {
         return kind;
     }
 
-    public RuleContext setKind(Kind<?> kind) {
+    public PorterContext setKind(Kind<?> kind) {
         this.kind = kind;
         return this;
     }
@@ -66,7 +66,7 @@ public class RuleContext {
         return fromTx;
     }
 
-    public RuleContext setFromTx(Transaction fromTx) {
+    public PorterContext setFromTx(Transaction fromTx) {
         this.fromTx = fromTx;
         return this;
     }
@@ -75,7 +75,7 @@ public class RuleContext {
         return toTx;
     }
 
-    public RuleContext setToTx(Transaction toTx) {
+    public PorterContext setToTx(Transaction toTx) {
         this.toTx = toTx;
         return this;
     }

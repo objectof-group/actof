@@ -12,8 +12,9 @@ import java.util.List;
 import java.util.Map;
 
 import net.objectof.actof.repospy.migration.impl.RuleBuilder;
-import net.objectof.actof.repospy.migration.rulecomponents.RuleContext;
+import net.objectof.actof.repospy.migration.rulecomponents.PorterContext;
 import net.objectof.aggr.Aggregate;
+import net.objectof.aggr.Listing;
 import net.objectof.connector.Connector;
 import net.objectof.connector.Connector.Initialize;
 import net.objectof.connector.ConnectorException;
@@ -30,7 +31,12 @@ import net.objectof.model.Transaction;
 public class Porter {
 
     private List<Rule> rules = new ArrayList<>();
-    Map<Id<?>, Id<?>> idmap = new HashMap<>();
+    private Map<Id<?>, Id<?>> idmap = new HashMap<>();
+
+    // we need to make sure that when references are connected, everything
+    // already exists in the new repo, so when we walk the repo tree, we store
+    // all reference port operations as Runnable jobs to be run later
+    private List<Runnable> referenceJobs = new ArrayList<>();
 
     public Porter() {}
 
@@ -53,7 +59,7 @@ public class Porter {
             Iterable<Resource<?>> resources = fromTx.enumerate(kind.getComponentName());
             for (Resource<?> oldResource : resources) {
                 Object oldKey = kind.getComponentName();
-                RuleContext context = new RuleContext(oldKey, oldResource, oldResource.id().kind(), fromTx, toTx);
+                PorterContext context = new PorterContext(oldKey, oldResource, oldResource.id().kind(), fromTx, toTx);
                 Object newKey = Rule.transformKey(rules, context);
                 Resource<?> newResource = toTx.create(newKey.toString());
                 idmap.put(oldResource.id(), newResource.id());
@@ -65,6 +71,11 @@ public class Porter {
 
         for (Id<?> id : new HashSet<>(idmap.keySet())) {
             port(id, fromTx, toTx);
+        }
+
+        // reference porting is done last so that everything else is in place
+        for (Runnable r : referenceJobs) {
+            r.run();
         }
 
         toTx.post();
@@ -101,7 +112,6 @@ public class Porter {
                 break;
             default:
                 throw new UnsupportedOperationException();
-
         }
 
     }
@@ -119,7 +129,7 @@ public class Porter {
             System.out.println("Porting " + childKind.getComponentName());
             Object oldKey = childKind.getComponentName();
             Object oldValue = fromComposite.value().get(unqualify(oldKey, true));
-            RuleContext context = new RuleContext(oldKey, oldValue, childKind, fromTx, toTx);
+            PorterContext context = new PorterContext(oldKey, oldValue, childKind, fromTx, toTx);
 
             if (childKind.getStereotype().getModel() == Archetype.CONTAINER) {
                 Resource<?> oldRef = (Resource<?>) oldValue;
@@ -145,15 +155,15 @@ public class Porter {
 
         for (Object oldKey : fromAggr.value().keySet()) {
             Object oldValue = fromAggr.value().get(oldKey);
-            RuleContext context = new RuleContext(oldKey, oldValue, childKind, fromTx, toTx);
-            Object newKey = Rule.transformKey(rules, new RuleContext(oldKey, oldValue, childKind, fromTx, toTx));
+            PorterContext context = new PorterContext(oldKey, oldValue, childKind, fromTx, toTx);
+            Object newKey = Rule.transformKey(rules, new PorterContext(oldKey, oldValue, childKind, fromTx, toTx));
 
             if (childKind.getStereotype().getModel() == Archetype.CONTAINER) {
                 // determine the new component name from the resource id and the
                 // key transform, create it, and port it's contents
                 Resource<?> oldRes = (Resource<?>) oldValue;
                 Object oldComponentName = oldRes.id().kind().getComponentName();
-                RuleContext containerContext = context.copy().setKey(oldComponentName).setKind(oldRes.id().kind());
+                PorterContext containerContext = context.copy().setKey(oldComponentName).setKind(oldRes.id().kind());
                 Object newComponentName = Rule.transformKey(rules, containerContext);
                 Resource<?> newValue = toTx.create(newComponentName.toString());
                 idmap.put(oldRes.id(), newValue.id());
@@ -168,19 +178,27 @@ public class Porter {
         }
     }
 
-    private void portReference(RuleContext context, Aggregate<Object, Object> toParent, boolean qualified) {
-        // get the old value as a resource so we can look up its id and
-        // find the new id in the idmap
-        Resource<?> oldRef = (Resource<?>) context.getValue();
-        if (oldRef == null) { return; }
-        Id<?> oldId = oldRef.id();
-        Object newKey = Rule.transformKey(rules, context);
-        Id<?> newId = idmap.get(oldId);
-        Object newValue = context.getToTx().retrieve(newId);
-        toParent.set(unqualify(newKey, qualified), newValue);
+    private void portReference(PorterContext context, Aggregate<Object, Object> toParent, boolean qualified) {
+        referenceJobs.add(() -> {
+            // get the old value as a resource so we can look up its id and
+            // find the new id in the idmap
+                Resource<?> oldRef = (Resource<?>) context.getValue();
+                if (oldRef == null) { return; }
+                Id<?> oldId = oldRef.id();
+                Object newKey = Rule.transformKey(rules, context);
+                // look up the reference target in the new repo
+                Id<?> newId = idmap.get(oldId);
+                Object newValue = context.getToTx().retrieve(newId);
+                // create a new context where the value is not the old
+                // reference, but
+                // the old reference as ported into the new repo
+                PorterContext refContext = context.copy().setValue(newValue);
+                newValue = Rule.transformValue(rules, refContext);
+                toParent.set(unqualify(newKey, qualified), newValue);
+            });
     }
 
-    private void portLeaf(RuleContext context, Aggregate<Object, Object> newParent, boolean qualified) {
+    private void portLeaf(PorterContext context, Aggregate<Object, Object> newParent, boolean qualified) {
         Object newKey = Rule.transformKey(rules, context);
         Object newValue = Rule.transformValue(rules, context);
         newParent.set(unqualify(newKey, qualified), newValue);
@@ -259,7 +277,16 @@ public class Porter {
 
         // @formatter:off
         
-        Rule role = RuleBuilder.start().forKey("Person.role").valueTransform((context) -> context.getValue()).build();
+        Rule roleToRoles = RuleBuilder.start()
+            .forKey("Person.role")
+            .setKey("Person.roles")
+            .valueTransform((context) -> {
+                Listing<Object> roles = context.getToTx().create("Person.roles");
+                roles.add(context.getValue());
+                return roles;
+            })
+            .build();
+        
         
 //        Rule settings = RuleBuilder.start()
 //                .forKey("Setting")
@@ -278,9 +305,10 @@ public class Porter {
         
         // @formatter:on
 
+        Porter p = new Porter(roleToRoles);
+
         System.out.println("-----------------------------");
 
-        Porter p = new Porter();
         p.port(oldRepo, newRepo);
 
     }

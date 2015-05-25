@@ -1,7 +1,7 @@
 package net.objectof.actof.repospy.migration.rulecomponents.impl;
 
 
-import net.objectof.actof.repospy.migration.rulecomponents.RuleContext;
+import net.objectof.actof.repospy.migration.rulecomponents.PorterContext;
 import net.objectof.actof.repospy.migration.rulecomponents.Transformer;
 
 
@@ -14,7 +14,7 @@ public class ReplaceTransformer implements Transformer {
     }
 
     @Override
-    public Object apply(RuleContext context) {
+    public Object apply(PorterContext context) {
         return replace;
     }
 

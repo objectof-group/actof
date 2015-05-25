@@ -6,7 +6,7 @@ import java.util.List;
 
 import net.objectof.actof.repospy.migration.Rule;
 import net.objectof.actof.repospy.migration.rulecomponents.Matcher;
-import net.objectof.actof.repospy.migration.rulecomponents.RuleContext;
+import net.objectof.actof.repospy.migration.rulecomponents.PorterContext;
 import net.objectof.actof.repospy.migration.rulecomponents.Transformer;
 
 
@@ -31,7 +31,7 @@ public class IRule implements Rule {
     }
 
     @Override
-    public boolean match(RuleContext context) {
+    public boolean match(PorterContext context) {
         for (Matcher matcher : matchers) {
             if (matcher.test(context)) { return true; }
         }
@@ -39,8 +39,8 @@ public class IRule implements Rule {
     }
 
     @Override
-    public Object transformKey(RuleContext context) {
-        RuleContext modContext = context.copy();
+    public Object transformKey(PorterContext context) {
+        PorterContext modContext = context.copy();
         for (Transformer keyTransformer : keyTransformers) {
             modContext.setKey(keyTransformer.apply(modContext));
         }
@@ -48,8 +48,8 @@ public class IRule implements Rule {
     }
 
     @Override
-    public Object transformValue(RuleContext context) {
-        RuleContext modContext = new RuleContext(context);
+    public Object transformValue(PorterContext context) {
+        PorterContext modContext = new PorterContext(context);
         for (Transformer valueTransformer : valueTransformers) {
             modContext.setValue(valueTransformer.apply(modContext));
         }

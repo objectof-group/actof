@@ -3,19 +3,19 @@ package net.objectof.actof.repospy.migration;
 
 import java.util.List;
 
-import net.objectof.actof.repospy.migration.rulecomponents.RuleContext;
+import net.objectof.actof.repospy.migration.rulecomponents.PorterContext;
 
 
 public interface Rule {
 
-    boolean match(RuleContext context);
+    boolean match(PorterContext context);
 
-    Object transformKey(RuleContext context);
+    Object transformKey(PorterContext context);
 
-    Object transformValue(RuleContext context);
+    Object transformValue(PorterContext context);
 
-    static Object transformKey(List<Rule> rules, RuleContext context) {
-        RuleContext modContext = context.copy();
+    static Object transformKey(List<Rule> rules, PorterContext context) {
+        PorterContext modContext = context.copy();
         for (Rule rule : rules) {
             if (rule.match(modContext)) {
                 modContext.setKey(rule.transformKey(modContext));
@@ -24,8 +24,8 @@ public interface Rule {
         return modContext.getKey();
     }
 
-    static Object transformValue(List<Rule> rules, RuleContext context) {
-        RuleContext modContext = context.copy();
+    static Object transformValue(List<Rule> rules, PorterContext context) {
+        PorterContext modContext = context.copy();
         for (Rule rule : rules) {
             if (rule.match(modContext)) {
                 modContext.setValue(rule.transformValue(modContext));
