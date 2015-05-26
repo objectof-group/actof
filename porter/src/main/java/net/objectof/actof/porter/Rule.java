@@ -1,4 +1,4 @@
-package net.objectof.actof.repospy.migration;
+package net.objectof.actof.porter;
 
 
 import java.util.List;
@@ -11,6 +11,10 @@ public interface Rule {
     Object transformKey(PorterContext context);
 
     Object transformValue(PorterContext context);
+
+    boolean modifiesKey(PorterContext context);
+
+    boolean modifiesValue(PorterContext context);
 
     static Object transformKey(List<Rule> rules, PorterContext context) {
         PorterContext modContext = context.copy();
@@ -30,6 +34,20 @@ public interface Rule {
             }
         }
         return modContext.getValue();
+    }
+
+    static boolean modifiesKey(List<Rule> rules, PorterContext context) {
+        for (Rule rule : rules) {
+            if (rule.modifiesKey(context)) { return true; }
+        }
+        return false;
+    }
+
+    static boolean modifiesValue(List<Rule> rules, PorterContext context) {
+        for (Rule rule : rules) {
+            if (rule.modifiesValue(context)) { return true; }
+        }
+        return false;
     }
 
 }

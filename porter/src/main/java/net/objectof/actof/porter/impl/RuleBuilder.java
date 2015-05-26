@@ -1,14 +1,14 @@
-package net.objectof.actof.repospy.migration.impl;
+package net.objectof.actof.porter.impl;
 
 
-import net.objectof.actof.repospy.migration.Rule;
-import net.objectof.actof.repospy.migration.rulecomponents.Matcher;
-import net.objectof.actof.repospy.migration.rulecomponents.Transformer;
-import net.objectof.actof.repospy.migration.rulecomponents.impl.KeyMatcher;
-import net.objectof.actof.repospy.migration.rulecomponents.impl.PrettyPrintMatcher;
-import net.objectof.actof.repospy.migration.rulecomponents.impl.PrettyPrintTransformer;
-import net.objectof.actof.repospy.migration.rulecomponents.impl.ReplaceTransformer;
-import net.objectof.actof.repospy.migration.rulecomponents.impl.StereotypeMatcher;
+import net.objectof.actof.porter.Rule;
+import net.objectof.actof.porter.rulecomponents.Matcher;
+import net.objectof.actof.porter.rulecomponents.Transformer;
+import net.objectof.actof.porter.rulecomponents.impl.KeyMatcher;
+import net.objectof.actof.porter.rulecomponents.impl.PrettyPrintMatcher;
+import net.objectof.actof.porter.rulecomponents.impl.PrettyPrintTransformer;
+import net.objectof.actof.porter.rulecomponents.impl.ReplaceTransformer;
+import net.objectof.actof.porter.rulecomponents.impl.StereotypeMatcher;
 import net.objectof.model.Stereotype;
 
 

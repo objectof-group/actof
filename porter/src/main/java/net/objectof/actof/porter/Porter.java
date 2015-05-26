@@ -1,4 +1,4 @@
-package net.objectof.actof.repospy.migration;
+package net.objectof.actof.porter;
 
 
 import java.io.File;
@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import net.objectof.actof.repospy.migration.impl.RuleBuilder;
+import net.objectof.actof.porter.impl.RuleBuilder;
 import net.objectof.aggr.Aggregate;
 import net.objectof.aggr.Listing;
 import net.objectof.connector.Connector;
@@ -69,7 +69,7 @@ public class Porter {
         toTx = to.connect(getClass());
 
         for (Id<?> id : new HashSet<>(idmap.keySet())) {
-            port(id, fromTx, toTx);
+            walkContainer(id, fromTx, toTx);
         }
 
         // reference porting is done last so that everything else is in place
@@ -94,18 +94,28 @@ public class Porter {
         this.rules.addAll(Arrays.asList(rules));
     }
 
-    private void port(Id<?> fromId, Transaction fromTx, Transaction toTx) {
+    /**
+     * Ports the elements of a container
+     * 
+     * @param fromId
+     *            the Id of the container resource in the source repo
+     * @param fromTx
+     *            a transaction for the source repo
+     * @param toTx
+     *            a transaction for the destination repo
+     */
+    private void walkContainer(Id<?> fromId, Transaction fromTx, Transaction toTx) {
 
         // Archetype archetype = fromId.kind().getStereotype().getModel();
         Stereotype st = fromId.kind().getStereotype();
         switch (st) {
             case COMPOSED:
-                portComposite(fromId, fromTx, toTx);
+                walkComposite(fromId, fromTx, toTx);
                 break;
             case INDEXED:
             case MAPPED:
             case SET:
-                portAggregate(fromId, fromTx, toTx);
+                walkAggregate(fromId, fromTx, toTx);
                 break;
             default:
                 throw new UnsupportedOperationException();
@@ -113,14 +123,15 @@ public class Porter {
 
     }
 
-    private void portComposite(Id<?> fromId, Transaction fromTx, Transaction toTx) {
+    private void walkComposite(Id<?> fromId, Transaction fromTx, Transaction toTx) {
 
         Resource<Aggregate<Object, Object>> fromComposite = fromTx.retrieve(fromId);
         Resource<Aggregate<Object, Object>> toComposite = toTx.retrieve(idmap.get(fromId));
 
-        // aggregates (non-composed) only have 1 part describing the contents
+        // composed entities have different kinds for each field
         for (Kind<?> childKind : fromComposite.id().kind().getParts()) {
 
+            // build context
             Object oldKey = childKind.getComponentName();
             Object oldValue = fromComposite.value().get(unqualify(oldKey, true));
             PorterContext context = new PorterContext(oldKey, oldValue, childKind, fromTx, toTx);
@@ -129,15 +140,16 @@ public class Porter {
             // names like Entity.field that need to be parsed
             if (childKind.getStereotype().getModel() == Archetype.CONTAINER) {
                 portContainer(context, toComposite.value(), true);
-            } else if (childKind.getStereotype() == Stereotype.REF) {
-                portReference(context, toComposite.value(), true);
             } else {
                 portLeaf(context, toComposite.value(), true);
             }
         }
     }
 
-    private void portAggregate(Id<?> fromId, Transaction fromTx, Transaction toTx) {
+    private void walkAggregate(Id<?> fromId, Transaction fromTx, Transaction toTx) {
+
+        // this aggregate doesn't exist in new repo
+        if (!idmap.containsKey(fromId)) { return; }
 
         Resource<Aggregate<Object, Object>> fromAggr = fromTx.retrieve(fromId);
         Resource<Aggregate<Object, Object>> toAggr = toTx.retrieve(idmap.get(fromId));
@@ -146,6 +158,8 @@ public class Porter {
         Kind<?> childKind = fromAggr.id().kind().getParts().get(0);
 
         for (Object oldKey : fromAggr.value().keySet()) {
+
+            // build context
             Object oldValue = fromAggr.value().get(oldKey);
             PorterContext context = new PorterContext(oldKey, oldValue, childKind, fromTx, toTx);
 
@@ -153,8 +167,6 @@ public class Porter {
             // names like Entity.field that need to be parsed
             if (childKind.getStereotype().getModel() == Archetype.CONTAINER) {
                 portContainer(context, toAggr.value(), false);
-            } else if (childKind.getStereotype() == Stereotype.REF) {
-                portReference(context, toAggr.value(), false);
             } else {
                 portLeaf(context, toAggr.value(), false);
             }
@@ -162,72 +174,125 @@ public class Porter {
     }
 
     private void portContainer(PorterContext context, Aggregate<Object, Object> toParent, boolean qualified) {
-        Resource<?> oldRef = (Resource<?>) context.getValue();
-        Object newKey = Rule.transformKey(rules, context);
 
-        // get the kind for the new key. Trivial case is that it's still a
-        // container, but if we're reducing a list to it's first entry, for
-        // example, we need to take different steps
-        Kind<?> newKind = kindFromKey(context, newKey.toString());
+        PorterContext ported = transform(context);
 
-        if (newKind.getStereotype().getModel() == Archetype.CONTAINER) {
-            // if it's still a container, create it first, then recurse into it
-            Resource<?> newRes = context.getToTx().create(newKey.toString());
-            idmap.put(oldRef.id(), newRes.id());
-            toParent.set(unqualify(newKey, qualified), newRes);
-            port(oldRef.id(), context.getFromTx(), context.getToTx());
-        } else if (newKind.getStereotype() == Stereotype.REF) {
+        System.out.println("Porting " + context.getKey());
+
+        if (ported.getKind().getStereotype() == Stereotype.REF) {
             // there's a chance that the user passed us a reference to something
             // in the old repo.
             referenceJobs.add(() -> {
-                Resource<Object> newRef = (Resource<Object>) Rule.transformValue(rules, context);
-                // just incase this is a ref to the old package
-                    newRef = updateRef(context, newRef);
-                    toParent.set(unqualify(newKey, qualified), newRef);
-                });
+                toParent.set(unqualify(ported.getKey(), qualified), ported.getValue());
+            });
         } else {
-            // otherwise, just rely on rules to port value
-            portLeaf(context, toParent, qualified);
+            toParent.set(unqualify(ported.getKey(), qualified), ported.getValue());
+        }
+
+        // recurse into the old container's fields/elements
+        if (context.getKind().getStereotype().getModel() == Archetype.CONTAINER) {
+            Resource<?> res = (Resource<?>) context.getValue();
+            if (res == null) { return; }
+            walkContainer(res.id(), context.getFromTx(), context.getToTx());
         }
 
     }
 
-    private void portReference(PorterContext context, Aggregate<Object, Object> toParent, boolean qualified) {
-        referenceJobs.add(() -> {
-
-            Object newKey = Rule.transformKey(rules, context);
-
-            // get the old value as a resource so we can look up its id and
-            // find the new id in the idmap
-                Resource<Object> oldRef = (Resource<Object>) context.getValue();
-                if (oldRef == null) { return; }
-                Object newValue = updateRef(context, oldRef);
-
-                // create a new context where the value is not the old
-                // reference, but
-                // the old reference as ported into the new repo
-                PorterContext refContext = context.copy().setValue(newValue);
-                newValue = Rule.transformValue(rules, refContext);
-                toParent.set(unqualify(newKey, qualified), newValue);
-            });
+    /**
+     * Ports anything which isn't a container, and so doesn't require any
+     * recursion
+     * 
+     * @param context
+     *            the context of this item
+     * @param toParent
+     *            parent aggregate of this leaf
+     * @param qualified
+     *            if keys are qualified strings which must be parsed (as in
+     *            compositions), or simple, as in aggregates like indexed.
+     */
+    private void portLeaf(PorterContext context, Aggregate<Object, Object> toParent, boolean qualified) {
+        PorterContext ported = transform(context);
+        toParent.set(unqualify(ported.getKey(), qualified), ported.getValue());
     }
 
-    private Resource<Object> updateRef(PorterContext context, Resource<Object> ref) {
-        if (ref.tx().getPackage().equals(context.getFromTx().getPackage())) {
-            Id<?> oldId = ref.id();
+    /**
+     * Accepts a PorterContext containing the source key/value/kind and returns
+     * a PorterContext containing the transformed key/value/kind
+     * 
+     * @param context
+     *            the source context
+     * @return a context containing the transformed value
+     */
+    private PorterContext transform(PorterContext context) {
+        PorterContext result = context.copy();
+
+        // key
+        Object newKey = Rule.transformKey(rules, context);
+        result.setKey(newKey);
+
+        // kind
+        Kind<?> kind = kindFromKey(context.getToTx(), newKey.toString());
+        result.setKind(kind);
+
+        // value - not necessarily a reference, or even a resource
+        Object newValue = Rule.transformValue(rules, context);
+        newValue = updateRef(context, newValue);
+        result.setValue(newValue);
+
+        return result;
+    }
+
+    private void remember(PorterContext fromContext, PorterContext toContext) {
+        remember(fromContext.getValue(), toContext.getValue());
+    }
+
+    private void remember(Object oFrom, Object oTo) {
+        Resource<?> from = (Resource<?>) oFrom;
+        Resource<?> to = (Resource<?>) oTo;
+        idmap.put(from.id(), to.id());
+    }
+
+    /**
+     * Checks if the given object is a resource from the old repo. If it is, it
+     * looks up the corresponding resource in the new repo in the idmap, and
+     * returns it. This is useful for when a user-generated rule returns a value
+     * from the old repo.
+     * 
+     * The PorterContext supplied to this method shold have a ported
+     * {@link Kind}
+     * 
+     * @param context
+     * @param ref
+     * @return
+     */
+    private Object updateRef(PorterContext context, Object object) {
+
+        System.out.println("updateRef: " + object);
+
+        // if (context.getKind().getStereotype() != Stereotype.REF) { return
+        // object; }
+        if (!(object instanceof Resource)) { return object; }
+
+        Resource<Object> res = (Resource<Object>) object;
+        if (res.tx().getPackage().equals(context.getToTx().getPackage())) { return object; }
+
+        Id<?> oldId = res.id();
+        if (!idmap.containsKey(oldId)) {
+            //
+            Resource<Object> newValue = context.getToTx().create(context.getKind().getComponentName());
+            idmap.put(oldId, newValue.id());
+            return newValue;
+        } else {
             // look up the reference target in the new repo
             Id<?> newId = idmap.get(oldId);
             Resource<Object> newValue = context.getToTx().retrieve(newId);
             return newValue;
-        } else {
-            return ref;
         }
+
     }
 
-    private void portLeaf(PorterContext context, Aggregate<Object, Object> newParent, boolean qualified) {
-        Object newKey = Rule.transformKey(rules, context);
-        Object newValue = Rule.transformValue(rules, context);
-        newParent.set(unqualify(newKey, qualified), newValue);
+    private boolean isContainer(Kind<?> kind) {
+        return kind.getStereotype().getModel() == Archetype.CONTAINER;
     }
 
     private Object unqualify(Object key, boolean qualified) {
@@ -239,8 +304,8 @@ public class Porter {
         return keyString.substring(lastIndex + 1);
     }
 
-    private Kind<?> kindFromKey(PorterContext context, String key) {
-        return kindFromKey(context.getToTx().getPackage().getParts(), key);
+    private Kind<?> kindFromKey(Transaction toTx, String key) {
+        return kindFromKey(toTx.getPackage().getParts(), key);
     }
 
     private Kind<?> kindFromKey(Iterable<? extends Kind<?>> kinds, String key) {

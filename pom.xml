@@ -15,6 +15,7 @@
 		<module>minion</module>
 		<module>repospy</module>
 		<module>schemaspy</module>
+		<module>porter</module>
 	</modules>
 
 	<properties>

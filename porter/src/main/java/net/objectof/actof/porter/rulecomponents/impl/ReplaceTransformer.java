@@ -1,8 +1,8 @@
-package net.objectof.actof.repospy.migration.rulecomponents.impl;
+package net.objectof.actof.porter.rulecomponents.impl;
 
 
-import net.objectof.actof.repospy.migration.PorterContext;
-import net.objectof.actof.repospy.migration.rulecomponents.Transformer;
+import net.objectof.actof.porter.PorterContext;
+import net.objectof.actof.porter.rulecomponents.Transformer;
 
 
 public class ReplaceTransformer implements Transformer {

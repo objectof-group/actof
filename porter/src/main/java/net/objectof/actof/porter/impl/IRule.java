@@ -1,13 +1,13 @@
-package net.objectof.actof.repospy.migration.impl;
+package net.objectof.actof.porter.impl;
 
 
 import java.util.ArrayList;
 import java.util.List;
 
-import net.objectof.actof.repospy.migration.PorterContext;
-import net.objectof.actof.repospy.migration.Rule;
-import net.objectof.actof.repospy.migration.rulecomponents.Matcher;
-import net.objectof.actof.repospy.migration.rulecomponents.Transformer;
+import net.objectof.actof.porter.PorterContext;
+import net.objectof.actof.porter.Rule;
+import net.objectof.actof.porter.rulecomponents.Matcher;
+import net.objectof.actof.porter.rulecomponents.Transformer;
 
 
 public class IRule implements Rule {
@@ -96,4 +96,15 @@ public class IRule implements Rule {
 
         return sb.toString();
     }
+
+    @Override
+    public boolean modifiesKey(PorterContext context) {
+        return match(context) && keyTransformers.size() > 0;
+    }
+
+    @Override
+    public boolean modifiesValue(PorterContext context) {
+        return match(context) && valueTransformers.size() > 0;
+    }
+
 }
