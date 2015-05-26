@@ -29,6 +29,11 @@ public class FilenameParameterEditor extends HBox implements ParameterEditor {
 
         browse.setOnAction(event -> {
             FileChooser chooser = new FileChooser();
+            String oldFilename = param.getValue();
+            if (oldFilename.length() > 0) {
+                File oldFile = new File(oldFilename);
+                chooser.setInitialDirectory(oldFile.getParentFile());
+            }
 
             File file;
             if (create) {

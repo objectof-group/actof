@@ -28,6 +28,11 @@ public class DirectoryParameterEditor extends HBox implements ParameterEditor {
 
         browse.setOnAction(event -> {
             DirectoryChooser chooser = new DirectoryChooser();
+            String oldFilename = param.getValue();
+            if (oldFilename.length() > 0) {
+                File oldFile = new File(oldFilename);
+                chooser.setInitialDirectory(oldFile);
+            }
 
             File dir = chooser.showDialog(owner);
             if (dir != null) {
