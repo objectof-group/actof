@@ -22,7 +22,7 @@ public class PorterTesting {
     public static void main(String[] args) throws ConnectorException, FileNotFoundException {
         testRealm();
         // testRulePrinting();
-        testRealmReversed();
+        // testRealmReversed();
     }
 
     private static void testSettings() throws ConnectorException, FileNotFoundException {
@@ -150,12 +150,12 @@ public class PorterTesting {
                     account.set("pwdHashed", oldPerson.get("pwdHashed"));
                     account.set("salt", oldPerson.get("salt"));
                     
-                    Object oldRole = oldPerson.get("role");
+                    Composite oldRole = (Composite) oldPerson.get("role");
                     Listing<Object> newRoles = after.getToTx().create("Account.roles");
                     account.set("roles", newRoles);
                     Object newRole = p.updateReference(after, oldRole);
                     newRoles.add(newRole);
-                    //newRoles.add(oldRole);
+                    newRoles.add(oldRole);
                     
                     newPerson.set("account", account);
                 })

@@ -233,14 +233,24 @@ public class Porter {
      * @return
      */
     public Object updateReference(PorterContext context, Object object) {
-
-        if (!(object instanceof Resource)) { return object; }
-
+        if (!isResourceStale(context, object)) { return object; }
         Resource<Object> res = (Resource<Object>) object;
-        if (res.tx().getPackage().equals(context.getToTx().getPackage())) { return object; }
-
         Id<?> oldId = res.id();
         return fetch(oldId, context.getToTx(), kindName(context.getKind()));
+    }
+
+    /**
+     * Checks if the given object is a resource from the old repo
+     * 
+     * @param context
+     * @param object
+     * @return
+     */
+    public boolean isResourceStale(PorterContext context, Object object) {
+        if (!(object instanceof Resource)) { return false; }
+        Resource<Object> res = (Resource<Object>) object;
+        if (res.tx().getPackage().equals(context.getToTx().getPackage())) { return false; }
+        return true;
     }
 
     private String kindName(Kind<?> kind) {

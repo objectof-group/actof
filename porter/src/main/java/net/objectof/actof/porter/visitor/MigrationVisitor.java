@@ -8,6 +8,12 @@ import net.objectof.model.Resource;
 import net.objectof.model.Stereotype;
 
 
+/**
+ * Visitor for migrating old repo tree to new repo tree
+ * 
+ * @author NAS
+ *
+ */
 public class MigrationVisitor implements Visitor {
 
     public PorterContext visitContainer(Porter porter, PorterContext context,
@@ -32,18 +38,6 @@ public class MigrationVisitor implements Visitor {
 
     }
 
-    /**
-     * Ports anything which isn't a container, and so doesn't require any
-     * recursion
-     * 
-     * @param context
-     *            the context of this item
-     * @param toParent
-     *            parent aggregate of this leaf
-     * @param qualified
-     *            if keys are qualified strings which must be parsed (as in
-     *            compositions), or simple, as in aggregates like indexed.
-     */
     public PorterContext visitLeaf(Porter porter, PorterContext context, Resource<Aggregate<Object, Object>> toParent) {
         PorterContext ported = porter.transform(context);
         System.out.println(ported);
