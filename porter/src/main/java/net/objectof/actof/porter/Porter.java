@@ -7,7 +7,6 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -60,17 +59,8 @@ public class Porter {
             for (Resource<?> oldResource : resources) {
                 Object oldKey = kind.getComponentName();
                 PorterContext context = new PorterContext(oldKey, oldResource, oldResource.id().kind(), fromTx, toTx);
-                PorterContext transformed = transform(context);
-                Resource<?> newResource = (Resource<?>) transformed.getValue();
-                idmap.put(oldResource.id(), newResource.id());
+                visit(context, null);
             }
-        }
-
-        toTx.post();
-        toTx = to.connect(getClass());
-
-        for (Id<?> id : new HashSet<>(idmap.keySet())) {
-            walkContainer(id, fromTx, toTx);
         }
 
         // reference porting is done last so that everything else is in place
@@ -111,7 +101,8 @@ public class Porter {
      */
     private void walkContainer(Id<?> fromId, Transaction fromTx, Transaction toTx) {
 
-        // Archetype archetype = fromId.kind().getStereotype().getModel();
+        System.out.println("Walking " + fromId);
+
         Stereotype st = fromId.kind().getStereotype();
         switch (st) {
             case COMPOSED:
@@ -136,7 +127,7 @@ public class Porter {
         // composed entities have different kinds for each field
         for (Kind<?> childKind : fromComposite.id().kind().getParts()) {
             Object oldKey = childKind.getComponentName();
-            Object oldValue = fromComposite.value().get(unqualify(oldKey, true));
+            Object oldValue = fromComposite.value().get(unqualify(oldKey, fromComposite));
             PorterContext context = new PorterContext(oldKey, oldValue, childKind, fromTx, toTx);
             visit(context, toComposite);
         }
@@ -161,21 +152,25 @@ public class Porter {
     }
 
     private void visit(PorterContext context, Resource<Aggregate<Object, Object>> parent) {
-        boolean qualified = false;
-        if (parent == null) {
-            qualified = true;
-        } else {
-            qualified = parent.id().kind().getStereotype() == Stereotype.COMPOSED;
-        }
 
-        if (context.getKind().getStereotype().getModel() == Archetype.CONTAINER) {
-            visitContainer(context, parent, qualified);
+        System.out.println("Visiting " + context.getKind());
+
+        if (isContainer(context.getKind())) {
+
+            // visit the container itself
+            visitContainer(context, parent);
+
+            // recurse into the old container's fields/elements
+            Resource<?> res = (Resource<?>) context.getValue();
+            if (res == null) { return; }
+            walkContainer(res.id(), context.getFromTx(), context.getToTx());
+
         } else {
-            visitLeaf(context, parent, qualified);
+            visitLeaf(context, parent);
         }
     }
 
-    private void visitContainer(PorterContext context, Resource<Aggregate<Object, Object>> toParent, boolean qualified) {
+    private void visitContainer(PorterContext context, Resource<Aggregate<Object, Object>> toParent) {
 
         PorterContext ported = transform(context);
 
@@ -183,17 +178,12 @@ public class Porter {
             // there's a chance that the user passed us a reference to something
             // in the old repo.
             referenceJobs.add(() -> {
-                toParent.value().set(unqualify(ported.getKey(), qualified), ported.getValue());
+                if (toParent == null) { return; }
+                toParent.value().set(unqualify(ported.getKey(), toParent), ported.getValue());
             });
         } else {
-            toParent.value().set(unqualify(ported.getKey(), qualified), ported.getValue());
-        }
-
-        // recurse into the old container's fields/elements
-        if (context.getKind().getStereotype().getModel() == Archetype.CONTAINER) {
-            Resource<?> res = (Resource<?>) context.getValue();
-            if (res == null) { return; }
-            walkContainer(res.id(), context.getFromTx(), context.getToTx());
+            if (toParent == null) { return; }
+            toParent.value().set(unqualify(ported.getKey(), toParent), ported.getValue());
         }
 
     }
@@ -210,10 +200,10 @@ public class Porter {
      *            if keys are qualified strings which must be parsed (as in
      *            compositions), or simple, as in aggregates like indexed.
      */
-    private void visitLeaf(PorterContext context, Resource<Aggregate<Object, Object>> toParent, boolean qualified) {
+    private void visitLeaf(PorterContext context, Resource<Aggregate<Object, Object>> toParent) {
         PorterContext ported = transform(context);
         if (ported.getKey() == null) { return; }
-        toParent.value().set(unqualify(ported.getKey(), qualified), ported.getValue());
+        toParent.value().set(unqualify(ported.getKey(), toParent), ported.getValue());
     }
 
     /**
@@ -225,6 +215,9 @@ public class Porter {
      * @return a context containing the transformed value
      */
     private PorterContext transform(PorterContext context) {
+
+        System.out.println("Transforming " + context.getKind());
+
         PorterContext result = context.copy();
 
         // key
@@ -253,16 +246,6 @@ public class Porter {
         return result;
     }
 
-    private void remember(PorterContext fromContext, PorterContext toContext) {
-        remember(fromContext.getValue(), toContext.getValue());
-    }
-
-    private void remember(Object oFrom, Object oTo) {
-        Resource<?> from = (Resource<?>) oFrom;
-        Resource<?> to = (Resource<?>) oTo;
-        idmap.put(from.id(), to.id());
-    }
-
     /**
      * Checks if the given object is a resource from the old repo. If it is, it
      * looks up the corresponding resource in the new repo in the idmap, and
@@ -278,8 +261,6 @@ public class Porter {
      */
     public Object updateReference(PorterContext context, Object object) {
 
-        // if (context.getKind().getStereotype() != Stereotype.REF) { return
-        // object; }
         if (!(object instanceof Resource)) { return object; }
 
         Resource<Object> res = (Resource<Object>) object;
@@ -288,8 +269,8 @@ public class Porter {
         Id<?> oldId = res.id();
         if (!idmap.containsKey(oldId)) {
             //
-            Resource<Object> newValue = context.getToTx().create(context.getKind().getComponentName());
-            idmap.put(oldId, newValue.id());
+            String kindName = kindName(context.getKind());
+            Resource<Object> newValue = create(oldId, context.getToTx(), kindName);
             return newValue;
         } else {
             // look up the reference target in the new repo
@@ -300,12 +281,28 @@ public class Porter {
 
     }
 
+    private String kindName(Kind<?> kind) {
+        if (kind.getStereotype() == Stereotype.REF) {
+            return kindName(kind.getParts().get(0));
+        } else {
+            return kind.getComponentName();
+        }
+    }
+
     private boolean isContainer(Kind<?> kind) {
         return kind.getStereotype().getModel() == Archetype.CONTAINER;
     }
 
-    private Object unqualify(Object key, boolean qualified) {
-        if (!qualified) { return key; }
+    private boolean isQualified(Resource<?> parent) {
+        if (parent == null) {
+            return true;
+        } else {
+            return parent.id().kind().getStereotype() == Stereotype.COMPOSED;
+        }
+    }
+
+    private Object unqualify(Object key, Resource<Aggregate<Object, Object>> parent) {
+        if (!isQualified(parent)) { return key; }
         if (!(key instanceof String)) { return key; }
         String keyString = key.toString();
         int lastIndex = keyString.lastIndexOf('.');
@@ -319,10 +316,21 @@ public class Porter {
 
     private Kind<?> kindFromKey(Iterable<? extends Kind<?>> kinds, String key) {
         for (Kind<?> kind : kinds) {
-            if (kind.getComponentName().equals(key)) { return kind; }
-            if (key.startsWith(kind.getComponentName())) { return kindFromKey(kind.getParts(), key); }
+            String componentName = kind.getComponentName();
+            if (componentName.equals(key)) { return kind; }
+            if (key.startsWith(componentName)) {
+                Kind<?> recursed = kindFromKey(kind.getParts(), key);
+                if (recursed != null) { return recursed; }
+            }
         }
         return null;
+    }
+
+    private Resource<Object> create(Id<?> fromId, Transaction toTx, String kind) {
+        System.out.println("Creating " + kind);
+        Resource<Object> newValue = toTx.create(kind);
+        idmap.put(fromId, newValue.id());
+        return newValue;
     }
 
     public static void main(String[] args) throws ConnectorException, FileNotFoundException {
@@ -456,6 +464,7 @@ public class Porter {
                     account.set("roles", newRoles);
                     Object newRole = p.updateReference(after, oldRole);
                     newRoles.add(newRole);
+                    //newRoles.add(oldRole);
                     
                     newPerson.set("account", account);
                 })
