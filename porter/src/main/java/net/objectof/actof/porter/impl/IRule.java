@@ -3,6 +3,7 @@ package net.objectof.actof.porter.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 import net.objectof.actof.porter.PorterContext;
 import net.objectof.actof.porter.Rule;
@@ -15,6 +16,7 @@ public class IRule implements Rule {
     private List<Matcher> matchers = new ArrayList<>();
     private List<Transformer> keyTransformers = new ArrayList<>();
     private List<Transformer> valueTransformers = new ArrayList<>();
+    private List<BiConsumer<PorterContext, PorterContext>> onPortListeners = new ArrayList<>();
 
     public IRule() {}
 
@@ -80,6 +82,14 @@ public class IRule implements Rule {
         this.valueTransformers = valueTransformers;
     }
 
+    public List<BiConsumer<PorterContext, PorterContext>> getOnPortListeners() {
+        return onPortListeners;
+    }
+
+    public void setOnPortListeners(List<BiConsumer<PorterContext, PorterContext>> onPortListeners) {
+        this.onPortListeners = onPortListeners;
+    }
+
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
@@ -105,6 +115,13 @@ public class IRule implements Rule {
     @Override
     public boolean modifiesValue(PorterContext context) {
         return match(context) && valueTransformers.size() > 0;
+    }
+
+    @Override
+    public void onPort(PorterContext source, PorterContext destination) {
+        for (BiConsumer<PorterContext, PorterContext> listener : onPortListeners) {
+            listener.accept(source, destination);
+        }
     }
 
 }

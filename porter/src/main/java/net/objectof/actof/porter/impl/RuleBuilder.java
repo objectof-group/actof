@@ -1,6 +1,9 @@
 package net.objectof.actof.porter.impl;
 
 
+import java.util.function.BiConsumer;
+
+import net.objectof.actof.porter.PorterContext;
 import net.objectof.actof.porter.Rule;
 import net.objectof.actof.porter.rulecomponents.Matcher;
 import net.objectof.actof.porter.rulecomponents.Transformer;
@@ -36,6 +39,11 @@ public class RuleBuilder {
         return this;
     }
 
+    public RuleBuilder drop() {
+        rule.getKeyTransformers().add(v -> null);
+        return this;
+    }
+
     public RuleBuilder setKey(Object newKey) {
         rule.getKeyTransformers().add(new ReplaceTransformer(newKey));
         return this;
@@ -62,6 +70,11 @@ public class RuleBuilder {
 
     public RuleBuilder valueTransform(Transformer robotInDisguise) {
         rule.getValueTransformers().add(new PrettyPrintTransformer(robotInDisguise));
+        return this;
+    }
+
+    public RuleBuilder onPort(BiConsumer<PorterContext, PorterContext> listener) {
+        rule.getOnPortListeners().add(listener);
         return this;
     }
 

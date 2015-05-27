@@ -13,6 +13,7 @@ import java.util.Map;
 
 import net.objectof.actof.porter.impl.RuleBuilder;
 import net.objectof.aggr.Aggregate;
+import net.objectof.aggr.Composite;
 import net.objectof.aggr.Listing;
 import net.objectof.connector.Connector;
 import net.objectof.connector.Connector.Initialize;
@@ -59,8 +60,8 @@ public class Porter {
             for (Resource<?> oldResource : resources) {
                 Object oldKey = kind.getComponentName();
                 PorterContext context = new PorterContext(oldKey, oldResource, oldResource.id().kind(), fromTx, toTx);
-                Object newKey = Rule.transformKey(rules, context);
-                Resource<?> newResource = toTx.create(newKey.toString());
+                PorterContext transformed = transform(context);
+                Resource<?> newResource = (Resource<?>) transformed.getValue();
                 idmap.put(oldResource.id(), newResource.id());
             }
         }
@@ -91,6 +92,10 @@ public class Porter {
 
     public void setRules(Rule... rules) {
         this.rules.clear();
+        addRules(rules);
+    }
+
+    public void addRules(Rule... rules) {
         this.rules.addAll(Arrays.asList(rules));
     }
 
@@ -130,19 +135,10 @@ public class Porter {
 
         // composed entities have different kinds for each field
         for (Kind<?> childKind : fromComposite.id().kind().getParts()) {
-
-            // build context
             Object oldKey = childKind.getComponentName();
             Object oldValue = fromComposite.value().get(unqualify(oldKey, true));
             PorterContext context = new PorterContext(oldKey, oldValue, childKind, fromTx, toTx);
-
-            // calls from here pass qualified=true, since composites use
-            // names like Entity.field that need to be parsed
-            if (childKind.getStereotype().getModel() == Archetype.CONTAINER) {
-                portContainer(context, toComposite.value(), true);
-            } else {
-                portLeaf(context, toComposite.value(), true);
-            }
+            visit(context, toComposite);
         }
     }
 
@@ -158,35 +154,39 @@ public class Porter {
         Kind<?> childKind = fromAggr.id().kind().getParts().get(0);
 
         for (Object oldKey : fromAggr.value().keySet()) {
-
-            // build context
             Object oldValue = fromAggr.value().get(oldKey);
             PorterContext context = new PorterContext(oldKey, oldValue, childKind, fromTx, toTx);
-
-            // calls from here pass qualified=false, since aggregatges don't use
-            // names like Entity.field that need to be parsed
-            if (childKind.getStereotype().getModel() == Archetype.CONTAINER) {
-                portContainer(context, toAggr.value(), false);
-            } else {
-                portLeaf(context, toAggr.value(), false);
-            }
+            visit(context, toAggr);
         }
     }
 
-    private void portContainer(PorterContext context, Aggregate<Object, Object> toParent, boolean qualified) {
+    private void visit(PorterContext context, Resource<Aggregate<Object, Object>> parent) {
+        boolean qualified = false;
+        if (parent == null) {
+            qualified = true;
+        } else {
+            qualified = parent.id().kind().getStereotype() == Stereotype.COMPOSED;
+        }
+
+        if (context.getKind().getStereotype().getModel() == Archetype.CONTAINER) {
+            visitContainer(context, parent, qualified);
+        } else {
+            visitLeaf(context, parent, qualified);
+        }
+    }
+
+    private void visitContainer(PorterContext context, Resource<Aggregate<Object, Object>> toParent, boolean qualified) {
 
         PorterContext ported = transform(context);
-
-        System.out.println("Porting " + context.getKey());
 
         if (ported.getKind().getStereotype() == Stereotype.REF) {
             // there's a chance that the user passed us a reference to something
             // in the old repo.
             referenceJobs.add(() -> {
-                toParent.set(unqualify(ported.getKey(), qualified), ported.getValue());
+                toParent.value().set(unqualify(ported.getKey(), qualified), ported.getValue());
             });
         } else {
-            toParent.set(unqualify(ported.getKey(), qualified), ported.getValue());
+            toParent.value().set(unqualify(ported.getKey(), qualified), ported.getValue());
         }
 
         // recurse into the old container's fields/elements
@@ -210,9 +210,10 @@ public class Porter {
      *            if keys are qualified strings which must be parsed (as in
      *            compositions), or simple, as in aggregates like indexed.
      */
-    private void portLeaf(PorterContext context, Aggregate<Object, Object> toParent, boolean qualified) {
+    private void visitLeaf(PorterContext context, Resource<Aggregate<Object, Object>> toParent, boolean qualified) {
         PorterContext ported = transform(context);
-        toParent.set(unqualify(ported.getKey(), qualified), ported.getValue());
+        if (ported.getKey() == null) { return; }
+        toParent.value().set(unqualify(ported.getKey(), qualified), ported.getValue());
     }
 
     /**
@@ -230,14 +231,24 @@ public class Porter {
         Object newKey = Rule.transformKey(rules, context);
         result.setKey(newKey);
 
+        if (newKey == null) {
+            // field was dropped
+            result.setValue(null);
+            result.setKind(null);
+            return result;
+        }
+
         // kind
         Kind<?> kind = kindFromKey(context.getToTx(), newKey.toString());
         result.setKind(kind);
 
         // value - not necessarily a reference, or even a resource
         Object newValue = Rule.transformValue(rules, context);
-        newValue = updateRef(context, newValue);
+        newValue = updateReference(context, newValue);
         result.setValue(newValue);
+
+        // after the transformation is done (not any recursion), call onPort
+        Rule.onPort(rules, context, result);
 
         return result;
     }
@@ -265,9 +276,7 @@ public class Porter {
      * @param ref
      * @return
      */
-    private Object updateRef(PorterContext context, Object object) {
-
-        System.out.println("updateRef: " + object);
+    public Object updateReference(PorterContext context, Object object) {
 
         // if (context.getKind().getStereotype() != Stereotype.REF) { return
         // object; }
@@ -317,7 +326,7 @@ public class Porter {
     }
 
     public static void main(String[] args) throws ConnectorException, FileNotFoundException {
-        // testRealm();
+        testRealm();
         // testRulePrinting();
         testRealmReversed();
     }
@@ -380,6 +389,8 @@ public class Porter {
         Package newRepo = newConnector.createPackage(new FileInputStream(
                 "/home/nathaniel/Desktop/Porting/emptyapp/realm-port.xml"), Initialize.WHEN_EMPTY);
 
+        Porter p = new Porter();
+
         // @formatter:off
         
         Rule roleToRoles = RuleBuilder.start()
@@ -392,6 +403,64 @@ public class Porter {
             })
             .build();
         
+//        Rule portDescription = RuleBuilder.start()
+//                .forKey("Session")
+//                .valueTransform(context -> {
+//                    Composite oldSession = (Composite) context.getValue();
+//                    Composite oldAssignment = (Composite) oldSession.get("assignment");
+//                    String description = oldAssignment.get("description").toString();
+//                    
+//                    Composite newSession = context.getToTx().create("Session");
+//                    newSession.set("description", description);
+//                    return newSession;
+//                })
+//                .build();
+//        
+        
+        Rule portDescription = RuleBuilder.start()
+                .forKey("Session")
+                .onPort((before, after) -> {
+                    Composite oldSession = (Composite) before.getValue();
+                    Composite oldAssignment = (Composite) oldSession.get("assignment");
+                    String description = oldAssignment.get("description").toString();
+                    
+                    Composite newSession = (Composite) after.getValue();
+                    newSession.set("description", description);
+                })
+                .build();
+        
+        
+        Rule dropAssnDesc = RuleBuilder.start()
+                .forKey("Assignment.description")
+                .drop()
+                .build();
+
+        Rule dropPersonFields = RuleBuilder.start()
+                .forKey("Person.email", "Person.pwdHashed", "Person.salt", "Person.roles")
+                .drop()
+                .build();
+        
+        Rule createAccount = RuleBuilder.start()
+                .forKey("Person")
+                .onPort((before, after) -> {
+                    Composite oldPerson = (Composite) before.getValue();
+                    Composite newPerson = (Composite) after.getValue();
+                    
+                    Composite account = after.getToTx().create("Account");
+                    account.set("email", oldPerson.get("email"));
+                    account.set("pwdHashed", oldPerson.get("pwdHashed"));
+                    account.set("salt", oldPerson.get("salt"));
+                    
+                    Object oldRole = oldPerson.get("role");
+                    Listing<Object> newRoles = after.getToTx().create("Account.roles");
+                    account.set("roles", newRoles);
+                    Object newRole = p.updateReference(after, oldRole);
+                    newRoles.add(newRole);
+                    
+                    newPerson.set("account", account);
+                })
+                .build();
+
         
 //        Rule settings = RuleBuilder.start()
 //                .forKey("Setting")
@@ -410,7 +479,7 @@ public class Porter {
         
         // @formatter:on
 
-        Porter p = new Porter(roleToRoles);
+        p.addRules(roleToRoles, portDescription, dropAssnDesc, dropPersonFields, createAccount);
 
         System.out.println("-----------------------------");
 
