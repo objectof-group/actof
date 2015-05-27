@@ -1,23 +1,16 @@
 package net.objectof.actof.porter;
 
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.objectof.actof.porter.impl.RuleBuilder;
+import net.objectof.actof.porter.rules.Rule;
+import net.objectof.actof.porter.visitor.MigrationVisitor;
+import net.objectof.actof.porter.visitor.Visitor;
 import net.objectof.aggr.Aggregate;
-import net.objectof.aggr.Composite;
-import net.objectof.aggr.Listing;
-import net.objectof.connector.Connector;
-import net.objectof.connector.Connector.Initialize;
-import net.objectof.connector.ConnectorException;
-import net.objectof.connector.sql.ISQLiteConnector;
 import net.objectof.ext.Archetype;
 import net.objectof.model.Id;
 import net.objectof.model.Kind;
@@ -37,6 +30,8 @@ public class Porter {
     // all reference port operations as Runnable jobs to be run later
     private List<Runnable> referenceJobs = new ArrayList<>();
 
+    private Visitor visitor;
+
     public Porter() {}
 
     public Porter(Rule... rule) {
@@ -46,8 +41,17 @@ public class Porter {
     public void port(Package from, Package to) {
 
         idmap.clear();
+
+        visitor = new MigrationVisitor();
+        walkEntities(from, to);
+
+    }
+
+    private void walkEntities(Package from, Package to) {
+
         Transaction fromTx = from.connect(getClass());
         Transaction toTx = to.connect(getClass());
+
         for (Kind<?> kind : from.getParts()) {
 
             // skip non-entities
@@ -69,7 +73,6 @@ public class Porter {
         }
 
         toTx.post();
-
     }
 
     public List<Rule> getRules() {
@@ -87,6 +90,10 @@ public class Porter {
 
     public void addRules(Rule... rules) {
         this.rules.addAll(Arrays.asList(rules));
+    }
+
+    public void runLater(Runnable job) {
+        referenceJobs.add(job);
     }
 
     /**
@@ -158,52 +165,17 @@ public class Porter {
         if (isContainer(context.getKind())) {
 
             // visit the container itself
-            visitContainer(context, parent);
+            PorterContext ported = visitor.visitContainer(this, context, parent);
 
             // recurse into the old container's fields/elements
+            if (ported.isDropped()) { return; }
             Resource<?> res = (Resource<?>) context.getValue();
             if (res == null) { return; }
             walkContainer(res.id(), context.getFromTx(), context.getToTx());
 
         } else {
-            visitLeaf(context, parent);
+            visitor.visitLeaf(this, context, parent);
         }
-    }
-
-    private void visitContainer(PorterContext context, Resource<Aggregate<Object, Object>> toParent) {
-
-        PorterContext ported = transform(context);
-
-        if (ported.getKind().getStereotype() == Stereotype.REF) {
-            // there's a chance that the user passed us a reference to something
-            // in the old repo.
-            referenceJobs.add(() -> {
-                if (toParent == null) { return; }
-                toParent.value().set(unqualify(ported.getKey(), toParent), ported.getValue());
-            });
-        } else {
-            if (toParent == null) { return; }
-            toParent.value().set(unqualify(ported.getKey(), toParent), ported.getValue());
-        }
-
-    }
-
-    /**
-     * Ports anything which isn't a container, and so doesn't require any
-     * recursion
-     * 
-     * @param context
-     *            the context of this item
-     * @param toParent
-     *            parent aggregate of this leaf
-     * @param qualified
-     *            if keys are qualified strings which must be parsed (as in
-     *            compositions), or simple, as in aggregates like indexed.
-     */
-    private void visitLeaf(PorterContext context, Resource<Aggregate<Object, Object>> toParent) {
-        PorterContext ported = transform(context);
-        if (ported.getKey() == null) { return; }
-        toParent.value().set(unqualify(ported.getKey(), toParent), ported.getValue());
     }
 
     /**
@@ -214,30 +186,31 @@ public class Porter {
      *            the source context
      * @return a context containing the transformed value
      */
-    private PorterContext transform(PorterContext context) {
+    public PorterContext transform(PorterContext context) {
 
         System.out.println("Transforming " + context.getKind());
 
         PorterContext result = context.copy();
 
         // key
-        Object newKey = Rule.transformKey(rules, context);
-        result.setKey(newKey);
-
-        if (newKey == null) {
-            // field was dropped
-            result.setValue(null);
-            result.setKind(null);
+        PorterContext keyContext = Rule.transformKey(rules, result);
+        if (keyContext.isDropped()) {
+            result.setDropped(true);
             return result;
         }
+        result.setKey(keyContext.getKey());
 
         // kind
-        Kind<?> kind = kindFromKey(context.getToTx(), newKey.toString());
+        Kind<?> kind = kindFromKey(context.getToTx(), keyContext.getKey().toString());
         result.setKind(kind);
 
         // value - not necessarily a reference, or even a resource
-        Object newValue = Rule.transformValue(rules, context);
-        newValue = updateReference(context, newValue);
+        PorterContext valueContext = Rule.transformValue(rules, context);
+        if (valueContext.isDropped()) {
+            result.setDropped(true);
+            return result;
+        }
+        Object newValue = updateReference(context, valueContext.getValue());
         result.setValue(newValue);
 
         // after the transformation is done (not any recursion), call onPort
@@ -267,18 +240,7 @@ public class Porter {
         if (res.tx().getPackage().equals(context.getToTx().getPackage())) { return object; }
 
         Id<?> oldId = res.id();
-        if (!idmap.containsKey(oldId)) {
-            //
-            String kindName = kindName(context.getKind());
-            Resource<Object> newValue = create(oldId, context.getToTx(), kindName);
-            return newValue;
-        } else {
-            // look up the reference target in the new repo
-            Id<?> newId = idmap.get(oldId);
-            Resource<Object> newValue = context.getToTx().retrieve(newId);
-            return newValue;
-        }
-
+        return fetch(oldId, context.getToTx(), kindName(context.getKind()));
     }
 
     private String kindName(Kind<?> kind) {
@@ -301,7 +263,7 @@ public class Porter {
         }
     }
 
-    private Object unqualify(Object key, Resource<Aggregate<Object, Object>> parent) {
+    public Object unqualify(Object key, Resource<Aggregate<Object, Object>> parent) {
         if (!isQualified(parent)) { return key; }
         if (!(key instanceof String)) { return key; }
         String keyString = key.toString();
@@ -326,6 +288,14 @@ public class Porter {
         return null;
     }
 
+    private Resource<Object> fetch(Id<?> fromId, Transaction toTx, String kind) {
+        if (!idmap.containsKey(fromId)) {
+            create(fromId, toTx, kind);
+        }
+        Id<?> toId = idmap.get(fromId);
+        return toTx.retrieve(toId);
+    }
+
     private Resource<Object> create(Id<?> fromId, Transaction toTx, String kind) {
         System.out.println("Creating " + kind);
         Resource<Object> newValue = toTx.create(kind);
@@ -333,246 +303,4 @@ public class Porter {
         return newValue;
     }
 
-    public static void main(String[] args) throws ConnectorException, FileNotFoundException {
-        testRealm();
-        // testRulePrinting();
-        testRealmReversed();
-    }
-
-    private static void testSettings() throws ConnectorException, FileNotFoundException {
-        new File("/home/nathaniel/Desktop/Porting/settings/quotes-migrate.db").delete();
-
-        // old package
-        Connector oldConnector = new ISQLiteConnector();
-        oldConnector.setParameter(ISQLiteConnector.KEY_FILENAME, "/home/nathaniel/Desktop/Porting/settings/quotes.db");
-        oldConnector.setParameter(ISQLiteConnector.KEY_REPOSITORY, "example.com:1520/quotes");
-        Package oldRepo = oldConnector.getPackage();
-
-        // new package
-        Connector newConnector = new ISQLiteConnector();
-        newConnector.setParameter(ISQLiteConnector.KEY_FILENAME,
-                "/home/nathaniel/Desktop/Porting/settings/quotes-migrate.db");
-        newConnector.setParameter(ISQLiteConnector.KEY_REPOSITORY, "example.com:1520/quotes");
-        Package newRepo = newConnector.createPackage(new FileInputStream(
-                "/home/nathaniel/Desktop/Porting/settings/settings-schema-migrate.xml"), Initialize.WHEN_EMPTY);
-
-        // @formatter:off
-        
-        Rule settings = RuleBuilder.start()
-                .forKey("Setting")
-                .setKey("Preference")
-                .build();
-        
-        Rule settingkey = RuleBuilder.start()
-                .forKey("Setting.key")
-                .setKey("Preference.name")
-                .build();
-        
-        Rule append = RuleBuilder.start()
-                .forStereotype(Stereotype.TEXT)
-                .valueTransform((context) -> context.getValue().toString() + "...")
-                .build();
-        
-        // @formatter:on
-
-        Porter p = new Porter(settings, settingkey, append);
-        p.port(oldRepo, newRepo);
-
-    }
-
-    private static void testRealm() throws ConnectorException, FileNotFoundException {
-        new File("/home/nathaniel/Desktop/Porting/emptyapp/empty-port.db").delete();
-
-        // old package
-        Connector oldConnector = new ISQLiteConnector();
-        oldConnector.setParameter(ISQLiteConnector.KEY_FILENAME, "/home/nathaniel/Desktop/Porting/emptyapp/empty.db");
-        oldConnector.setParameter(ISQLiteConnector.KEY_REPOSITORY, "realmproject.net:1502/realm");
-        Package oldRepo = oldConnector.getPackage();
-
-        // new package
-        Connector newConnector = new ISQLiteConnector();
-        newConnector.setParameter(ISQLiteConnector.KEY_FILENAME,
-                "/home/nathaniel/Desktop/Porting/emptyapp/empty-port.db");
-        newConnector.setParameter(ISQLiteConnector.KEY_REPOSITORY, "realmproject.net:1502/realm");
-        Package newRepo = newConnector.createPackage(new FileInputStream(
-                "/home/nathaniel/Desktop/Porting/emptyapp/realm-port.xml"), Initialize.WHEN_EMPTY);
-
-        Porter p = new Porter();
-
-        // @formatter:off
-        
-        Rule roleToRoles = RuleBuilder.start()
-            .forKey("Person.role")
-            .setKey("Person.roles")
-            .valueTransform((context) -> {
-                Listing<Object> roles = context.getToTx().create("Person.roles");
-                roles.add(context.getValue());
-                return roles;
-            })
-            .build();
-        
-//        Rule portDescription = RuleBuilder.start()
-//                .forKey("Session")
-//                .valueTransform(context -> {
-//                    Composite oldSession = (Composite) context.getValue();
-//                    Composite oldAssignment = (Composite) oldSession.get("assignment");
-//                    String description = oldAssignment.get("description").toString();
-//                    
-//                    Composite newSession = context.getToTx().create("Session");
-//                    newSession.set("description", description);
-//                    return newSession;
-//                })
-//                .build();
-//        
-        
-        Rule portDescription = RuleBuilder.start()
-                .forKey("Session")
-                .onPort((before, after) -> {
-                    Composite oldSession = (Composite) before.getValue();
-                    Composite oldAssignment = (Composite) oldSession.get("assignment");
-                    String description = oldAssignment.get("description").toString();
-                    
-                    Composite newSession = (Composite) after.getValue();
-                    newSession.set("description", description);
-                })
-                .build();
-        
-        
-        Rule dropAssnDesc = RuleBuilder.start()
-                .forKey("Assignment.description")
-                .drop()
-                .build();
-
-        Rule dropPersonFields = RuleBuilder.start()
-                .forKey("Person.email", "Person.pwdHashed", "Person.salt", "Person.roles")
-                .drop()
-                .build();
-        
-        Rule createAccount = RuleBuilder.start()
-                .forKey("Person")
-                .onPort((before, after) -> {
-                    Composite oldPerson = (Composite) before.getValue();
-                    Composite newPerson = (Composite) after.getValue();
-                    
-                    Composite account = after.getToTx().create("Account");
-                    account.set("email", oldPerson.get("email"));
-                    account.set("pwdHashed", oldPerson.get("pwdHashed"));
-                    account.set("salt", oldPerson.get("salt"));
-                    
-                    Object oldRole = oldPerson.get("role");
-                    Listing<Object> newRoles = after.getToTx().create("Account.roles");
-                    account.set("roles", newRoles);
-                    Object newRole = p.updateReference(after, oldRole);
-                    newRoles.add(newRole);
-                    //newRoles.add(oldRole);
-                    
-                    newPerson.set("account", account);
-                })
-                .build();
-
-        
-//        Rule settings = RuleBuilder.start()
-//                .forKey("Setting")
-//                .setKey("Preference")
-//                .build();
-//        
-//        Rule settingkey = RuleBuilder.start()
-//                .forKey("Setting.key")
-//                .setKey("Preference.name")
-//                .build();
-//        
-//        Rule append = RuleBuilder.start()
-//                .forStereotype(Stereotype.TEXT)
-//                .valueTransform((k, v, kind) -> v.toString() + "...")
-//                .build();
-        
-        // @formatter:on
-
-        p.addRules(roleToRoles, portDescription, dropAssnDesc, dropPersonFields, createAccount);
-
-        System.out.println("-----------------------------");
-
-        p.port(oldRepo, newRepo);
-
-    }
-
-    private static void testRealmReversed() throws ConnectorException, FileNotFoundException {
-        new File("/home/nathaniel/Desktop/Porting/rolereversal/empty-port.db").delete();
-
-        // old package
-        Connector oldConnector = new ISQLiteConnector();
-        oldConnector.setParameter(ISQLiteConnector.KEY_FILENAME,
-                "/home/nathaniel/Desktop/Porting/rolereversal/empty.db");
-        oldConnector.setParameter(ISQLiteConnector.KEY_REPOSITORY, "realmproject.net:1502/realm");
-        Package oldRepo = oldConnector.getPackage();
-
-        // new package
-        Connector newConnector = new ISQLiteConnector();
-        newConnector.setParameter(ISQLiteConnector.KEY_FILENAME,
-                "/home/nathaniel/Desktop/Porting/rolereversal/empty-port.db");
-        newConnector.setParameter(ISQLiteConnector.KEY_REPOSITORY, "realmproject.net:1502/realm");
-        Package newRepo = newConnector.createPackage(new FileInputStream(
-                "/home/nathaniel/Desktop/Porting/rolereversal/realm-port.xml"), Initialize.WHEN_EMPTY);
-
-        // @formatter:off
-        
-        Rule rolesToRole = RuleBuilder.start()
-            .forKey("Person.roles")
-            .setKey("Person.role")
-            .valueTransform(context -> {
-                Listing<Object> roles = (Listing<Object>) context.getValue();
-                if (roles.size() == 0) { return null; }
-                return roles.get(0);
-            })
-            .build();
-        
-//        Rule roleToRoles = RuleBuilder.start()
-//            .forKey("Person.role")
-//            .setKey("Person.roles")
-//            .valueTransform((context) -> {
-//                Listing<Object> roles = context.getToTx().create("Person.roles");
-//                roles.add(context.getValue());
-//                return roles;
-//            })
-//            .build();
-        
-        
-//        Rule settings = RuleBuilder.start()
-//                .forKey("Setting")
-//                .setKey("Preference")
-//                .build();
-//        
-//        Rule settingkey = RuleBuilder.start()
-//                .forKey("Setting.key")
-//                .setKey("Preference.name")
-//                .build();
-//        
-//        Rule append = RuleBuilder.start()
-//                .forStereotype(Stereotype.TEXT)
-//                .valueTransform((k, v, kind) -> v.toString() + "...")
-//                .build();
-        
-        // @formatter:on
-
-        Porter p = new Porter(rolesToRole);
-
-        System.out.println("-----------------------------");
-
-        p.port(oldRepo, newRepo);
-
-    }
-
-    private static void testRulePrinting() {
-        // @formatter:off
-        Rule testRule = RuleBuilder.start()
-                .forKey("asdf")
-                .forKey("qwerty")
-                .setKey("asdf++")
-                .match(context -> true)
-                .keyTransform(context -> context.getKey())
-                .valueTransform(context -> context.getValue())
-                .build();
-        System.out.println(testRule);
-        // @formatter:on
-    }
 }

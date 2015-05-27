@@ -13,6 +13,8 @@ public class PorterContext {
     private Transaction fromTx;
     private Transaction toTx;
 
+    private boolean dropped = false;
+
     public PorterContext() {}
 
     public PorterContext(Object key, Object value, Kind<?> kind, Transaction fromTx, Transaction toTx) {
@@ -80,8 +82,16 @@ public class PorterContext {
         return this;
     }
 
+    public boolean isDropped() {
+        return dropped;
+    }
+
+    public void setDropped(boolean dropped) {
+        this.dropped = dropped;
+    }
+
     public String toString() {
-        return "key = '" + key + "', value = '" + value + "', kind = " + kind;
+        return "key = '" + key + "', value = '" + value + "', kind = " + kind + ", dropped = " + dropped;
     }
 
 }

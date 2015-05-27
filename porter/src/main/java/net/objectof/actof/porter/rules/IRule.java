@@ -1,4 +1,4 @@
-package net.objectof.actof.porter.impl;
+package net.objectof.actof.porter.rules;
 
 
 import java.util.ArrayList;
@@ -6,9 +6,8 @@ import java.util.List;
 import java.util.function.BiConsumer;
 
 import net.objectof.actof.porter.PorterContext;
-import net.objectof.actof.porter.Rule;
-import net.objectof.actof.porter.rulecomponents.Matcher;
-import net.objectof.actof.porter.rulecomponents.Transformer;
+import net.objectof.actof.porter.rules.components.Matcher;
+import net.objectof.actof.porter.rules.components.Transformer;
 
 
 public class IRule implements Rule {
@@ -42,20 +41,18 @@ public class IRule implements Rule {
 
     @Override
     public Object transformKey(PorterContext context) {
-        PorterContext modContext = context.copy();
         for (Transformer keyTransformer : keyTransformers) {
-            modContext.setKey(keyTransformer.apply(modContext));
+            context.setKey(keyTransformer.apply(context));
         }
-        return modContext.getKey();
+        return context.getKey();
     }
 
     @Override
     public Object transformValue(PorterContext context) {
-        PorterContext modContext = new PorterContext(context);
         for (Transformer valueTransformer : valueTransformers) {
-            modContext.setValue(valueTransformer.apply(modContext));
+            context.setValue(valueTransformer.apply(context));
         }
-        return modContext.getValue();
+        return context.getValue();
     }
 
     public List<Matcher> getMatchers() {

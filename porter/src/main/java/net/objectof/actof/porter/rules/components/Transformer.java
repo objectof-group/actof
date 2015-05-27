@@ -1,4 +1,4 @@
-package net.objectof.actof.porter.rulecomponents;
+package net.objectof.actof.porter.rules.components;
 
 
 import java.util.function.Function;

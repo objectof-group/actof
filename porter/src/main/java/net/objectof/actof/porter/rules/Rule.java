@@ -1,7 +1,9 @@
-package net.objectof.actof.porter;
+package net.objectof.actof.porter.rules;
 
 
 import java.util.List;
+
+import net.objectof.actof.porter.PorterContext;
 
 
 public interface Rule {
@@ -18,24 +20,24 @@ public interface Rule {
 
     boolean modifiesValue(PorterContext context);
 
-    static Object transformKey(List<Rule> rules, PorterContext context) {
+    static PorterContext transformKey(List<Rule> rules, PorterContext context) {
         PorterContext modContext = context.copy();
         for (Rule rule : rules) {
             if (rule.match(modContext)) {
                 modContext.setKey(rule.transformKey(modContext));
             }
         }
-        return modContext.getKey();
+        return modContext;
     }
 
-    static Object transformValue(List<Rule> rules, PorterContext context) {
+    static PorterContext transformValue(List<Rule> rules, PorterContext context) {
         PorterContext modContext = context.copy();
         for (Rule rule : rules) {
             if (rule.match(modContext)) {
                 modContext.setValue(rule.transformValue(modContext));
             }
         }
-        return modContext.getValue();
+        return modContext;
     }
 
     static void onPort(List<Rule> rules, PorterContext before, PorterContext after) {
@@ -46,20 +48,6 @@ public interface Rule {
                 rule.onPort(modBefore, modAfter);
             }
         }
-    }
-
-    static boolean modifiesKey(List<Rule> rules, PorterContext context) {
-        for (Rule rule : rules) {
-            if (rule.modifiesKey(context)) { return true; }
-        }
-        return false;
-    }
-
-    static boolean modifiesValue(List<Rule> rules, PorterContext context) {
-        for (Rule rule : rules) {
-            if (rule.modifiesValue(context)) { return true; }
-        }
-        return false;
     }
 
 }

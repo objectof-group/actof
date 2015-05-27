@@ -1,10 +1,10 @@
-package net.objectof.actof.porter.rulecomponents.impl;
+package net.objectof.actof.porter.rules.components.impl;
 
 
 import java.lang.reflect.Modifier;
 
 import net.objectof.actof.porter.PorterContext;
-import net.objectof.actof.porter.rulecomponents.Matcher;
+import net.objectof.actof.porter.rules.components.Matcher;
 
 
 public class PrettyPrintMatcher implements Matcher {

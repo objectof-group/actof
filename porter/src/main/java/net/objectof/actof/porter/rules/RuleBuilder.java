@@ -1,17 +1,15 @@
-package net.objectof.actof.porter.impl;
+package net.objectof.actof.porter.rules;
 
 
 import java.util.function.BiConsumer;
 
 import net.objectof.actof.porter.PorterContext;
-import net.objectof.actof.porter.Rule;
-import net.objectof.actof.porter.rulecomponents.Matcher;
-import net.objectof.actof.porter.rulecomponents.Transformer;
-import net.objectof.actof.porter.rulecomponents.impl.KeyMatcher;
-import net.objectof.actof.porter.rulecomponents.impl.PrettyPrintMatcher;
-import net.objectof.actof.porter.rulecomponents.impl.PrettyPrintTransformer;
-import net.objectof.actof.porter.rulecomponents.impl.ReplaceTransformer;
-import net.objectof.actof.porter.rulecomponents.impl.StereotypeMatcher;
+import net.objectof.actof.porter.rules.components.Matcher;
+import net.objectof.actof.porter.rules.components.Transformer;
+import net.objectof.actof.porter.rules.components.impl.KeyMatcher;
+import net.objectof.actof.porter.rules.components.impl.PrettyPrintMatcher;
+import net.objectof.actof.porter.rules.components.impl.PrettyPrintTransformer;
+import net.objectof.actof.porter.rules.components.impl.StereotypeMatcher;
 import net.objectof.model.Stereotype;
 
 
@@ -40,17 +38,20 @@ public class RuleBuilder {
     }
 
     public RuleBuilder drop() {
-        rule.getKeyTransformers().add(v -> null);
+        rule.getKeyTransformers().add(context -> {
+            context.setDropped(true);
+            return null;
+        });
         return this;
     }
 
     public RuleBuilder setKey(Object newKey) {
-        rule.getKeyTransformers().add(new ReplaceTransformer(newKey));
+        rule.getKeyTransformers().add(context -> newKey);
         return this;
     }
 
-    public RuleBuilder setValue(Object newKey) {
-        rule.getValueTransformers().add(new ReplaceTransformer(newKey));
+    public RuleBuilder setValue(Object newValue) {
+        rule.getValueTransformers().add(context -> newValue);
         return this;
     }
 

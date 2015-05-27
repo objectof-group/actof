@@ -1,4 +1,4 @@
-package net.objectof.actof.porter.rulecomponents.impl;
+package net.objectof.actof.porter.rules.components.impl;
 
 
 import java.util.ArrayList;
@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.objectof.actof.porter.PorterContext;
-import net.objectof.actof.porter.rulecomponents.Matcher;
+import net.objectof.actof.porter.rules.components.Matcher;
 
 
 public class KeyMatcher implements Matcher {
