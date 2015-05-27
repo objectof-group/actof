@@ -24,7 +24,12 @@ public class ResourceUpdateVisitor implements Visitor {
     @Override
     public PorterContext visitLeaf(Porter porter, PorterContext context, Resource<Aggregate<Object, Object>> toParent) {
         Object value = context.getValue();
+
+        System.out.println("----------------------------- Testing Resource " + context);
+
         if (!porter.isResourceStale(context, context.getValue())) { return context; }
+
+        System.out.println("+++++++++++++++++++++++++++++ Updating Resource " + context);
 
         Object updated = porter.updateReference(context, value);
         toParent.value().set(porter.unqualify(context.getKey(), toParent), updated);

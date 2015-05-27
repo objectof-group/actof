@@ -9,6 +9,7 @@ import java.util.Map;
 
 import net.objectof.actof.porter.rules.Rule;
 import net.objectof.actof.porter.visitor.MigrationVisitor;
+import net.objectof.actof.porter.visitor.ResourceUpdateVisitor;
 import net.objectof.actof.porter.visitor.Visitor;
 import net.objectof.aggr.Aggregate;
 import net.objectof.ext.Archetype;
@@ -41,18 +42,24 @@ public class Porter {
     public void port(Package from, Package to) {
 
         idmap.clear();
-
-        visitor = new MigrationVisitor();
-        walkEntities(from, to);
-
-    }
-
-    private void walkEntities(Package from, Package to) {
-
         Transaction fromTx = from.connect(getClass());
         Transaction toTx = to.connect(getClass());
 
-        for (Kind<?> kind : from.getParts()) {
+        visitor = new MigrationVisitor();
+        walkEntities(fromTx, toTx, from.getParts());
+
+        System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+
+        visitor = new ResourceUpdateVisitor();
+        walkEntities(toTx, toTx, to.getParts());
+
+        toTx.post();
+
+    }
+
+    private void walkEntities(Transaction fromTx, Transaction toTx, Iterable<? extends Kind<?>> kinds) {
+
+        for (Kind<?> kind : kinds) {
 
             // skip non-entities
             if (kind.getPartOf() != null) {
@@ -71,8 +78,8 @@ public class Porter {
         for (Runnable r : referenceJobs) {
             r.run();
         }
+        referenceJobs.clear();
 
-        toTx.post();
     }
 
     public List<Rule> getRules() {

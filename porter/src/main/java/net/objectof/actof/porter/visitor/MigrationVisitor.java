@@ -40,7 +40,6 @@ public class MigrationVisitor implements Visitor {
 
     public PorterContext visitLeaf(Porter porter, PorterContext context, Resource<Aggregate<Object, Object>> toParent) {
         PorterContext ported = porter.transform(context);
-        System.out.println(ported);
         if (ported.isDropped()) { return ported; }
         toParent.value().set(porter.unqualify(ported.getKey(), toParent), ported.getValue());
         return ported;
