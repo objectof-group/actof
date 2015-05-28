@@ -66,7 +66,7 @@ public class Porter {
                 continue;
             }
 
-            Iterable<Resource<?>> resources = fromTx.enumerate(kind.getComponentName());
+            Iterable<Resource<?>> resources = visitor.getEntities(kind, fromTx, toTx);
             for (Resource<?> oldResource : resources) {
                 Object oldKey = kind.getComponentName();
                 PorterContext context = new PorterContext(oldKey, oldResource, oldResource.id().kind(), fromTx, toTx);
@@ -135,11 +135,12 @@ public class Porter {
 
     private void walkComposite(Id<?> fromId, Transaction fromTx, Transaction toTx) {
 
+        Id<?> toId = idmap.get(fromId);
         Resource<Aggregate<Object, Object>> fromComposite = fromTx.retrieve(fromId);
-        Resource<Aggregate<Object, Object>> toComposite = toTx.retrieve(idmap.get(fromId));
+        Resource<Aggregate<Object, Object>> toComposite = toTx.retrieve(toId);
 
         // composed entities have different kinds for each field
-        for (Kind<?> childKind : fromComposite.id().kind().getParts()) {
+        for (Kind<?> childKind : visitor.getCompositeParts(fromId, toId)) {
             Object oldKey = childKind.getComponentName();
             Object oldValue = fromComposite.value().get(unqualify(oldKey, fromComposite));
             PorterContext context = new PorterContext(oldKey, oldValue, childKind, fromTx, toTx);
@@ -152,13 +153,14 @@ public class Porter {
         // this aggregate doesn't exist in new repo
         if (!idmap.containsKey(fromId)) { return; }
 
+        Id<?> toId = idmap.get(fromId);
         Resource<Aggregate<Object, Object>> fromAggr = fromTx.retrieve(fromId);
-        Resource<Aggregate<Object, Object>> toAggr = toTx.retrieve(idmap.get(fromId));
+        Resource<Aggregate<Object, Object>> toAggr = toTx.retrieve(toId);
 
         // aggregates (non-composed) only have 1 part describing the contents
-        Kind<?> childKind = fromAggr.id().kind().getParts().get(0);
+        Kind<?> childKind = visitor.getAggregateKind(fromId, toId);
 
-        for (Object oldKey : fromAggr.value().keySet()) {
+        for (Object oldKey : visitor.getAggregateParts(fromAggr, toAggr)) {
             Object oldValue = fromAggr.value().get(oldKey);
             PorterContext context = new PorterContext(oldKey, oldValue, childKind, fromTx, toTx);
             visit(context, toAggr);
@@ -317,6 +319,7 @@ public class Porter {
         System.out.println("Creating " + kind);
         Resource<Object> newValue = toTx.create(kind);
         idmap.put(fromId, newValue.id());
+        visitor.onCreate(kind, newValue);
         return newValue;
     }
 
