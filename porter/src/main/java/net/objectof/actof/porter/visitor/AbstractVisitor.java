@@ -1,8 +1,8 @@
 package net.objectof.actof.porter.visitor;
 
 
-import net.objectof.actof.porter.Porter;
 import net.objectof.actof.porter.IPorterUtil;
+import net.objectof.actof.porter.Porter;
 import net.objectof.actof.porter.Walker;
 import net.objectof.model.Id;
 import net.objectof.model.Kind;
@@ -30,7 +30,7 @@ public abstract class AbstractVisitor implements Visitor {
 
     public void visit(IPorterContext context, Id<?> fromParentId) {
 
-        System.out.println("Visiting " + context.getKind());
+        // System.out.println("Visiting " + context.getKind());
 
         if (IPorterUtil.isContainer(context.getKind())) {
 

@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 
 import net.objectof.actof.porter.rules.Rule;
 import net.objectof.actof.porter.rules.RuleBuilder;
+import net.objectof.actof.porter.rules.components.impl.IJsPortingListener;
 import net.objectof.aggr.Composite;
 import net.objectof.aggr.Listing;
 import net.objectof.connector.Connector;
@@ -87,16 +88,8 @@ public class PorterTesting {
 
         // @formatter:off
         
-        Rule roleToRoles = RuleBuilder.start()
-            .forKey("Person.role")
-            .setKey("Person.roles")
-            .valueTransform((context) -> {
-                Listing<Object> roles = context.getToTx().create("Person.roles");
-                roles.add(context.getValue());
-                return roles;
-            })
-            .build();
         
+
 //        Rule portDescription = RuleBuilder.start()
 //                .forKey("Session")
 //                .valueTransform(context -> {
@@ -123,6 +116,18 @@ public class PorterTesting {
                 })
                 .build();
         
+        portDescription = RuleBuilder.start()
+                .forKey("Session")
+                .onPort(new IJsPortingListener("function(before, after) {"
+                        + "oldSession = before.getValue();"
+                        + "oldAssignment = oldSession.get('assignment');"
+                        + "description = oldAssignment.get('description').toString();"
+                        + ""
+                        + "newSession = after.getValue();"
+                        + "newSession.set('description', description);"
+                        + "}"))
+                .build();
+        
         
         Rule dropAssnDesc = RuleBuilder.start()
                 .forKey("Assignment.description")
@@ -135,7 +140,7 @@ public class PorterTesting {
                 .build();
         
         Rule dropPersonFields = RuleBuilder.start()
-                .forKey("Person.email", "Person.pwdHashed", "Person.salt", "Person.roles")
+                .forKey("Person.email", "Person.pwdHashed", "Person.salt", "Person.role")
                 .drop()
                 .build();
         
@@ -179,7 +184,7 @@ public class PorterTesting {
         
         // @formatter:on
 
-        p.addRules(roleToRoles, portDescription, dropAssnDesc, dropPersonFields, createAccount, dropCourse);
+        p.addRules(portDescription, dropAssnDesc, dropPersonFields, createAccount, dropCourse);
 
         System.out.println("-----------------------------");
 

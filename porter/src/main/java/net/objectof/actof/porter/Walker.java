@@ -78,7 +78,7 @@ public class Walker {
      */
     public void walkContainer(Id<?> id) {
 
-        System.out.println("Walking " + id);
+        // System.out.println("Walking " + id);
 
         Stereotype st = id.kind().getStereotype();
         switch (st) {
@@ -98,7 +98,7 @@ public class Walker {
 
     public void walkComposite(Id<?> id) {
 
-        System.out.println("Walking as Composite");
+        // System.out.println("Walking as Composite");
 
         Resource<Aggregate<Object, Object>> composite = tx.retrieve(id);
 
@@ -112,7 +112,7 @@ public class Walker {
 
     public void walkAggregate(Id<?> id) {
 
-        System.out.println("Walking as Aggregate");
+        // System.out.println("Walking as Aggregate");
 
         // this aggregate doesn't exist in new repo
         // if (!porter.getIdmap().containsKey(id)) { return; }

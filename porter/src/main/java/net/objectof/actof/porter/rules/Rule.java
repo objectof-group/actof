@@ -14,11 +14,9 @@ public interface Rule {
 
     Object transformValue(IPorterContext context);
 
+    boolean dropCheck(IPorterContext context);
+
     void onPort(IPorterContext source, IPorterContext destination);
-
-    boolean modifiesKey(IPorterContext context);
-
-    boolean modifiesValue(IPorterContext context);
 
     static IPorterContext transformKey(List<Rule> rules, IPorterContext context) {
         IPorterContext modContext = context.copy();
@@ -38,6 +36,17 @@ public interface Rule {
             }
         }
         return modContext;
+    }
+
+    static boolean dropCheck(List<Rule> rules, IPorterContext context) {
+        IPorterContext modContext = context.copy();
+        for (Rule rule : rules) {
+            if (rule.match(modContext)) {
+                boolean drop = rule.dropCheck(modContext);
+                if (drop) { return true; }
+            }
+        }
+        return false;
     }
 
     static void onPort(List<Rule> rules, IPorterContext before, IPorterContext after) {

@@ -4,22 +4,23 @@ package net.objectof.actof.porter.rules;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.Predicate;
 
-import net.objectof.actof.porter.rules.components.Matcher;
 import net.objectof.actof.porter.rules.components.Transformer;
 import net.objectof.actof.porter.visitor.IPorterContext;
 
 
 public class IRule implements Rule {
 
-    private List<Matcher> matchers = new ArrayList<>();
+    private List<Predicate<IPorterContext>> matchers = new ArrayList<>();
     private List<Transformer> keyTransformers = new ArrayList<>();
     private List<Transformer> valueTransformers = new ArrayList<>();
+    private List<Predicate<IPorterContext>> dropCheckers = new ArrayList<>();
     private List<BiConsumer<IPorterContext, IPorterContext>> onPortListeners = new ArrayList<>();
 
     public IRule() {}
 
-    public IRule(Matcher matcher, Transformer keyTransformer, Transformer valueTransformer) {
+    public IRule(Predicate<IPorterContext> matcher, Transformer keyTransformer, Transformer valueTransformer) {
         if (matcher != null) {
             matchers.add(matcher);
         }
@@ -33,7 +34,7 @@ public class IRule implements Rule {
 
     @Override
     public boolean match(IPorterContext context) {
-        for (Matcher matcher : matchers) {
+        for (Predicate<IPorterContext> matcher : matchers) {
             if (matcher.test(context)) { return true; }
         }
         return false;
@@ -55,11 +56,11 @@ public class IRule implements Rule {
         return context.getValue();
     }
 
-    public List<Matcher> getMatchers() {
+    public List<Predicate<IPorterContext>> getMatchers() {
         return matchers;
     }
 
-    public void setMatchers(List<Matcher> matchers) {
+    public void setMatchers(List<Predicate<IPorterContext>> matchers) {
         this.matchers = matchers;
     }
 
@@ -87,11 +88,19 @@ public class IRule implements Rule {
         this.onPortListeners = onPortListeners;
     }
 
+    public List<Predicate<IPorterContext>> getDropCheckers() {
+        return dropCheckers;
+    }
+
+    public void setDropCheckers(List<Predicate<IPorterContext>> dropCheckers) {
+        this.dropCheckers = dropCheckers;
+    }
+
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
         sb.append("Rule matching [");
-        sb.append(matchers.stream().map(Matcher::toString).reduce((a, b) -> a + ", " + b).orElse(""));
+        sb.append(matchers.stream().map(Predicate::toString).reduce((a, b) -> a + ", " + b).orElse(""));
 
         sb.append("]\n     transforming keys via [");
         sb.append(keyTransformers.stream().map(Transformer::toString).reduce((a, b) -> a + ", " + b).orElse(""));
@@ -99,19 +108,12 @@ public class IRule implements Rule {
         sb.append("]\n     transforming values via [");
         sb.append(valueTransformers.stream().map(Transformer::toString).reduce((a, b) -> a + ", " + b).orElse(""));
 
+        sb.append("]\n     checking to drop via [");
+        sb.append(dropCheckers.stream().map(Predicate::toString).reduce((a, b) -> a + ", " + b).orElse(""));
+
         sb.append("]");
 
         return sb.toString();
-    }
-
-    @Override
-    public boolean modifiesKey(IPorterContext context) {
-        return match(context) && keyTransformers.size() > 0;
-    }
-
-    @Override
-    public boolean modifiesValue(IPorterContext context) {
-        return match(context) && valueTransformers.size() > 0;
     }
 
     @Override
@@ -119,6 +121,14 @@ public class IRule implements Rule {
         for (BiConsumer<IPorterContext, IPorterContext> listener : onPortListeners) {
             listener.accept(source, destination);
         }
+    }
+
+    @Override
+    public boolean dropCheck(IPorterContext context) {
+        for (Predicate<IPorterContext> dropper : dropCheckers) {
+            if (dropper.test(context)) { return true; }
+        }
+        return false;
     }
 
 }

@@ -90,8 +90,9 @@ public class IPorterContext {
         return dropped;
     }
 
-    public void setDropped(boolean dropped) {
+    public IPorterContext setDropped(boolean dropped) {
         this.dropped = dropped;
+        return this;
     }
 
     public String toString() {

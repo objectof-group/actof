@@ -1,9 +1,9 @@
 package net.objectof.actof.porter.visitor;
 
 
-import net.objectof.actof.porter.Porter;
 import net.objectof.actof.porter.IPorterUtil;
 import net.objectof.actof.porter.ITransactionDecorator;
+import net.objectof.actof.porter.Porter;
 import net.objectof.actof.porter.rules.Rule;
 import net.objectof.aggr.Aggregate;
 import net.objectof.model.Id;
@@ -110,15 +110,13 @@ public class IMigrationVisitor extends AbstractVisitor {
 
         // System.out.println("Transforming " + context.getKind());
 
+        boolean dropped = Rule.dropCheck(porter.getRules(), context.copy());
+        if (dropped) { return context.copy().setDropped(true); }
+
         IPorterContext result = context.copy();
 
         // key
-        IPorterContext keyContext = Rule.transformKey(porter.getRules(), result);
-        System.out.println(keyContext);
-        if (keyContext.isDropped()) {
-            result.setDropped(true);
-            return result;
-        }
+        IPorterContext keyContext = Rule.transformKey(porter.getRules(), context.copy());
         result.setKey(keyContext.getKey());
 
         // kind
@@ -126,18 +124,13 @@ public class IMigrationVisitor extends AbstractVisitor {
         result.setKind(kind);
 
         // value - not necessarily a reference, or even a resource
-        IPorterContext valueContext = Rule.transformValue(porter.getRules(), context);
-        if (valueContext.isDropped()) {
-            result.setDropped(true);
-            return result;
-        }
+        IPorterContext valueContext = Rule.transformValue(porter.getRules(), context.copy());
         Object newValue = porter.updateReference(context.getKind(), targetTx, valueContext.getValue());
         result.setValue(newValue);
 
         // after the transformation is done (not any recursion), call onPort
-        Rule.onPort(porter.getRules(), context, result);
+        Rule.onPort(porter.getRules(), context.copy(), result);
 
         return result;
     }
-
 }
