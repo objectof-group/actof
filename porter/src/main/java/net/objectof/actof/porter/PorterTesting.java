@@ -22,7 +22,7 @@ public class PorterTesting {
     public static void main(String[] args) throws ConnectorException, FileNotFoundException {
         testRealm();
         // testRulePrinting();
-        // testRealmReversed();
+        testRealmReversed();
     }
 
     private static void testSettings() throws ConnectorException, FileNotFoundException {
@@ -207,6 +207,8 @@ public class PorterTesting {
 
         // @formatter:off
         
+        Rule dropRoles = RuleBuilder.start().forKind("Person.roles.role").drop().build();
+        
         Rule rolesToRole = RuleBuilder.start()
             .forKey("Person.roles")
             .setKey("Person.role")
@@ -247,7 +249,7 @@ public class PorterTesting {
         
         // @formatter:on
 
-        Porter p = new Porter(rolesToRole);
+        Porter p = new Porter(rolesToRole, dropRoles);
 
         System.out.println("-----------------------------");
 

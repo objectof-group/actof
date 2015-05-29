@@ -6,10 +6,13 @@ import java.util.function.BiConsumer;
 import net.objectof.actof.porter.rules.components.Matcher;
 import net.objectof.actof.porter.rules.components.Transformer;
 import net.objectof.actof.porter.rules.components.impl.KeyMatcher;
+import net.objectof.actof.porter.rules.components.impl.KindMatcher;
+import net.objectof.actof.porter.rules.components.impl.KindNameMatcher;
 import net.objectof.actof.porter.rules.components.impl.PrettyPrintMatcher;
 import net.objectof.actof.porter.rules.components.impl.PrettyPrintTransformer;
 import net.objectof.actof.porter.rules.components.impl.StereotypeMatcher;
 import net.objectof.actof.porter.visitor.PorterContext;
+import net.objectof.model.Kind;
 import net.objectof.model.Stereotype;
 
 
@@ -29,6 +32,16 @@ public class RuleBuilder {
 
     public RuleBuilder forKey(Object... key) {
         rule.getMatchers().add(new KeyMatcher(key));
+        return this;
+    }
+
+    public RuleBuilder forKind(String kind) {
+        rule.getMatchers().add(new KindNameMatcher(kind));
+        return this;
+    }
+
+    public RuleBuilder forKind(Kind<?> kind) {
+        rule.getMatchers().add(new KindMatcher(kind));
         return this;
     }
 
