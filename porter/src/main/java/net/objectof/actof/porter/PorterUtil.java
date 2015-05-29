@@ -14,11 +14,10 @@ public class PorterUtil {
     /**
      * Checks if the given object is a resource from the old repo
      * 
-     * @param context
      * @param object
      * @return
      */
-    public static boolean isResourceStale(PorterContext context, Transaction tx, Object object) {
+    public static boolean isResourceStale(Transaction tx, Object object) {
         if (!(object instanceof Resource)) { return false; }
         Resource<Object> res = (Resource<Object>) object;
         if (res.tx().getPackage().equals(tx.getPackage())) { return false; }

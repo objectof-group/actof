@@ -2,10 +2,10 @@ package net.objectof.actof.porter.visitor;
 
 
 import net.objectof.actof.porter.Porter;
-import net.objectof.actof.porter.PorterContext;
 import net.objectof.actof.porter.PorterUtil;
 import net.objectof.actof.porter.Walker;
 import net.objectof.model.Id;
+import net.objectof.model.Kind;
 import net.objectof.model.Resource;
 import net.objectof.model.Transaction;
 
@@ -54,6 +54,11 @@ public abstract class AbstractVisitor implements Visitor {
         } else {
             visitLeaf(context, fromParentId);
         }
+    }
+
+    @Override
+    public void visit(Object key, Object value, Kind<?> kind, Id<?> parentId) {
+        visit(new PorterContext(key, value, kind), parentId);
     }
 
     protected abstract PorterContext visitContainer(PorterContext context, Id<?> parentId);

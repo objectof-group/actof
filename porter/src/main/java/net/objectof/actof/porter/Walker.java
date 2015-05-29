@@ -13,11 +13,9 @@ import net.objectof.model.Transaction;
 public class Walker {
 
     private Visitor visitor;
-    private Porter porter;
     private Transaction tx;
 
-    public Walker(Porter porter, Transaction tx) {
-        this.porter = porter;
+    public Walker(Transaction tx) {
         this.tx = tx;
     }
 
@@ -49,8 +47,7 @@ public class Walker {
             Iterable<Resource<?>> resources = visitor.getEntities(kind);
             for (Resource<?> resource : resources) {
                 Object key = kind.getComponentName();
-                PorterContext context = new PorterContext(key, resource, resource.id().kind());
-                visitor.visit(context, null);
+                visitor.visit(key, resource, resource.id().kind(), null);
             }
         }
 
@@ -92,8 +89,7 @@ public class Walker {
         for (Kind<?> childKind : visitor.getCompositeParts(id)) {
             Object key = childKind.getComponentName();
             Object value = composite.value().get(PorterUtil.unqualify(key, composite));
-            PorterContext context = new PorterContext(key, value, childKind);
-            visitor.visit(context, id);
+            visitor.visit(key, value, childKind, id);
         }
     }
 
@@ -111,8 +107,7 @@ public class Walker {
 
         for (Object key : visitor.getAggregateParts(aggr)) {
             Object value = aggr.value().get(key);
-            PorterContext context = new PorterContext(key, value, childKind);
-            visitor.visit(context, id);
+            visitor.visit(key, value, childKind, id);
         }
     }
 

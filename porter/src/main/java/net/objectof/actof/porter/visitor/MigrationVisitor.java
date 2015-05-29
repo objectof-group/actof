@@ -2,7 +2,6 @@ package net.objectof.actof.porter.visitor;
 
 
 import net.objectof.actof.porter.Porter;
-import net.objectof.actof.porter.PorterContext;
 import net.objectof.actof.porter.PorterUtil;
 import net.objectof.actof.porter.TransactionDecorator;
 import net.objectof.actof.porter.rules.Rule;
@@ -123,7 +122,7 @@ public class MigrationVisitor extends AbstractVisitor {
             result.setDropped(true);
             return result;
         }
-        Object newValue = porter.updateReference(context, targetTx, valueContext.getValue());
+        Object newValue = porter.updateReference(context.getKind(), targetTx, valueContext.getValue());
         result.setValue(newValue);
 
         // after the transformation is done (not any recursion), call onPort

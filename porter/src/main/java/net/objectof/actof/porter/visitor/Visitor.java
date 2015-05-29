@@ -1,7 +1,6 @@
 package net.objectof.actof.porter.visitor;
 
 
-import net.objectof.actof.porter.PorterContext;
 import net.objectof.actof.porter.Walker;
 import net.objectof.aggr.Aggregate;
 import net.objectof.model.Id;
@@ -15,7 +14,7 @@ public interface Visitor {
 
     public void setWalker(Walker texasRanger);
 
-    void visit(PorterContext context, Id<?> parentId);
+    void visit(Object key, Object value, Kind<?> kind, Id<?> parentId);
 
     Iterable<Resource<?>> getEntities(Kind<?> kind);
 

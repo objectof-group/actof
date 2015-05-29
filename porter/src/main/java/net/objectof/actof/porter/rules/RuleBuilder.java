@@ -3,13 +3,13 @@ package net.objectof.actof.porter.rules;
 
 import java.util.function.BiConsumer;
 
-import net.objectof.actof.porter.PorterContext;
 import net.objectof.actof.porter.rules.components.Matcher;
 import net.objectof.actof.porter.rules.components.Transformer;
 import net.objectof.actof.porter.rules.components.impl.KeyMatcher;
 import net.objectof.actof.porter.rules.components.impl.PrettyPrintMatcher;
 import net.objectof.actof.porter.rules.components.impl.PrettyPrintTransformer;
 import net.objectof.actof.porter.rules.components.impl.StereotypeMatcher;
+import net.objectof.actof.porter.visitor.PorterContext;
 import net.objectof.model.Stereotype;
 
 

@@ -41,7 +41,7 @@ public class Porter {
         Transaction fromTx = from.connect(getClass());
         Transaction toTx = to.connect(getClass());
 
-        Walker walker = new Walker(this, fromTx);
+        Walker walker = new Walker(fromTx);
         Visitor visitor = new MigrationVisitor(this, fromTx, toTx);
         visitor.setWalker(walker);
         walker.setVisitor(visitor);
@@ -130,11 +130,11 @@ public class Porter {
      * @param ref
      * @return
      */
-    public Object updateReference(PorterContext context, Transaction tx, Object object) {
-        if (!PorterUtil.isResourceStale(context, tx, object)) { return object; }
+    public Object updateReference(Kind<?> kind, Transaction tx, Object object) {
+        if (!PorterUtil.isResourceStale(tx, object)) { return object; }
         Resource<Object> res = (Resource<Object>) object;
         Id<?> oldId = res.id();
-        return fetch(oldId, tx, PorterUtil.kindName(context.getKind()));
+        return fetch(oldId, tx, PorterUtil.kindName(kind));
     }
 
     private Resource<Object> fetch(Id<?> fromId, Transaction toTx, String kind) {
@@ -146,15 +146,9 @@ public class Porter {
     }
 
     private Resource<Object> create(Id<?> fromId, Transaction toTx, String kind) {
-        // System.out.println("Creating " + kind);
         Resource<Object> newValue = toTx.create(kind);
-
-        // store in the id map
         idmap.put(fromId, newValue.id());
-
-        // store in the transients map-list
         addTransient(kind, newValue);
-
         return newValue;
     }
 

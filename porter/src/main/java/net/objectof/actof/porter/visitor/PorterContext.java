@@ -1,4 +1,4 @@
-package net.objectof.actof.porter;
+package net.objectof.actof.porter.visitor;
 
 
 import net.objectof.model.Kind;

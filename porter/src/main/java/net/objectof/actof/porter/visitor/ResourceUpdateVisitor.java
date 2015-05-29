@@ -4,7 +4,6 @@ package net.objectof.actof.porter.visitor;
 import java.util.Collections;
 
 import net.objectof.actof.porter.Porter;
-import net.objectof.actof.porter.PorterContext;
 import net.objectof.actof.porter.PorterUtil;
 import net.objectof.actof.porter.Walker;
 import net.objectof.aggr.Aggregate;
@@ -33,11 +32,11 @@ public class ResourceUpdateVisitor extends AbstractVisitor {
 
         System.out.println("Testing Container " + context);
 
-        if (!PorterUtil.isResourceStale(context, tx, value)) { return context; }
+        if (!PorterUtil.isResourceStale(tx, value)) { return context; }
 
         System.out.println("+++ Updating Container " + context);
 
-        Object updated = porter.updateReference(context, tx, value);
+        Object updated = porter.updateReference(context.getKind(), tx, value);
         toParent.value().set(PorterUtil.unqualify(context.getKey(), toParent), updated);
         return context;
     }
@@ -50,11 +49,11 @@ public class ResourceUpdateVisitor extends AbstractVisitor {
 
         System.out.println("Testing Leaf " + context);
 
-        if (!PorterUtil.isResourceStale(context, tx, value)) { return context; }
+        if (!PorterUtil.isResourceStale(tx, value)) { return context; }
 
         System.out.println("+++ Updating Leaf " + context);
 
-        Object updated = porter.updateReference(context, tx, value);
+        Object updated = porter.updateReference(context.getKind(), tx, value);
         toParent.value().set(PorterUtil.unqualify(context.getKey(), toParent), updated);
         return context;
     }

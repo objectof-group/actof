@@ -3,7 +3,7 @@ package net.objectof.actof.porter.rules.components;
 
 import java.util.function.Predicate;
 
-import net.objectof.actof.porter.PorterContext;
+import net.objectof.actof.porter.visitor.PorterContext;
 
 
 public interface Matcher extends Predicate<PorterContext> {}

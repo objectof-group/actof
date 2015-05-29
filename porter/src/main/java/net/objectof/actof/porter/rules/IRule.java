@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-import net.objectof.actof.porter.PorterContext;
 import net.objectof.actof.porter.rules.components.Matcher;
 import net.objectof.actof.porter.rules.components.Transformer;
+import net.objectof.actof.porter.visitor.PorterContext;
 
 
 public class IRule implements Rule {
