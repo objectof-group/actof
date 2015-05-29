@@ -3,25 +3,25 @@ package net.objectof.actof.porter.rules;
 
 import java.util.List;
 
-import net.objectof.actof.porter.visitor.PorterContext;
+import net.objectof.actof.porter.visitor.IPorterContext;
 
 
 public interface Rule {
 
-    boolean match(PorterContext context);
+    boolean match(IPorterContext context);
 
-    Object transformKey(PorterContext context);
+    Object transformKey(IPorterContext context);
 
-    Object transformValue(PorterContext context);
+    Object transformValue(IPorterContext context);
 
-    void onPort(PorterContext source, PorterContext destination);
+    void onPort(IPorterContext source, IPorterContext destination);
 
-    boolean modifiesKey(PorterContext context);
+    boolean modifiesKey(IPorterContext context);
 
-    boolean modifiesValue(PorterContext context);
+    boolean modifiesValue(IPorterContext context);
 
-    static PorterContext transformKey(List<Rule> rules, PorterContext context) {
-        PorterContext modContext = context.copy();
+    static IPorterContext transformKey(List<Rule> rules, IPorterContext context) {
+        IPorterContext modContext = context.copy();
         for (Rule rule : rules) {
             if (rule.match(modContext)) {
                 modContext.setKey(rule.transformKey(modContext));
@@ -30,8 +30,8 @@ public interface Rule {
         return modContext;
     }
 
-    static PorterContext transformValue(List<Rule> rules, PorterContext context) {
-        PorterContext modContext = context.copy();
+    static IPorterContext transformValue(List<Rule> rules, IPorterContext context) {
+        IPorterContext modContext = context.copy();
         for (Rule rule : rules) {
             if (rule.match(modContext)) {
                 modContext.setValue(rule.transformValue(modContext));
@@ -40,10 +40,10 @@ public interface Rule {
         return modContext;
     }
 
-    static void onPort(List<Rule> rules, PorterContext before, PorterContext after) {
+    static void onPort(List<Rule> rules, IPorterContext before, IPorterContext after) {
         for (Rule rule : rules) {
-            PorterContext modBefore = before.copy();
-            PorterContext modAfter = after.copy();
+            IPorterContext modBefore = before.copy();
+            IPorterContext modAfter = after.copy();
             if (rule.match(before)) {
                 rule.onPort(modBefore, modAfter);
             }

@@ -2,20 +2,20 @@ package net.objectof.actof.porter.rules.components.impl;
 
 
 import net.objectof.actof.porter.rules.components.Matcher;
-import net.objectof.actof.porter.visitor.PorterContext;
+import net.objectof.actof.porter.visitor.IPorterContext;
 import net.objectof.model.Kind;
 
 
-public class KindMatcher implements Matcher {
+public class IKindMatcher implements Matcher {
 
     Kind<?> kind;
 
-    public KindMatcher(Kind<?> kind) {
+    public IKindMatcher(Kind<?> kind) {
         this.kind = kind;
     }
 
     @Override
-    public boolean test(PorterContext t) {
+    public boolean test(IPorterContext t) {
         return t.getKind().equals(kind);
     }
 

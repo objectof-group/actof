@@ -10,16 +10,16 @@ import net.objectof.model.Transaction;
 import net.objectof.model.query.Query;
 
 
-public class TransactionDecorator implements Transaction {
+public class ITransactionDecorator implements Transaction {
 
     Porter porter;
     Transaction tx;
 
-    public TransactionDecorator(Porter porter, Transaction tx) {
+    public ITransactionDecorator(Porter porter, Transaction tx) {
         this.porter = porter;
         this.tx = tx;
-        if (tx instanceof TransactionDecorator) {
-            tx = ((TransactionDecorator) tx).tx;
+        if (tx instanceof ITransactionDecorator) {
+            tx = ((ITransactionDecorator) tx).tx;
         }
     }
 
@@ -28,7 +28,6 @@ public class TransactionDecorator implements Transaction {
     }
 
     public <T> T create(String aKind) {
-        System.out.println("Decorated Transaction creating " + aKind);
         T t = tx.create(aKind);
         porter.addTransient(aKind, (Resource<?>) t);
         return t;

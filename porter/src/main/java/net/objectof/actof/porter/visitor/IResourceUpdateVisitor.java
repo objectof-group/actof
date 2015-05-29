@@ -4,7 +4,7 @@ package net.objectof.actof.porter.visitor;
 import java.util.Collections;
 
 import net.objectof.actof.porter.Porter;
-import net.objectof.actof.porter.PorterUtil;
+import net.objectof.actof.porter.IPorterUtil;
 import net.objectof.actof.porter.Walker;
 import net.objectof.aggr.Aggregate;
 import net.objectof.model.Id;
@@ -19,43 +19,31 @@ import net.objectof.model.Transaction;
  * @author NAS
  *
  */
-public class ResourceUpdateVisitor extends AbstractVisitor {
+public class IResourceUpdateVisitor extends AbstractVisitor {
 
-    public ResourceUpdateVisitor(Porter porter, Transaction tx) {
+    public IResourceUpdateVisitor(Porter porter, Transaction tx) {
         super(porter, tx);
     }
 
-    protected PorterContext visitContainer(PorterContext context, Id<?> parentId) {
-
-        Resource<Aggregate<Object, Object>> toParent = getParent(parentId);
-        Object value = context.getValue();
-
-        System.out.println("Testing Container " + context);
-
-        if (!PorterUtil.isResourceStale(tx, value)) { return context; }
-
-        System.out.println("+++ Updating Container " + context);
-
-        Object updated = porter.updateReference(context.getKind(), tx, value);
-        toParent.value().set(PorterUtil.unqualify(context.getKey(), toParent), updated);
-        return context;
+    protected Object visitContainer(IPorterContext context, Id<?> parentId) {
+        return doVisit(context, parentId);
     }
 
     @Override
-    protected PorterContext visitLeaf(PorterContext context, Id<?> parentId) {
+    protected Object visitLeaf(IPorterContext context, Id<?> parentId) {
+        return doVisit(context, parentId);
+    }
 
-        Resource<Aggregate<Object, Object>> toParent = getParent(parentId);
+    private Object doVisit(IPorterContext context, Id<?> parentId) {
+
+        Resource<Aggregate<Object, Object>> parent = getParent(parentId);
         Object value = context.getValue();
 
-        System.out.println("Testing Leaf " + context);
-
-        if (!PorterUtil.isResourceStale(tx, value)) { return context; }
-
-        System.out.println("+++ Updating Leaf " + context);
+        if (!IPorterUtil.isResourceStale(tx, value)) { return context.getValue(); }
 
         Object updated = porter.updateReference(context.getKind(), tx, value);
-        toParent.value().set(PorterUtil.unqualify(context.getKey(), toParent), updated);
-        return context;
+        parent.value().set(IPorterUtil.unqualify(context.getKey(), parent), updated);
+        return updated;
     }
 
     @Override

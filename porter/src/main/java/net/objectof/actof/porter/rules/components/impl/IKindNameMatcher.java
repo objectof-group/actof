@@ -2,19 +2,19 @@ package net.objectof.actof.porter.rules.components.impl;
 
 
 import net.objectof.actof.porter.rules.components.Matcher;
-import net.objectof.actof.porter.visitor.PorterContext;
+import net.objectof.actof.porter.visitor.IPorterContext;
 
 
-public class KindNameMatcher implements Matcher {
+public class IKindNameMatcher implements Matcher {
 
     String kind;
 
-    public KindNameMatcher(String kind) {
+    public IKindNameMatcher(String kind) {
         this.kind = kind;
     }
 
     @Override
-    public boolean test(PorterContext t) {
+    public boolean test(IPorterContext t) {
         return t.getKind().getComponentName().equals(kind);
     }
 

@@ -5,7 +5,7 @@ import net.objectof.model.Kind;
 import net.objectof.model.Transaction;
 
 
-public class PorterContext {
+public class IPorterContext {
 
     private Object key;
     private Object value;
@@ -15,13 +15,13 @@ public class PorterContext {
 
     private boolean dropped = false;
 
-    public PorterContext() {}
+    public IPorterContext() {}
 
-    public PorterContext(Object key, Object value, Kind<?> kind) {
+    public IPorterContext(Object key, Object value, Kind<?> kind) {
         this(key, value, kind, null, null);
     }
 
-    public PorterContext(Object key, Object value, Kind<?> kind, Transaction fromTx, Transaction toTx) {
+    public IPorterContext(Object key, Object value, Kind<?> kind, Transaction fromTx, Transaction toTx) {
         this.key = key;
         this.value = value;
         this.kind = kind;
@@ -29,7 +29,7 @@ public class PorterContext {
         this.toTx = toTx;
     }
 
-    public PorterContext(PorterContext copy) {
+    public IPorterContext(IPorterContext copy) {
         key = copy.key;
         value = copy.value;
         kind = copy.kind;
@@ -37,15 +37,15 @@ public class PorterContext {
         toTx = copy.toTx;
     }
 
-    public PorterContext copy() {
-        return new PorterContext(this);
+    public IPorterContext copy() {
+        return new IPorterContext(this);
     }
 
     public Object getKey() {
         return key;
     }
 
-    public PorterContext setKey(Object key) {
+    public IPorterContext setKey(Object key) {
         this.key = key;
         return this;
     }
@@ -54,7 +54,7 @@ public class PorterContext {
         return value;
     }
 
-    public PorterContext setValue(Object value) {
+    public IPorterContext setValue(Object value) {
         this.value = value;
         return this;
     }
@@ -63,7 +63,7 @@ public class PorterContext {
         return kind;
     }
 
-    public PorterContext setKind(Kind<?> kind) {
+    public IPorterContext setKind(Kind<?> kind) {
         this.kind = kind;
         return this;
     }
@@ -72,7 +72,7 @@ public class PorterContext {
         return fromTx;
     }
 
-    public PorterContext setFromTx(Transaction fromTx) {
+    public IPorterContext setFromTx(Transaction fromTx) {
         this.fromTx = fromTx;
         return this;
     }
@@ -81,7 +81,7 @@ public class PorterContext {
         return toTx;
     }
 
-    public PorterContext setToTx(Transaction toTx) {
+    public IPorterContext setToTx(Transaction toTx) {
         this.toTx = toTx;
         return this;
     }

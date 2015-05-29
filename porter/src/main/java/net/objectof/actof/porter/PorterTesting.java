@@ -22,7 +22,7 @@ public class PorterTesting {
     public static void main(String[] args) throws ConnectorException, FileNotFoundException {
         testRealm();
         // testRulePrinting();
-        testRealmReversed();
+        // testRealmReversed();
     }
 
     private static void testSettings() throws ConnectorException, FileNotFoundException {

@@ -54,6 +54,23 @@ public class Walker {
     }
 
     /**
+     * Tries to walk this object as best as possible
+     * 
+     * @param object
+     */
+    public void walk(Object object) {
+        if (!(object instanceof Resource)) { return; }
+        Resource<?> res = (Resource<?>) object;
+
+        try {
+            walkContainer(res.id());
+        }
+        catch (UnsupportedOperationException e) {
+            // Do nothing
+        }
+    }
+
+    /**
      * Ports the elements of a container
      * 
      * @param id
@@ -88,7 +105,7 @@ public class Walker {
         // composed entities have different kinds for each field
         for (Kind<?> childKind : visitor.getCompositeParts(id)) {
             Object key = childKind.getComponentName();
-            Object value = composite.value().get(PorterUtil.unqualify(key, composite));
+            Object value = composite.value().get(IPorterUtil.unqualify(key, composite));
             visitor.visit(key, value, childKind, id);
         }
     }

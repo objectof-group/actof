@@ -6,19 +6,19 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.objectof.actof.porter.rules.components.Matcher;
-import net.objectof.actof.porter.visitor.PorterContext;
+import net.objectof.actof.porter.visitor.IPorterContext;
 
 
-public class KeyMatcher implements Matcher {
+public class IKeyMatcher implements Matcher {
 
     List<Object> matchingKeys = new ArrayList<>();
 
-    public KeyMatcher(Object... key) {
+    public IKeyMatcher(Object... key) {
         this.matchingKeys.addAll(Arrays.asList(key));
     }
 
     @Override
-    public boolean test(PorterContext context) {
+    public boolean test(IPorterContext context) {
         return matchingKeys.contains(context.getKey());
     }
 

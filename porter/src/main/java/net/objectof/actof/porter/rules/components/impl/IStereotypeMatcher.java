@@ -6,20 +6,20 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.objectof.actof.porter.rules.components.Matcher;
-import net.objectof.actof.porter.visitor.PorterContext;
+import net.objectof.actof.porter.visitor.IPorterContext;
 import net.objectof.model.Stereotype;
 
 
-public class StereotypeMatcher implements Matcher {
+public class IStereotypeMatcher implements Matcher {
 
     List<Stereotype> stereotypes = new ArrayList<>();
 
-    public StereotypeMatcher(Stereotype... stereotypes) {
+    public IStereotypeMatcher(Stereotype... stereotypes) {
         this.stereotypes.addAll(Arrays.asList(stereotypes));
     }
 
     @Override
-    public boolean test(PorterContext context) {
+    public boolean test(IPorterContext context) {
         return stereotypes.contains(context.getKind().getStereotype());
     }
 

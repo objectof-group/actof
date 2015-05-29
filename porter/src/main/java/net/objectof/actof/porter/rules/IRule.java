@@ -7,7 +7,7 @@ import java.util.function.BiConsumer;
 
 import net.objectof.actof.porter.rules.components.Matcher;
 import net.objectof.actof.porter.rules.components.Transformer;
-import net.objectof.actof.porter.visitor.PorterContext;
+import net.objectof.actof.porter.visitor.IPorterContext;
 
 
 public class IRule implements Rule {
@@ -15,7 +15,7 @@ public class IRule implements Rule {
     private List<Matcher> matchers = new ArrayList<>();
     private List<Transformer> keyTransformers = new ArrayList<>();
     private List<Transformer> valueTransformers = new ArrayList<>();
-    private List<BiConsumer<PorterContext, PorterContext>> onPortListeners = new ArrayList<>();
+    private List<BiConsumer<IPorterContext, IPorterContext>> onPortListeners = new ArrayList<>();
 
     public IRule() {}
 
@@ -32,7 +32,7 @@ public class IRule implements Rule {
     }
 
     @Override
-    public boolean match(PorterContext context) {
+    public boolean match(IPorterContext context) {
         for (Matcher matcher : matchers) {
             if (matcher.test(context)) { return true; }
         }
@@ -40,7 +40,7 @@ public class IRule implements Rule {
     }
 
     @Override
-    public Object transformKey(PorterContext context) {
+    public Object transformKey(IPorterContext context) {
         for (Transformer keyTransformer : keyTransformers) {
             context.setKey(keyTransformer.apply(context));
         }
@@ -48,7 +48,7 @@ public class IRule implements Rule {
     }
 
     @Override
-    public Object transformValue(PorterContext context) {
+    public Object transformValue(IPorterContext context) {
         for (Transformer valueTransformer : valueTransformers) {
             context.setValue(valueTransformer.apply(context));
         }
@@ -79,11 +79,11 @@ public class IRule implements Rule {
         this.valueTransformers = valueTransformers;
     }
 
-    public List<BiConsumer<PorterContext, PorterContext>> getOnPortListeners() {
+    public List<BiConsumer<IPorterContext, IPorterContext>> getOnPortListeners() {
         return onPortListeners;
     }
 
-    public void setOnPortListeners(List<BiConsumer<PorterContext, PorterContext>> onPortListeners) {
+    public void setOnPortListeners(List<BiConsumer<IPorterContext, IPorterContext>> onPortListeners) {
         this.onPortListeners = onPortListeners;
     }
 
@@ -105,18 +105,18 @@ public class IRule implements Rule {
     }
 
     @Override
-    public boolean modifiesKey(PorterContext context) {
+    public boolean modifiesKey(IPorterContext context) {
         return match(context) && keyTransformers.size() > 0;
     }
 
     @Override
-    public boolean modifiesValue(PorterContext context) {
+    public boolean modifiesValue(IPorterContext context) {
         return match(context) && valueTransformers.size() > 0;
     }
 
     @Override
-    public void onPort(PorterContext source, PorterContext destination) {
-        for (BiConsumer<PorterContext, PorterContext> listener : onPortListeners) {
+    public void onPort(IPorterContext source, IPorterContext destination) {
+        for (BiConsumer<IPorterContext, IPorterContext> listener : onPortListeners) {
             listener.accept(source, destination);
         }
     }

@@ -5,13 +5,13 @@ import java.util.function.BiConsumer;
 
 import net.objectof.actof.porter.rules.components.Matcher;
 import net.objectof.actof.porter.rules.components.Transformer;
-import net.objectof.actof.porter.rules.components.impl.KeyMatcher;
-import net.objectof.actof.porter.rules.components.impl.KindMatcher;
-import net.objectof.actof.porter.rules.components.impl.KindNameMatcher;
-import net.objectof.actof.porter.rules.components.impl.PrettyPrintMatcher;
-import net.objectof.actof.porter.rules.components.impl.PrettyPrintTransformer;
-import net.objectof.actof.porter.rules.components.impl.StereotypeMatcher;
-import net.objectof.actof.porter.visitor.PorterContext;
+import net.objectof.actof.porter.rules.components.impl.IKeyMatcher;
+import net.objectof.actof.porter.rules.components.impl.IKindMatcher;
+import net.objectof.actof.porter.rules.components.impl.IKindNameMatcher;
+import net.objectof.actof.porter.rules.components.impl.IPrettyPrintMatcher;
+import net.objectof.actof.porter.rules.components.impl.IPrettyPrintTransformer;
+import net.objectof.actof.porter.rules.components.impl.IStereotypeMatcher;
+import net.objectof.actof.porter.visitor.IPorterContext;
 import net.objectof.model.Kind;
 import net.objectof.model.Stereotype;
 
@@ -31,22 +31,22 @@ public class RuleBuilder {
     }
 
     public RuleBuilder forKey(Object... key) {
-        rule.getMatchers().add(new KeyMatcher(key));
+        rule.getMatchers().add(new IKeyMatcher(key));
         return this;
     }
 
     public RuleBuilder forKind(String kind) {
-        rule.getMatchers().add(new KindNameMatcher(kind));
+        rule.getMatchers().add(new IKindNameMatcher(kind));
         return this;
     }
 
     public RuleBuilder forKind(Kind<?> kind) {
-        rule.getMatchers().add(new KindMatcher(kind));
+        rule.getMatchers().add(new IKindMatcher(kind));
         return this;
     }
 
     public RuleBuilder forStereotype(Stereotype... stereotype) {
-        rule.getMatchers().add(new StereotypeMatcher(stereotype));
+        rule.getMatchers().add(new IStereotypeMatcher(stereotype));
         return this;
     }
 
@@ -73,21 +73,21 @@ public class RuleBuilder {
     // /////////////////////////////
 
     public RuleBuilder match(Matcher matcher) {
-        rule.getMatchers().add(new PrettyPrintMatcher(matcher));
+        rule.getMatchers().add(new IPrettyPrintMatcher(matcher));
         return this;
     }
 
     public RuleBuilder keyTransform(Transformer robotInDisguise) {
-        rule.getKeyTransformers().add(new PrettyPrintTransformer(robotInDisguise));
+        rule.getKeyTransformers().add(new IPrettyPrintTransformer(robotInDisguise));
         return this;
     }
 
     public RuleBuilder valueTransform(Transformer robotInDisguise) {
-        rule.getValueTransformers().add(new PrettyPrintTransformer(robotInDisguise));
+        rule.getValueTransformers().add(new IPrettyPrintTransformer(robotInDisguise));
         return this;
     }
 
-    public RuleBuilder onPort(BiConsumer<PorterContext, PorterContext> listener) {
+    public RuleBuilder onPort(BiConsumer<IPorterContext, IPorterContext> listener) {
         rule.getOnPortListeners().add(listener);
         return this;
     }

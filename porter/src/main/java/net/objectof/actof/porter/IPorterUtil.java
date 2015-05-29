@@ -9,7 +9,7 @@ import net.objectof.model.Stereotype;
 import net.objectof.model.Transaction;
 
 
-public class PorterUtil {
+public class IPorterUtil {
 
     /**
      * Checks if the given object is a resource from the old repo

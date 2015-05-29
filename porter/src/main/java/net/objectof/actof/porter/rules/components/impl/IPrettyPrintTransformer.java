@@ -4,19 +4,19 @@ package net.objectof.actof.porter.rules.components.impl;
 import java.lang.reflect.Modifier;
 
 import net.objectof.actof.porter.rules.components.Transformer;
-import net.objectof.actof.porter.visitor.PorterContext;
+import net.objectof.actof.porter.visitor.IPorterContext;
 
 
-public class PrettyPrintTransformer implements Transformer {
+public class IPrettyPrintTransformer implements Transformer {
 
     private Transformer backer;
 
-    public PrettyPrintTransformer(Transformer backer) {
+    public IPrettyPrintTransformer(Transformer backer) {
         this.backer = backer;
     }
 
     @Override
-    public Object apply(PorterContext contect) {
+    public Object apply(IPorterContext contect) {
         return backer.apply(contect);
     }
 

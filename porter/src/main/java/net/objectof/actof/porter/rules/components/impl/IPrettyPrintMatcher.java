@@ -4,19 +4,19 @@ package net.objectof.actof.porter.rules.components.impl;
 import java.lang.reflect.Modifier;
 
 import net.objectof.actof.porter.rules.components.Matcher;
-import net.objectof.actof.porter.visitor.PorterContext;
+import net.objectof.actof.porter.visitor.IPorterContext;
 
 
-public class PrettyPrintMatcher implements Matcher {
+public class IPrettyPrintMatcher implements Matcher {
 
     private Matcher backer;
 
-    public PrettyPrintMatcher(Matcher backer) {
+    public IPrettyPrintMatcher(Matcher backer) {
         this.backer = backer;
     }
 
     @Override
-    public boolean test(PorterContext context) {
+    public boolean test(IPorterContext context) {
         return backer.test(context);
     }
 

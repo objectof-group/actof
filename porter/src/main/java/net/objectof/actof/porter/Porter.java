@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import net.objectof.actof.porter.rules.Rule;
-import net.objectof.actof.porter.visitor.MigrationVisitor;
-import net.objectof.actof.porter.visitor.ResourceUpdateVisitor;
+import net.objectof.actof.porter.visitor.IMigrationVisitor;
+import net.objectof.actof.porter.visitor.IResourceUpdateVisitor;
 import net.objectof.actof.porter.visitor.Visitor;
 import net.objectof.model.Id;
 import net.objectof.model.Kind;
@@ -42,7 +42,7 @@ public class Porter {
         Transaction toTx = to.connect(getClass());
 
         Walker walker = new Walker(fromTx);
-        Visitor visitor = new MigrationVisitor(this, fromTx, toTx);
+        Visitor visitor = new IMigrationVisitor(this, fromTx, toTx);
         visitor.setWalker(walker);
         walker.setVisitor(visitor);
 
@@ -51,7 +51,7 @@ public class Porter {
 
         System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 
-        Visitor updater = new ResourceUpdateVisitor(this, toTx);
+        Visitor updater = new IResourceUpdateVisitor(this, toTx);
         updater.setWalker(walker);
         walker.setVisitor(updater);
         walker.setTx(toTx);
@@ -131,10 +131,10 @@ public class Porter {
      * @return
      */
     public Object updateReference(Kind<?> kind, Transaction tx, Object object) {
-        if (!PorterUtil.isResourceStale(tx, object)) { return object; }
+        if (!IPorterUtil.isResourceStale(tx, object)) { return object; }
         Resource<Object> res = (Resource<Object>) object;
         Id<?> oldId = res.id();
-        return fetch(oldId, tx, PorterUtil.kindName(kind));
+        return fetch(oldId, tx, IPorterUtil.kindName(kind));
     }
 
     private Resource<Object> fetch(Id<?> fromId, Transaction toTx, String kind) {
