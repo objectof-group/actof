@@ -1,29 +1,28 @@
 package net.objectof.actof.porter.visitor;
 
 
-import net.objectof.actof.porter.Porter;
 import net.objectof.actof.porter.PorterContext;
+import net.objectof.actof.porter.Walker;
 import net.objectof.aggr.Aggregate;
 import net.objectof.model.Id;
 import net.objectof.model.Kind;
 import net.objectof.model.Resource;
-import net.objectof.model.Transaction;
 
 
 public interface Visitor {
 
-    PorterContext visitContainer(Porter porter, PorterContext context, Resource<Aggregate<Object, Object>> toParent);
+    public Walker getWalker();
 
-    PorterContext visitLeaf(Porter porter, PorterContext context, Resource<Aggregate<Object, Object>> toParent);
+    public void setWalker(Walker texasRanger);
 
-    void onCreate(String kind, Resource<?> res);
+    void visit(PorterContext context, Id<?> parentId);
 
-    Iterable<Resource<?>> getEntities(Kind<?> kind, Transaction fromTx, Transaction toTx);
+    Iterable<Resource<?>> getEntities(Kind<?> kind);
 
-    Iterable<Kind<?>> getCompositeParts(Id<?> from, Id<?> to);
+    Iterable<Kind<?>> getCompositeParts(Id<?> compositteId);
 
-    Iterable<Object> getAggregateParts(Resource<Aggregate<Object, Object>> from, Resource<Aggregate<Object, Object>> to);
+    Iterable<Object> getAggregateParts(Resource<Aggregate<Object, Object>> aggr);
 
-    Kind<?> getAggregateKind(Id<?> from, Id<?> to);
+    Kind<?> getAggregateKind(Id<?> aggrId);
 
 }

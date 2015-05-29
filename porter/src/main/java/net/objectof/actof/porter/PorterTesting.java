@@ -79,7 +79,7 @@ public class PorterTesting {
         Connector newConnector = new ISQLiteConnector();
         newConnector.setParameter(ISQLiteConnector.KEY_FILENAME,
                 "/home/nathaniel/Desktop/Porting/emptyapp/empty-port.db");
-        newConnector.setParameter(ISQLiteConnector.KEY_REPOSITORY, "realmproject.net:1502/realm");
+        newConnector.setParameter(ISQLiteConnector.KEY_REPOSITORY, "realmproject.net:1521/realm");
         Package newRepo = newConnector.createPackage(new FileInputStream(
                 "/home/nathaniel/Desktop/Porting/emptyapp/realm-port.xml"), Initialize.WHEN_EMPTY);
 
@@ -153,8 +153,8 @@ public class PorterTesting {
                     Composite oldRole = (Composite) oldPerson.get("role");
                     Listing<Object> newRoles = after.getToTx().create("Account.roles");
                     account.set("roles", newRoles);
-                    Object newRole = p.updateReference(after, oldRole);
-                    newRoles.add(newRole);
+                    //Object newRole = p.updateReference(after, oldRole);
+                    //newRoles.add(newRole);
                     newRoles.add(oldRole);
                     
                     newPerson.set("account", account);

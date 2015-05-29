@@ -17,6 +17,10 @@ public class PorterContext {
 
     public PorterContext() {}
 
+    public PorterContext(Object key, Object value, Kind<?> kind) {
+        this(key, value, kind, null, null);
+    }
+
     public PorterContext(Object key, Object value, Kind<?> kind, Transaction fromTx, Transaction toTx) {
         this.key = key;
         this.value = value;

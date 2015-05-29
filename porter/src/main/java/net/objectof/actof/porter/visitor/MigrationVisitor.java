@@ -3,6 +3,9 @@ package net.objectof.actof.porter.visitor;
 
 import net.objectof.actof.porter.Porter;
 import net.objectof.actof.porter.PorterContext;
+import net.objectof.actof.porter.PorterUtil;
+import net.objectof.actof.porter.TransactionDecorator;
+import net.objectof.actof.porter.rules.Rule;
 import net.objectof.aggr.Aggregate;
 import net.objectof.model.Id;
 import net.objectof.model.Kind;
@@ -17,12 +20,20 @@ import net.objectof.model.Transaction;
  * @author NAS
  *
  */
-public class MigrationVisitor implements Visitor {
+public class MigrationVisitor extends AbstractVisitor {
 
-    public PorterContext visitContainer(Porter porter, PorterContext context,
-            Resource<Aggregate<Object, Object>> toParent) {
+    Transaction targetTx;
 
-        PorterContext ported = porter.transform(context);
+    public MigrationVisitor(Porter porter, Transaction fromTx, Transaction targetTx) {
+        super(porter, fromTx);
+        this.targetTx = targetTx;
+    }
+
+    protected PorterContext visitContainer(PorterContext context, Id<?> parentId) {
+
+        Resource<Aggregate<Object, Object>> toParent = getToParent(parentId);
+
+        PorterContext ported = transform(context);
         if (ported.isDropped()) { return ported; }
 
         if (ported.getKind().getStereotype() == Stereotype.REF) {
@@ -30,49 +41,95 @@ public class MigrationVisitor implements Visitor {
             // in the old repo.
             porter.runLater(() -> {
                 if (toParent == null) { return; }
-                toParent.value().set(porter.unqualify(ported.getKey(), toParent), ported.getValue());
+                toParent.value().set(PorterUtil.unqualify(ported.getKey(), toParent), ported.getValue());
             });
         } else {
             if (toParent == null) { return ported; }
-            toParent.value().set(porter.unqualify(ported.getKey(), toParent), ported.getValue());
+            toParent.value().set(PorterUtil.unqualify(ported.getKey(), toParent), ported.getValue());
         }
 
         return ported;
-
     }
 
-    public PorterContext visitLeaf(Porter porter, PorterContext context, Resource<Aggregate<Object, Object>> toParent) {
-        PorterContext ported = porter.transform(context);
+    protected PorterContext visitLeaf(PorterContext context, Id<?> parentId) {
+        Resource<Aggregate<Object, Object>> toParent = getToParent(parentId);
+        PorterContext ported = transform(context);
         if (ported.isDropped()) { return ported; }
-        toParent.value().set(porter.unqualify(ported.getKey(), toParent), ported.getValue());
+        toParent.value().set(PorterUtil.unqualify(ported.getKey(), toParent), ported.getValue());
         return ported;
     }
 
     @Override
-    public void onCreate(String kind, Resource<?> res) {
-        // TODO Auto-generated method stub
-
+    public Iterable<Resource<?>> getEntities(Kind<?> kind) {
+        return tx.enumerate(kind.getComponentName());
     }
 
     @Override
-    public Iterable<Resource<?>> getEntities(Kind<?> kind, Transaction fromTx, Transaction toTx) {
-        return fromTx.enumerate(kind.getComponentName());
+    public Iterable<Kind<?>> getCompositeParts(Id<?> compositeId) {
+        return (Iterable<Kind<?>>) compositeId.kind().getParts();
     }
 
     @Override
-    public Iterable<Kind<?>> getCompositeParts(Id<?> from, Id<?> to) {
-        return (Iterable<Kind<?>>) from.kind().getParts();
+    public Iterable<Object> getAggregateParts(Resource<Aggregate<Object, Object>> aggr) {
+        return aggr.value().keySet();
     }
 
     @Override
-    public Iterable<Object> getAggregateParts(Resource<Aggregate<Object, Object>> from,
-            Resource<Aggregate<Object, Object>> to) {
-        return from.value().keySet();
+    public Kind<?> getAggregateKind(Id<?> aggr) {
+        return aggr.kind().getParts().get(0);
     }
 
-    @Override
-    public Kind<?> getAggregateKind(Id<?> from, Id<?> to) {
-        return from.kind().getParts().get(0);
+    private Resource<Aggregate<Object, Object>> getToParent(Id<?> fromParentId) {
+        Id<?> toParentId = porter.getIdmap().get(fromParentId);
+        Resource<Aggregate<Object, Object>> parent = null;
+        if (toParentId != null) {
+            parent = targetTx.retrieve(toParentId);
+        }
+        return parent;
+    }
+
+    /**
+     * Accepts a PorterContext containing the source key/value/kind and returns
+     * a PorterContext containing the transformed key/value/kind
+     * 
+     * @param context
+     *            the source context
+     * @return a context containing the transformed value
+     */
+    private PorterContext transform(PorterContext context) {
+
+        context.setFromTx(new TransactionDecorator(porter, tx));
+        context.setToTx(new TransactionDecorator(porter, targetTx));
+
+        // System.out.println("Transforming " + context.getKind());
+
+        PorterContext result = context.copy();
+
+        // key
+        PorterContext keyContext = Rule.transformKey(porter.getRules(), result);
+        if (keyContext.isDropped()) {
+            result.setDropped(true);
+            return result;
+        }
+        result.setKey(keyContext.getKey());
+
+        // kind
+        Kind<?> kind = PorterUtil.kindFromKey(context.getToTx(), keyContext.getKey().toString());
+        result.setKind(kind);
+
+        // value - not necessarily a reference, or even a resource
+        PorterContext valueContext = Rule.transformValue(porter.getRules(), context);
+        if (valueContext.isDropped()) {
+            result.setDropped(true);
+            return result;
+        }
+        Object newValue = porter.updateReference(context, targetTx, valueContext.getValue());
+        result.setValue(newValue);
+
+        // after the transformation is done (not any recursion), call onPort
+        Rule.onPort(porter.getRules(), context, result);
+
+        return result;
     }
 
 }

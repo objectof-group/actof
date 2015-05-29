@@ -1,14 +1,12 @@
 package net.objectof.actof.porter.visitor;
 
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import net.objectof.actof.porter.Porter;
 import net.objectof.actof.porter.PorterContext;
+import net.objectof.actof.porter.PorterUtil;
+import net.objectof.actof.porter.Walker;
 import net.objectof.aggr.Aggregate;
 import net.objectof.model.Id;
 import net.objectof.model.Kind;
@@ -22,61 +20,81 @@ import net.objectof.model.Transaction;
  * @author NAS
  *
  */
-public class ResourceUpdateVisitor implements Visitor {
+public class ResourceUpdateVisitor extends AbstractVisitor {
 
-    private Map<String, List<Resource<?>>> transients = new HashMap<>();
-
-    @Override
-    public PorterContext visitContainer(Porter porter, PorterContext context,
-            Resource<Aggregate<Object, Object>> toParent) {
-        return context;
+    public ResourceUpdateVisitor(Porter porter, Transaction tx) {
+        super(porter, tx);
     }
 
-    @Override
-    public PorterContext visitLeaf(Porter porter, PorterContext context, Resource<Aggregate<Object, Object>> toParent) {
+    protected PorterContext visitContainer(PorterContext context, Id<?> parentId) {
+
+        Resource<Aggregate<Object, Object>> toParent = getParent(parentId);
         Object value = context.getValue();
 
-        System.out.println("----------------------------- Testing Resource " + context);
+        System.out.println("Testing Container " + context);
 
-        if (!porter.isResourceStale(context, context.getValue())) { return context; }
+        if (!PorterUtil.isResourceStale(context, tx, value)) { return context; }
 
-        System.out.println("+++++++++++++++++++++++++++++ Updating Resource " + context);
+        System.out.println("+++ Updating Container " + context);
 
-        Object updated = porter.updateReference(context, value);
-        toParent.value().set(porter.unqualify(context.getKey(), toParent), updated);
+        Object updated = porter.updateReference(context, tx, value);
+        toParent.value().set(PorterUtil.unqualify(context.getKey(), toParent), updated);
         return context;
     }
 
     @Override
-    public void onCreate(String kind, Resource<?> res) {
-        // store in list of transients in new repo
-        List<Resource<?>> created;
-        if (!transients.containsKey(kind)) {
-            transients.put(kind, new ArrayList<>());
+    protected PorterContext visitLeaf(PorterContext context, Id<?> parentId) {
+
+        Resource<Aggregate<Object, Object>> toParent = getParent(parentId);
+        Object value = context.getValue();
+
+        System.out.println("Testing Leaf " + context);
+
+        if (!PorterUtil.isResourceStale(context, tx, value)) { return context; }
+
+        System.out.println("+++ Updating Leaf " + context);
+
+        Object updated = porter.updateReference(context, tx, value);
+        toParent.value().set(PorterUtil.unqualify(context.getKey(), toParent), updated);
+        return context;
+    }
+
+    @Override
+    public Iterable<Resource<?>> getEntities(Kind<?> kind) {
+        String kindName = kind.getComponentName();
+        if (!porter.getTransients().containsKey(kindName)) { return Collections.emptyList(); }
+        return porter.getTransients().get(kindName);
+    }
+
+    @Override
+    public Iterable<Kind<?>> getCompositeParts(Id<?> compositeId) {
+        return (Iterable<Kind<?>>) compositeId.kind().getParts();
+    }
+
+    @Override
+    public Iterable<Object> getAggregateParts(Resource<Aggregate<Object, Object>> aggr) {
+        return aggr.value().keySet();
+    }
+
+    @Override
+    public Kind<?> getAggregateKind(Id<?> aggrId) {
+        return aggrId.kind().getParts().get(0);
+    }
+
+    public Walker getWalker() {
+        return walker;
+    }
+
+    public void setWalker(Walker walker) {
+        this.walker = walker;
+    }
+
+    private Resource<Aggregate<Object, Object>> getParent(Id<?> parentId) {
+        Resource<Aggregate<Object, Object>> parent = null;
+        if (parentId != null) {
+            parent = tx.retrieve(parentId);
         }
-        created = transients.get(kind);
-        created.add(res);
+        return parent;
     }
 
-    @Override
-    public Iterable<Resource<?>> getEntities(Kind<?> kind, Transaction fromTx, Transaction toTx) {
-        if (!transients.containsKey(kind.getComponentName())) { return Collections.emptyList(); }
-        return transients.get(kind.getComponentName());
-    }
-
-    @Override
-    public Iterable<Kind<?>> getCompositeParts(Id<?> from, Id<?> to) {
-        return (Iterable<Kind<?>>) from.kind().getParts();
-    }
-
-    @Override
-    public Iterable<Object> getAggregateParts(Resource<Aggregate<Object, Object>> from,
-            Resource<Aggregate<Object, Object>> to) {
-        return from.value().keySet();
-    }
-
-    @Override
-    public Kind<?> getAggregateKind(Id<?> from, Id<?> to) {
-        return from.kind().getParts().get(0);
-    }
 }
