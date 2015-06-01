@@ -1,4 +1,4 @@
-package net.objectof.actof.porter.rules.components.impl;
+package net.objectof.actof.porter.rules.impl;
 
 
 import java.util.ArrayList;

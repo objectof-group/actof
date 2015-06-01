@@ -1,22 +1,22 @@
-package net.objectof.actof.porter.rules.components.impl;
+package net.objectof.actof.porter.rules.impl.js;
 
 
 import java.util.function.BiConsumer;
 
 import javax.script.ScriptException;
 
-import net.objectof.actof.porter.visitor.IPorterContext;
+import net.objectof.actof.porter.rules.impl.AbstractJsEvaluator;
 
 
-public class IJsPortingListener extends AbstractJsEvaluator implements BiConsumer<IPorterContext, IPorterContext> {
+public class IJsBiConsumer<T, U> extends AbstractJsEvaluator implements BiConsumer<T, U> {
 
-    public IJsPortingListener(String js) {
+    public IJsBiConsumer(String js) {
         super(js);
     }
 
     @SuppressWarnings("restriction")
     @Override
-    public void accept(IPorterContext t, IPorterContext u) {
+    public void accept(T t, U u) {
         try {
             jdk.nashorn.api.scripting.ScriptObjectMirror fn = getFunction();
             fn.call(null, t, u);

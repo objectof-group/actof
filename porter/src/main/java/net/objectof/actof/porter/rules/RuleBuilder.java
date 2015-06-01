@@ -3,15 +3,15 @@ package net.objectof.actof.porter.rules;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
-import net.objectof.actof.porter.rules.components.Transformer;
-import net.objectof.actof.porter.rules.components.impl.IKeyMatcher;
-import net.objectof.actof.porter.rules.components.impl.IKindMatcher;
-import net.objectof.actof.porter.rules.components.impl.IKindNameMatcher;
-import net.objectof.actof.porter.rules.components.impl.IPrettyPrintMatcher;
-import net.objectof.actof.porter.rules.components.impl.IPrettyPrintTransformer;
-import net.objectof.actof.porter.rules.components.impl.IStereotypeMatcher;
+import net.objectof.actof.porter.rules.impl.IKeyMatcher;
+import net.objectof.actof.porter.rules.impl.IKindMatcher;
+import net.objectof.actof.porter.rules.impl.IKindNameMatcher;
+import net.objectof.actof.porter.rules.impl.IPrettyPrintMatcher;
+import net.objectof.actof.porter.rules.impl.IPrettyPrintTransformer;
+import net.objectof.actof.porter.rules.impl.IStereotypeMatcher;
 import net.objectof.actof.porter.visitor.IPorterContext;
 import net.objectof.model.Kind;
 import net.objectof.model.Stereotype;
@@ -77,12 +77,12 @@ public class RuleBuilder {
         return this;
     }
 
-    public RuleBuilder keyTransform(Transformer robotInDisguise) {
+    public RuleBuilder keyTransform(Function<IPorterContext, Object> robotInDisguise) {
         rule.getKeyTransformers().add(new IPrettyPrintTransformer(robotInDisguise));
         return this;
     }
 
-    public RuleBuilder valueTransform(Transformer robotInDisguise) {
+    public RuleBuilder valueTransform(Function<IPorterContext, Object> robotInDisguise) {
         rule.getValueTransformers().add(new IPrettyPrintTransformer(robotInDisguise));
         return this;
     }

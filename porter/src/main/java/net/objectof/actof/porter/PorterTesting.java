@@ -7,7 +7,7 @@ import java.io.FileNotFoundException;
 
 import net.objectof.actof.porter.rules.Rule;
 import net.objectof.actof.porter.rules.RuleBuilder;
-import net.objectof.actof.porter.rules.components.impl.IJsPortingListener;
+import net.objectof.actof.porter.rules.impl.js.IJsBiConsumer;
 import net.objectof.aggr.Composite;
 import net.objectof.aggr.Listing;
 import net.objectof.connector.Connector;
@@ -117,7 +117,7 @@ public class PorterTesting {
         
         portDescription = RuleBuilder.start()
                 .matchKey("Session")
-                .afterTransform(new IJsPortingListener("function(before, after) {"
+                .afterTransform(new IJsBiConsumer("function(before, after) {"
                         + "oldSession = before.getValue();"
                         + "oldAssignment = oldSession.get('assignment');"
                         + "description = oldAssignment.get('description').toString();"

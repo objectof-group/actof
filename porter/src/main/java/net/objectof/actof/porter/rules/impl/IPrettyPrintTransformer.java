@@ -1,17 +1,17 @@
-package net.objectof.actof.porter.rules.components.impl;
+package net.objectof.actof.porter.rules.impl;
 
 
 import java.lang.reflect.Modifier;
+import java.util.function.Function;
 
-import net.objectof.actof.porter.rules.components.Transformer;
 import net.objectof.actof.porter.visitor.IPorterContext;
 
 
-public class IPrettyPrintTransformer implements Transformer {
+public class IPrettyPrintTransformer implements Function<IPorterContext, Object> {
 
-    private Transformer backer;
+    private Function<IPorterContext, Object> backer;
 
-    public IPrettyPrintTransformer(Transformer backer) {
+    public IPrettyPrintTransformer(Function<IPorterContext, Object> backer) {
         this.backer = backer;
     }
 

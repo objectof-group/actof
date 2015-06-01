@@ -5,23 +5,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
-import net.objectof.actof.porter.rules.components.Transformer;
 import net.objectof.actof.porter.visitor.IPorterContext;
 
 
 public class IRule implements Rule {
 
     private List<Predicate<IPorterContext>> matchers = new ArrayList<>();
-    private List<Transformer> keyTransformers = new ArrayList<>();
-    private List<Transformer> valueTransformers = new ArrayList<>();
+    private List<Function<IPorterContext, Object>> keyTransformers = new ArrayList<>();
+    private List<Function<IPorterContext, Object>> valueTransformers = new ArrayList<>();
     private List<BiConsumer<IPorterContext, IPorterContext>> afterTransformListeners = new ArrayList<>();
     private List<Consumer<IPorterContext>> beforeTransformListeners = new ArrayList<>();
 
     public IRule() {}
 
-    public IRule(Predicate<IPorterContext> matcher, Transformer keyTransformer, Transformer valueTransformer) {
+    public IRule(Predicate<IPorterContext> matcher, Function<IPorterContext, Object> keyTransformer,
+            Function<IPorterContext, Object> valueTransformer) {
         if (matcher != null) {
             matchers.add(matcher);
         }
@@ -43,7 +44,7 @@ public class IRule implements Rule {
 
     @Override
     public Object transformKey(IPorterContext context) {
-        for (Transformer keyTransformer : keyTransformers) {
+        for (Function<IPorterContext, Object> keyTransformer : keyTransformers) {
             context.setKey(keyTransformer.apply(context));
         }
         return context.getKey();
@@ -51,7 +52,7 @@ public class IRule implements Rule {
 
     @Override
     public Object transformValue(IPorterContext context) {
-        for (Transformer valueTransformer : valueTransformers) {
+        for (Function<IPorterContext, Object> valueTransformer : valueTransformers) {
             context.setValue(valueTransformer.apply(context));
         }
         return context.getValue();
@@ -65,19 +66,19 @@ public class IRule implements Rule {
         this.matchers = matchers;
     }
 
-    public List<Transformer> getKeyTransformers() {
+    public List<Function<IPorterContext, Object>> getKeyTransformers() {
         return keyTransformers;
     }
 
-    public void setKeyTransformers(List<Transformer> keyTransformers) {
+    public void setKeyTransformers(List<Function<IPorterContext, Object>> keyTransformers) {
         this.keyTransformers = keyTransformers;
     }
 
-    public List<Transformer> getValueTransformers() {
+    public List<Function<IPorterContext, Object>> getValueTransformers() {
         return valueTransformers;
     }
 
-    public void setValueTransformers(List<Transformer> valueTransformers) {
+    public void setValueTransformers(List<Function<IPorterContext, Object>> valueTransformers) {
         this.valueTransformers = valueTransformers;
     }
 
@@ -104,10 +105,10 @@ public class IRule implements Rule {
         sb.append(matchers.stream().map(Predicate::toString).reduce((a, b) -> a + ", " + b).orElse(""));
 
         sb.append("]\n     transforming keys via [");
-        sb.append(keyTransformers.stream().map(Transformer::toString).reduce((a, b) -> a + ", " + b).orElse(""));
+        sb.append(keyTransformers.stream().map(Object::toString).reduce((a, b) -> a + ", " + b).orElse(""));
 
         sb.append("]\n     transforming values via [");
-        sb.append(valueTransformers.stream().map(Transformer::toString).reduce((a, b) -> a + ", " + b).orElse(""));
+        sb.append(valueTransformers.stream().map(Object::toString).reduce((a, b) -> a + ", " + b).orElse(""));
 
         sb.append("]");
 

@@ -1,27 +1,25 @@
-package net.objectof.actof.porter.rules.components.impl;
+package net.objectof.actof.porter.rules.impl;
 
 
 import java.util.function.Predicate;
 
 import net.objectof.actof.porter.visitor.IPorterContext;
-import net.objectof.model.Kind;
 
 
-public class IKindMatcher implements Predicate<IPorterContext> {
+public class IKindNameMatcher implements Predicate<IPorterContext> {
 
-    Kind<?> kind;
+    String kind;
 
-    public IKindMatcher(Kind<?> kind) {
+    public IKindNameMatcher(String kind) {
         this.kind = kind;
     }
 
     @Override
     public boolean test(IPorterContext t) {
-        return t.getKind().equals(kind);
+        return t.getKind().getComponentName().equals(kind);
     }
 
     public String toString() {
         return "kind = '" + kind + "'";
     }
-
 }
