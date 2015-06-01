@@ -1,9 +1,9 @@
 package net.objectof.actof.porter.visitor;
 
 
-import net.objectof.actof.porter.Porter;
 import net.objectof.actof.porter.IPorterUtil;
 import net.objectof.actof.porter.ITransactionDecorator;
+import net.objectof.actof.porter.Porter;
 import net.objectof.actof.porter.rules.Rule;
 import net.objectof.aggr.Aggregate;
 import net.objectof.model.Id;
@@ -69,21 +69,6 @@ public class IMigrationVisitor extends AbstractVisitor {
     @Override
     public Iterable<Resource<?>> getEntities(Kind<?> kind) {
         return tx.enumerate(kind.getComponentName());
-    }
-
-    @Override
-    public Iterable<Kind<?>> getCompositeParts(Id<?> compositeId) {
-        return (Iterable<Kind<?>>) compositeId.kind().getParts();
-    }
-
-    @Override
-    public Iterable<Object> getAggregateParts(Resource<Aggregate<Object, Object>> aggr) {
-        return aggr.value().keySet();
-    }
-
-    @Override
-    public Kind<?> getAggregateKind(Id<?> aggr) {
-        return aggr.kind().getParts().get(0);
     }
 
     private Resource<Aggregate<Object, Object>> getToParent(Id<?> fromParentId) {

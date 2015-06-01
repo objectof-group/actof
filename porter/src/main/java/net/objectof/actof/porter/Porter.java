@@ -11,6 +11,8 @@ import net.objectof.actof.porter.rules.Rule;
 import net.objectof.actof.porter.visitor.IMigrationVisitor;
 import net.objectof.actof.porter.visitor.IResourceUpdateVisitor;
 import net.objectof.actof.porter.visitor.Visitor;
+import net.objectof.actof.porter.walker.IWalker;
+import net.objectof.actof.porter.walker.Walker;
 import net.objectof.model.Id;
 import net.objectof.model.Kind;
 import net.objectof.model.Package;
@@ -41,7 +43,7 @@ public class Porter {
         Transaction fromTx = from.connect(getClass());
         Transaction toTx = to.connect(getClass());
 
-        Walker walker = new Walker(fromTx);
+        Walker walker = new IWalker(fromTx);
         Visitor visitor = new IMigrationVisitor(this, fromTx, toTx);
         visitor.setWalker(walker);
         walker.setVisitor(visitor);

@@ -3,9 +3,9 @@ package net.objectof.actof.porter.visitor;
 
 import java.util.Collections;
 
-import net.objectof.actof.porter.Porter;
 import net.objectof.actof.porter.IPorterUtil;
-import net.objectof.actof.porter.Walker;
+import net.objectof.actof.porter.Porter;
+import net.objectof.actof.porter.walker.Walker;
 import net.objectof.aggr.Aggregate;
 import net.objectof.model.Id;
 import net.objectof.model.Kind;
@@ -51,21 +51,6 @@ public class IResourceUpdateVisitor extends AbstractVisitor {
         String kindName = kind.getComponentName();
         if (!porter.getTransients().containsKey(kindName)) { return Collections.emptyList(); }
         return porter.getTransients().get(kindName);
-    }
-
-    @Override
-    public Iterable<Kind<?>> getCompositeParts(Id<?> compositeId) {
-        return (Iterable<Kind<?>>) compositeId.kind().getParts();
-    }
-
-    @Override
-    public Iterable<Object> getAggregateParts(Resource<Aggregate<Object, Object>> aggr) {
-        return aggr.value().keySet();
-    }
-
-    @Override
-    public Kind<?> getAggregateKind(Id<?> aggrId) {
-        return aggrId.kind().getParts().get(0);
     }
 
     public Walker getWalker() {

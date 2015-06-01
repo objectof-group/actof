@@ -1,9 +1,9 @@
 package net.objectof.actof.porter.visitor;
 
 
-import net.objectof.actof.porter.Porter;
 import net.objectof.actof.porter.IPorterUtil;
-import net.objectof.actof.porter.Walker;
+import net.objectof.actof.porter.Porter;
+import net.objectof.actof.porter.walker.Walker;
 import net.objectof.model.Id;
 import net.objectof.model.Kind;
 import net.objectof.model.Transaction;
@@ -26,6 +26,16 @@ public abstract class AbstractVisitor implements Visitor {
 
     public void setWalker(Walker texasRanger) {
         this.walker = texasRanger;
+    }
+
+    @Override
+    public Transaction getTx() {
+        return tx;
+    }
+
+    @Override
+    public void setTx(Transaction tx) {
+        this.tx = tx;
     }
 
     public void visit(IPorterContext context, Id<?> fromParentId) {
