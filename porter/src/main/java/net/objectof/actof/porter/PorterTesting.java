@@ -45,17 +45,17 @@ public class PorterTesting {
         // @formatter:off
         
         Rule settings = RuleBuilder.start()
-                .forKey("Setting")
+                .matchKey("Setting")
                 .setKey("Preference")
                 .build();
         
         Rule settingkey = RuleBuilder.start()
-                .forKey("Setting.key")
+                .matchKey("Setting.key")
                 .setKey("Preference.name")
                 .build();
         
         Rule append = RuleBuilder.start()
-                .forStereotype(Stereotype.TEXT)
+                .matchStereotype(Stereotype.TEXT)
                 .valueTransform((context) -> context.getValue().toString() + "...")
                 .build();
         
@@ -88,7 +88,7 @@ public class PorterTesting {
         // @formatter:off
         
         Rule roleToRoles = RuleBuilder.start()
-            .forKey("Person.role")
+            .matchKey("Person.role")
             .setKey("Person.roles")
             .valueTransform((context) -> {
                 Listing<Object> roles = context.getToTx().create("Person.roles");
@@ -112,8 +112,8 @@ public class PorterTesting {
 //        
         
         Rule portDescription = RuleBuilder.start()
-                .forKey("Session")
-                .onPort((before, after) -> {
+                .matchKey("Session")
+                .afterTransform((before, after) -> {
                     Composite oldSession = (Composite) before.getValue();
                     Composite oldAssignment = (Composite) oldSession.get("assignment");
                     String description = oldAssignment.get("description").toString();
@@ -125,23 +125,23 @@ public class PorterTesting {
         
         
         Rule dropAssnDesc = RuleBuilder.start()
-                .forKey("Assignment.description")
+                .matchKey("Assignment.description")
                 .drop()
                 .build();
 
         Rule dropCourse = RuleBuilder.start()
-                .forKey("Course", "Person.enrolledCourses", "Person.pendingCourses", "Assignment.course")
+                .matchKey("Course", "Person.enrolledCourses", "Person.pendingCourses", "Assignment.course")
                 .drop()
                 .build();
         
         Rule dropPersonFields = RuleBuilder.start()
-                .forKey("Person.email", "Person.pwdHashed", "Person.salt", "Person.roles")
+                .matchKey("Person.email", "Person.pwdHashed", "Person.salt", "Person.roles")
                 .drop()
                 .build();
         
         Rule createAccount = RuleBuilder.start()
-                .forKey("Person")
-                .onPort((before, after) -> {
+                .matchKey("Person")
+                .afterTransform((before, after) -> {
                     Composite oldPerson = (Composite) before.getValue();
                     Composite newPerson = (Composite) after.getValue();
                     
@@ -207,10 +207,10 @@ public class PorterTesting {
 
         // @formatter:off
         
-        Rule dropRoles = RuleBuilder.start().forKind("Person.roles.role").drop().build();
+        Rule dropRoles = RuleBuilder.start().matchKind("Person.roles.role").drop().build();
         
         Rule rolesToRole = RuleBuilder.start()
-            .forKey("Person.roles")
+            .matchKey("Person.roles")
             .setKey("Person.role")
             .valueTransform(context -> {
                 Listing<Object> roles = (Listing<Object>) context.getValue();
@@ -260,8 +260,8 @@ public class PorterTesting {
     private static void testRulePrinting() {
         // @formatter:off
         Rule testRule = RuleBuilder.start()
-                .forKey("asdf")
-                .forKey("qwerty")
+                .matchKey("asdf")
+                .matchKey("qwerty")
                 .setKey("asdf++")
                 .match(context -> true)
                 .build();

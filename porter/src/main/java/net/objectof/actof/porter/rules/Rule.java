@@ -14,11 +14,26 @@ public interface Rule {
 
     Object transformValue(IPorterContext context);
 
-    void onPort(IPorterContext source, IPorterContext destination);
+    /**
+     * Called before any transformation is performed on the given context,
+     * modifications made to this context will be permanent
+     * 
+     * @param context
+     *            a context to inspect and modify
+     */
+    void beforeTransform(IPorterContext context);
 
-    boolean modifiesKey(IPorterContext context);
-
-    boolean modifiesValue(IPorterContext context);
+    /**
+     * Called after any transformation is performed on the given context,
+     * modifications made to these contexts will be permanent, although
+     * modifications of the before context will be of no consequence
+     * 
+     * @param source
+     *            the original context
+     * @param destination
+     *            the transformed context
+     */
+    void afterTransform(IPorterContext source, IPorterContext destination);
 
     static IPorterContext transformKey(List<Rule> rules, IPorterContext context) {
         IPorterContext modContext = context.copy();
@@ -40,12 +55,18 @@ public interface Rule {
         return modContext;
     }
 
-    static void onPort(List<Rule> rules, IPorterContext before, IPorterContext after) {
+    static void beforeTransform(List<Rule> rules, IPorterContext context) {
         for (Rule rule : rules) {
-            IPorterContext modBefore = before.copy();
-            IPorterContext modAfter = after.copy();
+            if (rule.match(context)) {
+                rule.beforeTransform(context);
+            }
+        }
+    }
+
+    static void afterTransform(List<Rule> rules, IPorterContext before, IPorterContext after) {
+        for (Rule rule : rules) {
             if (rule.match(before)) {
-                rule.onPort(modBefore, modAfter);
+                rule.afterTransform(before, after);
             }
         }
     }

@@ -2,6 +2,7 @@ package net.objectof.actof.porter.rules;
 
 
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import net.objectof.actof.porter.rules.components.Matcher;
 import net.objectof.actof.porter.rules.components.Transformer;
@@ -30,30 +31,29 @@ public class RuleBuilder {
         return rule;
     }
 
-    public RuleBuilder forKey(Object... key) {
+    public RuleBuilder matchKey(Object... key) {
         rule.getMatchers().add(new IKeyMatcher(key));
         return this;
     }
 
-    public RuleBuilder forKind(String kind) {
+    public RuleBuilder matchKind(String kind) {
         rule.getMatchers().add(new IKindNameMatcher(kind));
         return this;
     }
 
-    public RuleBuilder forKind(Kind<?> kind) {
+    public RuleBuilder matchKind(Kind<?> kind) {
         rule.getMatchers().add(new IKindMatcher(kind));
         return this;
     }
 
-    public RuleBuilder forStereotype(Stereotype... stereotype) {
+    public RuleBuilder matchStereotype(Stereotype... stereotype) {
         rule.getMatchers().add(new IStereotypeMatcher(stereotype));
         return this;
     }
 
     public RuleBuilder drop() {
-        rule.getKeyTransformers().add(context -> {
+        rule.getBeforeTransformListeners().add(context -> {
             context.setDropped(true);
-            return null;
         });
         return this;
     }
@@ -87,8 +87,13 @@ public class RuleBuilder {
         return this;
     }
 
-    public RuleBuilder onPort(BiConsumer<IPorterContext, IPorterContext> listener) {
-        rule.getOnPortListeners().add(listener);
+    public RuleBuilder beforeTransform(Consumer<IPorterContext> listener) {
+        rule.getBeforeTransformListeners().add(listener);
+        return this;
+    }
+
+    public RuleBuilder afterTransform(BiConsumer<IPorterContext, IPorterContext> listener) {
+        rule.getAfterTransformListeners().add(listener);
         return this;
     }
 

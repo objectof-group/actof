@@ -4,6 +4,7 @@ package net.objectof.actof.porter.rules;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import net.objectof.actof.porter.rules.components.Matcher;
 import net.objectof.actof.porter.rules.components.Transformer;
@@ -15,7 +16,8 @@ public class IRule implements Rule {
     private List<Matcher> matchers = new ArrayList<>();
     private List<Transformer> keyTransformers = new ArrayList<>();
     private List<Transformer> valueTransformers = new ArrayList<>();
-    private List<BiConsumer<IPorterContext, IPorterContext>> onPortListeners = new ArrayList<>();
+    private List<BiConsumer<IPorterContext, IPorterContext>> afterTransformListeners = new ArrayList<>();
+    private List<Consumer<IPorterContext>> beforeTransformListeners = new ArrayList<>();
 
     public IRule() {}
 
@@ -79,12 +81,20 @@ public class IRule implements Rule {
         this.valueTransformers = valueTransformers;
     }
 
-    public List<BiConsumer<IPorterContext, IPorterContext>> getOnPortListeners() {
-        return onPortListeners;
+    public List<BiConsumer<IPorterContext, IPorterContext>> getAfterTransformListeners() {
+        return afterTransformListeners;
     }
 
-    public void setOnPortListeners(List<BiConsumer<IPorterContext, IPorterContext>> onPortListeners) {
-        this.onPortListeners = onPortListeners;
+    public void setAfterTransformListeners(List<BiConsumer<IPorterContext, IPorterContext>> afterTransformListeners) {
+        this.afterTransformListeners = afterTransformListeners;
+    }
+
+    public List<Consumer<IPorterContext>> getBeforeTransformListeners() {
+        return beforeTransformListeners;
+    }
+
+    public void setBeforeTransformListeners(List<Consumer<IPorterContext>> beforeTransformListeners) {
+        this.beforeTransformListeners = beforeTransformListeners;
     }
 
     public String toString() {
@@ -105,18 +115,15 @@ public class IRule implements Rule {
     }
 
     @Override
-    public boolean modifiesKey(IPorterContext context) {
-        return match(context) && keyTransformers.size() > 0;
+    public void beforeTransform(IPorterContext context) {
+        for (Consumer<IPorterContext> listener : beforeTransformListeners) {
+            listener.accept(context);
+        }
     }
 
     @Override
-    public boolean modifiesValue(IPorterContext context) {
-        return match(context) && valueTransformers.size() > 0;
-    }
-
-    @Override
-    public void onPort(IPorterContext source, IPorterContext destination) {
-        for (BiConsumer<IPorterContext, IPorterContext> listener : onPortListeners) {
+    public void afterTransform(IPorterContext source, IPorterContext destination) {
+        for (BiConsumer<IPorterContext, IPorterContext> listener : afterTransformListeners) {
             listener.accept(source, destination);
         }
     }

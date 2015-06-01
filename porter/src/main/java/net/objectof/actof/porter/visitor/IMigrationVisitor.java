@@ -88,17 +88,24 @@ public class IMigrationVisitor extends AbstractVisitor {
      *            the source context
      * @return a context containing the transformed value
      */
-    private IPorterContext transform(IPorterContext context) {
+    private IPorterContext transform(IPorterContext originalContext) {
+
+        IPorterContext context = originalContext.copy();
 
         context.setFromTx(new ITransactionDecorator(porter, tx));
         context.setToTx(new ITransactionDecorator(porter, targetTx));
 
-        // System.out.println("Transforming " + context.getKind());
+        // before the transformation starts, call beforeTransform. Modifications
+        // made to contexts in these hooks should be able to alter the real
+        // contexts, so don't pass copies
+        Rule.beforeTransform(porter.getRules(), context);
+        if (context.isDropped()) { return context; }
 
+        // result is based on a copy of context *after* called beforeTransform
         IPorterContext result = context.copy();
 
-        // key
-        IPorterContext keyContext = Rule.transformKey(porter.getRules(), result);
+        // key -- only allow modification of the key at this stage
+        IPorterContext keyContext = Rule.transformKey(porter.getRules(), context.copy());
         System.out.println(keyContext);
         if (keyContext.isDropped()) {
             result.setDropped(true);
@@ -106,12 +113,13 @@ public class IMigrationVisitor extends AbstractVisitor {
         }
         result.setKey(keyContext.getKey());
 
-        // kind
+        // kind -- only allow modification of the kind at this stage
         Kind<?> kind = IPorterUtil.kindFromKey(context.getToTx(), keyContext.getKey().toString());
         result.setKind(kind);
 
-        // value - not necessarily a reference, or even a resource
-        IPorterContext valueContext = Rule.transformValue(porter.getRules(), context);
+        // value - not necessarily a reference, or even a resource -- only allow
+        // modification of the value at this stage
+        IPorterContext valueContext = Rule.transformValue(porter.getRules(), context.copy());
         if (valueContext.isDropped()) {
             result.setDropped(true);
             return result;
@@ -119,8 +127,10 @@ public class IMigrationVisitor extends AbstractVisitor {
         Object newValue = porter.updateReference(context.getKind(), targetTx, valueContext.getValue());
         result.setValue(newValue);
 
-        // after the transformation is done (not any recursion), call onPort
-        Rule.onPort(porter.getRules(), context, result);
+        // after the transformation is done (not any recursion), call
+        // afterTransform. Modifications made to contexts in these hooks should
+        // be able to alter the real contexts, so don't copy them
+        Rule.afterTransform(porter.getRules(), context, result);
 
         return result;
     }
