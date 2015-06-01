@@ -40,7 +40,7 @@ public abstract class AbstractVisitor implements Visitor {
 
     public void visit(IPorterContext context, Id<?> fromParentId) {
 
-        System.out.println("Visiting " + context.getKind());
+        // System.out.println("Visiting " + context.getKind());
 
         if (IPorterUtil.isContainer(context.getKind())) {
 

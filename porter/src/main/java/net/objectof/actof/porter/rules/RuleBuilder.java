@@ -3,8 +3,8 @@ package net.objectof.actof.porter.rules;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
-import net.objectof.actof.porter.rules.components.Matcher;
 import net.objectof.actof.porter.rules.components.Transformer;
 import net.objectof.actof.porter.rules.components.impl.IKeyMatcher;
 import net.objectof.actof.porter.rules.components.impl.IKindMatcher;
@@ -72,7 +72,7 @@ public class RuleBuilder {
     // Generic
     // /////////////////////////////
 
-    public RuleBuilder match(Matcher matcher) {
+    public RuleBuilder match(Predicate<IPorterContext> matcher) {
         rule.getMatchers().add(new IPrettyPrintMatcher(matcher));
         return this;
     }

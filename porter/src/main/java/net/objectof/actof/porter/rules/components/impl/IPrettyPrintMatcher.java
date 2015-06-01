@@ -2,16 +2,17 @@ package net.objectof.actof.porter.rules.components.impl;
 
 
 import java.lang.reflect.Modifier;
+import java.util.function.Predicate;
+import java.util.regex.Matcher;
 
-import net.objectof.actof.porter.rules.components.Matcher;
 import net.objectof.actof.porter.visitor.IPorterContext;
 
 
-public class IPrettyPrintMatcher implements Matcher {
+public class IPrettyPrintMatcher implements Predicate<IPorterContext> {
 
-    private Matcher backer;
+    private Predicate<IPorterContext> backer;
 
-    public IPrettyPrintMatcher(Matcher backer) {
+    public IPrettyPrintMatcher(Predicate<IPorterContext> backer) {
         this.backer = backer;
     }
 

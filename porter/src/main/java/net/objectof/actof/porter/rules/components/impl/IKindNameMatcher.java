@@ -1,11 +1,12 @@
 package net.objectof.actof.porter.rules.components.impl;
 
 
-import net.objectof.actof.porter.rules.components.Matcher;
+import java.util.function.Predicate;
+
 import net.objectof.actof.porter.visitor.IPorterContext;
 
 
-public class IKindNameMatcher implements Matcher {
+public class IKindNameMatcher implements Predicate<IPorterContext> {
 
     String kind;
 

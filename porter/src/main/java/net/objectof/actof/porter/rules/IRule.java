@@ -5,15 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
-import net.objectof.actof.porter.rules.components.Matcher;
 import net.objectof.actof.porter.rules.components.Transformer;
 import net.objectof.actof.porter.visitor.IPorterContext;
 
 
 public class IRule implements Rule {
 
-    private List<Matcher> matchers = new ArrayList<>();
+    private List<Predicate<IPorterContext>> matchers = new ArrayList<>();
     private List<Transformer> keyTransformers = new ArrayList<>();
     private List<Transformer> valueTransformers = new ArrayList<>();
     private List<BiConsumer<IPorterContext, IPorterContext>> afterTransformListeners = new ArrayList<>();
@@ -21,7 +21,7 @@ public class IRule implements Rule {
 
     public IRule() {}
 
-    public IRule(Matcher matcher, Transformer keyTransformer, Transformer valueTransformer) {
+    public IRule(Predicate<IPorterContext> matcher, Transformer keyTransformer, Transformer valueTransformer) {
         if (matcher != null) {
             matchers.add(matcher);
         }
@@ -35,7 +35,7 @@ public class IRule implements Rule {
 
     @Override
     public boolean match(IPorterContext context) {
-        for (Matcher matcher : matchers) {
+        for (Predicate<IPorterContext> matcher : matchers) {
             if (matcher.test(context)) { return true; }
         }
         return false;
@@ -57,11 +57,11 @@ public class IRule implements Rule {
         return context.getValue();
     }
 
-    public List<Matcher> getMatchers() {
+    public List<Predicate<IPorterContext>> getMatchers() {
         return matchers;
     }
 
-    public void setMatchers(List<Matcher> matchers) {
+    public void setMatchers(List<Predicate<IPorterContext>> matchers) {
         this.matchers = matchers;
     }
 
@@ -101,7 +101,7 @@ public class IRule implements Rule {
         StringBuilder sb = new StringBuilder();
 
         sb.append("Rule matching [");
-        sb.append(matchers.stream().map(Matcher::toString).reduce((a, b) -> a + ", " + b).orElse(""));
+        sb.append(matchers.stream().map(Predicate::toString).reduce((a, b) -> a + ", " + b).orElse(""));
 
         sb.append("]\n     transforming keys via [");
         sb.append(keyTransformers.stream().map(Transformer::toString).reduce((a, b) -> a + ", " + b).orElse(""));
