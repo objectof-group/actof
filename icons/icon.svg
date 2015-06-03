@@ -16,7 +16,7 @@
    version="1.1"
    inkscape:version="0.48.4 r9939"
    sodipodi:docname="icon.svg"
-   inkscape:export-filename="RepoSpy.png"
+   inkscape:export-filename="/home/nathaniel/Projects/Realm/Git/actof/icons/SchemaSpy.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <defs
@@ -119,6 +119,14 @@
          stdDeviation="3.0642857"
          id="feGaussianBlur3843" />
     </filter>
+    <filter
+       inkscape:collect="always"
+       id="filter3834">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="3.2175"
+         id="feGaussianBlur3836" />
+    </filter>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -127,16 +135,16 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1"
-     inkscape:cx="-124.13169"
-     inkscape:cy="1.7994949"
+     inkscape:zoom="2"
+     inkscape:cx="88.129327"
+     inkscape:cy="188.25"
      inkscape:document-units="px"
-     inkscape:current-layer="layer5"
+     inkscape:current-layer="g3021"
      showgrid="false"
      inkscape:window-width="1920"
-     inkscape:window-height="1016"
-     inkscape:window-x="0"
-     inkscape:window-y="27"
+     inkscape:window-height="1043"
+     inkscape:window-x="1920"
+     inkscape:window-y="0"
      inkscape:window-maximized="1" />
   <metadata
      id="metadata3128">
@@ -158,7 +166,7 @@
      style="display:none"
      sodipodi:insensitive="true">
     <rect
-       style="color:#000000;fill:#c62828;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       style="color:#000000;fill:#d32f2f;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
        id="rect3906"
        width="152"
        height="152"
@@ -192,7 +200,7 @@
        height="152"
        width="152"
        id="rect4012"
-       style="color:#000000;fill:#ff8f00;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+       style="color:#000000;fill:#ffa000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
     <path
        inkscape:connector-curvature="0"
        id="path3033"
@@ -212,7 +220,7 @@
      sodipodi:insensitive="true">
     <rect
        transform="translate(0,-860.36218)"
-       style="color:#000000;fill:#2e7d32;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       style="color:#000000;fill:#388e3c;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
        id="rect4015"
        width="152"
        height="152"
@@ -230,6 +238,33 @@
        id="path3068"
        d="m 32,20 c -6.648,0 -12,5.352 -12,12 l 0,4 c 0,-6.648 5.352,-12 12,-12 l 128,0 c 6.648,0 12,5.352 12,12 l 0,-4 c 0,-6.648 -5.352,-12 -12,-12 L 32,20 z"
        style="opacity:0.2;color:#000000;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+  </g>
+  <g
+     style="display:none"
+     inkscape:label="Porter Background"
+     id="g3035"
+     inkscape:groupmode="layer"
+     sodipodi:insensitive="true">
+    <rect
+       ry="12"
+       rx="12"
+       y="880.36218"
+       x="20"
+       height="152"
+       width="152"
+       id="rect3037"
+       style="color:#000000;fill:#0288d1;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       transform="translate(0,-860.36218)" />
+    <path
+       style="opacity:0.2;color:#000000;fill:#263238;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       d="m 20,156 0,4 c 0,6.648 5.352,12 12,12 l 128,0 c 6.648,0 12,-5.352 12,-12 l 0,-4 c 0,6.648 -5.352,12 -12,12 l -128,0 c -6.648,0 -12,-5.352 -12,-12 z"
+       id="path3040"
+       inkscape:connector-curvature="0" />
+    <path
+       style="opacity:0.2;color:#000000;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       d="m 32,20 c -6.648,0 -12,5.352 -12,12 l 0,4 c 0,-6.648 5.352,-12 12,-12 l 128,0 c 6.648,0 12,5.352 12,12 l 0,-4 c 0,-6.648 -5.352,-12 -12,-12 L 32,20 z"
+       id="path3042"
+       inkscape:connector-curvature="0" />
   </g>
   <g
      style="display:inline"
@@ -348,10 +383,27 @@
   </g>
   <g
      inkscape:groupmode="layer"
+     id="layer8"
+     inkscape:label="Porter Icon"
+     style="display:none"
+     sodipodi:insensitive="true">
+    <path
+       style="opacity:0.2;fill:#000000;fill-opacity:1;filter:url(#filter3834)"
+       id="path3820"
+       d="m 85,49.75 -11,11 0,11 -9.96875,0 0,82.5 63.9375,0 0,-82.5 -9.96875,0 0,-11 -11,-11 -22,0 z m 0,11 22,0 0,11 -22,0 0,-11 z m -33,11 c -6.105,0 -11,4.895 -11,11 l 0,60.5 a 11,11 0 0 0 11,11 l 4.46875,0 0,-82.5 -4.46875,0 z m 83.53125,0 0,82.5 4.46875,0 a 11,11 0 0 0 11,-11 l 0,-60.5 c 0,-6.105 -4.95,-11 -11,-11 l -4.46875,0 z"
+       inkscape:connector-curvature="0" />
+    <path
+       inkscape:connector-curvature="0"
+       d="m 85,43.75 -11,11 0,11 -9.96875,0 0,82.5 63.9375,0 0,-82.5 -9.96875,0 0,-11 -11,-11 -22,0 z m 0,11 22,0 0,11 -22,0 0,-11 z m -33,11 c -6.105,0 -11,4.895 -11,11 l 0,60.5 a 11,11 0 0 0 11,11 l 4.46875,0 0,-82.5 -4.46875,0 z m 83.53125,0 0,82.5 4.46875,0 a 11,11 0 0 0 11,-11 l 0,-60.5 c 0,-6.105 -4.95,-11 -11,-11 l -4.46875,0 z"
+       id="path4"
+       style="fill:#ffffff;fill-opacity:1" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
      id="layer2"
      inkscape:label="Finish"
      sodipodi:insensitive="true"
-     style="display:none">
+     style="display:inline">
     <path
        style="color:#000000;fill:url(#radialGradient3958);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
        d="m 32,20 c -6.648,0 -12,5.352 -12,12 l 0,128 c 0,6.648 5.352,12 12,12 l 128,0 c 6.648,0 12,-5.352 12,-12 l 0,-128 c 0,-6.648 -5.352,-12 -12,-12 L 32,20 z"
