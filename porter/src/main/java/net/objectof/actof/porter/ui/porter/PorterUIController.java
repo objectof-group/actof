@@ -9,12 +9,15 @@ import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import net.objectof.actof.common.controller.IActofUIController;
 import net.objectof.actof.common.controller.change.ChangeController;
+import net.objectof.actof.common.icons.ActofIcons;
+import net.objectof.actof.common.icons.ActofIcons.Icon;
+import net.objectof.actof.common.icons.ActofIcons.Size;
 import net.objectof.actof.common.util.FXUtil;
-import net.objectof.actof.connectorui.ConnectionController;
 import net.objectof.actof.porter.Porter;
 import net.objectof.actof.porter.rules.Rule;
 import net.objectof.actof.porter.ui.rule.RuleUI;
@@ -26,31 +29,38 @@ public class PorterUIController extends IActofUIController {
 
     @FXML
     public HBox connectors;
+
+    @FXML
     public VBox rulesBox;
+
+    private HBox buttonBox = new HBox(6);
+    private Button addButton = new Button(null, ActofIcons.getIconView(Icon.ADD, Size.BUTTON));
 
     private ObservableList<RuleUI> rules = FXCollections.observableArrayList();
 
-    private ConnectionController connection1, connection2;
+    private ConnectorChooserButton connection1, connection2;
 
     @Override
     public void ready() {
+
+        addButton.getStyleClass().add("tool-bar-button");
+        addButton.setOnAction(event -> {
+            rules.add(new RuleUI(getChangeBus(), this));
+        });
+
+        buttonBox.getChildren().add(addButton);
 
         rules.addListener((Observable change) -> {
             layoutRules();
         });
 
-        try {
-            connection1 = ConnectionController.load(getChangeBus());
-            connection2 = ConnectionController.load(getChangeBus());
-            connectors.getChildren().add(1, connection1.getNode());
-            connectors.getChildren().add(3, connection2.getNode());
-        }
-        catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        connection1 = new ConnectorChooserButton(null);
+        connection2 = new ConnectorChooserButton(null);
+        connectors.getChildren().add(1, connection1);
+        connectors.getChildren().add(2, ActofIcons.getIconView(Icon.REDO, Size.TOOLBAR));
+        connectors.getChildren().add(3, connection2);
 
-        RuleUI rule = new RuleUI(getChangeBus());
+        RuleUI rule = new RuleUI(getChangeBus(), this);
         rules.add(rule);
 
     }
@@ -81,6 +91,7 @@ public class PorterUIController extends IActofUIController {
 
     private void layoutRules() {
         rulesBox.getChildren().setAll(rules);
+        rulesBox.getChildren().add(buttonBox);
     }
 
     public static PorterUIController load(ChangeController changes) throws IOException {
@@ -89,6 +100,10 @@ public class PorterUIController extends IActofUIController {
 
     public List<Rule> generateRules() {
         return rules.stream().map(ruleui -> ruleui.generateRule()).collect(Collectors.toList());
+    }
+
+    public ObservableList<RuleUI> getRules() {
+        return rules;
     }
 
 }

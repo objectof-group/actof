@@ -6,6 +6,7 @@ import java.util.List;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -14,8 +15,12 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import net.objectof.actof.common.controller.IActofUIController;
 import net.objectof.actof.common.controller.change.ChangeController;
+import net.objectof.actof.common.icons.ActofIcons;
+import net.objectof.actof.common.icons.ActofIcons.Icon;
+import net.objectof.actof.common.icons.ActofIcons.Size;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.porter.rules.RuleBuilder;
+import net.objectof.actof.porter.ui.rule.RuleUI;
 import net.objectof.actof.porter.ui.rule.condition.Action.Input;
 
 
@@ -32,7 +37,16 @@ public class ConditionUI extends IActofUIController {
     @FXML
     private HBox hbox;
 
+    private Button remove;
+
     private TextInputControl textInput = new TextField();
+
+    private RuleUI ruleui;
+
+    /**
+     * DO NOT CALL
+     */
+    public ConditionUI() {}
 
     @Override
     public void ready() {
@@ -50,7 +64,7 @@ public class ConditionUI extends IActofUIController {
             Action action = actionChoice.getSelectionModel().getSelectedItem();
 
             borderpane.setCenter(null);
-            hbox.getChildren().setAll(stageChoice, actionChoice);
+            hbox.getChildren().setAll(remove, stageChoice, actionChoice);
             hbox.setPadding(new Insets(0, 0, 0, 0));
 
             if (action.input == Input.LARGE) {
@@ -59,8 +73,25 @@ public class ConditionUI extends IActofUIController {
                 hbox.setPadding(new Insets(0, 0, 6, 0));
             } else if (action.input == Input.SMALL) {
                 textInput = new TextField(textInput.getText());
-                hbox.getChildren().setAll(stageChoice, actionChoice, textInput);
+                hbox.getChildren().setAll(remove, stageChoice, actionChoice, textInput);
             }
+        });
+
+        remove = new Button(null, ActofIcons.getIconView(Icon.REMOVE, Size.BUTTON));
+        remove.getStyleClass().add("tool-bar-button");
+        remove.setOnAction(event -> {
+            ruleui.getConditions().remove(this);
+        });
+        hbox.getChildren().add(0, remove);
+
+        remove.setVisible(false);
+
+        getNode().setOnMouseEntered(event -> {
+            remove.setVisible(true);
+        });
+
+        getNode().setOnMouseExited(event -> {
+            remove.setVisible(false);
         });
 
     }
@@ -79,8 +110,10 @@ public class ConditionUI extends IActofUIController {
 
     }
 
-    public static ConditionUI load(ChangeController changes) throws IOException {
-        return FXUtil.load(ConditionUI.class, "ConditionUI.fxml", changes);
+    public static ConditionUI load(ChangeController changes, RuleUI ruleui) throws IOException {
+        ConditionUI ui = FXUtil.load(ConditionUI.class, "ConditionUI.fxml", changes);
+        ui.ruleui = ruleui;
+        return ui;
     }
 
 }
