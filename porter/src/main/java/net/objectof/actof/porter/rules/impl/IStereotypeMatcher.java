@@ -4,13 +4,12 @@ package net.objectof.actof.porter.rules.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Predicate;
 
 import net.objectof.actof.porter.visitor.IPorterContext;
 import net.objectof.model.Stereotype;
 
 
-public class IStereotypeMatcher implements Predicate<IPorterContext> {
+public class IStereotypeMatcher implements Matcher {
 
     List<Stereotype> stereotypes = new ArrayList<>();
 

@@ -1,13 +1,11 @@
 package net.objectof.actof.porter.rules.impl;
 
 
-import java.util.function.Function;
-
 import net.objectof.actof.porter.visitor.IPorterContext;
 import net.objectof.aggr.Listing;
 
 
-public class ValueToListTransformer implements Function<IPorterContext, Object> {
+public class ValueToListTransformer implements Transformer {
 
     private String listKind;
 

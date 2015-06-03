@@ -6,9 +6,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import net.objectof.actof.porter.rules.impl.ValueToListTransformer;
-import net.objectof.actof.porter.rules.impl.js.IJsBiConsumer;
-import net.objectof.actof.porter.rules.impl.js.IJsConsumer;
-import net.objectof.actof.porter.rules.impl.js.IJsPredicate;
+import net.objectof.actof.porter.rules.impl.js.IJsListener;
+import net.objectof.actof.porter.rules.impl.js.IJsMatcher;
 import net.objectof.actof.porter.rules.impl.js.IJsTransformer;
 import net.objectof.actof.porter.ui.rule.condition.Action.Input;
 import net.objectof.model.Stereotype;
@@ -31,19 +30,19 @@ public class Conditions {
         actions.add(new Action(Stage.MATCH, "Key", Input.FIELD, (rb, text) -> rb.matchKey(text)));
         actions.add(new Action(Stage.MATCH, "Kind", Input.FIELD, (rb, text) -> rb.matchKind(text)));
         actions.add(new Action(Stage.MATCH, "Stereotype", Input.FIELD, (rb, text) -> rb.matchStereotype(Stereotype.valueOf(text))));
-        actions.add(new Action(Stage.MATCH, "JavaScript", Input.CODE, (rb, text) -> rb.match(new IJsPredicate<>(text)), JS_MATCH));
+        actions.add(new Action(Stage.MATCH, "JavaScript", Input.CODE, (rb, text) -> rb.match(new IJsMatcher(text)), JS_MATCH));
 
         actions.add(new Action(Stage.BEFORE, "Drop", Input.NONE, (rb, text) -> rb.drop()));
-        actions.add(new Action(Stage.BEFORE, "JavaScript", Input.CODE, (rb, text) -> rb.beforeTransform(new IJsConsumer<>(text)), JS_BEFORE));
+        actions.add(new Action(Stage.BEFORE, "JavaScript", Input.CODE, (rb, text) -> rb.beforeTransform(new IJsListener(text)), JS_BEFORE));
 
         actions.add(new Action(Stage.KEY, "Replace", Input.FIELD, (rb, text) -> rb.setKey(text)));
-        actions.add(new Action(Stage.KEY, "JavaScript", Input.CODE, (rb, text) -> rb.keyTransform(new IJsTransformer<>(text)), JS_KEY));
+        actions.add(new Action(Stage.KEY, "JavaScript", Input.CODE, (rb, text) -> rb.keyTransform(new IJsTransformer(text)), JS_KEY));
 
         actions.add(new Action(Stage.VALUE, "Replace", Input.FIELD, (rb, text) -> rb.setValue(text)));
-        actions.add(new Action(Stage.VALUE, "JavaScript", Input.CODE, (rb, text) -> rb.valueTransform(new IJsTransformer<>(text)), JS_VALUE));
+        actions.add(new Action(Stage.VALUE, "JavaScript", Input.CODE, (rb, text) -> rb.valueTransform(new IJsTransformer(text)), JS_VALUE));
         actions.add(new Action(Stage.VALUE, "Wrap in List", Input.FIELD, (rb, text) -> rb.valueTransform(new ValueToListTransformer(text))));
         
-        actions.add(new Action(Stage.AFTER, "JavaScript", Input.CODE, (rb, text) -> rb.afterTransform(new IJsBiConsumer<>(text)), JS_AFTER));
+        actions.add(new Action(Stage.AFTER, "JavaScript", Input.CODE, (rb, text) -> rb.afterTransform(new IJsListener(text)), JS_AFTER));
 
         // @formatter:on
 

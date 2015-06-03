@@ -4,12 +4,11 @@ package net.objectof.actof.porter.rules.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Predicate;
 
 import net.objectof.actof.porter.visitor.IPorterContext;
 
 
-public class IKeyMatcher implements Predicate<IPorterContext> {
+public class IKeyMatcher implements Matcher {
 
     List<Object> matchingKeys = new ArrayList<>();
 

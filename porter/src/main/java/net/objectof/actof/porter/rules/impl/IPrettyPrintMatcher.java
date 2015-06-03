@@ -3,12 +3,11 @@ package net.objectof.actof.porter.rules.impl;
 
 import java.lang.reflect.Modifier;
 import java.util.function.Predicate;
-import java.util.regex.Matcher;
 
 import net.objectof.actof.porter.visitor.IPorterContext;
 
 
-public class IPrettyPrintMatcher implements Predicate<IPorterContext> {
+public class IPrettyPrintMatcher implements Matcher {
 
     private Predicate<IPorterContext> backer;
 

@@ -78,14 +78,17 @@ public class IMigrationVisitor extends AbstractVisitor {
         context.setFromTx(new ITransactionDecorator(porter, tx));
         context.setToTx(new ITransactionDecorator(porter, targetTx));
 
+        // result is an empty context which gets populated over the course of
+        // this method
+        IPorterContext result = new IPorterContext();
+        result.setFromTx(new ITransactionDecorator(porter, tx));
+        result.setToTx(new ITransactionDecorator(porter, targetTx));
+
         // before the transformation starts, call beforeTransform. Modifications
         // made to contexts in these hooks should be able to alter the real
         // contexts, so don't pass copies
-        Rule.beforeTransform(porter.getRules(), context);
+        Rule.beforeTransform(porter.getRules(), context, result);
         if (context.isDropped()) { return context; }
-
-        // result is based on a copy of context *after* called beforeTransform
-        IPorterContext result = context.copy();
 
         // key -- only allow modification of the key at this stage
         IPorterContext keyContext = Rule.transformKey(porter.getRules(), context.copy());

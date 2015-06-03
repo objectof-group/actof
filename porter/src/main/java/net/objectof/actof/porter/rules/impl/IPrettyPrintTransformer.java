@@ -7,7 +7,7 @@ import java.util.function.Function;
 import net.objectof.actof.porter.visitor.IPorterContext;
 
 
-public class IPrettyPrintTransformer implements Function<IPorterContext, Object> {
+public class IPrettyPrintTransformer implements Transformer {
 
     private Function<IPorterContext, Object> backer;
 

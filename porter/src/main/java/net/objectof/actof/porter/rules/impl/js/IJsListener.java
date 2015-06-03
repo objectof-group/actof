@@ -1,25 +1,25 @@
 package net.objectof.actof.porter.rules.impl.js;
 
 
-import java.util.function.Consumer;
-
 import javax.script.ScriptException;
 
 import net.objectof.actof.porter.rules.impl.AbstractJsEvaluator;
+import net.objectof.actof.porter.rules.impl.Listener;
+import net.objectof.actof.porter.visitor.IPorterContext;
 
 
-public class IJsConsumer<T> extends AbstractJsEvaluator implements Consumer<T> {
+public class IJsListener extends AbstractJsEvaluator implements Listener {
 
-    public IJsConsumer(String js) {
+    public IJsListener(String js) {
         super(js);
     }
 
     @SuppressWarnings("restriction")
     @Override
-    public void accept(T t) {
+    public void accept(IPorterContext t, IPorterContext u) {
         try {
             jdk.nashorn.api.scripting.ScriptObjectMirror fn = getFunction();
-            fn.call(null, t);
+            fn.call(null, t, u);
         }
         catch (ScriptException e) {
             // TODO Auto-generated catch block

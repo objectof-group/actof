@@ -21,7 +21,7 @@ public interface Rule {
      * @param context
      *            a context to inspect and modify
      */
-    void beforeTransform(IPorterContext context);
+    void beforeTransform(IPorterContext source, IPorterContext destination);
 
     /**
      * Called after any transformation is performed on the given context,
@@ -55,18 +55,18 @@ public interface Rule {
         return modContext;
     }
 
-    static void beforeTransform(List<Rule> rules, IPorterContext context) {
+    static void beforeTransform(List<Rule> rules, IPorterContext source, IPorterContext destination) {
         for (Rule rule : rules) {
-            if (rule.match(context)) {
-                rule.beforeTransform(context);
+            if (rule.match(source)) {
+                rule.beforeTransform(source, destination);
             }
         }
     }
 
-    static void afterTransform(List<Rule> rules, IPorterContext before, IPorterContext after) {
+    static void afterTransform(List<Rule> rules, IPorterContext source, IPorterContext destination) {
         for (Rule rule : rules) {
-            if (rule.match(before)) {
-                rule.afterTransform(before, after);
+            if (rule.match(source)) {
+                rule.afterTransform(source, destination);
             }
         }
     }

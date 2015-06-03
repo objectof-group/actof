@@ -1,13 +1,11 @@
 package net.objectof.actof.porter.rules.impl;
 
 
-import java.util.function.Predicate;
-
 import net.objectof.actof.porter.visitor.IPorterContext;
 import net.objectof.model.Kind;
 
 
-public class IKindMatcher implements Predicate<IPorterContext> {
+public class IKindMatcher implements Matcher {
 
     Kind<?> kind;
 

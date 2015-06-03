@@ -4,25 +4,26 @@ package net.objectof.actof.porter.rules;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import net.objectof.actof.porter.rules.impl.Listener;
+import net.objectof.actof.porter.rules.impl.Matcher;
+import net.objectof.actof.porter.rules.impl.Transformer;
 import net.objectof.actof.porter.visitor.IPorterContext;
 
 
 public class IRule implements Rule {
 
     private List<Predicate<IPorterContext>> matchers = new ArrayList<>();
-    private List<Function<IPorterContext, Object>> keyTransformers = new ArrayList<>();
-    private List<Function<IPorterContext, Object>> valueTransformers = new ArrayList<>();
-    private List<BiConsumer<IPorterContext, IPorterContext>> afterTransformListeners = new ArrayList<>();
-    private List<Consumer<IPorterContext>> beforeTransformListeners = new ArrayList<>();
+    private List<Transformer> keyTransformers = new ArrayList<>();
+    private List<Transformer> valueTransformers = new ArrayList<>();
+    private List<Listener> afterTransformListeners = new ArrayList<>();
+    private List<Listener> beforeTransformListeners = new ArrayList<>();
 
     public IRule() {}
 
-    public IRule(Predicate<IPorterContext> matcher, Function<IPorterContext, Object> keyTransformer,
-            Function<IPorterContext, Object> valueTransformer) {
+    public IRule(Matcher matcher, Transformer keyTransformer, Transformer valueTransformer) {
         if (matcher != null) {
             matchers.add(matcher);
         }
@@ -66,35 +67,35 @@ public class IRule implements Rule {
         this.matchers = matchers;
     }
 
-    public List<Function<IPorterContext, Object>> getKeyTransformers() {
+    public List<Transformer> getKeyTransformers() {
         return keyTransformers;
     }
 
-    public void setKeyTransformers(List<Function<IPorterContext, Object>> keyTransformers) {
+    public void setKeyTransformers(List<Transformer> keyTransformers) {
         this.keyTransformers = keyTransformers;
     }
 
-    public List<Function<IPorterContext, Object>> getValueTransformers() {
+    public List<Transformer> getValueTransformers() {
         return valueTransformers;
     }
 
-    public void setValueTransformers(List<Function<IPorterContext, Object>> valueTransformers) {
+    public void setValueTransformers(List<Transformer> valueTransformers) {
         this.valueTransformers = valueTransformers;
     }
 
-    public List<BiConsumer<IPorterContext, IPorterContext>> getAfterTransformListeners() {
+    public List<Listener> getAfterTransformListeners() {
         return afterTransformListeners;
     }
 
-    public void setAfterTransformListeners(List<BiConsumer<IPorterContext, IPorterContext>> afterTransformListeners) {
+    public void setAfterTransformListeners(List<Listener> afterTransformListeners) {
         this.afterTransformListeners = afterTransformListeners;
     }
 
-    public List<Consumer<IPorterContext>> getBeforeTransformListeners() {
+    public List<Listener> getBeforeTransformListeners() {
         return beforeTransformListeners;
     }
 
-    public void setBeforeTransformListeners(List<Consumer<IPorterContext>> beforeTransformListeners) {
+    public void setBeforeTransformListeners(List<Listener> beforeTransformListeners) {
         this.beforeTransformListeners = beforeTransformListeners;
     }
 
@@ -116,9 +117,9 @@ public class IRule implements Rule {
     }
 
     @Override
-    public void beforeTransform(IPorterContext context) {
-        for (Consumer<IPorterContext> listener : beforeTransformListeners) {
-            listener.accept(context);
+    public void beforeTransform(IPorterContext source, IPorterContext destination) {
+        for (Listener listener : beforeTransformListeners) {
+            listener.accept(source, destination);
         }
     }
 

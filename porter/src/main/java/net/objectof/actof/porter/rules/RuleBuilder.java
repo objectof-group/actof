@@ -1,9 +1,6 @@
 package net.objectof.actof.porter.rules;
 
 
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 import net.objectof.actof.porter.rules.impl.IKeyMatcher;
@@ -12,6 +9,8 @@ import net.objectof.actof.porter.rules.impl.IKindNameMatcher;
 import net.objectof.actof.porter.rules.impl.IPrettyPrintMatcher;
 import net.objectof.actof.porter.rules.impl.IPrettyPrintTransformer;
 import net.objectof.actof.porter.rules.impl.IStereotypeMatcher;
+import net.objectof.actof.porter.rules.impl.Listener;
+import net.objectof.actof.porter.rules.impl.Transformer;
 import net.objectof.actof.porter.visitor.IPorterContext;
 import net.objectof.model.Kind;
 import net.objectof.model.Stereotype;
@@ -52,8 +51,8 @@ public class RuleBuilder {
     }
 
     public RuleBuilder drop() {
-        rule.getBeforeTransformListeners().add(context -> {
-            context.setDropped(true);
+        rule.getBeforeTransformListeners().add((source, destination) -> {
+            source.setDropped(true);
         });
         return this;
     }
@@ -77,22 +76,22 @@ public class RuleBuilder {
         return this;
     }
 
-    public RuleBuilder keyTransform(Function<IPorterContext, Object> robotInDisguise) {
+    public RuleBuilder keyTransform(Transformer robotInDisguise) {
         rule.getKeyTransformers().add(new IPrettyPrintTransformer(robotInDisguise));
         return this;
     }
 
-    public RuleBuilder valueTransform(Function<IPorterContext, Object> robotInDisguise) {
+    public RuleBuilder valueTransform(Transformer robotInDisguise) {
         rule.getValueTransformers().add(new IPrettyPrintTransformer(robotInDisguise));
         return this;
     }
 
-    public RuleBuilder beforeTransform(Consumer<IPorterContext> listener) {
+    public RuleBuilder beforeTransform(Listener listener) {
         rule.getBeforeTransformListeners().add(listener);
         return this;
     }
 
-    public RuleBuilder afterTransform(BiConsumer<IPorterContext, IPorterContext> listener) {
+    public RuleBuilder afterTransform(Listener listener) {
         rule.getAfterTransformListeners().add(listener);
         return this;
     }
