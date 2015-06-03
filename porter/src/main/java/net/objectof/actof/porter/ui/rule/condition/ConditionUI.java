@@ -27,7 +27,7 @@ import net.objectof.actof.porter.ui.rule.condition.Action.Input;
 public class ConditionUI extends IActofUIController {
 
     @FXML
-    private ChoiceBox<String> stageChoice;
+    private ChoiceBox<Stage> stageChoice;
     @FXML
     private ChoiceBox<Action> actionChoice;
 
@@ -50,10 +50,10 @@ public class ConditionUI extends IActofUIController {
 
     @Override
     public void ready() {
-        stageChoice.getItems().setAll(Conditions.conditions.keySet());
+        stageChoice.getItems().setAll(Stage.values());
         stageChoice.getSelectionModel().selectedItemProperty().addListener(change -> {
-            String stage = stageChoice.getSelectionModel().getSelectedItem();
-            List<Action> actions = Conditions.conditions.get(stage);
+            Stage stage = stageChoice.getSelectionModel().getSelectedItem();
+            List<Action> actions = Conditions.forStage(stage);
             actionChoice.getItems().setAll(actions);
             if (actions.size() == 1) {
                 actionChoice.getSelectionModel().select(0);
@@ -67,14 +67,20 @@ public class ConditionUI extends IActofUIController {
             hbox.getChildren().setAll(remove, stageChoice, actionChoice);
             hbox.setPadding(new Insets(0, 0, 0, 0));
 
-            if (action.input == Input.LARGE) {
+            if (action.input == Input.CODE) {
                 textInput = new TextArea(textInput.getText());
+                textInput.setStyle("-fx-font-family: monospace");
                 borderpane.setCenter(textInput);
                 hbox.setPadding(new Insets(0, 0, 6, 0));
-            } else if (action.input == Input.SMALL) {
+            } else if (action.input == Input.FIELD) {
                 textInput = new TextField(textInput.getText());
                 hbox.getChildren().setAll(remove, stageChoice, actionChoice, textInput);
             }
+
+            if (textInput.getText().length() == 0) {
+                textInput.setText(action.defaultText);
+            }
+
         });
 
         remove = new Button(null, ActofIcons.getIconView(Icon.REMOVE, Size.BUTTON));

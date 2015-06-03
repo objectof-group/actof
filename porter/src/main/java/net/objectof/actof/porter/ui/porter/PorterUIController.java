@@ -9,7 +9,9 @@ import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import net.objectof.actof.common.controller.IActofUIController;
@@ -33,6 +35,9 @@ public class PorterUIController extends IActofUIController {
     @FXML
     public VBox rulesBox;
 
+    @FXML
+    private Button portButton;
+
     private HBox buttonBox = new HBox(6);
     private Button addButton = new Button(null, ActofIcons.getIconView(Icon.ADD, Size.BUTTON));
 
@@ -47,17 +52,20 @@ public class PorterUIController extends IActofUIController {
         addButton.setOnAction(event -> {
             rules.add(new RuleUI(getChangeBus(), this));
         });
-
+        buttonBox.setAlignment(Pos.CENTER_RIGHT);
         buttonBox.getChildren().add(addButton);
 
         rules.addListener((Observable change) -> {
             layoutRules();
         });
 
+        Label arrow = new Label("\u279E");
+        arrow.setStyle("-fx-font-size: 200%;");
+
         connection1 = new ConnectorChooserButton(null);
         connection2 = new ConnectorChooserButton(null);
         connectors.getChildren().add(1, connection1);
-        connectors.getChildren().add(2, ActofIcons.getIconView(Icon.REDO, Size.TOOLBAR));
+        connectors.getChildren().add(2, arrow);
         connectors.getChildren().add(3, connection2);
 
         RuleUI rule = new RuleUI(getChangeBus(), this);

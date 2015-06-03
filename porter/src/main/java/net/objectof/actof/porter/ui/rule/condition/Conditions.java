@@ -2,10 +2,10 @@ package net.objectof.actof.porter.ui.rule.condition;
 
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
+import net.objectof.actof.porter.rules.impl.ValueToListTransformer;
 import net.objectof.actof.porter.rules.impl.js.IJsBiConsumer;
 import net.objectof.actof.porter.rules.impl.js.IJsConsumer;
 import net.objectof.actof.porter.rules.impl.js.IJsPredicate;
@@ -16,37 +16,40 @@ import net.objectof.model.Stereotype;
 
 public class Conditions {
 
-    public static Map<String, List<Action>> conditions = new LinkedHashMap<>();
+    private static final String JS_MATCH = "/* boolean */ function(context) {\n\t\n}";
+    private static final String JS_BEFORE = "/* void */ function(context) {\n\t\n}";
+    private static final String JS_AFTER = "/* void */ function(beforeContext, afterContext) {\n\t\n}";
+    private static final String JS_KEY = "/* object */ function(context) {\n\t\n}";
+    private static final String JS_VALUE = "/* object */ function(context) {\n\t\n}";
+
+    private static final List<Action> actions = new ArrayList<>();
+
     static {
-        conditions.put("Match", new ArrayList<Action>());
-        conditions.put("Before", new ArrayList<Action>());
-        conditions.put("Key Transform", new ArrayList<Action>());
-        conditions.put("Value Transform", new ArrayList<Action>());
-        conditions.put("After", new ArrayList<Action>());
 
-        List<Action> before = conditions.get("Before");
-        List<Action> match = conditions.get("Match");
-        List<Action> keyTransform = conditions.get("Key Transform");
-        List<Action> valueTransform = conditions.get("Value Transform");
-        List<Action> after = conditions.get("After");
+        // @formatter:off
 
-        match.add(new Action("Key", Input.SMALL, (rb, text) -> rb.matchKey(text)));
-        match.add(new Action("Kind", Input.SMALL, (rb, text) -> rb.matchKind(text)));
-        match.add(new Action("Stereotype", Input.SMALL, (rb, text) -> rb.matchStereotype(Stereotype.valueOf(text))));
-        match.add(new Action("JavaScript", Input.LARGE, (rb, text) -> rb.match(new IJsPredicate<>(text))));
+        actions.add(new Action(Stage.MATCH, "Key", Input.FIELD, (rb, text) -> rb.matchKey(text)));
+        actions.add(new Action(Stage.MATCH, "Kind", Input.FIELD, (rb, text) -> rb.matchKind(text)));
+        actions.add(new Action(Stage.MATCH, "Stereotype", Input.FIELD, (rb, text) -> rb.matchStereotype(Stereotype.valueOf(text))));
+        actions.add(new Action(Stage.MATCH, "JavaScript", Input.CODE, (rb, text) -> rb.match(new IJsPredicate<>(text)), JS_MATCH));
 
-        before.add(new Action("Drop", Input.NONE, (rb, text) -> rb.drop()));
-        before.add(new Action("JavaScript", Input.LARGE, (rb, text) -> rb.beforeTransform(new IJsConsumer<>(text))));
+        actions.add(new Action(Stage.BEFORE, "Drop", Input.NONE, (rb, text) -> rb.drop()));
+        actions.add(new Action(Stage.BEFORE, "JavaScript", Input.CODE, (rb, text) -> rb.beforeTransform(new IJsConsumer<>(text)), JS_BEFORE));
 
-        keyTransform.add(new Action("Replace", Input.SMALL, (rb, text) -> rb.setKey(text)));
-        keyTransform.add(new Action("JavaScript", Input.LARGE, (rb, text) -> rb
-                .keyTransform(new IJsTransformer<>(text))));
+        actions.add(new Action(Stage.KEY, "Replace", Input.FIELD, (rb, text) -> rb.setKey(text)));
+        actions.add(new Action(Stage.KEY, "JavaScript", Input.CODE, (rb, text) -> rb.keyTransform(new IJsTransformer<>(text)), JS_KEY));
 
-        valueTransform.add(new Action("Replace", Input.SMALL, (rb, text) -> rb.setValue(text)));
-        valueTransform.add(new Action("JavaScript", Input.LARGE, (rb, text) -> rb.valueTransform(new IJsTransformer<>(
-                text))));
+        actions.add(new Action(Stage.VALUE, "Replace", Input.FIELD, (rb, text) -> rb.setValue(text)));
+        actions.add(new Action(Stage.VALUE, "JavaScript", Input.CODE, (rb, text) -> rb.valueTransform(new IJsTransformer<>(text)), JS_VALUE));
+        actions.add(new Action(Stage.VALUE, "Wrap in List", Input.FIELD, (rb, text) -> rb.valueTransform(new ValueToListTransformer(text))));
+        
+        actions.add(new Action(Stage.AFTER, "JavaScript", Input.CODE, (rb, text) -> rb.afterTransform(new IJsBiConsumer<>(text)), JS_AFTER));
 
-        after.add(new Action("JavaScript", Input.LARGE, (rb, text) -> rb.afterTransform(new IJsBiConsumer<>(text))));
+        // @formatter:on
 
+    }
+
+    public static List<Action> forStage(Stage stage) {
+        return actions.stream().filter(a -> a.stage == stage).collect(Collectors.toList());
     }
 }
