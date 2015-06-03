@@ -32,9 +32,10 @@ public class IMigrationVisitor extends AbstractVisitor {
 
         IPorterContext ported = transform(context);
         if (ported.isDropped()) { return null; }
-        if (toParent == null) { return null; }
 
-        toParent.value().set(IPorterUtil.unqualify(ported.getKey(), toParent), ported.getValue());
+        if (toParent != null) {
+            toParent.value().set(IPorterUtil.unqualify(ported.getKey(), toParent), ported.getValue());
+        }
         // return the value, since we're not modifying the tree in-place
         return context.getValue();
 
