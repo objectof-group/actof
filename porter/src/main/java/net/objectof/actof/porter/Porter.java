@@ -26,11 +26,6 @@ public class Porter {
     private Map<Id<?>, Id<?>> idmap = new HashMap<>();
     private Map<String, List<Resource<?>>> transients = new HashMap<>();
 
-    // we need to make sure that when references are connected, everything
-    // already exists in the new repo, so when we walk the repo tree, we store
-    // all reference port operations as Runnable jobs to be run later
-    private List<Runnable> referenceJobs = new ArrayList<>();
-
     public Porter() {}
 
     public Porter(Rule... rule) {
@@ -43,34 +38,22 @@ public class Porter {
         Transaction fromTx = from.connect(getClass());
         Transaction toTx = to.connect(getClass());
 
+        // first pass
         Walker walker = new IWalker(fromTx);
         Visitor visitor = new IMigrationVisitor(this, fromTx, toTx);
         visitor.setWalker(walker);
         walker.setVisitor(visitor);
-
         walker.walkEntities(from.getParts());
-        runJobs();
 
-        System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-
+        // second pass
         Visitor updater = new IResourceUpdateVisitor(this, toTx);
         updater.setWalker(walker);
         walker.setVisitor(updater);
         walker.setTx(toTx);
-
         walker.walkEntities(to.getParts());
-        runJobs();
 
         toTx.post();
 
-    }
-
-    private void runJobs() {
-        // reference porting is done last so that everything else is in place
-        for (Runnable r : referenceJobs) {
-            r.run();
-        }
-        referenceJobs.clear();
     }
 
     public List<Rule> getRules() {
@@ -88,10 +71,6 @@ public class Porter {
 
     public void addRules(Rule... rules) {
         this.rules.addAll(Arrays.asList(rules));
-    }
-
-    public void runLater(Runnable job) {
-        referenceJobs.add(job);
     }
 
     public Map<Id<?>, Id<?>> getIdmap() {

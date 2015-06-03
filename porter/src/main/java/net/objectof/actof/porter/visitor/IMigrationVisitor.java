@@ -2,14 +2,12 @@ package net.objectof.actof.porter.visitor;
 
 
 import net.objectof.actof.porter.IPorterUtil;
-import net.objectof.actof.porter.ITransactionDecorator;
 import net.objectof.actof.porter.Porter;
 import net.objectof.actof.porter.rules.Rule;
 import net.objectof.aggr.Aggregate;
 import net.objectof.model.Id;
 import net.objectof.model.Kind;
 import net.objectof.model.Resource;
-import net.objectof.model.Stereotype;
 import net.objectof.model.Transaction;
 
 
@@ -34,27 +32,11 @@ public class IMigrationVisitor extends AbstractVisitor {
 
         IPorterContext ported = transform(context);
         if (ported.isDropped()) { return null; }
+        if (toParent == null) { return null; }
 
-        if (ported.getKind().getStereotype() == Stereotype.REF) {
-            // there's a chance that the user passed us a reference to something
-            // in the old repo.
-            porter.runLater(() -> {
-                if (toParent == null) { return; }
-                toParent.value().set(IPorterUtil.unqualify(ported.getKey(), toParent), ported.getValue());
-            });
-
-            // return value is the container to walk. With a reference, we don't
-            // need to walk anything.
-            return null;
-        } else {
-            if (toParent != null) {
-                toParent.value().set(IPorterUtil.unqualify(ported.getKey(), toParent), ported.getValue());
-            }
-            // return value is the container to walk. Just return the
-            // container we're porting
-            return context.getValue();
-
-        }
+        toParent.value().set(IPorterUtil.unqualify(ported.getKey(), toParent), ported.getValue());
+        // return the value, since we're not modifying the tree in-place
+        return context.getValue();
 
     }
 
@@ -106,7 +88,6 @@ public class IMigrationVisitor extends AbstractVisitor {
 
         // key -- only allow modification of the key at this stage
         IPorterContext keyContext = Rule.transformKey(porter.getRules(), context.copy());
-        System.out.println(keyContext);
         if (keyContext.isDropped()) {
             result.setDropped(true);
             return result;

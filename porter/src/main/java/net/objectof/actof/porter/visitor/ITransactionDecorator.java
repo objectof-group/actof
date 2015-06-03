@@ -1,8 +1,9 @@
-package net.objectof.actof.porter;
+package net.objectof.actof.porter.visitor;
 
 
 import java.io.Reader;
 
+import net.objectof.actof.porter.Porter;
 import net.objectof.model.Id;
 import net.objectof.model.Package;
 import net.objectof.model.Resource;

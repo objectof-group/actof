@@ -40,32 +40,20 @@ public abstract class AbstractVisitor implements Visitor {
 
     public void visit(IPorterContext context, Id<?> fromParentId) {
 
-        // System.out.println("Visiting " + context.getKind());
+        Object visitResult;
 
         if (IPorterUtil.isContainer(context.getKind())) {
-
-            // visit the container itself. It's possible that this visit will
-            // modify the tree we're walking (eg array replaced with single
-            // value), so we will try and walk whatever the visitContainer
-            // method returns. When no alterations to the tree are made, this
-            // method should return context.getValue() (ie the original
-            // container)
-            Object visitResult = visitContainer(context, fromParentId);
-            if (visitResult == null) { return; }
-            // try to walk whatever the visit produced
-            walker.walk(visitResult);
-
+            visitResult = visitContainer(context, fromParentId);
         } else {
-            // visit this leaf. It's possible that this visit will modify the
-            // tree we're walking (eg leaf replaced with array), so we will try
-            // and walk whatever the visitContainer method returns. When no
-            // alterations to the tree are made, this method should return
-            // context.getValue() (ie the original container)
-            Object visitResult = visitLeaf(context, fromParentId);
-            if (visitResult == null) { return; }
-            // try to walk whatever the visit produced
-            walker.walk(visitResult);
+            visitResult = visitLeaf(context, fromParentId);
         }
+
+        // It's possible that this visit will modify the tree we're walking (eg
+        // array replaced with single value), so we will try and walk whatever
+        // the visit returns. When no alterations to the tree are made, this
+        // method should return context.getValue() (ie the original container)
+        if (visitResult == null) { return; }
+        walker.walk(visitResult);
     }
 
     @Override

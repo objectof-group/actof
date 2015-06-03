@@ -21,9 +21,10 @@ import net.objectof.model.Stereotype;
 public class PorterTesting {
 
     public static void main(String[] args) throws ConnectorException, FileNotFoundException {
-        testRealm();
+        // testRealm();
         // testRulePrinting();
         // testRealmReversed();
+        testRoles();
     }
 
     private static void testSettings() throws ConnectorException, FileNotFoundException {
@@ -117,7 +118,7 @@ public class PorterTesting {
         
         portDescription = RuleBuilder.start()
                 .matchKey("Session")
-                .afterTransform(new IJsBiConsumer("function(before, after) {"
+                .afterTransform(new IJsBiConsumer<>("function(before, after) {"
                         + "oldSession = before.getValue();"
                         + "oldAssignment = oldSession.get('assignment');"
                         + "description = oldAssignment.get('description').toString();"
@@ -271,6 +272,45 @@ public class PorterTesting {
                 .build();
         System.out.println(testRule);
         // @formatter:on
+    }
+
+    private static void testRoles() throws ConnectorException, FileNotFoundException {
+        new File("/home/nathaniel/Desktop/Porting/roles/empty-port.db").delete();
+
+        // old package
+        Connector oldConnector = new ISQLiteConnector();
+        oldConnector.setParameter(ISQLiteConnector.KEY_FILENAME, "/home/nathaniel/Desktop/Porting/roles/empty.db");
+        oldConnector.setParameter(ISQLiteConnector.KEY_REPOSITORY, "realmproject.net:1502/realm");
+        Package oldRepo = oldConnector.getPackage();
+
+        // new package
+        Connector newConnector = new ISQLiteConnector();
+        newConnector.setParameter(ISQLiteConnector.KEY_FILENAME, "/home/nathaniel/Desktop/Porting/roles/empty-port.db");
+        newConnector.setParameter(ISQLiteConnector.KEY_REPOSITORY, "realmproject.net:1521/realm");
+        Package newRepo = newConnector.createPackage(new FileInputStream(
+                "/home/nathaniel/Desktop/Porting/roles/realm-port.xml"), Initialize.WHEN_EMPTY);
+
+        Porter p = new Porter();
+
+        // @formatter:off
+              
+        Rule roleRule = RuleBuilder.start()
+                .matchKey("Person.role")
+                .setKey("Person.roles")
+                .valueTransform(context -> {
+                    Listing<Object> roles = context.getToTx().create("Person.roles");
+                    roles.add(context.getValue());
+                    return roles;
+                })
+                .build();
+        // @formatter:on
+
+        p.addRules(roleRule);
+
+        System.out.println("-----------------------------");
+
+        p.port(oldRepo, newRepo);
+
     }
 
 }
