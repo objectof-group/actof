@@ -16,10 +16,10 @@ public class IJsTransformer extends AbstractJsEvaluator implements Transformer {
 
     @SuppressWarnings({ "restriction", "unchecked" })
     @Override
-    public Object apply(IPorterContext context) {
+    public Object apply(IPorterContext source, IPorterContext destination) {
         try {
             jdk.nashorn.api.scripting.ScriptObjectMirror fn = getFunction();
-            return fn.call(null, context);
+            return fn.call(null, source, destination);
         }
         catch (ScriptException e) {
             // TODO Auto-generated catch block

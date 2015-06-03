@@ -4,7 +4,6 @@ package net.objectof.actof.porter.rules;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 import net.objectof.actof.porter.rules.impl.Listener;
@@ -44,19 +43,19 @@ public class IRule implements Rule {
     }
 
     @Override
-    public Object transformKey(IPorterContext context) {
-        for (Function<IPorterContext, Object> keyTransformer : keyTransformers) {
-            context.setKey(keyTransformer.apply(context));
+    public Object transformKey(IPorterContext source, IPorterContext destination) {
+        for (Transformer keyTransformer : keyTransformers) {
+            source.setKey(keyTransformer.apply(source, destination));
         }
-        return context.getKey();
+        return source.getKey();
     }
 
     @Override
-    public Object transformValue(IPorterContext context) {
-        for (Function<IPorterContext, Object> valueTransformer : valueTransformers) {
-            context.setValue(valueTransformer.apply(context));
+    public Object transformValue(IPorterContext source, IPorterContext destination) {
+        for (Transformer valueTransformer : valueTransformers) {
+            source.setValue(valueTransformer.apply(source, destination));
         }
-        return context.getValue();
+        return source.getValue();
     }
 
     public List<Predicate<IPorterContext>> getMatchers() {

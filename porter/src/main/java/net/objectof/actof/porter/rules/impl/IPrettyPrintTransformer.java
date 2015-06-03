@@ -2,22 +2,21 @@ package net.objectof.actof.porter.rules.impl;
 
 
 import java.lang.reflect.Modifier;
-import java.util.function.Function;
 
 import net.objectof.actof.porter.visitor.IPorterContext;
 
 
 public class IPrettyPrintTransformer implements Transformer {
 
-    private Function<IPorterContext, Object> backer;
+    private Transformer backer;
 
-    public IPrettyPrintTransformer(Function<IPorterContext, Object> backer) {
+    public IPrettyPrintTransformer(Transformer backer) {
         this.backer = backer;
     }
 
     @Override
-    public Object apply(IPorterContext contect) {
-        return backer.apply(contect);
+    public Object apply(IPorterContext source, IPorterContext destination) {
+        return backer.apply(source, destination);
     }
 
     @Override

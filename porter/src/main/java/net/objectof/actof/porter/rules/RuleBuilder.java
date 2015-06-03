@@ -58,12 +58,12 @@ public class RuleBuilder {
     }
 
     public RuleBuilder setKey(Object newKey) {
-        rule.getKeyTransformers().add(context -> newKey);
+        rule.getKeyTransformers().add((source, destination) -> newKey);
         return this;
     }
 
     public RuleBuilder setValue(Object newValue) {
-        rule.getValueTransformers().add(context -> newValue);
+        rule.getValueTransformers().add((source, destination) -> newValue);
         return this;
     }
 

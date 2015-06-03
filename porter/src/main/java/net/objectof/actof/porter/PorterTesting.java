@@ -58,7 +58,7 @@ public class PorterTesting {
         
         Rule append = RuleBuilder.start()
                 .matchStereotype(Stereotype.TEXT)
-                .valueTransform((context) -> context.getValue().toString() + "...")
+                .valueTransform((source, destination) -> source.getValue().toString() + "...")
                 .build();
         
         // @formatter:on
@@ -217,8 +217,8 @@ public class PorterTesting {
         Rule rolesToRole = RuleBuilder.start()
             .matchKey("Person.roles")
             .setKey("Person.role")
-            .valueTransform(context -> {
-                Listing<Object> roles = (Listing<Object>) context.getValue();
+            .valueTransform((source, destination) -> {
+                Listing<Object> roles = (Listing<Object>) source.getValue();
                 if (roles.size() == 0) { 
                     return null; 
                 }
@@ -297,9 +297,9 @@ public class PorterTesting {
         Rule roleRule = RuleBuilder.start()
                 .matchKey("Person.role")
                 .setKey("Person.roles")
-                .valueTransform(context -> {
-                    Listing<Object> roles = context.getToTx().create("Person.roles");
-                    roles.add(context.getValue());
+                .valueTransform((source, destination) -> {
+                    Listing<Object> roles = source.getToTx().create("Person.roles");
+                    roles.add(source.getValue());
                     return roles;
                 })
                 .build();

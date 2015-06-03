@@ -8,11 +8,11 @@ import net.objectof.actof.porter.visitor.IPorterContext;
 
 public interface Rule {
 
-    boolean match(IPorterContext context);
+    boolean match(IPorterContext source);
 
-    Object transformKey(IPorterContext context);
+    Object transformKey(IPorterContext source, IPorterContext destination);
 
-    Object transformValue(IPorterContext context);
+    Object transformValue(IPorterContext source, IPorterContext destination);
 
     /**
      * Called before any transformation is performed on the given context,
@@ -35,24 +35,24 @@ public interface Rule {
      */
     void afterTransform(IPorterContext source, IPorterContext destination);
 
-    static IPorterContext transformKey(List<Rule> rules, IPorterContext context) {
-        IPorterContext modContext = context.copy();
+    static IPorterContext transformKey(List<Rule> rules, IPorterContext source, IPorterContext destination) {
+        IPorterContext modSource = source.copy();
         for (Rule rule : rules) {
-            if (rule.match(modContext)) {
-                modContext.setKey(rule.transformKey(modContext));
+            if (rule.match(modSource)) {
+                modSource.setKey(rule.transformKey(modSource, destination));
             }
         }
-        return modContext;
+        return modSource;
     }
 
-    static IPorterContext transformValue(List<Rule> rules, IPorterContext context) {
-        IPorterContext modContext = context.copy();
+    static IPorterContext transformValue(List<Rule> rules, IPorterContext source, IPorterContext destination) {
+        IPorterContext modSource = source.copy();
         for (Rule rule : rules) {
-            if (rule.match(modContext)) {
-                modContext.setValue(rule.transformValue(modContext));
+            if (rule.match(modSource)) {
+                modSource.setValue(rule.transformValue(modSource, destination));
             }
         }
-        return modContext;
+        return modSource;
     }
 
     static void beforeTransform(List<Rule> rules, IPorterContext source, IPorterContext destination) {

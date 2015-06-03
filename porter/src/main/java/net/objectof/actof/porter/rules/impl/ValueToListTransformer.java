@@ -14,9 +14,9 @@ public class ValueToListTransformer implements Transformer {
     }
 
     @Override
-    public Object apply(IPorterContext t) {
-        Listing<Object> list = t.getToTx().create(listKind);
-        list.add(t.getValue());
+    public Object apply(IPorterContext source, IPorterContext destination) {
+        Listing<Object> list = source.getToTx().create(listKind);
+        list.add(source.getValue());
         return list;
     }
 

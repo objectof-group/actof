@@ -91,7 +91,7 @@ public class IMigrationVisitor extends AbstractVisitor {
         if (context.isDropped()) { return context; }
 
         // key -- only allow modification of the key at this stage
-        IPorterContext keyContext = Rule.transformKey(porter.getRules(), context.copy());
+        IPorterContext keyContext = Rule.transformKey(porter.getRules(), context.copy(), result.copy());
         if (keyContext.isDropped()) {
             result.setDropped(true);
             return result;
@@ -104,7 +104,7 @@ public class IMigrationVisitor extends AbstractVisitor {
 
         // value - not necessarily a reference, or even a resource -- only allow
         // modification of the value at this stage
-        IPorterContext valueContext = Rule.transformValue(porter.getRules(), context.copy());
+        IPorterContext valueContext = Rule.transformValue(porter.getRules(), context.copy(), result.copy());
         if (valueContext.isDropped()) {
             result.setDropped(true);
             return result;
