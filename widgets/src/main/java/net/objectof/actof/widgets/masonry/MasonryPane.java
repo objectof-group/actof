@@ -85,7 +85,7 @@ public class MasonryPane extends Pane {
 
         GRID {
 
-            MasonryLayout layout = new ShortestColumnLayout();
+            MasonryLayout layout = new GridLayout();
 
             MasonryLayout impl() {
                 return layout;

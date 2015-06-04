@@ -75,14 +75,11 @@ public class IMigrationVisitor extends AbstractVisitor {
 
         IPorterContext context = originalContext.copy();
 
-        context.setFromTx(new ITransactionDecorator(porter, tx));
-        context.setToTx(new ITransactionDecorator(porter, targetTx));
-
         // result is an empty context which gets populated over the course of
         // this method
         IPorterContext result = new IPorterContext();
-        result.setFromTx(new ITransactionDecorator(porter, tx));
-        result.setToTx(new ITransactionDecorator(porter, targetTx));
+        context.setTx(new ITransactionDecorator(porter, tx));
+        result.setTx(new ITransactionDecorator(porter, targetTx));
 
         // before the transformation starts, call beforeTransform. Modifications
         // made to contexts in these hooks should be able to alter the real
@@ -99,7 +96,7 @@ public class IMigrationVisitor extends AbstractVisitor {
         result.setKey(keyContext.getKey());
 
         // kind -- only allow modification of the kind at this stage
-        Kind<?> kind = IPorterUtil.kindFromKey(context.getToTx(), keyContext.getKey().toString());
+        Kind<?> kind = IPorterUtil.kindFromKey(result.getTx(), keyContext.getKey().toString());
         result.setKind(kind);
 
         // value - not necessarily a reference, or even a resource -- only allow

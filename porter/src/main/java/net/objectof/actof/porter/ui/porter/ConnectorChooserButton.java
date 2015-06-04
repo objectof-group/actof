@@ -3,9 +3,6 @@ package net.objectof.actof.porter.ui.porter;
 
 import javafx.scene.control.Button;
 import javafx.stage.Window;
-import net.objectof.actof.common.icons.ActofIcons;
-import net.objectof.actof.common.icons.ActofIcons.Icon;
-import net.objectof.actof.common.icons.ActofIcons.Size;
 import net.objectof.actof.connectorui.ConnectionController;
 import net.objectof.connector.Connector;
 
@@ -18,7 +15,6 @@ public class ConnectorChooserButton extends Button {
 
         setPrefWidth(300);
         setText("(No Package)");
-        setGraphic(ActofIcons.getIconView(Icon.SEARCH, Size.BUTTON));
 
         this.setOnMouseClicked(event -> {
             try {

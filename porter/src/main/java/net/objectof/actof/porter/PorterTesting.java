@@ -150,13 +150,13 @@ public class PorterTesting {
                     Composite oldPerson = (Composite) before.getValue();
                     Composite newPerson = (Composite) after.getValue();
                     
-                    Composite account = after.getToTx().create("Account");
+                    Composite account = after.getTx().create("Account");
                     account.set("email", oldPerson.get("email"));
                     account.set("pwdHashed", oldPerson.get("pwdHashed"));
                     account.set("salt", oldPerson.get("salt"));
                     
                     Composite oldRole = (Composite) oldPerson.get("role");
-                    Listing<Object> newRoles = after.getToTx().create("Account.roles");
+                    Listing<Object> newRoles = after.getTx().create("Account.roles");
                     account.set("roles", newRoles);
                     //Object newRole = p.updateReference(after, oldRole);
                     //newRoles.add(newRole);
@@ -298,7 +298,7 @@ public class PorterTesting {
                 .matchKey("Person.role")
                 .setKey("Person.roles")
                 .valueTransform((source, destination) -> {
-                    Listing<Object> roles = source.getToTx().create("Person.roles");
+                    Listing<Object> roles = destination.getTx().create("Person.roles");
                     roles.add(source.getValue());
                     return roles;
                 })

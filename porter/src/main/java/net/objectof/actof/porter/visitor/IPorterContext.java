@@ -10,31 +10,28 @@ public class IPorterContext {
     private Object key;
     private Object value;
     private Kind<?> kind;
-    private Transaction fromTx;
-    private Transaction toTx;
+    private Transaction tx;
 
     private boolean dropped = false;
 
     public IPorterContext() {}
 
     public IPorterContext(Object key, Object value, Kind<?> kind) {
-        this(key, value, kind, null, null);
+        this(key, value, kind, null);
     }
 
-    public IPorterContext(Object key, Object value, Kind<?> kind, Transaction fromTx, Transaction toTx) {
+    public IPorterContext(Object key, Object value, Kind<?> kind, Transaction tx) {
         this.key = key;
         this.value = value;
         this.kind = kind;
-        this.fromTx = fromTx;
-        this.toTx = toTx;
+        this.tx = tx;
     }
 
     public IPorterContext(IPorterContext copy) {
         key = copy.key;
         value = copy.value;
         kind = copy.kind;
-        fromTx = copy.fromTx;
-        toTx = copy.toTx;
+        tx = copy.tx;
     }
 
     public IPorterContext copy() {
@@ -68,21 +65,12 @@ public class IPorterContext {
         return this;
     }
 
-    public Transaction getFromTx() {
-        return fromTx;
+    public Transaction getTx() {
+        return tx;
     }
 
-    public IPorterContext setFromTx(Transaction fromTx) {
-        this.fromTx = fromTx;
-        return this;
-    }
-
-    public Transaction getToTx() {
-        return toTx;
-    }
-
-    public IPorterContext setToTx(Transaction toTx) {
-        this.toTx = toTx;
+    public IPorterContext setTx(Transaction tx) {
+        this.tx = tx;
         return this;
     }
 

@@ -16,10 +16,10 @@ import net.objectof.model.Stereotype;
 public class Conditions {
 
     private static final String JS_MATCH = "/* boolean */ function(context) {\n\t\n}";
-    private static final String JS_BEFORE = "/* void */ function(context) {\n\t\n}";
-    private static final String JS_AFTER = "/* void */ function(beforeContext, afterContext) {\n\t\n}";
-    private static final String JS_KEY = "/* object */ function(context) {\n\t\n}";
-    private static final String JS_VALUE = "/* object */ function(context) {\n\t\n}";
+    private static final String JS_BEFORE = "/* void */ function(sourceContext, destContext) {\n\t\n}";
+    private static final String JS_AFTER = "/* void */ function(sourceContext, destContext) {\n\t\n}";
+    private static final String JS_KEY = "/* object */ function(sourceContext, destContext) {\n\t\n}";
+    private static final String JS_VALUE = "/* object */ function(sourceContext, destContext) {\n\t\n}";
 
     private static final List<Action> actions = new ArrayList<>();
 

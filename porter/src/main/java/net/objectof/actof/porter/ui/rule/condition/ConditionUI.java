@@ -2,22 +2,24 @@ package net.objectof.actof.porter.ui.rule.condition;
 
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Separator;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import net.objectof.actof.common.controller.IActofUIController;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.icons.ActofIcons;
-import net.objectof.actof.common.icons.ActofIcons.Icon;
-import net.objectof.actof.common.icons.ActofIcons.Size;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.porter.rules.RuleBuilder;
 import net.objectof.actof.porter.ui.rule.RuleUI;
@@ -35,9 +37,13 @@ public class ConditionUI extends IActofUIController {
     private BorderPane borderpane;
 
     @FXML
+    private Separator sep;
+
+    @FXML
     private HBox hbox;
 
-    private Button remove;
+    @FXML
+    private Button remove, up, down;
 
     private TextInputControl textInput = new TextField();
 
@@ -64,7 +70,7 @@ public class ConditionUI extends IActofUIController {
             Action action = actionChoice.getSelectionModel().getSelectedItem();
 
             borderpane.setCenter(null);
-            hbox.getChildren().setAll(remove, stageChoice, actionChoice);
+            hbox.getChildren().setAll(remove, stageChoice, actionChoice, sep, up, down);
             hbox.setPadding(new Insets(0, 0, 0, 0));
 
             if (action.input == Input.CODE) {
@@ -74,7 +80,7 @@ public class ConditionUI extends IActofUIController {
                 hbox.setPadding(new Insets(0, 0, 6, 0));
             } else if (action.input == Input.FIELD) {
                 textInput = new TextField(textInput.getText());
-                hbox.getChildren().setAll(remove, stageChoice, actionChoice, textInput);
+                hbox.getChildren().setAll(remove, stageChoice, actionChoice, textInput, sep, up, down);
             }
 
             if (textInput.getText().length() == 0) {
@@ -83,23 +89,47 @@ public class ConditionUI extends IActofUIController {
 
         });
 
-        remove = new Button(null, ActofIcons.getIconView(Icon.REMOVE, Size.BUTTON));
-        remove.getStyleClass().add("tool-bar-button");
+        ImageView remIcon = ActofIcons.getCustomIcon(RuleUI.class, "icons/remove-symbolic-12.png");
+        remove.setGraphic(remIcon);
         remove.setOnAction(event -> {
             ruleui.getConditions().remove(this);
         });
-        hbox.getChildren().add(0, remove);
+
+        ImageView upIcon = ActofIcons.getCustomIcon(RuleUI.class, "icons/up-symbolic-12.png");
+        ImageView downIcon = ActofIcons.getCustomIcon(RuleUI.class, "icons/down-symbolic-12.png");
+        up.setGraphic(upIcon);
+        down.setGraphic(downIcon);
 
         remove.setVisible(false);
+        up.setVisible(false);
+        down.setVisible(false);
 
         getNode().setOnMouseEntered(event -> {
             remove.setVisible(true);
+            up.setVisible(true);
+            down.setVisible(true);
         });
 
         getNode().setOnMouseExited(event -> {
             remove.setVisible(false);
+            up.setVisible(false);
+            down.setVisible(false);
         });
 
+    }
+
+    public void onUp() {
+        int index = ruleui.getConditions().indexOf(this);
+        index = Math.max(0, index - 1);
+        ruleui.getConditions().remove(this);
+        ruleui.getConditions().add(index, this);
+    }
+
+    public void onDown() {
+        int index = ruleui.getConditions().indexOf(this);
+        index = Math.min(ruleui.getConditions().size() - 1, index + 1);
+        ruleui.getConditions().remove(this);
+        ruleui.getConditions().add(index, this);
     }
 
     private Action getAction() {
@@ -113,6 +143,40 @@ public class ConditionUI extends IActofUIController {
     @Override
     protected void initialize() throws Exception {
         // TODO Auto-generated method stub
+
+    }
+
+    public Map<String, Object> toMap() {
+        return new HashMap<String, Object>() {
+
+            {
+                Stage stage = stageChoice.getSelectionModel().getSelectedItem();
+                put("stage", stage == null ? "" : stage);
+
+                Action action = getAction();
+                put("action", action == null ? "" : action.name);
+                put("text", textInput.getText());
+            }
+        };
+    }
+
+    public void fromMap(Map<String, Object> data) {
+
+        String stageName = data.get("stage").toString();
+        Stage stage = null;
+        if (stageName.length() > 0) {
+            stage = Stage.valueOf(stageName);
+            stageChoice.getSelectionModel().select(stage);
+        }
+
+        String actionName = data.get("action").toString();
+        if (actionName.length() > 0 && stage != null) {
+            Action action = Conditions.forStage(stage).stream().filter(a -> a.name.equals(actionName)).findFirst()
+                    .get();
+            actionChoice.getSelectionModel().select(action);
+        }
+
+        textInput.setText(data.get("text").toString());
 
     }
 

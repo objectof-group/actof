@@ -18,6 +18,10 @@ public class ActofIcons {
         BUTTON, TOOLBAR
     }
 
+    public static ImageView getCustomIcon(Class<?> relativeTo, String name) {
+        return new ImageView(new Image(relativeTo.getResourceAsStream(name)));
+    }
+
     public static ImageView getIconView(Icon icon, Size size) {
         return new ImageView(getIcon(icon, size));
     }

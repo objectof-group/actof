@@ -9,7 +9,7 @@ public class ValueToListTransformer implements Transformer {
 
     @Override
     public Object apply(IPorterContext source, IPorterContext destination) {
-        Listing<Object> list = source.getToTx().create(destination.getKind().getComponentName());
+        Listing<Object> list = destination.getTx().create(destination.getKind().getComponentName());
         list.add(source.getValue());
         return list;
     }

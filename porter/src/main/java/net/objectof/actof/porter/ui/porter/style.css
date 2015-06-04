@@ -2,27 +2,16 @@
 	-fx-padding: 5px;
 }
 
-.entities {
-	-fx-background-insets: 0, 1;
-    -fx-padding: 0 1 0 0;
+
+.rules {
+    -fx-background-insets: 0 0 0 0, 0 0 1 0;
+    -fx-padding: 0 0 1 0;
 }
 
-.entities:focused {
+.rules:focused {
     -fx-background-color: -fx-box-border, -fx-control-inner-background;
-	-fx-background-insets: 0, 1;
-    -fx-padding: 0 1 0 0;
-}
-
-
-.values {
-    -fx-background-insets: 0 0 0 0, 0 0 0 1;
-    -fx-padding: 0 0 0 1;
-}
-
-.values:focused {
-    -fx-background-color: -fx-box-border, -fx-control-inner-background;
-    -fx-background-insets: 0 0 0 0, 0 0 0 1;
-    -fx-padding: 0 0 0 1;
+    -fx-background-insets: 0 0 0 0, 0 0 1 0;
+    -fx-padding: 0 0 1 0;
 }
 
 
@@ -51,16 +40,6 @@
 		-fx-background-color: -fx-focus-color, -fx-inner-border, transparent, transparent, transparent;
 }
 
-
-
-.entities > .title {
-	-fx-background-insets: -1 0 0 -1, 0 1 1 0, 1 2 2 1;
-    -fx-background-radius: 0 0 0 0, 0 0 0 0, 0 0 0 0;
-}
-
-.entities > *.content {
-    -fx-border-insets: -1 0 -1 -1;
-}
 
 .menu-button > .arrow-button > .arrow {
     -fx-background-color: transparent, transparent;

@@ -9,8 +9,12 @@
    <top>
       <HBox fx:id="hbox" spacing="6.0" BorderPane.alignment="CENTER">
          <children>
+            <Button fx:id="remove" mnemonicParsing="false" styleClass="tool-bar-button" />
             <ChoiceBox fx:id="stageChoice" prefWidth="150.0" />
             <ChoiceBox fx:id="actionChoice" prefWidth="150.0" />
+            <Separator fx:id="sep" visible="false" HBox.hgrow="ALWAYS" />
+            <Button fx:id="up" mnemonicParsing="false" onAction="#onUp" styleClass="tool-bar-button" />
+            <Button fx:id="down" mnemonicParsing="false" onAction="#onDown" styleClass="tool-bar-button" />
          </children>
       </HBox>
    </top>

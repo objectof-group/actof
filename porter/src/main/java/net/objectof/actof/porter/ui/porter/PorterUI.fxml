@@ -7,19 +7,8 @@
 <?import javafx.scene.layout.BorderPane?>
 
 <BorderPane prefHeight="650.0" prefWidth="800.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.porter.ui.porter.PorterUIController">
-   <top>
-      <HBox fx:id="connectors" alignment="CENTER" spacing="6.0" BorderPane.alignment="CENTER">
-         <children>
-            <Separator visible="false" HBox.hgrow="ALWAYS" />
-            <Separator visible="false" HBox.hgrow="ALWAYS" />
-         </children>
-         <padding>
-            <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
-         </padding>
-      </HBox>
-   </top>
    <center>
-      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" BorderPane.alignment="CENTER">
+      <ScrollPane fx:id="ruleScroller" fitToWidth="true" hbarPolicy="NEVER" styleClass="rules" BorderPane.alignment="CENTER">
          <content>
             <VBox fx:id="rulesBox" spacing="6.0">
                <padding>
@@ -30,13 +19,38 @@
       </ScrollPane>
    </center>
    <bottom>
-      <AnchorPane BorderPane.alignment="CENTER">
-         <children>
-            <Button fx:id="portButton" alignment="CENTER" contentDisplay="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#onPort" style="-fx-base: #0288D1; -fx-padding: 10px; -fx-font-weight: bold;" text="Port" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-         </children>
-         <BorderPane.margin>
+      <HBox fx:id="buttonBox" spacing="6.0" BorderPane.alignment="CENTER">
+         <padding>
             <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
-         </BorderPane.margin>
-      </AnchorPane>
+         </padding>
+      </HBox>
    </bottom>
+   <top>
+      <VBox BorderPane.alignment="CENTER">
+         <children>
+            <HBox styleClass="tool-bar">
+               <children>
+                  <Button fx:id="newButton" mnemonicParsing="false" onAction="#onNewProject" styleClass="tool-bar-button" text="New Project" />
+                  <Button fx:id="openButton" mnemonicParsing="false" onAction="#onOpenProject" styleClass="tool-bar-button" />
+                  <Button fx:id="saveButton" mnemonicParsing="false" onAction="#onSaveProject" styleClass="tool-bar-button" />
+                  <Separator visible="false" HBox.hgrow="ALWAYS" />
+                  <Button mnemonicParsing="false" onAction="#onPort" style="-fx-base: #0288D1;" text="➤ Port" />
+               </children>
+            </HBox>
+            <TitledPane fx:id="packagesPane" animated="false" styleClass="search-pane" text="untitled">
+               <content>
+                  <HBox fx:id="connectors" alignment="CENTER" spacing="6.0">
+                     <children>
+                        <Separator visible="false" HBox.hgrow="ALWAYS" />
+                        <Separator visible="false" HBox.hgrow="ALWAYS" />
+                     </children>
+                     <padding>
+                        <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
+                     </padding>
+                  </HBox>
+               </content>
+            </TitledPane>
+         </children>
+      </VBox>
+   </top>
 </BorderPane>

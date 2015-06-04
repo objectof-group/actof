@@ -20,7 +20,10 @@ public class PorterUI extends Application {
         Scene scene = new Scene((Parent) porterController.getNode());
         primaryStage.getIcons().add(new Image(PorterUI.class.getResource("Porter.png").openStream()));
         primaryStage.setScene(scene);
+        primaryStage.setTitle("ObjectOf Porter");
         primaryStage.show();
+
+        porterController.start();
     }
 
     public static void main(String[] args) {

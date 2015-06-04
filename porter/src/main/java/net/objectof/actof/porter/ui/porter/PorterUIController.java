@@ -1,28 +1,44 @@
 package net.objectof.actof.porter.ui.porter;
 
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TitledPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import net.objectof.actof.common.controller.IActofUIController;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.icons.ActofIcons;
 import net.objectof.actof.common.icons.ActofIcons.Icon;
 import net.objectof.actof.common.icons.ActofIcons.Size;
+import net.objectof.actof.common.util.ActofUtil;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.porter.Porter;
 import net.objectof.actof.porter.rules.Rule;
 import net.objectof.actof.porter.ui.rule.RuleUI;
+import net.objectof.actof.widgets.masonry.MasonryPane;
+import net.objectof.actof.widgets.masonry.MasonryPane.Layout;
 import net.objectof.connector.ConnectorException;
 import net.objectof.model.Package;
 
@@ -30,23 +46,44 @@ import net.objectof.model.Package;
 public class PorterUIController extends IActofUIController {
 
     @FXML
-    public HBox connectors;
+    public HBox connectors, buttonBox;
 
     @FXML
-    public VBox rulesBox;
+    private ScrollPane ruleScroller;
 
     @FXML
-    private Button portButton;
+    private Button newButton, openButton, saveButton;
 
-    private HBox buttonBox = new HBox(6);
+    @FXML
+    private TitledPane packagesPane;
+
+    private MasonryPane rulesPane;
+
     private Button addButton = new Button(null, ActofIcons.getIconView(Icon.ADD, Size.BUTTON));
 
     private ObservableList<RuleUI> rules = FXCollections.observableArrayList();
 
     private ConnectorChooserButton connection1, connection2;
 
+    private FileChooser fileChooser = new FileChooser();
+    {
+        fileChooser.setTitle("Open Project");
+        ExtensionFilter filter = new ExtensionFilter("Porter Project Files", "*.ppf");
+        fileChooser.getExtensionFilters().add(filter);
+        fileChooser.setSelectedExtensionFilter(filter);
+    }
+
     @Override
     public void ready() {
+
+        newButton.setGraphic(ActofIcons.getCustomIcon(getClass(), "icons/document-new.png"));
+        openButton.setGraphic(ActofIcons.getCustomIcon(getClass(), "icons/document-open.png"));
+        saveButton.setGraphic(ActofIcons.getCustomIcon(getClass(), "icons/document-save.png"));
+
+        rulesPane = new MasonryPane(500, Layout.GRID);
+        rulesPane.setSpacing(6);
+        rulesPane.setPadding(new Insets(6));
+        ruleScroller.setContent(rulesPane);
 
         addButton.getStyleClass().add("tool-bar-button");
         addButton.setOnAction(event -> {
@@ -97,9 +134,59 @@ public class PorterUIController extends IActofUIController {
 
     }
 
+    public void onNewProject() {
+        rules.clear();
+        rules.add(new RuleUI(getChangeBus(), this));
+    }
+
+    public void onOpenProject() throws FileNotFoundException {
+
+        File target = fileChooser.showOpenDialog(null);
+        if (target == null) { return; }
+        fileChooser.setInitialDirectory(target.getParentFile());
+
+        Scanner s = new Scanner(target);
+        s = s.useDelimiter("\\Z");
+        String data = s.next();
+        s.close();
+
+        fromMap((Map<String, Object>) ActofUtil.deserialize(data));
+    }
+
+    public void onSaveProject() throws IOException {
+        String data = ActofUtil.serialize(toMap());
+
+        File target = fileChooser.showSaveDialog(null);
+        if (target == null) { return; }
+        fileChooser.setInitialDirectory(target.getParentFile());
+
+        Writer w = new OutputStreamWriter(new FileOutputStream(target));
+        w.write(data);
+        w.close();
+
+    }
+
+    private Map<String, Object> toMap() {
+        return new HashMap<String, Object>() {
+
+            {
+                put("rules", rules.stream().map(RuleUI::toMap).collect(Collectors.toList()));
+            }
+        };
+    }
+
+    private void fromMap(Map<String, Object> map) {
+        rules.clear();
+        List<Map<String, Object>> datalist = (List<Map<String, Object>>) map.get("rules");
+        datalist.stream().forEach(data -> {
+            RuleUI r = new RuleUI(getChangeBus(), this);
+            r.fromMap(data);
+            rules.add(r);
+        });
+    }
+
     private void layoutRules() {
-        rulesBox.getChildren().setAll(rules);
-        rulesBox.getChildren().add(buttonBox);
+        rulesPane.getChildren().setAll(rules);
     }
 
     public static PorterUIController load(ChangeController changes) throws IOException {
@@ -112,6 +199,17 @@ public class PorterUIController extends IActofUIController {
 
     public ObservableList<RuleUI> getRules() {
         return rules;
+    }
+
+    public void start() {
+        // hide title component of packages titledpane
+        Pane title = (Pane) packagesPane.lookup(".title");
+        if (title != null) {
+            title.setVisible(false);
+            title.setMinHeight(0);
+            title.setPrefHeight(0);
+            title.setMaxHeight(0);
+        }
     }
 
 }
