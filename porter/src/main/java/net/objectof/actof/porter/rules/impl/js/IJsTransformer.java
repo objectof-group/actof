@@ -3,7 +3,6 @@ package net.objectof.actof.porter.rules.impl.js;
 
 import javax.script.ScriptException;
 
-import net.objectof.actof.porter.rules.impl.AbstractJsEvaluator;
 import net.objectof.actof.porter.rules.impl.Transformer;
 import net.objectof.actof.porter.visitor.IPorterContext;
 
@@ -18,8 +17,7 @@ public class IJsTransformer extends AbstractJsEvaluator implements Transformer {
     @Override
     public Object apply(IPorterContext source, IPorterContext destination) {
         try {
-            jdk.nashorn.api.scripting.ScriptObjectMirror fn = getFunction();
-            return fn.call(null, source, destination);
+            return getFunction().call(null, source, destination);
         }
         catch (ScriptException e) {
             // TODO Auto-generated catch block

@@ -3,7 +3,6 @@ package net.objectof.actof.porter.rules.impl.js;
 
 import javax.script.ScriptException;
 
-import net.objectof.actof.porter.rules.impl.AbstractJsEvaluator;
 import net.objectof.actof.porter.rules.impl.Matcher;
 import net.objectof.actof.porter.visitor.IPorterContext;
 

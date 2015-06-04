@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import net.objectof.actof.porter.rules.impl.ValueToListTransformer;
+import net.objectof.actof.porter.rules.impl.Transformers;
+import net.objectof.actof.porter.rules.impl.js.IJsBinaryOperator;
 import net.objectof.actof.porter.rules.impl.js.IJsListener;
 import net.objectof.actof.porter.rules.impl.js.IJsMatcher;
 import net.objectof.actof.porter.rules.impl.js.IJsTransformer;
@@ -27,22 +28,56 @@ public class Conditions {
 
         // @formatter:off
 
-        actions.add(new Action(Stage.MATCH, "Key", Input.FIELD, (rb, text) -> rb.matchKey(text)));
-        actions.add(new Action(Stage.MATCH, "Kind", Input.FIELD, (rb, text) -> rb.matchKind(text)));
-        actions.add(new Action(Stage.MATCH, "Stereotype", Input.FIELD, (rb, text) -> rb.matchStereotype(Stereotype.valueOf(text))));
-        actions.add(new Action(Stage.MATCH, "JavaScript", Input.CODE, (rb, text) -> rb.match(new IJsMatcher(text)), JS_MATCH));
-
-        actions.add(new Action(Stage.BEFORE, "Drop", Input.NONE, (rb, text) -> rb.drop()));
-        actions.add(new Action(Stage.BEFORE, "JavaScript", Input.CODE, (rb, text) -> rb.beforeTransform(new IJsListener(text)), JS_BEFORE));
-
-        actions.add(new Action(Stage.KEY, "Replace", Input.FIELD, (rb, text) -> rb.setKey(text)));
-        actions.add(new Action(Stage.KEY, "JavaScript", Input.CODE, (rb, text) -> rb.keyTransform(new IJsTransformer(text)), JS_KEY));
-
-        actions.add(new Action(Stage.VALUE, "Replace", Input.FIELD, (rb, text) -> rb.setValue(text)));
-        actions.add(new Action(Stage.VALUE, "JavaScript", Input.CODE, (rb, text) -> rb.valueTransform(new IJsTransformer(text)), JS_VALUE));
-        actions.add(new Action(Stage.VALUE, "Wrap in List", Input.NONE, (rb, text) -> rb.valueTransform(new ValueToListTransformer())));
         
-        actions.add(new Action(Stage.AFTER, "JavaScript", Input.CODE, (rb, text) -> rb.afterTransform(new IJsListener(text)), JS_AFTER));
+        //Matchers
+        actions.add(new Action(Stage.MATCH, "Key", Input.FIELD, 
+                (rb, text) -> rb.matchKey(text)));
+        actions.add(new Action(Stage.MATCH, "Kind", Input.FIELD, 
+                (rb, text) -> rb.matchKind(text)));
+        actions.add(new Action(Stage.MATCH, "Stereotype", Input.FIELD, 
+                (rb, text) -> rb.matchStereotype(Stereotype.valueOf(text))));
+        actions.add(new Action(Stage.MATCH, "JavaScript", Input.CODE, 
+                (rb, text) -> rb.match(new IJsMatcher(text)), JS_MATCH));
+
+        
+        //Before Transform Listeners
+        actions.add(new Action(Stage.BEFORE, "Drop", Input.NONE, 
+                (rb, text) -> rb.drop()));
+        actions.add(new Action(Stage.BEFORE, "JavaScript", Input.CODE, 
+                (rb, text) -> rb.beforeTransform(new IJsListener(text)), JS_BEFORE));
+
+        
+        //Key Transformers
+        actions.add(new Action(Stage.KEY, "Replace", Input.FIELD, 
+                (rb, text) -> rb.setKey(text)));
+        actions.add(new Action(Stage.KEY, "JavaScript", Input.CODE, 
+                (rb, text) -> rb.keyTransform(new IJsTransformer(text)), JS_KEY));
+
+        
+        //Value Transformers
+        actions.add(new Action(Stage.VALUE, "Replace", Input.FIELD, 
+                (rb, text) -> rb.setValue(text)));
+        actions.add(new Action(Stage.VALUE, "JavaScript", Input.CODE, 
+                (rb, text) -> rb.valueTransform(new IJsTransformer(text)), JS_VALUE));
+        //List
+        actions.add(new Action(Stage.VALUE, "Wrap in List", Input.NONE, 
+                (rb, text) -> rb.valueTransform(Transformers.valueToList())));
+        actions.add(new Action(Stage.VALUE, "List Head", Input.NONE, 
+                (rb, text) -> rb.valueTransform(Transformers.listHead())));
+        actions.add(new Action(Stage.VALUE, "List Tail", Input.NONE, 
+                (rb, text) -> rb.valueTransform(Transformers.listTail())));
+        actions.add(new Action(Stage.VALUE, "List Element", Input.CODE, 
+                (rb, text) -> rb.valueTransform(Transformers.listElement(new IJsBinaryOperator<>(text))), "function (a, b) {\n\t\n}"));
+        //Map
+        actions.add(new Action(Stage.VALUE, "Wrap in Map", Input.FIELD, 
+                (rb, text) -> rb.valueTransform(Transformers.valueToMap(text))));
+        actions.add(new Action(Stage.VALUE, "Map Element", Input.FIELD, 
+                (rb, text) -> rb.valueTransform(Transformers.mapElement(text))));
+        
+        
+        //After Transform Listeners
+        actions.add(new Action(Stage.AFTER, "JavaScript", Input.CODE, 
+                (rb, text) -> rb.afterTransform(new IJsListener(text)), JS_AFTER));
 
         // @formatter:on
 

@@ -1,4 +1,4 @@
-package net.objectof.actof.porter.rules.impl;
+package net.objectof.actof.porter.rules.impl.js;
 
 
 import javax.script.ScriptEngine;
