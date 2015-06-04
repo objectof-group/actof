@@ -293,7 +293,7 @@ public class PorterTesting {
         Porter p = new Porter();
 
         // @formatter:off
-              
+        
         Rule roleRule = RuleBuilder.start()
                 .matchKey("Person.role")
                 .setKey("Person.roles")

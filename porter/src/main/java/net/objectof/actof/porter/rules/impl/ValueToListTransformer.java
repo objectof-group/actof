@@ -7,15 +7,9 @@ import net.objectof.aggr.Listing;
 
 public class ValueToListTransformer implements Transformer {
 
-    private String listKind;
-
-    public ValueToListTransformer(String listKind) {
-        this.listKind = listKind;
-    }
-
     @Override
     public Object apply(IPorterContext source, IPorterContext destination) {
-        Listing<Object> list = source.getToTx().create(listKind);
+        Listing<Object> list = source.getToTx().create(destination.getKind().getComponentName());
         list.add(source.getValue());
         return list;
     }

@@ -40,7 +40,7 @@ public class Conditions {
 
         actions.add(new Action(Stage.VALUE, "Replace", Input.FIELD, (rb, text) -> rb.setValue(text)));
         actions.add(new Action(Stage.VALUE, "JavaScript", Input.CODE, (rb, text) -> rb.valueTransform(new IJsTransformer(text)), JS_VALUE));
-        actions.add(new Action(Stage.VALUE, "Wrap in List", Input.FIELD, (rb, text) -> rb.valueTransform(new ValueToListTransformer(text))));
+        actions.add(new Action(Stage.VALUE, "Wrap in List", Input.NONE, (rb, text) -> rb.valueTransform(new ValueToListTransformer())));
         
         actions.add(new Action(Stage.AFTER, "JavaScript", Input.CODE, (rb, text) -> rb.afterTransform(new IJsListener(text)), JS_AFTER));
 
