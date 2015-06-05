@@ -1,17 +1,20 @@
 package net.objectof.actof.porter.ui.rule.condition;
 
 
-import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import net.objectof.actof.porter.rules.impl.Matchers;
 import net.objectof.actof.porter.rules.impl.Transformers;
 import net.objectof.actof.porter.rules.impl.js.IJsBinaryOperator;
 import net.objectof.actof.porter.rules.impl.js.IJsListener;
 import net.objectof.actof.porter.rules.impl.js.IJsMatcher;
 import net.objectof.actof.porter.rules.impl.js.IJsTransformer;
-import net.objectof.actof.porter.ui.rule.condition.Action.Input;
-import net.objectof.model.Stereotype;
+import net.objectof.actof.porter.ui.rule.action.Action;
+import net.objectof.actof.porter.ui.rule.action.JavaAction;
+import net.objectof.actof.porter.ui.rule.condition.Condition.Input;
 
 
 public class Conditions {
@@ -22,72 +25,129 @@ public class Conditions {
     private static final String JS_KEY = "/* object */ function(sourceContext, destContext) {\n\t\n}";
     private static final String JS_VALUE = "/* object */ function(sourceContext, destContext) {\n\t\n}";
 
-    private static final List<Action> actions = new ArrayList<>();
+    // private static final ObservableList<Condition> actions =
+    // FXCollections.observableArrayList();
+
+    private static final Map<Condition, Action> conditions = new LinkedHashMap<>();
 
     static {
 
         // @formatter:off
 
         
-        //Matchers
-        actions.add(new Action(Stage.MATCH, "Key", Input.FIELD, 
-                (rb, text) -> rb.matchKey(text)));
-        actions.add(new Action(Stage.MATCH, "Kind", Input.FIELD, 
-                (rb, text) -> rb.matchKind(text)));
-        actions.add(new Action(Stage.MATCH, "Stereotype", Input.FIELD, 
-                (rb, text) -> rb.matchStereotype(Stereotype.valueOf(text))));
-        actions.add(new Action(Stage.MATCH, "JavaScript", Input.CODE, 
-                (rb, text) -> rb.match(new IJsMatcher(text)), JS_MATCH));
-
+        //**********************
+        // Matchers
+        //**********************
+        conditions.put(
+                new Condition(Stage.MATCH, "Key", Input.FIELD),
+                new JavaAction().setMatcherAct(text -> Matchers.matchKey(text)));
         
+        conditions.put(
+                new Condition(Stage.MATCH, "Kind", Input.FIELD),
+                new JavaAction().setMatcherAct(text -> Matchers.matchKind(text)));
+        
+        conditions.put(
+                new Condition(Stage.MATCH, "Stereotype", Input.FIELD),
+                new JavaAction().setMatcherAct(text -> Matchers.matchStereotype(text)));
+        
+        conditions.put(
+                new Condition(Stage.MATCH, "JavaScript", Input.FIELD, JS_MATCH),
+                new JavaAction().setMatcherAct(text -> new IJsMatcher(text)));
+
+
+        //**********************
         //Before Transform Listeners
-        actions.add(new Action(Stage.BEFORE, "Drop", Input.NONE, 
-                (rb, text) -> rb.drop()));
-        actions.add(new Action(Stage.BEFORE, "JavaScript", Input.CODE, 
-                (rb, text) -> rb.beforeTransform(new IJsListener(text)), JS_BEFORE));
+        //**********************
+        conditions.put(
+                new Condition(Stage.BEFORE, "Drop", Input.NONE),
+                new JavaAction().setBeforeAct(text -> (s, d) -> d.setDropped(true)));
+        
+        conditions.put(
+                new Condition(Stage.BEFORE, "JavaScript", Input.CODE, JS_BEFORE),
+                new JavaAction().setBeforeAct(text -> new IJsListener(text)));
+        
+        conditions.put(
+                new Condition(Stage.BEFORE, "Echo", Input.FIELD),
+                new JavaAction().setBeforeAct(text -> (s, d) -> System.out.println(text)));
 
         
+        //**********************
         //Key Transformers
-        actions.add(new Action(Stage.KEY, "Replace", Input.FIELD, 
-                (rb, text) -> rb.setKey(text)));
-        actions.add(new Action(Stage.KEY, "JavaScript", Input.CODE, 
-                (rb, text) -> rb.keyTransform(new IJsTransformer(text)), JS_KEY));
-
+        //**********************
+        conditions.put(
+            new Condition(Stage.KEY, "Replace", Input.FIELD),
+            new JavaAction().setKeyAct(text -> Transformers.replace(text)));
         
+        conditions.put(
+            new Condition(Stage.KEY, "JavaScript", Input.CODE, JS_KEY),
+            new JavaAction().setKeyAct(text -> new IJsTransformer(text)));
+        
+        
+        //**********************
         //Value Transformers
-        actions.add(new Action(Stage.VALUE, "Replace", Input.FIELD, 
-                (rb, text) -> rb.setValue(text)));
-        actions.add(new Action(Stage.VALUE, "JavaScript", Input.CODE, 
-                (rb, text) -> rb.valueTransform(new IJsTransformer(text)), JS_VALUE));
-        //List
-        actions.add(new Action(Stage.VALUE, "Wrap in List", Input.NONE, 
-                (rb, text) -> rb.valueTransform(Transformers.valueToList())));
-        actions.add(new Action(Stage.VALUE, "List Head", Input.NONE, 
-                (rb, text) -> rb.valueTransform(Transformers.listHead())));
-        actions.add(new Action(Stage.VALUE, "List Tail", Input.NONE, 
-                (rb, text) -> rb.valueTransform(Transformers.listTail())));
-        actions.add(new Action(Stage.VALUE, "List Element", Input.CODE, 
-                (rb, text) -> rb.valueTransform(Transformers.listElement(new IJsBinaryOperator<>(text))), "function (a, b) {\n\t\n}"));
-        //Map
-        actions.add(new Action(Stage.VALUE, "Wrap in Map", Input.FIELD, 
-                (rb, text) -> rb.valueTransform(Transformers.valueToMap(text)), "", "key"));
-        actions.add(new Action(Stage.VALUE, "Map Element", Input.FIELD, 
-                (rb, text) -> rb.valueTransform(Transformers.mapElement(text)), "", "key"));
-        //Composite
-        actions.add(new Action(Stage.VALUE, "Wrap in Composite", Input.FIELD, 
-                (rb, text) -> rb.valueTransform(Transformers.valueToComposite(text)), "", "field"));
-        actions.add(new Action(Stage.VALUE, "Composite Element", Input.FIELD, 
-                (rb, text) -> rb.valueTransform(Transformers.compositeElement(text)), "", "field"));
+        //**********************
+        conditions.put(
+            new Condition(Stage.VALUE, "Replace", Input.FIELD), 
+            new JavaAction().setValueAct(text -> Transformers.replace(text)));
         
+        conditions.put(
+            new Condition(Stage.VALUE, "JavaScript", Input.CODE, JS_VALUE),
+            new JavaAction().setValueAct(text -> new IJsTransformer(text)));
+        
+        //List
+        conditions.put(
+            new Condition(Stage.VALUE, "Wrap in List", Input.NONE), 
+            new JavaAction().setValueAct(text -> Transformers.valueToList()));
+        
+        conditions.put(
+            new Condition(Stage.VALUE, "List Head", Input.NONE), 
+            new JavaAction().setValueAct(text -> Transformers.listHead()));
+        
+        conditions.put(
+            new Condition(Stage.VALUE, "List Tail", Input.NONE), 
+            new JavaAction().setValueAct(text -> Transformers.listTail()));
+        
+        conditions.put(
+            new Condition(Stage.VALUE, "List Element", Input.CODE, "", "function (a, b) {\n\t\n}"), 
+            new JavaAction().setValueAct(text -> Transformers.listElement(new IJsBinaryOperator<>(text))));
+            
+            
+        //Map
+        conditions.put(
+            new Condition(Stage.VALUE, "Wrap in Map", Input.FIELD, "", "key"), 
+            new JavaAction().setValueAct(text -> Transformers.valueToMap(text)));
+        
+        conditions.put(
+            new Condition(Stage.VALUE, "Map Element", Input.FIELD, "", "key"), 
+            new JavaAction().setValueAct(text -> Transformers.mapElement(text)));
+        
+        //Composite
+        conditions.put(
+            new Condition(Stage.VALUE, "Wrap in Composite", Input.FIELD, "", "field"), 
+            new JavaAction().setValueAct(text -> Transformers.valueToComposite(text)));
+        
+        conditions.put(
+            new Condition(Stage.VALUE, "Composite Element", Input.FIELD, "", "field"), 
+            new JavaAction().setValueAct(text -> Transformers.compositeElement(text)));
+        
+        
+        //**********************
         //After Transform Listeners
-        actions.add(new Action(Stage.AFTER, "JavaScript", Input.CODE, 
-                (rb, text) -> rb.afterTransform(new IJsListener(text)), JS_AFTER));
+        //**********************
+        conditions.put(
+            new Condition(Stage.AFTER, "JavaScript", Input.CODE, JS_AFTER), 
+            new JavaAction().setAfterAct(text -> new IJsListener(text))); 
 
         // @formatter:on
 
     }
 
-    public static List<Action> forStage(Stage stage) {
-        return actions.stream().filter(a -> a.stage == stage).collect(Collectors.toList());
+    public static List<Condition> forStage(Stage stage) {
+        return conditions.keySet().stream().filter(a -> a.getStage() == stage)
+                .sorted((a, b) -> a.getName().compareTo(b.getName())).collect(Collectors.toList());
+    }
+
+    public static Action forCondition(Condition condition) {
+        return conditions.get(condition);
     }
 }

@@ -13,6 +13,10 @@ public class IJsTransformer extends AbstractJsEvaluator implements Transformer {
         super(js);
     }
 
+    public IJsTransformer(String js, String input) {
+        super(js, input);
+    }
+
     @SuppressWarnings({ "restriction" })
     @Override
     public Object apply(IPorterContext source, IPorterContext destination) {

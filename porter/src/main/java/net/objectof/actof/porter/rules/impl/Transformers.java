@@ -10,6 +10,10 @@ import net.objectof.aggr.Mapping;
 
 public class Transformers {
 
+    public static Transformer replace(Object replacement) {
+        return (src, dest) -> replacement;
+    }
+
     public static Transformer valueToList() {
         return (src, dest) -> {
             Listing<Object> list = dest.getTx().create(dest.getKind().getComponentName());

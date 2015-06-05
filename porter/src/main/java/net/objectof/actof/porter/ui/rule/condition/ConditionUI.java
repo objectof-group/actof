@@ -23,7 +23,8 @@ import net.objectof.actof.common.icons.ActofIcons;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.porter.rules.RuleBuilder;
 import net.objectof.actof.porter.ui.rule.RuleUI;
-import net.objectof.actof.porter.ui.rule.condition.Action.Input;
+import net.objectof.actof.porter.ui.rule.action.Action;
+import net.objectof.actof.porter.ui.rule.condition.Condition.Input;
 
 
 public class ConditionUI extends IActofUIController {
@@ -31,7 +32,7 @@ public class ConditionUI extends IActofUIController {
     @FXML
     private ChoiceBox<Stage> stageChoice;
     @FXML
-    private ChoiceBox<Action> actionChoice;
+    private ChoiceBox<Condition> actionChoice;
 
     @FXML
     private BorderPane borderpane;
@@ -59,34 +60,34 @@ public class ConditionUI extends IActofUIController {
         stageChoice.getItems().setAll(Stage.values());
         stageChoice.getSelectionModel().selectedItemProperty().addListener(change -> {
             Stage stage = stageChoice.getSelectionModel().getSelectedItem();
-            List<Action> actions = Conditions.forStage(stage);
-            actionChoice.getItems().setAll(actions);
-            if (actions.size() == 1) {
+            List<Condition> conditions = Conditions.forStage(stage);
+            actionChoice.getItems().setAll(conditions);
+            if (conditions.size() == 1) {
                 actionChoice.getSelectionModel().select(0);
             }
         });
 
         actionChoice.getSelectionModel().selectedItemProperty().addListener(change -> {
-            Action action = actionChoice.getSelectionModel().getSelectedItem();
+            Condition conditions = actionChoice.getSelectionModel().getSelectedItem();
 
             borderpane.setCenter(null);
             hbox.getChildren().setAll(remove, stageChoice, actionChoice, sep, up, down);
             hbox.setPadding(new Insets(0, 0, 0, 0));
 
-            if (action.input == Input.CODE) {
+            if (conditions.getInput() == Input.CODE) {
                 textInput = new TextArea(textInput.getText());
                 textInput.setStyle("-fx-font-family: monospace");
                 borderpane.setCenter(textInput);
                 hbox.setPadding(new Insets(0, 0, 6, 0));
-            } else if (action.input == Input.FIELD) {
+            } else if (conditions.getInput() == Input.FIELD) {
                 textInput = new TextField(textInput.getText());
                 hbox.getChildren().setAll(remove, stageChoice, actionChoice, textInput, sep, up, down);
             }
 
-            textInput.setPromptText(action.hint);
+            textInput.setPromptText(conditions.getHint());
 
             if (textInput.getText().length() == 0) {
-                textInput.setText(action.defaultText);
+                textInput.setText(conditions.getDefaultText());
             }
 
         });
@@ -134,12 +135,20 @@ public class ConditionUI extends IActofUIController {
         ruleui.getConditions().add(index, this);
     }
 
-    private Action getAction() {
+    private Condition getCondition() {
         return actionChoice.getSelectionModel().getSelectedItem();
     }
 
+    /**
+     * Accepts a {@link RuleBuilder} and applies this condition to it
+     * 
+     * @param rb
+     *            the RuleBuilder
+     */
     public void apply(RuleBuilder rb) {
-        getAction().act.accept(rb, textInput.getText());
+        Condition condition = getCondition();
+        Action action = Conditions.forCondition(condition);
+        action.accept(condition.getStage(), rb, textInput.getText());
     }
 
     @Override
@@ -155,8 +164,8 @@ public class ConditionUI extends IActofUIController {
                 Stage stage = stageChoice.getSelectionModel().getSelectedItem();
                 put("stage", stage == null ? "" : stage);
 
-                Action action = getAction();
-                put("action", action == null ? "" : action.name);
+                Condition action = getCondition();
+                put("action", action == null ? "" : action.getName());
                 put("text", textInput.getText());
             }
         };
@@ -173,8 +182,8 @@ public class ConditionUI extends IActofUIController {
 
         String actionName = data.get("action").toString();
         if (actionName.length() > 0 && stage != null) {
-            Action action = Conditions.forStage(stage).stream().filter(a -> a.name.equals(actionName)).findFirst()
-                    .get();
+            Condition action = Conditions.forStage(stage).stream().filter(a -> a.getName().equals(actionName))
+                    .findFirst().get();
             actionChoice.getSelectionModel().select(action);
         }
 

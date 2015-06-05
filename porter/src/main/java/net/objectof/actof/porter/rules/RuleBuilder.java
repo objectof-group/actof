@@ -6,6 +6,7 @@ import java.util.function.Predicate;
 import net.objectof.actof.porter.rules.impl.Listener;
 import net.objectof.actof.porter.rules.impl.Matchers;
 import net.objectof.actof.porter.rules.impl.Transformer;
+import net.objectof.actof.porter.rules.impl.Transformers;
 import net.objectof.actof.porter.visitor.IPorterContext;
 import net.objectof.model.Kind;
 import net.objectof.model.Stereotype;
@@ -75,18 +76,18 @@ public class RuleBuilder {
 
     public RuleBuilder drop() {
         rule.getBeforeTransformListeners().add((source, destination) -> {
-            source.setDropped(true);
+            destination.setDropped(true);
         });
         return this;
     }
 
     public RuleBuilder setKey(Object newKey) {
-        rule.getKeyTransformers().add((source, destination) -> newKey);
+        rule.getKeyTransformers().add(Transformers.replace(newKey));
         return this;
     }
 
     public RuleBuilder setValue(Object newValue) {
-        rule.getValueTransformers().add((source, destination) -> newValue);
+        rule.getValueTransformers().add(Transformers.replace(newValue));
         return this;
     }
 

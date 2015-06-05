@@ -13,6 +13,10 @@ public class IJsMatcher extends AbstractJsEvaluator implements Matcher {
         super(js);
     }
 
+    public IJsMatcher(String js, String input) {
+        super(js, input);
+    }
+
     @SuppressWarnings("restriction")
     @Override
     public boolean test(IPorterContext t) {

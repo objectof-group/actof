@@ -13,6 +13,10 @@ public class IJsListener extends AbstractJsEvaluator implements Listener {
         super(js);
     }
 
+    public IJsListener(String js, String input) {
+        super(js, input);
+    }
+
     @SuppressWarnings("restriction")
     @Override
     public void accept(IPorterContext t, IPorterContext u) {

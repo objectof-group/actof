@@ -85,7 +85,7 @@ public class IMigrationVisitor extends AbstractVisitor {
         // made to contexts in these hooks should be able to alter the real
         // contexts, so don't pass copies
         Rule.beforeTransform(porter.getRules(), context, result);
-        if (context.isDropped()) { return context; }
+        if (result.isDropped()) { return context; }
 
         // key -- only allow modification of the key at this stage
         IPorterContext keyContext = Rule.transformKey(porter.getRules(), context.copy(), result.copy());
