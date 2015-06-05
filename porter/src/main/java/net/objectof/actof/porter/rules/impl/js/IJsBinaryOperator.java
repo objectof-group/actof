@@ -12,6 +12,7 @@ public class IJsBinaryOperator<T> extends AbstractJsEvaluator implements BinaryO
         super(js);
     }
 
+    @SuppressWarnings({ "restriction", "unchecked" })
     @Override
     public T apply(T t, T u) {
         try {

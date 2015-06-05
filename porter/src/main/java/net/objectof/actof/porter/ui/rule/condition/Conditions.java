@@ -70,10 +70,14 @@ public class Conditions {
                 (rb, text) -> rb.valueTransform(Transformers.listElement(new IJsBinaryOperator<>(text))), "function (a, b) {\n\t\n}"));
         //Map
         actions.add(new Action(Stage.VALUE, "Wrap in Map", Input.FIELD, 
-                (rb, text) -> rb.valueTransform(Transformers.valueToMap(text))));
+                (rb, text) -> rb.valueTransform(Transformers.valueToMap(text)), "", "key"));
         actions.add(new Action(Stage.VALUE, "Map Element", Input.FIELD, 
-                (rb, text) -> rb.valueTransform(Transformers.mapElement(text))));
-        
+                (rb, text) -> rb.valueTransform(Transformers.mapElement(text)), "", "key"));
+        //Composite
+        actions.add(new Action(Stage.VALUE, "Wrap in Composite", Input.FIELD, 
+                (rb, text) -> rb.valueTransform(Transformers.valueToComposite(text)), "", "field"));
+        actions.add(new Action(Stage.VALUE, "Composite Element", Input.FIELD, 
+                (rb, text) -> rb.valueTransform(Transformers.compositeElement(text)), "", "field"));
         
         //After Transform Listeners
         actions.add(new Action(Stage.AFTER, "JavaScript", Input.CODE, 

@@ -13,7 +13,7 @@ public class IJsTransformer extends AbstractJsEvaluator implements Transformer {
         super(js);
     }
 
-    @SuppressWarnings({ "restriction", "unchecked" })
+    @SuppressWarnings({ "restriction" })
     @Override
     public Object apply(IPorterContext source, IPorterContext destination) {
         try {

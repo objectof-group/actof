@@ -16,6 +16,7 @@ public class AbstractJsEvaluator {
         this.js = js;
     }
 
+    @SuppressWarnings("restriction")
     protected ScriptObjectMirror getFunction() throws ScriptException {
         ScriptEngineManager engineManager = new ScriptEngineManager();
         ScriptEngine engine = engineManager.getEngineByName("nashorn");

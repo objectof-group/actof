@@ -3,6 +3,7 @@ package net.objectof.actof.porter.rules.impl;
 
 import java.util.function.BinaryOperator;
 
+import net.objectof.aggr.Composite;
 import net.objectof.aggr.Listing;
 import net.objectof.aggr.Mapping;
 
@@ -46,6 +47,21 @@ public class Transformers {
             Mapping<Object, Object> map = (Mapping<Object, Object>) src.getValue();
             if (!map.containsKey(key)) { return null; }
             return map.get(key);
+        };
+    }
+
+    public static Transformer valueToComposite(String text) {
+        return (src, dest) -> {
+            Composite comp = dest.getTx().create(dest.getKind().getComponentName());
+            comp.set(text, src.getValue());
+            return comp;
+        };
+    }
+
+    public static Transformer compositeElement(String text) {
+        return (src, dest) -> {
+            Composite comp = (Composite) src.getValue();
+            return comp.get(text);
         };
     }
 }

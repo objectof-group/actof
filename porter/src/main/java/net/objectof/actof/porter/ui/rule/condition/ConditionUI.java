@@ -83,6 +83,8 @@ public class ConditionUI extends IActofUIController {
                 hbox.getChildren().setAll(remove, stageChoice, actionChoice, textInput, sep, up, down);
             }
 
+            textInput.setPromptText(action.hint);
+
             if (textInput.getText().length() == 0) {
                 textInput.setText(action.defaultText);
             }
