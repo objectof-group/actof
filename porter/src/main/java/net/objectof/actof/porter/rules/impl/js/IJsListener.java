@@ -21,7 +21,11 @@ public class IJsListener extends AbstractJsEvaluator implements Listener {
     @Override
     public void accept(IPorterContext t, IPorterContext u) {
         try {
-            getFunction().call(null, t, u);
+            if (input == null) {
+                getFunction().call(null, t, u);
+            } else {
+                getFunction().call(null, t, u, input);
+            }
         }
         catch (ScriptException e) {
             // TODO Auto-generated catch block

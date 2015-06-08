@@ -15,7 +15,7 @@ import flexjson.transformer.AbstractTransformer;
 public class ConfigController {
 
 	public static <T> void save(String program, String key, T data, Class<T> cls) {
-		File datadir = Env.appDataDirectory(program);
+		File datadir = ActofEnv.appDataDirectory(program);
 		datadir.mkdirs();
 		File datafile = new File(datadir, key + ".json");
 		String contents = new JSONSerializer().transform(new ExcludeTransformer(), void.class).exclude("*.class").prettyPrint(true).deepSerialize(data);
@@ -32,7 +32,7 @@ public class ConfigController {
 	}
 	
 	public static <T> Optional<T> load(String program, String key, Class<T> cls) {
-		File datadir = Env.appDataDirectory(program);
+		File datadir = ActofEnv.appDataDirectory(program);
 		File datafile = new File(datadir, key + ".json");
 		try {
 			@SuppressWarnings("resource")

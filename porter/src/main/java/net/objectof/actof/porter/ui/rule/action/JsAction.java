@@ -12,6 +12,8 @@ public class JsAction implements Action {
 
     private String code;
 
+    public JsAction() {}
+
     public JsAction(String js) {
         this.code = js;
     }

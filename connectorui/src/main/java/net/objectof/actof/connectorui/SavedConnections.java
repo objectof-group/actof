@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.objectof.actof.common.controller.config.Env;
+import net.objectof.actof.common.controller.config.ActofEnv;
 import net.objectof.actof.connectorui.beans.Connection;
 import net.objectof.actof.connectorui.beans.Last;
 import net.objectof.actof.connectorui.beans.Saved;
@@ -24,7 +24,7 @@ public class SavedConnections {
     private static final Package SETTINGS = getSettingsPackage();
 
     private static Package getSettingsPackage() {
-        File appdir = Env.appDataDirectory("actof");
+        File appdir = ActofEnv.appDataDirectory("actof");
         appdir.mkdirs();
 
         Connector settings = new IH2Connector();

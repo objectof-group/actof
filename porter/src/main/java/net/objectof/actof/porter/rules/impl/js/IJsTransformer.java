@@ -21,7 +21,11 @@ public class IJsTransformer extends AbstractJsEvaluator implements Transformer {
     @Override
     public Object apply(IPorterContext source, IPorterContext destination) {
         try {
-            return getFunction().call(null, source, destination);
+            if (input == null) {
+                return getFunction().call(null, source, destination);
+            } else {
+                return getFunction().call(null, source, destination, input);
+            }
         }
         catch (ScriptException e) {
             // TODO Auto-generated catch block

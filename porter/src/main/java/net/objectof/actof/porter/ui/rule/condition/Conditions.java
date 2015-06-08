@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import net.objectof.actof.porter.rules.impl.Listeners;
 import net.objectof.actof.porter.rules.impl.Matchers;
 import net.objectof.actof.porter.rules.impl.Transformers;
 import net.objectof.actof.porter.rules.impl.js.IJsBinaryOperator;
@@ -15,6 +16,7 @@ import net.objectof.actof.porter.rules.impl.js.IJsTransformer;
 import net.objectof.actof.porter.ui.rule.action.Action;
 import net.objectof.actof.porter.ui.rule.action.JavaAction;
 import net.objectof.actof.porter.ui.rule.condition.Condition.Input;
+import net.objectof.actof.porter.ui.rule.operation.JsOperation;
 
 
 public class Conditions {
@@ -60,7 +62,7 @@ public class Conditions {
         //**********************
         conditions.put(
                 new Condition(Stage.BEFORE, "Drop", Input.NONE),
-                new JavaAction().setBeforeAct(text -> (s, d) -> d.setDropped(true)));
+                new JavaAction().setBeforeAct(text -> Listeners.drop()));
         
         conditions.put(
                 new Condition(Stage.BEFORE, "JavaScript", Input.CODE, JS_BEFORE),
@@ -68,8 +70,24 @@ public class Conditions {
         
         conditions.put(
                 new Condition(Stage.BEFORE, "Echo", Input.FIELD),
-                new JavaAction().setBeforeAct(text -> (s, d) -> System.out.println(text)));
+                new JavaAction().setBeforeAct(text -> Listeners.echo(text)));
 
+        conditions.put(
+                new Condition(Stage.BEFORE, "Print Key", Input.NONE),
+                new JavaAction().setBeforeAct(text -> Listeners.printKey()));
+
+        conditions.put(
+                new Condition(Stage.BEFORE, "Print Value", Input.NONE),
+                new JavaAction().setBeforeAct(text -> Listeners.printValue()));
+
+        conditions.put(
+                new Condition(Stage.BEFORE, "Print Kind", Input.NONE),
+                new JavaAction().setBeforeAct(text -> Listeners.printKind()));
+        
+        conditions.put(
+                new Condition(Stage.BEFORE, "Print", Input.CODE),
+                new JavaAction().setBeforeAct(text -> Listeners.print(new IJsTransformer(text))));
+        
         
         //**********************
         //Key Transformers
@@ -137,8 +155,13 @@ public class Conditions {
         conditions.put(
             new Condition(Stage.AFTER, "JavaScript", Input.CODE, JS_AFTER), 
             new JavaAction().setAfterAct(text -> new IJsListener(text))); 
-
+        
         // @formatter:on
+
+        List<JsOperation> customOps = JsOperation.load();
+        for (JsOperation op : customOps) {
+            conditions.put(op.condition, op.action);
+        }
 
     }
 

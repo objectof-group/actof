@@ -14,7 +14,7 @@ import javafx.scene.control.TreeTableView;
 import javafx.stage.FileChooser;
 import net.objectof.actof.common.controller.IActofUIController;
 import net.objectof.actof.common.controller.change.ChangeController;
-import net.objectof.actof.common.controller.config.Env;
+import net.objectof.actof.common.controller.config.ActofEnv;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.minion.Settings;
 import net.objectof.actof.minion.common.classpath.sources.MinionClasspath;
@@ -79,7 +79,7 @@ public class ClasspathController extends IActofUIController {
     public void addJar() throws MalformedURLException, IOException {
 
         FileChooser chooser = new FileChooser();
-        chooser.setInitialDirectory(Settings.get(SETTING_PATH, Env.homeDirectory()));
+        chooser.setInitialDirectory(Settings.get(SETTING_PATH, ActofEnv.homeDirectory()));
         List<File> jars = chooser.showOpenMultipleDialog(null);
         if (jars == null || jars.size() == 0) { return; }
         Settings.put(SETTING_PATH, jars.get(0).getParentFile());

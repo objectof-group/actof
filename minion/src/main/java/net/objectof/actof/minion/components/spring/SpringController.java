@@ -29,7 +29,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import net.objectof.actof.common.controller.IActofUIController;
 import net.objectof.actof.common.controller.change.ChangeController;
-import net.objectof.actof.common.controller.config.Env;
+import net.objectof.actof.common.controller.config.ActofEnv;
 import net.objectof.actof.common.util.ActofUtil;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.minion.Settings;
@@ -173,7 +173,7 @@ public class SpringController extends IActofUIController {
     public void addBeanDefinition() throws FileNotFoundException {
 
         FileChooser chooser = new FileChooser();
-        chooser.setInitialDirectory(Settings.get(SETTING_PATH, Env.homeDirectory()));
+        chooser.setInitialDirectory(Settings.get(SETTING_PATH, ActofEnv.homeDirectory()));
         List<File> files = chooser.showOpenMultipleDialog(null);
         if (files == null) { return; }
         if (files.size() == 0) { return; }
@@ -192,7 +192,7 @@ public class SpringController extends IActofUIController {
     public void saveBeanDefinition() throws IOException {
 
         FileChooser chooser = new FileChooser();
-        chooser.setInitialDirectory(Settings.get(SETTING_PATH, Env.homeDirectory()));
+        chooser.setInitialDirectory(Settings.get(SETTING_PATH, ActofEnv.homeDirectory()));
         File beansFile = chooser.showSaveDialog(null);
         if (beansFile == null) { return; }
         Settings.put(SETTING_PATH, beansFile.getParentFile());
@@ -223,7 +223,7 @@ public class SpringController extends IActofUIController {
 
     public void openProject() throws FileNotFoundException {
         FileChooser chooser = new FileChooser();
-        chooser.setInitialDirectory(Settings.get(SETTING_PATH, Env.homeDirectory()));
+        chooser.setInitialDirectory(Settings.get(SETTING_PATH, ActofEnv.homeDirectory()));
         File file = chooser.showOpenDialog(null);
         if (file == null) { return; }
 
@@ -239,7 +239,7 @@ public class SpringController extends IActofUIController {
 
     public void saveProject() throws IOException {
         FileChooser chooser = new FileChooser();
-        chooser.setInitialDirectory(Settings.get(SETTING_PATH, Env.homeDirectory()));
+        chooser.setInitialDirectory(Settings.get(SETTING_PATH, ActofEnv.homeDirectory()));
         File file = chooser.showSaveDialog(null);
         if (file == null) { return; }
 

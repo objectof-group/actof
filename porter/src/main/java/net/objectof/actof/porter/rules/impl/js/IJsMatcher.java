@@ -22,7 +22,12 @@ public class IJsMatcher extends AbstractJsEvaluator implements Matcher {
     public boolean test(IPorterContext t) {
         try {
             jdk.nashorn.api.scripting.ScriptObjectMirror fn = getFunction();
-            Object result = fn.call(null, t);
+            Object result = null;
+            if (input == null) {
+                result = fn.call(null, t);
+            } else {
+                result = fn.call(null, t, input);
+            }
             if (result instanceof Boolean) { return (boolean) result; }
             return false;
         }

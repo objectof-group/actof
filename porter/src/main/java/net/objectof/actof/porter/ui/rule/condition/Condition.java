@@ -13,6 +13,8 @@ public class Condition {
     private String defaultText;
     private String hint;
 
+    public Condition() {}
+
     public Condition(Stage stage, String name, Input input) {
         this(stage, name, input, "");
     }

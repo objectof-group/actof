@@ -1,7 +1,6 @@
 package net.objectof.actof.porter.rules.impl.js;
 
 
-import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
@@ -28,7 +27,6 @@ public class AbstractJsEvaluator {
     protected ScriptObjectMirror getFunction() throws ScriptException {
         ScriptEngineManager engineManager = new ScriptEngineManager();
         ScriptEngine engine = engineManager.getEngineByName("nashorn");
-        engine.getBindings(ScriptContext.ENGINE_SCOPE).put("input", input);
         ScriptObjectMirror fn = (ScriptObjectMirror) engine.eval(js);
         return fn;
     }

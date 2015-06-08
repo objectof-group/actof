@@ -4,7 +4,7 @@ package net.objectof.actof.common.controller.config;
 import java.io.File;
 
 
-public class Env {
+public class ActofEnv {
 
     public enum OS {
         WINDOWS, MAC, UNIX, OTHER
@@ -34,7 +34,7 @@ public class Env {
 
     }
 
-    public static Env.OS getOS() {
+    public static ActofEnv.OS getOS() {
         if (isWindows()) return OS.WINDOWS;
         if (isMac()) return OS.MAC;
         if (isUnix()) return OS.UNIX;

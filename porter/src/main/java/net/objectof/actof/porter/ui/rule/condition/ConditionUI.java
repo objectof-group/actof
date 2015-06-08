@@ -148,7 +148,19 @@ public class ConditionUI extends IActofUIController {
     public void apply(RuleBuilder rb) {
         Condition condition = getCondition();
         Action action = Conditions.forCondition(condition);
-        action.accept(condition.getStage(), rb, textInput.getText());
+        action.accept(condition.getStage(), rb, getInput());
+    }
+
+    private String getInput() {
+        if (getCondition().getInput() == Input.NONE) {
+            return null;
+        } else {
+            return textInput.getText();
+        }
+    }
+
+    private Stage getStage() {
+        return stageChoice.getSelectionModel().getSelectedItem();
     }
 
     @Override
