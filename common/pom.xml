@@ -6,7 +6,7 @@
   <parent>
     <groupId>net.objectof.actof</groupId>
     <artifactId>actof</artifactId>
-    <version>0.2-SNAPSHOT</version>
+    <version>0.1.2</version>
   </parent>
   
   <artifactId>actof-common</artifactId>
@@ -27,7 +27,7 @@
   <dependency>
   	<groupId>objectof</groupId>
   	<artifactId>objectof-connector</artifactId>
-  	<version>0.2-SNAPSHOT</version>
+  	<version>0.1.2</version>
   </dependency>
   </dependencies>
   
