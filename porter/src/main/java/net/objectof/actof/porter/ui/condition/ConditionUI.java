@@ -22,8 +22,10 @@ import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.icons.ActofIcons;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.porter.rules.RuleBuilder;
-import net.objectof.actof.porter.ui.action.Action;
 import net.objectof.actof.porter.ui.condition.Condition.Input;
+import net.objectof.actof.porter.ui.condition.Condition.Stage;
+import net.objectof.actof.porter.ui.operations.Operation;
+import net.objectof.actof.porter.ui.operations.Operations;
 import net.objectof.actof.porter.ui.rule.RuleUI;
 
 
@@ -60,7 +62,7 @@ public class ConditionUI extends IActofUIController {
         stageChoice.getItems().setAll(Stage.values());
         stageChoice.getSelectionModel().selectedItemProperty().addListener(change -> {
             Stage stage = stageChoice.getSelectionModel().getSelectedItem();
-            List<Condition> conditions = Conditions.forStage(stage);
+            List<Condition> conditions = Operations.conditionsFor(stage);
             actionChoice.getItems().setAll(conditions);
             if (conditions.size() == 1) {
                 actionChoice.getSelectionModel().select(0);
@@ -147,8 +149,8 @@ public class ConditionUI extends IActofUIController {
      */
     public void apply(RuleBuilder rb) {
         Condition condition = getCondition();
-        Action action = Conditions.forCondition(condition);
-        action.accept(condition.getStage(), rb, getInput());
+        Operation op = Operations.forCondition(condition);
+        op.getAction().accept(condition.getStage(), rb, getInput());
     }
 
     private String getInput() {
@@ -194,7 +196,7 @@ public class ConditionUI extends IActofUIController {
 
         String actionName = data.get("action").toString();
         if (actionName.length() > 0 && stage != null) {
-            Condition action = Conditions.forStage(stage).stream().filter(a -> a.getName().equals(actionName))
+            Condition action = Operations.conditionsFor(stage).stream().filter(a -> a.getName().equals(actionName))
                     .findFirst().get();
             actionChoice.getSelectionModel().select(action);
         }

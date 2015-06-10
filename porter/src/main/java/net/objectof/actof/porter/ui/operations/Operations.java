@@ -1,11 +1,12 @@
-package net.objectof.actof.porter.ui.condition;
+package net.objectof.actof.porter.ui.operations;
 
 
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
+import javafx.beans.Observable;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import net.objectof.actof.porter.rules.impl.Listeners;
 import net.objectof.actof.porter.rules.impl.Matchers;
 import net.objectof.actof.porter.rules.impl.Transformers;
@@ -13,13 +14,13 @@ import net.objectof.actof.porter.rules.impl.js.IJsBinaryOperator;
 import net.objectof.actof.porter.rules.impl.js.IJsListener;
 import net.objectof.actof.porter.rules.impl.js.IJsMatcher;
 import net.objectof.actof.porter.rules.impl.js.IJsTransformer;
-import net.objectof.actof.porter.ui.action.Action;
 import net.objectof.actof.porter.ui.action.JavaAction;
+import net.objectof.actof.porter.ui.condition.Condition;
 import net.objectof.actof.porter.ui.condition.Condition.Input;
-import net.objectof.actof.porter.ui.operations.JsOperation;
+import net.objectof.actof.porter.ui.condition.Condition.Stage;
 
 
-public class Conditions {
+public class Operations {
 
     private static final String JS_MATCH = "/* boolean */ function(context) {\n\t\n}";
     private static final String JS_BEFORE = "/* void */ function(sourceContext, destContext) {\n\t\n}";
@@ -30,7 +31,8 @@ public class Conditions {
     // private static final ObservableList<Condition> actions =
     // FXCollections.observableArrayList();
 
-    private static final Map<Condition, Action> conditions = new LinkedHashMap<>();
+    private static final ObservableList<Operation> operations = FXCollections
+            .observableArrayList(op -> new Observable[] { op.titleProperty() });
 
     static {
 
@@ -40,137 +42,141 @@ public class Conditions {
         //**********************
         // Matchers
         //**********************
-        conditions.put(
+        operations.add(new Operation(
                 new Condition(Stage.MATCH, "Key", Input.FIELD),
-                new JavaAction().setMatcherAct(text -> Matchers.matchKey(text)));
+                new JavaAction().setMatcherAct(text -> Matchers.matchKey(text))));
         
-        conditions.put(
+        operations.add(new Operation(
                 new Condition(Stage.MATCH, "Kind", Input.FIELD),
-                new JavaAction().setMatcherAct(text -> Matchers.matchKind(text)));
+                new JavaAction().setMatcherAct(text -> Matchers.matchKind(text))));
         
-        conditions.put(
+        operations.add(new Operation(
                 new Condition(Stage.MATCH, "Stereotype", Input.FIELD),
-                new JavaAction().setMatcherAct(text -> Matchers.matchStereotype(text)));
+                new JavaAction().setMatcherAct(text -> Matchers.matchStereotype(text))));
         
-        conditions.put(
+        operations.add(new Operation(
                 new Condition(Stage.MATCH, "JavaScript", Input.FIELD, JS_MATCH),
-                new JavaAction().setMatcherAct(text -> new IJsMatcher(text)));
+                new JavaAction().setMatcherAct(text -> new IJsMatcher(text))));
 
 
         //**********************
         //Before Transform Listeners
         //**********************
-        conditions.put(
+        operations.add(new Operation(
                 new Condition(Stage.BEFORE, "Drop", Input.NONE),
-                new JavaAction().setBeforeAct(text -> Listeners.drop()));
+                new JavaAction().setBeforeAct(text -> Listeners.drop())));
         
-        conditions.put(
+        operations.add(new Operation(
                 new Condition(Stage.BEFORE, "JavaScript", Input.CODE, JS_BEFORE),
-                new JavaAction().setBeforeAct(text -> new IJsListener(text)));
+                new JavaAction().setBeforeAct(text -> new IJsListener(text))));
         
-        conditions.put(
+        operations.add(new Operation(
                 new Condition(Stage.BEFORE, "Echo", Input.FIELD),
-                new JavaAction().setBeforeAct(text -> Listeners.echo(text)));
+                new JavaAction().setBeforeAct(text -> Listeners.echo(text))));
 
-        conditions.put(
+        operations.add(new Operation(
                 new Condition(Stage.BEFORE, "Print Key", Input.NONE),
-                new JavaAction().setBeforeAct(text -> Listeners.printKey()));
+                new JavaAction().setBeforeAct(text -> Listeners.printKey())));
 
-        conditions.put(
+        operations.add(new Operation(
                 new Condition(Stage.BEFORE, "Print Value", Input.NONE),
-                new JavaAction().setBeforeAct(text -> Listeners.printValue()));
+                new JavaAction().setBeforeAct(text -> Listeners.printValue())));
 
-        conditions.put(
+        operations.add(new Operation(
                 new Condition(Stage.BEFORE, "Print Kind", Input.NONE),
-                new JavaAction().setBeforeAct(text -> Listeners.printKind()));
+                new JavaAction().setBeforeAct(text -> Listeners.printKind())));
         
-        conditions.put(
+        operations.add(new Operation(
                 new Condition(Stage.BEFORE, "Print", Input.CODE),
-                new JavaAction().setBeforeAct(text -> Listeners.print(new IJsTransformer(text))));
+                new JavaAction().setBeforeAct(text -> Listeners.print(new IJsTransformer(text)))));
         
         
         //**********************
         //Key Transformers
         //**********************
-        conditions.put(
+        operations.add(new Operation(
             new Condition(Stage.KEY, "Replace", Input.FIELD),
-            new JavaAction().setKeyAct(text -> Transformers.replace(text)));
+            new JavaAction().setKeyAct(text -> Transformers.replace(text))));
         
-        conditions.put(
+        operations.add(new Operation(
             new Condition(Stage.KEY, "JavaScript", Input.CODE, JS_KEY),
-            new JavaAction().setKeyAct(text -> new IJsTransformer(text)));
+            new JavaAction().setKeyAct(text -> new IJsTransformer(text))));
         
         
         //**********************
         //Value Transformers
         //**********************
-        conditions.put(
+        operations.add(new Operation(
             new Condition(Stage.VALUE, "Replace", Input.FIELD), 
-            new JavaAction().setValueAct(text -> Transformers.replace(text)));
+            new JavaAction().setValueAct(text -> Transformers.replace(text))));
         
-        conditions.put(
+        operations.add(new Operation(
             new Condition(Stage.VALUE, "JavaScript", Input.CODE, JS_VALUE),
-            new JavaAction().setValueAct(text -> new IJsTransformer(text)));
+            new JavaAction().setValueAct(text -> new IJsTransformer(text))));
         
         //List
-        conditions.put(
+        operations.add(new Operation(
             new Condition(Stage.VALUE, "Wrap in List", Input.NONE), 
-            new JavaAction().setValueAct(text -> Transformers.valueToList()));
+            new JavaAction().setValueAct(text -> Transformers.valueToList())));
         
-        conditions.put(
+        operations.add(new Operation(
             new Condition(Stage.VALUE, "List Head", Input.NONE), 
-            new JavaAction().setValueAct(text -> Transformers.listHead()));
+            new JavaAction().setValueAct(text -> Transformers.listHead())));
         
-        conditions.put(
+        operations.add(new Operation(
             new Condition(Stage.VALUE, "List Tail", Input.NONE), 
-            new JavaAction().setValueAct(text -> Transformers.listTail()));
+            new JavaAction().setValueAct(text -> Transformers.listTail())));
         
-        conditions.put(
+        operations.add(new Operation(
             new Condition(Stage.VALUE, "List Element", Input.CODE, "", "function (a, b) {\n\t\n}"), 
-            new JavaAction().setValueAct(text -> Transformers.listElement(new IJsBinaryOperator<>(text))));
+            new JavaAction().setValueAct(text -> Transformers.listElement(new IJsBinaryOperator<>(text)))));
             
             
         //Map
-        conditions.put(
+        operations.add(new Operation(
             new Condition(Stage.VALUE, "Wrap in Map", Input.FIELD, "", "key"), 
-            new JavaAction().setValueAct(text -> Transformers.valueToMap(text)));
+            new JavaAction().setValueAct(text -> Transformers.valueToMap(text))));
         
-        conditions.put(
+        operations.add(new Operation(
             new Condition(Stage.VALUE, "Map Element", Input.FIELD, "", "key"), 
-            new JavaAction().setValueAct(text -> Transformers.mapElement(text)));
+            new JavaAction().setValueAct(text -> Transformers.mapElement(text))));
         
         //Composite
-        conditions.put(
+        operations.add(new Operation(
             new Condition(Stage.VALUE, "Wrap in Composite", Input.FIELD, "", "field"), 
-            new JavaAction().setValueAct(text -> Transformers.valueToComposite(text)));
+            new JavaAction().setValueAct(text -> Transformers.valueToComposite(text))));
         
-        conditions.put(
+        operations.add(new Operation(
             new Condition(Stage.VALUE, "Composite Element", Input.FIELD, "", "field"), 
-            new JavaAction().setValueAct(text -> Transformers.compositeElement(text)));
+            new JavaAction().setValueAct(text -> Transformers.compositeElement(text))));
         
         
         //**********************
         //After Transform Listeners
         //**********************
-        conditions.put(
+        operations.add(new Operation(
             new Condition(Stage.AFTER, "JavaScript", Input.CODE, JS_AFTER), 
-            new JavaAction().setAfterAct(text -> new IJsListener(text))); 
+            new JavaAction().setAfterAct(text -> new IJsListener(text)))); 
         
         // @formatter:on
 
-        List<JsOperation> customOps = JsOperation.load();
-        for (JsOperation op : customOps) {
-            conditions.put(op.condition, op.action);
+        List<Operation> customOps = JsOperations.load();
+        for (Operation op : customOps) {
+            operations.add(op);
         }
 
     }
 
-    public static List<Condition> forStage(Stage stage) {
-        return conditions.keySet().stream().filter(a -> a.getStage() == stage)
+    public static ObservableList<Operation> getOperations() {
+        return operations;
+    }
+
+    public static List<Condition> conditionsFor(Stage stage) {
+        return operations.stream().map(op -> op.getCondition()).filter(a -> a.getStage() == stage)
                 .sorted((a, b) -> a.getName().compareTo(b.getName())).collect(Collectors.toList());
     }
 
-    public static Action forCondition(Condition condition) {
-        return conditions.get(condition);
+    public static Operation forCondition(Condition condition) {
+        return operations.stream().filter(op -> op.getCondition().equals(condition)).findFirst().orElse(null);
     }
 }

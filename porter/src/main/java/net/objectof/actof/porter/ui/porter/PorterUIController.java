@@ -176,6 +176,7 @@ public class PorterUIController extends IActofUIController {
         OperationUI ops = OperationUI.load(getChangeBus());
         Scene scene = new Scene((Parent) ops.getNode());
         Stage stage = new Stage();
+        stage.setTitle("Custom Operations Editor");
         stage.setScene(scene);
         stage.show();
     }

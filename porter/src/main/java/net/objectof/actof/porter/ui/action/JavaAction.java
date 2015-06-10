@@ -8,7 +8,7 @@ import net.objectof.actof.porter.rules.RuleBuilder;
 import net.objectof.actof.porter.rules.impl.Listener;
 import net.objectof.actof.porter.rules.impl.Matcher;
 import net.objectof.actof.porter.rules.impl.Transformer;
-import net.objectof.actof.porter.ui.condition.Stage;
+import net.objectof.actof.porter.ui.condition.Condition.Stage;
 
 
 public class JavaAction implements Action {
