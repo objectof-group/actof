@@ -1,4 +1,4 @@
-package net.objectof.actof.porter.ui.rule.condition;
+package net.objectof.actof.porter.ui.condition;
 
 
 import java.util.LinkedHashMap;
@@ -13,10 +13,10 @@ import net.objectof.actof.porter.rules.impl.js.IJsBinaryOperator;
 import net.objectof.actof.porter.rules.impl.js.IJsListener;
 import net.objectof.actof.porter.rules.impl.js.IJsMatcher;
 import net.objectof.actof.porter.rules.impl.js.IJsTransformer;
-import net.objectof.actof.porter.ui.rule.action.Action;
-import net.objectof.actof.porter.ui.rule.action.JavaAction;
-import net.objectof.actof.porter.ui.rule.condition.Condition.Input;
-import net.objectof.actof.porter.ui.rule.operation.JsOperation;
+import net.objectof.actof.porter.ui.action.Action;
+import net.objectof.actof.porter.ui.action.JavaAction;
+import net.objectof.actof.porter.ui.condition.Condition.Input;
+import net.objectof.actof.porter.ui.operations.JsOperation;
 
 
 public class Conditions {

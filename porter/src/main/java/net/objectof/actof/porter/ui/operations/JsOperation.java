@@ -1,4 +1,4 @@
-package net.objectof.actof.porter.ui.rule.operation;
+package net.objectof.actof.porter.ui.operations;
 
 
 import java.io.File;
@@ -13,10 +13,10 @@ import java.util.Scanner;
 
 import net.objectof.actof.common.controller.config.ActofEnv;
 import net.objectof.actof.common.util.ActofUtil;
-import net.objectof.actof.porter.ui.rule.action.JsAction;
-import net.objectof.actof.porter.ui.rule.condition.Condition;
-import net.objectof.actof.porter.ui.rule.condition.Stage;
-import net.objectof.actof.porter.ui.rule.condition.Condition.Input;
+import net.objectof.actof.porter.ui.action.JsAction;
+import net.objectof.actof.porter.ui.condition.Condition;
+import net.objectof.actof.porter.ui.condition.Stage;
+import net.objectof.actof.porter.ui.condition.Condition.Input;
 
 
 /**

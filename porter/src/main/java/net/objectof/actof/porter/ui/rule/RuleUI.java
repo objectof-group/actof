@@ -24,8 +24,8 @@ import net.objectof.actof.common.icons.ActofIcons.Icon;
 import net.objectof.actof.common.icons.ActofIcons.Size;
 import net.objectof.actof.porter.rules.Rule;
 import net.objectof.actof.porter.rules.RuleBuilder;
+import net.objectof.actof.porter.ui.condition.ConditionUI;
 import net.objectof.actof.porter.ui.porter.PorterUIController;
-import net.objectof.actof.porter.ui.rule.condition.ConditionUI;
 import net.objectof.actof.widgets.card.Card;
 
 
@@ -55,7 +55,7 @@ public class RuleUI extends Card {
             e.printStackTrace();
         }
 
-        ImageView addIcon = new ImageView(new Image(RuleUI.class.getResourceAsStream("icons/add-symbolic-12.png")));
+        ImageView addIcon = new ImageView(new Image(RuleUI.class.getResourceAsStream("../icons/add-symbolic-12.png")));
         addCondition = new Button(null, addIcon);
         addCondition.getStyleClass().add("tool-bar-button");
         addCondition.setOnAction(event -> {
@@ -80,8 +80,8 @@ public class RuleUI extends Card {
             porterUI.getRules().remove(this);
         });
 
-        up = new Button(null, ActofIcons.getCustomIcon(RuleUI.class, "icons/go-up.png"));
-        down = new Button(null, ActofIcons.getCustomIcon(RuleUI.class, "icons/go-down.png"));
+        up = new Button(null, ActofIcons.getCustomIcon(RuleUI.class, "../icons/go-up.png"));
+        down = new Button(null, ActofIcons.getCustomIcon(RuleUI.class, "../icons/go-down.png"));
         up.getStyleClass().add("tool-bar-button");
         down.getStyleClass().add("tool-bar-button");
         up.setOnAction(event -> onUp());

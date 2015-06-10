@@ -34,6 +34,7 @@
                   <Button fx:id="openButton" mnemonicParsing="false" onAction="#onOpenProject" styleClass="tool-bar-button" />
                   <Button fx:id="saveButton" mnemonicParsing="false" onAction="#onSaveProject" styleClass="tool-bar-button" />
                   <Separator visible="false" HBox.hgrow="ALWAYS" />
+                  <Button fx:id="opButton" mnemonicParsing="false" onAction="#onOpButton" styleClass="tool-bar-button" />
                   <Button mnemonicParsing="false" onAction="#onPort" style="-fx-base: #0288D1;" text="➤ Port" />
                </children>
             </HBox>

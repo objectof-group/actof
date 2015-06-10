@@ -1,4 +1,4 @@
-package net.objectof.actof.porter.ui.rule.action;
+package net.objectof.actof.porter.ui.action;
 
 
 import java.util.function.BiConsumer;
@@ -8,7 +8,7 @@ import net.objectof.actof.porter.rules.RuleBuilder;
 import net.objectof.actof.porter.rules.impl.Listener;
 import net.objectof.actof.porter.rules.impl.Matcher;
 import net.objectof.actof.porter.rules.impl.Transformer;
-import net.objectof.actof.porter.ui.rule.condition.Stage;
+import net.objectof.actof.porter.ui.condition.Stage;
 
 
 public class JavaAction implements Action {
