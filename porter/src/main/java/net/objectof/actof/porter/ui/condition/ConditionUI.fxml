@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane fx:id="borderpane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.porter.ui.rule.condition.ConditionUI">
+<BorderPane fx:id="borderpane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.porter.ui.condition.ConditionUI">
    <top>
       <HBox fx:id="hbox" spacing="6.0" BorderPane.alignment="CENTER">
          <children>

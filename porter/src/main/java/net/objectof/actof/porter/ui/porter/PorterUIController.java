@@ -19,6 +19,8 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -27,6 +29,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.stage.Stage;
 import net.objectof.actof.common.controller.IActofUIController;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.icons.ActofIcons;
@@ -36,6 +39,8 @@ import net.objectof.actof.common.util.ActofUtil;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.porter.Porter;
 import net.objectof.actof.porter.rules.Rule;
+import net.objectof.actof.porter.ui.connector.ConnectorChooserButton;
+import net.objectof.actof.porter.ui.operations.OperationUI;
 import net.objectof.actof.porter.ui.rule.RuleUI;
 import net.objectof.actof.widgets.masonry.MasonryPane;
 import net.objectof.actof.widgets.masonry.MasonryPane.Layout;
@@ -52,7 +57,7 @@ public class PorterUIController extends IActofUIController {
     private ScrollPane ruleScroller;
 
     @FXML
-    private Button newButton, openButton, saveButton;
+    private Button newButton, openButton, saveButton, opButton;
 
     @FXML
     private TitledPane packagesPane;
@@ -76,9 +81,10 @@ public class PorterUIController extends IActofUIController {
     @Override
     public void ready() {
 
-        newButton.setGraphic(ActofIcons.getCustomIcon(getClass(), "icons/document-new.png"));
-        openButton.setGraphic(ActofIcons.getCustomIcon(getClass(), "icons/document-open.png"));
-        saveButton.setGraphic(ActofIcons.getCustomIcon(getClass(), "icons/document-save.png"));
+        newButton.setGraphic(ActofIcons.getCustomIcon(getClass(), "../icons/document-new.png"));
+        openButton.setGraphic(ActofIcons.getCustomIcon(getClass(), "../icons/document-open.png"));
+        saveButton.setGraphic(ActofIcons.getCustomIcon(getClass(), "../icons/document-save.png"));
+        opButton.setGraphic(ActofIcons.getCustomIcon(getClass(), "../icons/operations.png"));
 
         rulesPane = new MasonryPane(500, Layout.GRID);
         rulesPane.setSpacing(6);
@@ -164,6 +170,14 @@ public class PorterUIController extends IActofUIController {
         w.write(data);
         w.close();
 
+    }
+
+    public void onOpButton() throws IOException {
+        OperationUI ops = OperationUI.load(getChangeBus());
+        Scene scene = new Scene((Parent) ops.getNode());
+        Stage stage = new Stage();
+        stage.setScene(scene);
+        stage.show();
     }
 
     private Map<String, Object> toMap() {

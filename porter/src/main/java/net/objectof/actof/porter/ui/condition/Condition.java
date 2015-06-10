@@ -1,4 +1,4 @@
-package net.objectof.actof.porter.ui.rule.condition;
+package net.objectof.actof.porter.ui.condition;
 
 
 public class Condition {
@@ -78,6 +78,15 @@ public class Condition {
     public Condition setStage(Stage stage) {
         this.stage = stage;
         return this;
+    }
+
+    public boolean equals(Condition other) {
+        if (!stage.equals(other.stage)) { return false; }
+        if (!name.equals(other.name)) { return false; }
+        if (!input.equals(other.input)) { return false; }
+        if (!defaultText.equals(other.defaultText)) { return false; }
+        if (!hint.equals(other.hint)) { return false; }
+        return true;
     }
 
 }

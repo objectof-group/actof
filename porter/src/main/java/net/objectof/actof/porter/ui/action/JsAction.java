@@ -1,11 +1,11 @@
-package net.objectof.actof.porter.ui.rule.action;
+package net.objectof.actof.porter.ui.action;
 
 
 import net.objectof.actof.porter.rules.RuleBuilder;
 import net.objectof.actof.porter.rules.impl.js.IJsListener;
 import net.objectof.actof.porter.rules.impl.js.IJsMatcher;
 import net.objectof.actof.porter.rules.impl.js.IJsTransformer;
-import net.objectof.actof.porter.ui.rule.condition.Stage;
+import net.objectof.actof.porter.ui.condition.Stage;
 
 
 public class JsAction implements Action {
@@ -46,4 +46,5 @@ public class JsAction implements Action {
                 break;
         }
     }
+
 }

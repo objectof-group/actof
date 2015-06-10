@@ -1,4 +1,4 @@
-package net.objectof.actof.porter.ui.porter;
+package net.objectof.actof.porter.ui.connector;
 
 
 import javafx.scene.control.Button;

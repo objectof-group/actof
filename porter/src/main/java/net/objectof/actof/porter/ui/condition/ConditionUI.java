@@ -1,4 +1,4 @@
-package net.objectof.actof.porter.ui.rule.condition;
+package net.objectof.actof.porter.ui.condition;
 
 
 import java.io.IOException;
@@ -22,9 +22,9 @@ import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.icons.ActofIcons;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.porter.rules.RuleBuilder;
+import net.objectof.actof.porter.ui.action.Action;
+import net.objectof.actof.porter.ui.condition.Condition.Input;
 import net.objectof.actof.porter.ui.rule.RuleUI;
-import net.objectof.actof.porter.ui.rule.action.Action;
-import net.objectof.actof.porter.ui.rule.condition.Condition.Input;
 
 
 public class ConditionUI extends IActofUIController {
@@ -92,14 +92,14 @@ public class ConditionUI extends IActofUIController {
 
         });
 
-        ImageView remIcon = ActofIcons.getCustomIcon(RuleUI.class, "icons/remove-symbolic-12.png");
+        ImageView remIcon = ActofIcons.getCustomIcon(RuleUI.class, "../icons/remove-symbolic-12.png");
         remove.setGraphic(remIcon);
         remove.setOnAction(event -> {
             ruleui.getConditions().remove(this);
         });
 
-        ImageView upIcon = ActofIcons.getCustomIcon(RuleUI.class, "icons/up-symbolic-12.png");
-        ImageView downIcon = ActofIcons.getCustomIcon(RuleUI.class, "icons/down-symbolic-12.png");
+        ImageView upIcon = ActofIcons.getCustomIcon(RuleUI.class, "../icons/up-symbolic-12.png");
+        ImageView downIcon = ActofIcons.getCustomIcon(RuleUI.class, "../icons/down-symbolic-12.png");
         up.setGraphic(upIcon);
         down.setGraphic(downIcon);
 

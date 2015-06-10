@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.porter.ui.operations.OperationUI">
+   <center>
+      <GridPane hgap="6.0" vgap="3.0" BorderPane.alignment="CENTER">
+        <columnConstraints>
+          <ColumnConstraints fillWidth="false" hgrow="SOMETIMES" />
+          <ColumnConstraints hgrow="ALWAYS" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+          <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+          <RowConstraints minHeight="10.0" vgrow="ALWAYS" />
+        </rowConstraints>
+         <children>
+            <Label text="Stage" />
+            <Label text="Name" GridPane.rowIndex="1" />
+            <Label text="Code" GridPane.rowIndex="2" />
+            <TextField GridPane.columnIndex="1" GridPane.hgrow="NEVER" GridPane.rowIndex="1" />
+            <TextArea prefColumnCount="80" prefRowCount="20" GridPane.columnIndex="1" GridPane.rowIndex="2">
+               <font>
+                  <Font name="Monospaced Regular" size="13.0" />
+               </font>
+            </TextArea>
+            <ChoiceBox prefWidth="150.0" GridPane.columnIndex="1" />
+         </children>
+         <padding>
+            <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
+         </padding>
+      </GridPane>
+   </center>
+   <left>
+      <BorderPane BorderPane.alignment="CENTER">
+         <center>
+            <ListView BorderPane.alignment="CENTER" />
+         </center>
+         <bottom>
+            <HBox alignment="CENTER_RIGHT" spacing="2.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Button fx:id="add" mnemonicParsing="false" onAction="#onAdd" styleClass="tool-bar-button" />
+                  <Button fx:id="remove" mnemonicParsing="false" onAction="#onRemove" styleClass="tool-bar-button" />
+               </children>
+               <padding>
+                  <Insets bottom="2.0" top="2.0" />
+               </padding>
+            </HBox>
+         </bottom>
+      </BorderPane>
+   </left>
+</BorderPane>

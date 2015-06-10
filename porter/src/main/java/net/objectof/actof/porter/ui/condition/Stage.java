@@ -1,4 +1,4 @@
-package net.objectof.actof.porter.ui.rule.condition;
+package net.objectof.actof.porter.ui.condition;
 
 
 public enum Stage {
