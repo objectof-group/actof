@@ -3,8 +3,60 @@ package net.objectof.actof.porter.ui.condition;
 
 public class Condition {
 
+    public enum Stage {
+
+        MATCH {
+
+            public String toString() {
+                return "Match";
+            }
+        },
+        BEFORE {
+
+            public String toString() {
+                return "Before";
+            }
+        },
+        KEY {
+
+            public String toString() {
+                return "Key Transform";
+            }
+        },
+        VALUE {
+
+            public String toString() {
+                return "Value Transform";
+            }
+        },
+        AFTER {
+
+            public String toString() {
+                return "After";
+            }
+        };
+
+    }
+
     public enum Input {
-        NONE, FIELD, CODE;
+        NONE {
+
+            public String toString() {
+                return "None";
+            }
+        },
+        FIELD {
+
+            public String toString() {
+                return "Field";
+            }
+        },
+        CODE {
+
+            public String toString() {
+                return "Code";
+            }
+        };
     }
 
     private Stage stage;

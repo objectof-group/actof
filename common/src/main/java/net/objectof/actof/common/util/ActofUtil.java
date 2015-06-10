@@ -30,6 +30,11 @@ public class ActofUtil {
         return readFile(new File(filename));
     }
 
+    public static <T> T convert(Object publication, Class<T> clazz) {
+        String asString = serialize(publication);
+        return deserialize(asString, clazz);
+    }
+
     public static Object deserialize(String json) {
         return new JSONDeserializer<Object>().deserialize(json);
     }

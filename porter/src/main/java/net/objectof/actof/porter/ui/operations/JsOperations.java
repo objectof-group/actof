@@ -10,13 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 import net.objectof.actof.common.controller.config.ActofEnv;
 import net.objectof.actof.common.util.ActofUtil;
 import net.objectof.actof.porter.ui.action.JsAction;
 import net.objectof.actof.porter.ui.condition.Condition;
-import net.objectof.actof.porter.ui.condition.Stage;
 import net.objectof.actof.porter.ui.condition.Condition.Input;
+import net.objectof.actof.porter.ui.condition.Condition.Stage;
 
 
 /**
@@ -26,13 +27,10 @@ import net.objectof.actof.porter.ui.condition.Condition.Input;
  * @author NAS
  *
  */
-public class JsOperation {
+public class JsOperations {
 
-    public JsAction action;
-    public Condition condition;
-
-    public static List<JsOperation> load() {
-        List<JsOperation> ops = new ArrayList<>();
+    public static List<Operation> load() {
+        List<Operation> ops = new ArrayList<>();
         try {
             Scanner s = new Scanner(getOperationsFile());
             s = s.useDelimiter("\\Z");
@@ -41,14 +39,20 @@ public class JsOperation {
             List<Map<Object, Object>> data = (List<Map<Object, Object>>) ActofUtil.deserialize(contents);
 
             for (Map<Object, Object> map : data) {
-                ops.add(ActofUtil.deserialize(ActofUtil.serialize(map), JsOperation.class));
+                Operation op = new Operation();
+                JsAction action = ActofUtil.convert(map.get("action"), JsAction.class);
+                Condition condition = ActofUtil.convert(map.get("condition"), Condition.class);
+                op.setAction(action);
+                op.setCondition(condition);
+                ops.add(op);
             }
         }
         catch (FileNotFoundException e) {}
         return ops;
     }
 
-    public static void save(List<JsOperation> operations) throws IOException {
+    public static void save(List<Operation> operations) throws IOException {
+        operations = operations.stream().filter(op -> op.getAction() instanceof JsAction).collect(Collectors.toList());
         Writer w = new FileWriter(getOperationsFile());
         w.write(ActofUtil.serialize(operations));
         w.close();
@@ -63,11 +67,11 @@ public class JsOperation {
 
     public static void main(String[] args) throws IOException {
 
-        List<JsOperation> ops = load();
+        List<Operation> ops = load();
 
-        JsOperation op = new JsOperation();
-        op.condition = new Condition(Stage.MATCH, "KeyJS", Input.FIELD);
-        op.action = new JsAction("function (context) { return input == context.getKey(); }");
+        Operation op = new Operation();
+        op.setCondition(new Condition(Stage.MATCH, "KeyJS", Input.FIELD));
+        op.setAction(new JsAction("function (context) { return input == context.getKey(); }"));
         ops.add(op);
         save(ops);
 
