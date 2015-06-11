@@ -69,9 +69,9 @@ public class IWalker implements Walker {
      * @see net.objectof.actof.porter.Walker#walkEntities(java.lang.Iterable)
      */
     @Override
-    public void walkEntities(Iterable<? extends Kind<?>> kinds) {
+    public void walk() {
 
-        for (Kind<?> kind : kinds) {
+        for (Kind<?> kind : tx.getPackage().getParts()) {
 
             // skip non-entities
             if (kind.getPartOf() != null) {

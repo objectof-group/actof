@@ -32,6 +32,20 @@
 	-fx-background-color: -fx-focus-color, -fx-inner-border, -fx-body-color, -fx-faint-focus-color, -fx-body-color;
 }
 
+.mini-button {
+    -fx-background-color: null;
+    -fx-padding: 3px;
+    -fx-font-size: 1pt;
+}
+
+.mini-button:hover, .mini-button:armed {
+	-fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
+}
+
+.mini-button:focused {
+	-fx-background-color: -fx-focus-color, -fx-inner-border, -fx-body-color, -fx-faint-focus-color, -fx-body-color;
+}
+
 .bread-crumb-button {
 	-fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, transparent;
 }

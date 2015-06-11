@@ -10,6 +10,7 @@ import java.util.Map;
 import net.objectof.actof.porter.rules.Rule;
 import net.objectof.actof.porter.visitor.IMigrationVisitor;
 import net.objectof.actof.porter.visitor.IResourceUpdateVisitor;
+import net.objectof.actof.porter.visitor.IWalkVisitor;
 import net.objectof.actof.porter.visitor.Visitor;
 import net.objectof.actof.porter.walker.IWalker;
 import net.objectof.actof.porter.walker.Walker;
@@ -32,6 +33,21 @@ public class Porter {
         rules.addAll(Arrays.asList(rule));
     }
 
+    public void walk(Package pkg) {
+        idmap.clear();
+        Transaction tx = pkg.connect(getClass());
+
+        // only pass needed -- we don't need to update resources to new repo,
+        // since this is all done in a single repo
+        Walker walker = new IWalker(tx);
+        Visitor visitor = new IWalkVisitor(this, tx);
+        visitor.setWalker(walker);
+        walker.setVisitor(visitor);
+        walker.walk();
+
+        tx.post();
+    }
+
     public void port(Package from, Package to) {
 
         idmap.clear();
@@ -43,14 +59,14 @@ public class Porter {
         Visitor visitor = new IMigrationVisitor(this, fromTx, toTx);
         visitor.setWalker(walker);
         walker.setVisitor(visitor);
-        walker.walkEntities(from.getParts());
+        walker.walk();
 
         // second pass
         Visitor updater = new IResourceUpdateVisitor(this, toTx);
         updater.setWalker(walker);
         walker.setVisitor(updater);
         walker.setTx(toTx);
-        walker.walkEntities(to.getParts());
+        walker.walk();
 
         toTx.post();
 

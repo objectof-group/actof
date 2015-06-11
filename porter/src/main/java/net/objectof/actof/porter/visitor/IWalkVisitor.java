@@ -11,24 +11,20 @@ import net.objectof.model.Resource;
 import net.objectof.model.Transaction;
 
 
-/**
- * Visitor for migrating old repo tree to new repo tree
- * 
- * @author NAS
- *
- */
-public class IMigrationVisitor extends AbstractVisitor {
+public class IWalkVisitor extends AbstractVisitor {
 
-    private Transaction targetTx;
+    public IWalkVisitor(Porter porter, Transaction tx) {
+        super(porter, tx);
+    }
 
-    public IMigrationVisitor(Porter porter, Transaction fromTx, Transaction targetTx) {
-        super(porter, fromTx);
-        this.targetTx = targetTx;
+    @Override
+    public Iterable<Resource<?>> getEntities(Kind<?> kind) {
+        return tx.enumerate(kind.getComponentName());
     }
 
     protected Object visitContainer(IPorterContext context, Id<?> parentId) {
 
-        Resource<Aggregate<Object, Object>> toParent = getToParent(parentId);
+        Resource<Aggregate<Object, Object>> toParent = getParent(parentId);
 
         IPorterContext ported = transform(context);
         if (ported.isDropped()) { return null; }
@@ -42,50 +38,46 @@ public class IMigrationVisitor extends AbstractVisitor {
     }
 
     protected Object visitLeaf(IPorterContext context, Id<?> parentId) {
-        Resource<Aggregate<Object, Object>> toParent = getToParent(parentId);
+        Resource<Aggregate<Object, Object>> parent = getParent(parentId);
         IPorterContext ported = transform(context);
         if (ported.isDropped()) { return null; }
-        toParent.value().set(IPorterUtil.unqualify(ported.getKey(), toParent), ported.getValue());
+        parent.value().set(IPorterUtil.unqualify(ported.getKey(), parent), ported.getValue());
         return context.getValue();
     }
 
-    @Override
-    public Iterable<Resource<?>> getEntities(Kind<?> kind) {
-        return tx.enumerate(kind.getComponentName());
-    }
-
-    private Resource<Aggregate<Object, Object>> getToParent(Id<?> fromParentId) {
-        Id<?> toParentId = porter.getIdmap().get(fromParentId);
+    private Resource<Aggregate<Object, Object>> getParent(Id<?> parentId) {
         Resource<Aggregate<Object, Object>> parent = null;
-        if (toParentId != null) {
-            parent = targetTx.retrieve(toParentId);
+        if (parentId != null) {
+            parent = tx.retrieve(parentId);
         }
         return parent;
     }
 
-    /**
-     * Accepts a PorterContext containing the source key/value/kind and returns
-     * a PorterContext containing the transformed key/value/kind
-     * 
-     * @param context
-     *            the source context
-     * @return a context containing the transformed value
-     */
-    private IPorterContext transform(IPorterContext originalContext) {
+    // @Override
+    // protected Object visitContainer(IPorterContext context, Id<?> parentId) {
+    // transform(context);
+    // return context.getValue();
+    // }
+    //
+    // @Override
+    // protected Object visitLeaf(IPorterContext context, Id<?> parentId) {
+    // transform(context);
+    // return context.getValue();
+    // }
 
-        IPorterContext context = originalContext.copy();
+    private IPorterContext transform(IPorterContext context) {
 
-        // result is an empty context which gets populated over the course of
-        // this method
+        context = context.copy();
         IPorterContext result = new IPorterContext();
         context.setTx(new ITransactionDecorator(porter, tx));
-        result.setTx(new ITransactionDecorator(porter, targetTx));
+        result.setTx(new ITransactionDecorator(porter, tx));
 
-        // before the transformation starts, call beforeTransform. Modifications
-        // made to contexts in these hooks should be able to alter the real
-        // contexts, so don't pass copies
-        Rule.beforeTransform(porter.getRules(), context, result);
-        if (result.isDropped()) { return context; }
+        Rule.beforeTransform(porter.getRules(), context, context);
+        if (result.isDropped()) {
+            // We're using dropped here to mean 'do not recurse'
+            context.setDropped(true);
+            return context;
+        }
 
         // key -- only allow modification of the key at this stage
         IPorterContext keyContext = Rule.transformKey(porter.getRules(), context.copy(), result.copy());
@@ -98,8 +90,7 @@ public class IMigrationVisitor extends AbstractVisitor {
         // value - not necessarily a reference, or even a resource -- only allow
         // modification of the value at this stage
         IPorterContext valueContext = Rule.transformValue(porter.getRules(), context.copy(), result.copy());
-        Object newValue = porter.updateReference(context.getKind(), targetTx, valueContext.getValue());
-        result.setValue(newValue);
+        result.setValue(valueContext.getValue());
 
         // after the transformation is done (not any recursion), call
         // afterTransform. Modifications made to contexts in these hooks should

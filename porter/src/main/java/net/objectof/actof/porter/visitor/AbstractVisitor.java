@@ -11,13 +11,13 @@ import net.objectof.model.Transaction;
 
 public abstract class AbstractVisitor implements Visitor {
 
-    Porter porter;
     Walker walker;
     Transaction tx;
+    Porter porter;
 
     public AbstractVisitor(Porter porter, Transaction tx) {
-        this.porter = porter;
         this.tx = tx;
+        this.porter = porter;
     }
 
     public Walker getWalker() {

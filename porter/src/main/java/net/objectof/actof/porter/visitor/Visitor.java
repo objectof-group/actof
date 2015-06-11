@@ -14,12 +14,12 @@ public interface Visitor {
 
     Iterable<Resource<?>> getEntities(Kind<?> kind);
 
-    public Walker getWalker();
+    Walker getWalker();
 
-    public void setWalker(Walker texasRanger);
+    void setWalker(Walker texasRanger);
 
-    public abstract void setTx(Transaction tx);
+    void setTx(Transaction tx);
 
-    public abstract Transaction getTx();
+    Transaction getTx();
 
 }

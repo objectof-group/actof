@@ -2,7 +2,6 @@ package net.objectof.actof.porter.walker;
 
 
 import net.objectof.actof.porter.visitor.Visitor;
-import net.objectof.model.Kind;
 import net.objectof.model.Resource;
 import net.objectof.model.Transaction;
 
@@ -18,13 +17,10 @@ public interface Walker {
     public abstract void setTx(Transaction tx);
 
     /**
-     * Walks the top-level entities (root nodes) in this forest (of trees),
-     * visiting each element and its subtree.
-     * 
-     * @param kinds
-     *            the {@link Kind}s of the top level entities
+     * Walks the top-level entities (root nodes) in this forest (of trees) for
+     * all kinds defined by the visitor, visiting each element and its subtree.
      */
-    public abstract void walkEntities(Iterable<? extends Kind<?>> kinds);
+    public abstract void walk();
 
     /**
      * Treats this object as if it were a {@link Resource} from the current

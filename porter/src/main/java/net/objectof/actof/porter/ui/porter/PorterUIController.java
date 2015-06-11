@@ -22,6 +22,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
@@ -51,16 +52,22 @@ import net.objectof.model.Package;
 public class PorterUIController extends IActofUIController {
 
     @FXML
-    public HBox connectors, buttonBox;
+    public HBox portingControls, buttonBox;
 
     @FXML
     private ScrollPane ruleScroller;
 
     @FXML
-    private Button newButton, openButton, saveButton, opButton;
+    private Button newButton, openButton, saveButton, opButton, portButton;
+
+    @FXML
+    private HBox toolbar, connectorsBox;
 
     @FXML
     private TitledPane packagesPane;
+
+    @FXML
+    private ChoiceBox<String> modeChoice;
 
     private MasonryPane rulesPane;
 
@@ -80,6 +87,8 @@ public class PorterUIController extends IActofUIController {
 
     @Override
     public void ready() {
+
+        toolbar.getChildren().remove(portButton);
 
         newButton.setGraphic(ActofIcons.getCustomIcon(getClass(), "../icons/document-new.png"));
         openButton.setGraphic(ActofIcons.getCustomIcon(getClass(), "../icons/document-open.png"));
@@ -102,18 +111,53 @@ public class PorterUIController extends IActofUIController {
             layoutRules();
         });
 
-        Label arrow = new Label("\u279E");
-        arrow.setStyle("-fx-font-size: 200%;");
+        modeChoice.getItems().add("Port");
+        modeChoice.getItems().add("Walk");
+        modeChoice.getSelectionModel().select(0);
+        modeChoice.getSelectionModel().selectedItemProperty().addListener(event -> {
+            if (isPortMode()) {
+                showPorting();
+            }
+            if (isWalkMode()) {
+                showWalking();
+            }
+        });
 
         connection1 = new ConnectorChooserButton(null);
         connection2 = new ConnectorChooserButton(null);
-        connectors.getChildren().add(1, connection1);
-        connectors.getChildren().add(2, arrow);
-        connectors.getChildren().add(3, connection2);
+        showPorting();
 
         RuleUI rule = new RuleUI(getChangeBus(), this);
         rules.add(rule);
 
+    }
+
+    private String getMode() {
+        return modeChoice.getSelectionModel().getSelectedItem();
+    }
+
+    private boolean isPortMode() {
+        return getMode().equals("Port");
+    }
+
+    private boolean isWalkMode() {
+        return getMode().equals("Walk");
+    }
+
+    private void showPorting() {
+        Label arrow = new Label("\u279E");
+        arrow.setStyle("-fx-font-size: 150%;");
+        connectorsBox.getChildren().clear();
+        connectorsBox.getChildren().add(connection1);
+        connectorsBox.getChildren().add(arrow);
+        connectorsBox.getChildren().add(connection2);
+        portButton.setText("Port");
+    }
+
+    private void showWalking() {
+        connectorsBox.getChildren().clear();
+        connectorsBox.getChildren().add(connection1);
+        portButton.setText("Walk");
     }
 
     @Override
@@ -123,6 +167,28 @@ public class PorterUIController extends IActofUIController {
     }
 
     public void onPort() {
+        if (isPortMode()) {
+            doPort();
+        }
+        if (isWalkMode()) {
+            doWalk();
+        }
+    }
+
+    private void doWalk() {
+        System.out.println("Walking...");
+        try {
+            Package pkg = connection1.getConnector().getPackage();
+            Porter porter = new Porter();
+            porter.getRules().addAll(generateRules());
+            porter.walk(pkg);
+        }
+        catch (ConnectorException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void doPort() {
 
         try {
 
