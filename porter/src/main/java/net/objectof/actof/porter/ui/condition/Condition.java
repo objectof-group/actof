@@ -60,10 +60,10 @@ public class Condition {
     }
 
     private Stage stage;
-    private String name;
+    private String name = "";
     private Input input;
-    private String defaultText;
-    private String hint;
+    private String defaultText = "";
+    private String hint = "";
 
     public Condition() {}
 
@@ -133,9 +133,15 @@ public class Condition {
     }
 
     public boolean equals(Condition other) {
+        if (stage == null && other.stage != null) { return false; }
+        if (stage != null && other.stage == null) { return false; }
         if (!stage.equals(other.stage)) { return false; }
-        if (!name.equals(other.name)) { return false; }
+
+        if (input == null && other.input != null) { return false; }
+        if (input != null && other.input == null) { return false; }
         if (!input.equals(other.input)) { return false; }
+
+        if (!name.equals(other.name)) { return false; }
         if (!defaultText.equals(other.defaultText)) { return false; }
         if (!hint.equals(other.hint)) { return false; }
         return true;
