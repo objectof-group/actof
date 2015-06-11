@@ -1,9 +1,8 @@
-package net.objectof.actof.porter.ui.connector;
+package net.objectof.actof.connectorui;
 
 
 import javafx.scene.control.Button;
 import javafx.stage.Window;
-import net.objectof.actof.connectorui.ConnectionController;
 import net.objectof.connector.Connector;
 
 
