@@ -57,7 +57,7 @@ public class RuleUI extends Card {
 
         ImageView addIcon = new ImageView(new Image(RuleUI.class.getResourceAsStream("../icons/add-symbolic-12.png")));
         addCondition = new Button(null, addIcon);
-        addCondition.getStyleClass().add("tool-bar-button");
+        addCondition.getStyleClass().add("mini-button");
         addCondition.setOnAction(event -> {
             try {
                 conditions.add(ConditionUI.load(changes, this));

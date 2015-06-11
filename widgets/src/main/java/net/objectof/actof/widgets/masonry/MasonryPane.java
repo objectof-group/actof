@@ -384,7 +384,7 @@ public class MasonryPane extends Pane {
     // Determines the number of columns which should be shown for the given
     // width. We pass width in explicitly rather than calling getWidth() so that
     // we can use this method for calculating preferred height as well
-    private int columnCount(double width) {
+    protected int columnCount(double width) {
 
         int columnCount = 1;
         if (columnWidth > 0) {

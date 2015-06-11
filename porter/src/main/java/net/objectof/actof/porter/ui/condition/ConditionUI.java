@@ -88,7 +88,7 @@ public class ConditionUI extends IActofUIController {
 
             textInput.setPromptText(conditions.getHint());
 
-            if (textInput.getText().length() == 0) {
+            if (textInput.getText() == null || textInput.getText().length() == 0) {
                 textInput.setText(conditions.getDefaultText());
             }
 

@@ -7,14 +7,14 @@
 
 <BorderPane fx:id="borderpane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.porter.ui.condition.ConditionUI">
    <top>
-      <HBox fx:id="hbox" spacing="6.0" BorderPane.alignment="CENTER">
+      <HBox fx:id="hbox" alignment="CENTER_LEFT" spacing="6.0" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="remove" mnemonicParsing="false" styleClass="tool-bar-button" />
+            <Button fx:id="remove" mnemonicParsing="false" styleClass="mini-button" />
             <ChoiceBox fx:id="stageChoice" prefWidth="150.0" />
             <ChoiceBox fx:id="actionChoice" prefWidth="150.0" />
             <Separator fx:id="sep" visible="false" HBox.hgrow="ALWAYS" />
-            <Button fx:id="up" mnemonicParsing="false" onAction="#onUp" styleClass="tool-bar-button" />
-            <Button fx:id="down" mnemonicParsing="false" onAction="#onDown" styleClass="tool-bar-button" />
+            <Button fx:id="up" mnemonicParsing="false" onAction="#onUp" styleClass="mini-button" />
+            <Button fx:id="down" mnemonicParsing="false" onAction="#onDown" styleClass="mini-button" />
          </children>
       </HBox>
    </top>
