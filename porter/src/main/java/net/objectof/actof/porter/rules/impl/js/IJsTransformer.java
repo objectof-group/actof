@@ -28,9 +28,7 @@ public class IJsTransformer extends AbstractJsEvaluator implements Transformer {
             }
         }
         catch (ScriptException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
     }
 

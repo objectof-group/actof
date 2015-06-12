@@ -77,9 +77,11 @@ public class ConditionUI extends IActofUIController {
             hbox.setPadding(new Insets(0, 0, 0, 0));
 
             if (conditions.getInput() == Input.CODE) {
-                textInput = new TextArea(textInput.getText());
-                textInput.setStyle("-fx-font-family: monospace");
-                borderpane.setCenter(textInput);
+                TextArea area = new TextArea(textInput.getText());
+                area.setStyle("-fx-font-family: monospace");
+                area.setPrefColumnCount(40);
+                borderpane.setCenter(area);
+                textInput = area;
                 hbox.setPadding(new Insets(0, 0, 6, 0));
             } else if (conditions.getInput() == Input.FIELD) {
                 textInput = new TextField(textInput.getText());

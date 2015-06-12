@@ -28,9 +28,7 @@ public class IJsListener extends AbstractJsEvaluator implements Listener {
             }
         }
         catch (ScriptException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return;
+            throw new RuntimeException(e);
         }
     }
 

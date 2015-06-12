@@ -19,9 +19,7 @@ public class IJsBinaryOperator<T> extends AbstractJsEvaluator implements BinaryO
             return (T) getFunction().call(null, t, u);
         }
         catch (ScriptException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
     }
 
