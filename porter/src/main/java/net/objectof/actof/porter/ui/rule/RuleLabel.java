@@ -23,6 +23,14 @@ public class RuleLabel extends BorderPane {
         label.setOnMouseClicked(event -> {
             field.setText(title);
             setCenter(field);
+            field.requestFocus();
+        });
+
+        field.focusedProperty().addListener(event -> {
+            if (!field.isFocused()) {
+                label.setText(title);
+                setCenter(label);
+            }
         });
 
         field.setOnKeyPressed(event -> {

@@ -43,9 +43,9 @@ import net.objectof.actof.porter.Porter;
 import net.objectof.actof.porter.rules.Rule;
 import net.objectof.actof.porter.ui.operations.OperationUI;
 import net.objectof.actof.porter.ui.rule.RuleUI;
+import net.objectof.actof.widgets.ActofDialogs;
 import net.objectof.actof.widgets.masonry.MasonryPane;
 import net.objectof.actof.widgets.masonry.MasonryPane.Layout;
-import net.objectof.connector.ConnectorException;
 import net.objectof.model.Package;
 
 
@@ -183,8 +183,8 @@ public class PorterUIController extends IActofUIController {
             porter.getRules().addAll(generateRules());
             porter.walk(pkg);
         }
-        catch (ConnectorException e) {
-            e.printStackTrace();
+        catch (Exception e) {
+            ActofDialogs.exceptionDialog(e);
         }
     }
 
@@ -200,8 +200,8 @@ public class PorterUIController extends IActofUIController {
             porter.port(fromPackage, toPackage);
 
         }
-        catch (ConnectorException e) {
-            e.printStackTrace();
+        catch (Exception e) {
+            ActofDialogs.exceptionDialog(e);
         }
 
     }

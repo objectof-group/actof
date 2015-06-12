@@ -32,9 +32,7 @@ public class IJsMatcher extends AbstractJsEvaluator implements Matcher {
             return false;
         }
         catch (ScriptException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return false;
+            throw new RuntimeException(e);
         }
     }
 
