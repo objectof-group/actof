@@ -4,6 +4,7 @@ package net.objectof.actof.porter.ui.operations;
 import javafx.beans.property.SimpleStringProperty;
 import net.objectof.actof.porter.ui.action.Action;
 import net.objectof.actof.porter.ui.condition.Condition;
+import net.objectof.actof.porter.ui.condition.Condition.Stage;
 
 
 public class Operation {
@@ -49,9 +50,14 @@ public class Operation {
     public String toString() {
         String arrow = " \u279E ";
         if (getCondition() == null) { return "Invalid Operation"; }
-        if (getCondition().getStage() == null && getCondition().getName() == null) { return "Empty Operation"; }
-        if (getCondition().getStage() == null) { return "?" + arrow + getCondition().getName(); }
-        if (getCondition().getName() == null) { return getCondition().getStage() + arrow + "?"; }
+
+        Stage stage = getCondition().getStage();
+        String name = getCondition().getName();
+
+        if (stage == null && (name == null || name.length() == 0)) { return "Empty Operation"; }
+        if (stage == null) { return "?" + arrow + name; }
+        if (name == null || name.length() == 0) { return stage + arrow + "?"; }
+
         return getCondition().getStage().toString() + " \u279E " + getCondition().getName();
     }
 

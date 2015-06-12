@@ -30,11 +30,23 @@
          <children>
             <HBox fx:id="toolbar" styleClass="tool-bar">
                <children>
-                  <Button fx:id="newButton" mnemonicParsing="false" onAction="#onNewProject" styleClass="tool-bar-button" text="New Project" />
-                  <Button fx:id="openButton" mnemonicParsing="false" onAction="#onOpenProject" styleClass="tool-bar-button" />
-                  <Button fx:id="saveButton" mnemonicParsing="false" onAction="#onSaveProject" styleClass="tool-bar-button" />
+                  <Button fx:id="newButton" mnemonicParsing="false" onAction="#onNewProject" styleClass="tool-bar-button" text="New Project">
+                     <tooltip>
+                        <Tooltip text="Start a new project" />
+                     </tooltip></Button>
+                  <Button fx:id="openButton" mnemonicParsing="false" onAction="#onOpenProject" styleClass="tool-bar-button">
+                     <tooltip>
+                        <Tooltip text="Open an existing project" />
+                     </tooltip></Button>
+                  <Button fx:id="saveButton" mnemonicParsing="false" onAction="#onSaveProject" styleClass="tool-bar-button">
+                     <tooltip>
+                        <Tooltip text="Save project" />
+                     </tooltip></Button>
                   <Separator visible="false" HBox.hgrow="ALWAYS" />
-                  <Button fx:id="opButton" mnemonicParsing="false" onAction="#onOpButton" styleClass="tool-bar-button" />
+                  <Button fx:id="opButton" mnemonicParsing="false" onAction="#onOpButton" styleClass="tool-bar-button">
+                     <tooltip>
+                        <Tooltip text="Open the operations editor" />
+                     </tooltip></Button>
                </children>
             </HBox>
             <TitledPane fx:id="packagesPane" animated="false" styleClass="search-pane" text="untitled">

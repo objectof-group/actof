@@ -87,7 +87,7 @@ public class Operations {
                 new JavaAction().setBeforeAct(text -> Listeners.printKind())));
         
         operations.add(new Operation(
-                new Condition(Stage.BEFORE, "Print", Input.CODE),
+                new Condition(Stage.BEFORE, "Print", Input.CODE, "/* string */ function (sourceContext, destContext) {\n\t\n}"),
                 new JavaAction().setBeforeAct(text -> Listeners.print(new IJsTransformer(text)))));
         
         
