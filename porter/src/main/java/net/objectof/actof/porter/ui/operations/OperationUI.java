@@ -10,7 +10,6 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.TextFieldListCell;
 import net.objectof.actof.common.controller.IActofUIController;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.icons.ActofIcons;
@@ -60,6 +59,7 @@ public class OperationUI extends IActofUIController {
         operations.getSelectionModel().selectedItemProperty().addListener(event -> {
             populate(getSelectedOp());
         });
+        populate(getSelectedOp());
 
         stage.getSelectionModel().selectedItemProperty().addListener(event -> {
             getSelectedOp().getCondition().setStage(stage.getSelectionModel().getSelectedItem());

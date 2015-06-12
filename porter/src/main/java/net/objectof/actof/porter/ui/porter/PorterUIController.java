@@ -251,6 +251,7 @@ public class PorterUIController extends IActofUIController {
         return new HashMap<String, Object>() {
 
             {
+                put("mode", getMode());
                 put("rules", rules.stream().map(RuleUI::toMap).collect(Collectors.toList()));
             }
         };
@@ -264,6 +265,9 @@ public class PorterUIController extends IActofUIController {
             r.fromMap(data);
             rules.add(r);
         });
+
+        String mode = (String) map.get("Mode");
+        modeChoice.getSelectionModel().select(mode);
     }
 
     private void layoutRules() {
