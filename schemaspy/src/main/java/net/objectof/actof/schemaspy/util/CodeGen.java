@@ -25,14 +25,14 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 
 import net.objectof.actof.common.controller.schema.SchemaController;
+import net.objectof.actof.schemaspy.generator.IGenerator;
+import net.objectof.actof.schemaspy.generator.templates.ICompositeTemplate;
+import net.objectof.actof.schemaspy.generator.templates.IInterfaceTemplate;
+import net.objectof.actof.schemaspy.generator.velocity.ITemplateContext;
 import net.objectof.facet.Annotated;
 import net.objectof.facet.Facet;
 import net.objectof.facet.impl.IFacets;
 import net.objectof.model.impl.IBaseMetamodel;
-import net.objectof.model.impl.facets.ICompositeTemplate;
-import net.objectof.model.impl.facets.IGenerator;
-import net.objectof.model.impl.facets.IInterfaceTemplate;
-import net.objectof.util.impl.velocity.ITemplateContext;
 
 import org.eclipse.jdt.core.compiler.batch.BatchCompiler;
 
