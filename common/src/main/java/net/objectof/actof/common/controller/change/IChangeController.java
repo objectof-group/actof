@@ -25,7 +25,6 @@ public class IChangeController implements ChangeController {
         listeners.add(l);
     }
 
-
     /**
      * @see eventful.IEventfulType#unlisten(eventful.EventfulTypeListener)
      */
@@ -42,12 +41,13 @@ public class IChangeController implements ChangeController {
         listeners.clear();
     }
 
-
     /**
      * @see eventful.IEventfulType#broadcast(T)
      */
     @Override
     public synchronized void broadcast(final Change message) {
+
+        System.out.println(message);
 
         if (listeners.size() == 0) return;
 

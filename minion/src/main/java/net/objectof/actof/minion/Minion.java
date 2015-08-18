@@ -5,11 +5,13 @@ import java.io.IOException;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import net.objectof.actof.common.controller.TopController;
+import net.objectof.actof.common.component.Display;
+import net.objectof.actof.common.component.Resource;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.controller.change.IChangeController;
 import net.objectof.actof.minion.components.classpath.ClasspathController;
@@ -19,13 +21,16 @@ import net.objectof.actof.minion.components.server.ServerController;
 import net.objectof.actof.minion.components.spring.SpringController;
 
 
-public class Minion extends Application implements TopController {
+public class Minion extends Application implements Display {
 
     public static final String SETTING_PATH = "net.objectof.actof.minion.path";
 
+    private Parent displayNode;
+    private boolean top = true;;
+
     private MinionController window;
 
-    private IChangeController change = new IChangeController();
+    private ChangeController change = new IChangeController();
 
     private ServerController server;
     private HandlerController handlers;
@@ -70,8 +75,8 @@ public class Minion extends Application implements TopController {
 
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("view/Minion.fxml"));
-        Parent page = loader.load();
-        stage.setScene(new Scene(page));
+        displayNode = loader.load();
+        stage.setScene(new Scene(displayNode));
 
         window = loader.getController();
 
@@ -106,6 +111,57 @@ public class Minion extends Application implements TopController {
 
         System.setProperty("prism.lcdtext", "false");
         launch(args);
+    }
+
+    @Override
+    public Node getDisplayNode() {
+        return displayNode;
+    }
+
+    @Override
+    public String getTitle() {
+        return "Minion";
+    }
+
+    @Override
+    public Stage getDisplayStage() {
+        return stage;
+    }
+
+    @Override
+    public void setDisplayStage(Stage stage) {
+        this.stage = stage;
+    }
+
+    @Override
+    public void setChangeBus(ChangeController bus) {
+        this.change = bus;
+    }
+
+    @Override
+    public void initialize() throws Exception {}
+
+    @Override
+    public void onShow() throws Exception {}
+
+    @Override
+    public boolean isTop() {
+        return top;
+    }
+
+    @Override
+    public void setTop(boolean top) {
+        this.top = top;
+    }
+
+    @Override
+    public Resource getResource() {
+        return null;
+    }
+
+    @Override
+    public void setResource(Resource resource) {
+        throw new UnsupportedOperationException();
     }
 
 }

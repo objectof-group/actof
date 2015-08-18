@@ -11,6 +11,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.management.modelmbean.XMLParseException;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+
+import org.controlsfx.control.BreadCrumbBar;
+import org.controlsfx.control.action.Action;
+import org.controlsfx.dialog.Dialog;
+import org.controlsfx.dialog.Dialogs;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -31,12 +43,6 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
-
-import javax.management.modelmbean.XMLParseException;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-
 import net.objectof.actof.common.controller.IActofUIController;
 import net.objectof.actof.common.controller.change.Change;
 import net.objectof.actof.common.controller.change.ChangeController;
@@ -66,13 +72,6 @@ import net.objectof.actof.widgets.masonry.MasonryPane;
 import net.objectof.actof.widgets.masonry.MasonryPane.Layout;
 import net.objectof.connector.Connector;
 import net.objectof.connector.Connector.Initialize;
-
-import org.controlsfx.control.BreadCrumbBar;
-import org.controlsfx.control.action.Action;
-import org.controlsfx.dialog.Dialog;
-import org.controlsfx.dialog.Dialogs;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 
 public class SchemaViewController extends IActofUIController {
@@ -205,8 +204,8 @@ public class SchemaViewController extends IActofUIController {
 
     }
 
-    public void setTopController(SchemaSpyController schemaspy) throws XMLParseException, SAXException, IOException,
-            ParserConfigurationException {
+    public void setTopController(SchemaSpyController schemaspy)
+            throws XMLParseException, SAXException, IOException, ParserConfigurationException {
         this.schemaspy = schemaspy;
         onNewSchema();
     }
@@ -275,18 +274,23 @@ public class SchemaViewController extends IActofUIController {
             Document schema = schemaspy.getSchema().getDocument();
             connect.createPackage(schema, Initialize.WHEN_EMPTY);
 
-            Action action = Dialogs.create().title("Repository Created")
-                    .masthead("This Repository can be viewed in RepoSpy").message("Open RepoSpy now?").showConfirm();
+            Action action = Dialogs.create()
+                    .title("Repository Created")
+                    .masthead("This Repository can be viewed in RepoSpy")
+                    .message("Open RepoSpy now?")
+                    .showConfirm();
 
             if (action == Dialog.ACTION_YES) {
-                RepoSpyController repospy = new RepoSpyController(new Stage());
-                repospy.initUI();
+                RepoSpyController repospy = new RepoSpyController();
+                repospy.setDisplayStage(new Stage());
+                repospy.initialize();
                 repospy.connect(connect);
             }
 
         }
         catch (Exception e) {
-            Dialogs.create().title("Repository Creation Failed")
+            Dialogs.create()
+                    .title("Repository Creation Failed")
                     .message("SchemaSpy failed to create the repository. Please check the parameters and try again.")
                     .showException(e);
         }
@@ -299,14 +303,14 @@ public class SchemaViewController extends IActofUIController {
         chooser.setTitle("Generate Jar File");
         ExtensionFilter filter = new ExtensionFilter("Jar Files", "*.jar");
         chooser.setSelectedExtensionFilter(filter);
-        File jarfile = chooser.showSaveDialog(schemaspy.primaryStage);
+        File jarfile = chooser.showSaveDialog(schemaspy.getDisplayStage());
         if (jarfile == null) { return; }
 
         CodeGen.generate(schemaspy.getSchema(), jarfile);
     }
 
-    public void onOpen() throws FileNotFoundException, SAXException, IOException, ParserConfigurationException,
-            XMLParseException {
+    public void onOpen()
+            throws FileNotFoundException, SAXException, IOException, ParserConfigurationException, XMLParseException {
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Open Schema File");
         if (lastschemadir != null) {
@@ -314,7 +318,7 @@ public class SchemaViewController extends IActofUIController {
         }
         ExtensionFilter filter = new ExtensionFilter("Schema Files", "*.xml");
         chooser.setSelectedExtensionFilter(filter);
-        File file = chooser.showOpenDialog(schemaspy.primaryStage);
+        File file = chooser.showOpenDialog(schemaspy.getDisplayStage());
         if (file == null) { return; }
         lastschemadir = file.getParentFile();
 
@@ -329,7 +333,7 @@ public class SchemaViewController extends IActofUIController {
         }
         ExtensionFilter filter = new ExtensionFilter("Schema Files", "xml");
         chooser.setSelectedExtensionFilter(filter);
-        File file = chooser.showSaveDialog(schemaspy.primaryStage);
+        File file = chooser.showSaveDialog(schemaspy.getDisplayStage());
         if (file == null) { return; }
 
         lastschemadir = file.getParentFile();

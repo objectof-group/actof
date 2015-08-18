@@ -31,7 +31,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
-import net.objectof.actof.common.controller.IActofUIController;
+import net.objectof.actof.common.component.AbstractLoadedDisplay;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.icons.ActofIcons;
 import net.objectof.actof.common.icons.ActofIcons.Icon;
@@ -49,7 +49,7 @@ import net.objectof.actof.widgets.masonry.MasonryPane.Layout;
 import net.objectof.model.Package;
 
 
-public class PorterUIController extends IActofUIController {
+public class PorterUIController extends AbstractLoadedDisplay {
 
     @FXML
     public HBox portingControls, buttonBox;
@@ -78,6 +78,7 @@ public class PorterUIController extends IActofUIController {
     private ConnectorChooserButton connection1, connection2;
 
     private FileChooser fileChooser = new FileChooser();
+
     {
         fileChooser.setTitle("Open Project");
         ExtensionFilter filter = new ExtensionFilter("Porter Project Files", "*.ppf");
@@ -86,7 +87,7 @@ public class PorterUIController extends IActofUIController {
     }
 
     @Override
-    public void ready() {
+    public void onDisplayLoad() {
 
         toolbar.getChildren().remove(portButton);
 
@@ -158,12 +159,6 @@ public class PorterUIController extends IActofUIController {
         connectorsBox.getChildren().clear();
         connectorsBox.getChildren().add(connection1);
         portButton.setText("Walk");
-    }
-
-    @Override
-    protected void initialize() throws Exception {
-        // TODO Auto-generated method stub
-
     }
 
     public void onPort() {
@@ -275,7 +270,7 @@ public class PorterUIController extends IActofUIController {
     }
 
     public static PorterUIController load(ChangeController changes) throws IOException {
-        return FXUtil.load(PorterUIController.class, "PorterUI.fxml", changes);
+        return FXUtil.loadDisplay(PorterUIController.class, "PorterUI.fxml", changes);
     }
 
     public List<Rule> generateRules() {
@@ -286,15 +281,23 @@ public class PorterUIController extends IActofUIController {
         return rules;
     }
 
-    public void start() {
+    @Override
+    public String getTitle() {
+        return "Porter";
+    }
+
+    @Override
+    public void initialize() throws Exception {}
+
+    @Override
+    public void onShow() throws Exception {
         // hide title component of packages titledpane
+        packagesPane.applyCss();
         Pane title = (Pane) packagesPane.lookup(".title");
-        if (title != null) {
-            title.setVisible(false);
-            title.setMinHeight(0);
-            title.setPrefHeight(0);
-            title.setMaxHeight(0);
-        }
+        title.setVisible(false);
+        title.setMinHeight(0);
+        title.setPrefHeight(0);
+        title.setMaxHeight(0);
     }
 
 }

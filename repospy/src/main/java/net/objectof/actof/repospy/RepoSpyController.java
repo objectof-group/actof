@@ -3,13 +3,12 @@ package net.objectof.actof.repospy;
 
 import java.io.IOException;
 
-import javafx.scene.Parent;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import net.objectof.actof.common.controller.ITopController;
+import net.objectof.actof.common.component.AbstractDisplay;
 import net.objectof.actof.common.controller.repository.RepositoryController;
 import net.objectof.actof.common.controller.search.SearchController;
 import net.objectof.actof.connectorui.ConnectionController;
@@ -20,22 +19,31 @@ import net.objectof.connector.Connector;
 import net.objectof.model.query.Query;
 import net.objectof.model.query.parser.QueryBuilder;
 
-import org.controlsfx.control.action.Action;
-import org.controlsfx.dialog.Dialog;
-import org.controlsfx.dialog.Dialogs;
 
+public class RepoSpyController extends AbstractDisplay {
 
-public class RepoSpyController extends ITopController {
-
-    public RepositoryController repository = new RepositoryController(getChangeBus());
-    public SearchController search = new SearchController(repository, getChangeBus());
+    public RepositoryController repository;
+    public SearchController search;
     public NavigatorController navigator;
-    public HistoryController history = new HistoryController(getChangeBus());
+    public HistoryController history;
 
-    public Stage primaryStage;
+    @Override
+    public void initialize() throws Exception {
+        repository = new RepositoryController(getChangeBus());
+        search = new SearchController(repository, getChangeBus());
+        history = new HistoryController(getChangeBus());
+        navigator = NavigatorController.load(getChangeBus());
 
-    public RepoSpyController(Stage stage) {
-        primaryStage = stage;
+        navigator.setDisplayStage(getDisplayStage());
+        navigator.setTop(isTop());
+        navigator.initialize();
+        navigator.setTopController(this);
+
+    }
+
+    @Override
+    public void onShow() throws Exception {
+        navigator.onShow();
     }
 
     /*************************************************************
@@ -46,41 +54,9 @@ public class RepoSpyController extends ITopController {
      * 
      *************************************************************/
 
-    public void initUI() throws IOException {
-        primaryStage.setTitle("ObjectOf RepoSpy");
-        navigator = showNavigator();
-        navigator.setTopController(this);
-    }
-
     public void connect(Connector connector) throws Exception {
         // make new repo connection
         repository.connect(connector);
-    }
-
-    public NavigatorController showNavigator() throws IOException {
-
-        NavigatorController controller = NavigatorController.load(getChangeBus());
-
-        Scene scene = new Scene((Parent) controller.getNode());
-        primaryStage.setScene(scene);
-        primaryStage.getIcons().add(new Image(RepoSpy.class.getResource("RepoSpy.png").openStream()));
-
-        primaryStage.setOnCloseRequest(event -> {
-            if (history.getChanges().isEmpty()) { return; }
-
-            Action reallyquit = Dialogs.create().title("Exit RepoSpy")
-                    .message("Exit RepoSpy with ununcommitted changes?").masthead("You have uncommittted changes")
-                    .actions(Dialog.ACTION_YES, Dialog.ACTION_NO).showConfirm();
-
-            if (reallyquit != Dialog.ACTION_YES) {
-                event.consume();
-            }
-
-        });
-
-        primaryStage.show();
-
-        return controller;
     }
 
     public void showReview() throws IOException {
@@ -94,14 +70,14 @@ public class RepoSpyController extends ITopController {
         Stage connectStage = new Stage(StageStyle.UTILITY);
         connectStage.setTitle("Review Changes");
         // connectStage.initModality(Modality.NONE);
-        connectStage.initOwner(primaryStage);
+        connectStage.initOwner(getDisplayStage());
         connectStage.setScene(new Scene(scroll));
         connectStage.showAndWait();
 
     }
 
     public Connector showConnect() throws IOException {
-        return ConnectionController.showConnectDialog(primaryStage);
+        return ConnectionController.showConnectDialog(getDisplayStage());
     }
 
     /*************************************************************
@@ -120,6 +96,16 @@ public class RepoSpyController extends ITopController {
             search.setQuery(null);
             return;
         }
+    }
+
+    @Override
+    public Node getDisplayNode() {
+        return navigator.getDisplayNode();
+    }
+
+    @Override
+    public String getTitle() {
+        return "RepoSpy";
     }
 
 }
