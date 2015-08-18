@@ -13,8 +13,19 @@
             <ChoiceBox fx:id="stageChoice" prefWidth="150.0" />
             <ChoiceBox fx:id="actionChoice" prefWidth="150.0" />
             <Separator fx:id="sep" visible="false" HBox.hgrow="ALWAYS" />
-            <Button fx:id="up" mnemonicParsing="false" onAction="#onUp" styleClass="mini-button" />
-            <Button fx:id="down" mnemonicParsing="false" onAction="#onDown" styleClass="mini-button" />
+            <Button fx:id="reset" mnemonicParsing="false" onAction="#onReset" styleClass="mini-button">
+               <tooltip>
+                  <Tooltip text="Reset input field" />
+               </tooltip>
+            </Button>
+            <Button fx:id="up" mnemonicParsing="false" onAction="#onUp" styleClass="mini-button">
+               <tooltip>
+                  <Tooltip text="Move rule up" />
+               </tooltip></Button>
+            <Button fx:id="down" mnemonicParsing="false" onAction="#onDown" styleClass="mini-button">
+               <tooltip>
+                  <Tooltip text="Move rule down" />
+               </tooltip></Button>
          </children>
       </HBox>
    </top>
