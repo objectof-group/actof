@@ -11,7 +11,6 @@ public abstract class AbstractDisplay implements Display {
     private Stage displayStage;
     private ChangeController changeBus = new IChangeController();
     private boolean top = true;
-    private Resource resource;
 
     public Stage getDisplayStage() {
         return displayStage;
@@ -35,14 +34,6 @@ public abstract class AbstractDisplay implements Display {
 
     public boolean isTop() {
         return top;
-    }
-
-    public Resource getResource() {
-        return resource;
-    }
-
-    public void setResource(Resource resource) {
-        this.resource = resource;
     }
 
 }

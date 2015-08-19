@@ -11,7 +11,6 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import net.objectof.actof.common.component.Display;
-import net.objectof.actof.common.component.Resource;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.controller.change.IChangeController;
 import net.objectof.actof.minion.components.classpath.ClasspathController;
@@ -139,10 +138,10 @@ public class Minion extends Application implements Display {
     }
 
     @Override
-    public void initialize() throws Exception {}
+    public void initializeDisplay() throws Exception {}
 
     @Override
-    public void onShow() throws Exception {}
+    public void onShowDisplay() throws Exception {}
 
     @Override
     public boolean isTop() {
@@ -152,16 +151,6 @@ public class Minion extends Application implements Display {
     @Override
     public void setTop(boolean top) {
         this.top = top;
-    }
-
-    @Override
-    public Resource getResource() {
-        return null;
-    }
-
-    @Override
-    public void setResource(Resource resource) {
-        throw new UnsupportedOperationException();
     }
 
 }

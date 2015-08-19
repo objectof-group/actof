@@ -19,7 +19,7 @@ public class RepoSpy extends Application {
 
         RepoSpyController spy = new RepoSpyController();
         spy.setDisplayStage(primaryStage);
-        spy.initialize();
+        spy.initializeDisplay();
 
         primaryStage.setTitle(spy.getTitle());
         primaryStage.getIcons().add(new Image(RepoSpy.class.getResource("RepoSpy.png").openStream()));
@@ -43,7 +43,7 @@ public class RepoSpy extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        spy.onShow();
+        spy.onShowDisplay();
 
     }
 

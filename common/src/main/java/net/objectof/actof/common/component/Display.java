@@ -12,10 +12,6 @@ public interface Display {
 
     String getTitle();
 
-    Resource getResource();
-
-    void setResource(Resource resource);
-
     Stage getDisplayStage();
 
     void setDisplayStage(Stage stage);
@@ -34,7 +30,7 @@ public interface Display {
      * 
      * @throws Exception
      */
-    void initialize() throws Exception;
+    void initializeDisplay() throws Exception;
 
     /**
      * To be called after the component has been shown on screen for the first
@@ -42,6 +38,12 @@ public interface Display {
      * 
      * @throws Exception
      */
-    void onShow() throws Exception;
+    void onShowDisplay() throws Exception;
+
+    default void copySettings(Display other) {
+        setChangeBus(other.getChangeBus());
+        setTop(other.isTop());
+        setDisplayStage(other.getDisplayStage());
+    }
 
 }

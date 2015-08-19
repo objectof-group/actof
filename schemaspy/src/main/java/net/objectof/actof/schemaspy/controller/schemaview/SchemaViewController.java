@@ -17,6 +17,8 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 
 import org.controlsfx.control.BreadCrumbBar;
+import org.controlsfx.control.PopOver;
+import org.controlsfx.control.PopOver.ArrowLocation;
 import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
@@ -30,20 +32,21 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TitledPane;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.control.cell.TextFieldTreeTableCell;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
-import net.objectof.actof.common.controller.IActofUIController;
+import net.objectof.actof.common.component.AbstractLoadedDisplay;
 import net.objectof.actof.common.controller.change.Change;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.controller.schema.AttributeEntry;
@@ -74,10 +77,10 @@ import net.objectof.connector.Connector;
 import net.objectof.connector.Connector.Initialize;
 
 
-public class SchemaViewController extends IActofUIController {
+public class SchemaViewController extends AbstractLoadedDisplay {
 
     @FXML
-    private Button open, save, create, generate;
+    private Button open, save, create, generate, namespace, newschema;
 
     @FXML
     private TreeTableView<SchemaEntry> tree;
@@ -85,7 +88,16 @@ public class SchemaViewController extends IActofUIController {
     private TreeTableColumn<SchemaEntry, String> field;
     private BreadCrumbBar<SchemaEntry> breadcrumb;
     @FXML
-    private HBox breadcrumbBox;
+    private HBox breadcrumbBox, toolbar;
+    @FXML
+    private VBox sidebar;
+    private PopOver namespacePopover;
+
+    @FXML
+    private BorderPane toppane;
+
+    @FXML
+    private GridPane namespaceGrid;
 
     @FXML
     private ScrollPane cardscroller;
@@ -95,9 +107,6 @@ public class SchemaViewController extends IActofUIController {
 
     @FXML
     private TextField pkgdomain, pkgversion, pkgpath;
-
-    @FXML
-    private TitledPane namespacepane;
 
     SchemaSpyController schemaspy;
     Card addChildCard;
@@ -109,8 +118,13 @@ public class SchemaViewController extends IActofUIController {
     public File lastschemadir = null;
 
     @Override
-    @FXML
-    protected void initialize() throws SAXException, IOException, ParserConfigurationException, XMLParseException {
+    public void initializeDisplay() throws SAXException, IOException, ParserConfigurationException, XMLParseException {
+
+        sidebar.getChildren().remove(namespaceGrid);
+        namespacePopover = new PopOver(namespaceGrid);
+        namespacePopover.setArrowLocation(ArrowLocation.TOP_CENTER);
+        namespacePopover.setHideOnEscape(true);
+        namespacePopover.setAutoHide(true);
 
         cardpane = new MasonryPane(0, Layout.ROUND_ROBIN);
         cardpane.setPadding(new Insets(12, 8, 12, 8));
@@ -183,7 +197,7 @@ public class SchemaViewController extends IActofUIController {
     }
 
     @Override
-    public void ready() {
+    public void onDisplayLoad() {
         getChangeBus().listen(this::onSchemaChange);
 
         getChangeBus().listen(change -> {
@@ -283,7 +297,7 @@ public class SchemaViewController extends IActofUIController {
             if (action == Dialog.ACTION_YES) {
                 RepoSpyController repospy = new RepoSpyController();
                 repospy.setDisplayStage(new Stage());
-                repospy.initialize();
+                repospy.initializeDisplay();
                 repospy.connect(connect);
             }
 
@@ -345,6 +359,14 @@ public class SchemaViewController extends IActofUIController {
         writer.close();
     }
 
+    public void onNamespace() {
+        if (namespacePopover.isShowing()) {
+            namespacePopover.hide();
+        } else {
+            namespacePopover.show(namespace);
+        }
+    }
+
     private void addEntity(String name) {
         TreeItem<SchemaEntry> treeitem = tree.getSelectionModel().getSelectedItem();
         SchemaEntry entry = treeitem.getValue();
@@ -359,8 +381,6 @@ public class SchemaViewController extends IActofUIController {
         pkgdomain.setText(schemaspy.getSchema().getPackageDomain());
         pkgversion.setText(schemaspy.getSchema().getPackageVersion());
         pkgpath.setText(schemaspy.getSchema().getPackagePath());
-
-        namespacepane.setExpanded(true);
 
     }
 
@@ -490,7 +510,21 @@ public class SchemaViewController extends IActofUIController {
     }
 
     public static SchemaViewController load(ChangeController changes) throws IOException {
-        return FXUtil.load(SchemaViewController.class, "SchemaView.fxml", changes);
+        return FXUtil.loadDisplay(SchemaViewController.class, "SchemaView.fxml", changes);
+    }
+
+    @Override
+    public String getTitle() {
+        return "SchemaSpy";
+    }
+
+    @Override
+    public void onShowDisplay() throws Exception {
+        if (!isTop()) {
+            toppane.getChildren().remove(sidebar);
+            toolbar.getChildren().removeAll(open, newschema);
+        }
+
     }
 
 }

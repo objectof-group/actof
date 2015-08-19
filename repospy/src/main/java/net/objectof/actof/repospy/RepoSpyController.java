@@ -9,41 +9,61 @@ import javafx.scene.control.ScrollPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.objectof.actof.common.component.AbstractDisplay;
+import net.objectof.actof.common.component.Resource;
+import net.objectof.actof.common.component.ResourceDisplay;
 import net.objectof.actof.common.controller.repository.RepositoryController;
 import net.objectof.actof.common.controller.search.SearchController;
 import net.objectof.actof.connectorui.ConnectionController;
 import net.objectof.actof.repospy.controllers.history.HistoryController;
 import net.objectof.actof.repospy.controllers.navigator.NavigatorController;
 import net.objectof.actof.repospy.controllers.review.ReviewController;
+import net.objectof.actof.repospy.resource.RepositoryResource;
 import net.objectof.connector.Connector;
 import net.objectof.model.query.Query;
 import net.objectof.model.query.parser.QueryBuilder;
 
 
-public class RepoSpyController extends AbstractDisplay {
+public class RepoSpyController extends AbstractDisplay implements ResourceDisplay {
 
     public RepositoryController repository;
     public SearchController search;
     public NavigatorController navigator;
     public HistoryController history;
 
+    private RepositoryResource resource;
+
     @Override
-    public void initialize() throws Exception {
+    public void initializeDisplay() throws Exception {
         repository = new RepositoryController(getChangeBus());
         search = new SearchController(repository, getChangeBus());
         history = new HistoryController(getChangeBus());
         navigator = NavigatorController.load(getChangeBus());
 
-        navigator.setDisplayStage(getDisplayStage());
-        navigator.setTop(isTop());
-        navigator.initialize();
+        navigator.copySettings(this);
+        navigator.setTop(false);
+        navigator.initializeDisplay();
         navigator.setTopController(this);
 
     }
 
     @Override
-    public void onShow() throws Exception {
-        navigator.onShow();
+    public void onShowDisplay() throws Exception {
+        navigator.onShowDisplay();
+    }
+
+    @Override
+    public void setResource(Resource resource) {
+        this.resource = (RepositoryResource) resource;
+    }
+
+    @Override
+    public RepositoryResource getResource() {
+        return resource;
+    }
+
+    @Override
+    public void loadResource() throws Exception {
+        connect(resource.getConnector());
     }
 
     /*************************************************************

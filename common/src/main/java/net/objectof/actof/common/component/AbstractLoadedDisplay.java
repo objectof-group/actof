@@ -4,7 +4,7 @@ package net.objectof.actof.common.component;
 import javafx.scene.Node;
 
 
-public abstract class AbstractLoadedDisplay extends AbstractDisplay implements LoadedDisplay {
+public abstract class AbstractLoadedDisplay extends AbstractDisplay implements Display, LoadedDisplay {
 
     private Node displayNode;
 

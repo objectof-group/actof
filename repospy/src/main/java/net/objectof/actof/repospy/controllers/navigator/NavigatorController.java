@@ -79,7 +79,7 @@ public class NavigatorController extends AbstractLoadedDisplay {
     @FXML
     private BorderPane toppane, fieldEditor;
     @FXML
-    private HBox breadcrumbBox, searchBox;
+    private HBox breadcrumbBox, searchBox, toolbar;
     @FXML
     private VBox sidebar;
     @FXML
@@ -112,16 +112,11 @@ public class NavigatorController extends AbstractLoadedDisplay {
     private IRootNode rootNode;
 
     @Override
-    public void initialize() {
+    public void initializeDisplay() {
         getChangeBus().listen(this::onChange);
         getChangeBus().listen(RepositoryReplacedChange.class, this::onRepositoryReplacedChange);
         getChangeBus().listen(QueryChange.class, this::onQueryChange);
         getChangeBus().listen(ResourceSelectedChange.class, this::onResourceSelect);
-
-        if (!isTop()) {
-            toppane.getChildren().remove(sidebar);
-        }
-
     }
 
     private void onResourceSelect(ResourceSelectedChange change) {
@@ -246,7 +241,6 @@ public class NavigatorController extends AbstractLoadedDisplay {
 
     public void setTopController(RepoSpyController controller) {
         this.repospy = controller;
-
     }
 
     public void onMenuItemSearch() {
@@ -381,7 +375,12 @@ public class NavigatorController extends AbstractLoadedDisplay {
     }
 
     @Override
-    public void onShow() throws Exception {
+    public void onShowDisplay() throws Exception {
+
+        if (!repospy.isTop()) {
+            toppane.getChildren().remove(sidebar);
+            toolbar.getChildren().remove(connect);
+        }
 
         rootNode = new IRootNode(repospy, null);
         root = new RepoSpyTreeItem(rootNode, repospy);
@@ -468,6 +467,7 @@ public class NavigatorController extends AbstractLoadedDisplay {
         shortcut(toppane, () -> showSearchBar(!searchPane.isExpanded()), KeyCode.F, KeyCombination.CONTROL_DOWN);
         shortcut(searchBox, () -> showSearchBar(false), KeyCode.ESCAPE);
         shortcut(records, this::recordCopy, KeyCode.C, KeyCombination.CONTROL_DOWN);
+
     }
 
 }

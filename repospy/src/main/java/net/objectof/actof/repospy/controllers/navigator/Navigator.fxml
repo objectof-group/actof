@@ -17,7 +17,7 @@
    <top>
       <VBox BorderPane.alignment="CENTER">
          <children>
-            <HBox styleClass="tool-bar">
+            <HBox fx:id="toolbar" styleClass="tool-bar">
                <children>
                   <Button fx:id="connect" mnemonicParsing="false" onAction="#doConnect" styleClass="tool-bar-button" text="Connect">
                      <graphic>

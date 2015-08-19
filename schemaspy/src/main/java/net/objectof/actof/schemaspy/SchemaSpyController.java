@@ -14,17 +14,22 @@ import org.xml.sax.SAXException;
 
 import javafx.scene.Node;
 import net.objectof.actof.common.component.AbstractDisplay;
+import net.objectof.actof.common.component.Resource;
+import net.objectof.actof.common.component.ResourceDisplay;
 import net.objectof.actof.common.controller.schema.ISchemaController;
 import net.objectof.actof.common.controller.schema.SchemaController;
 import net.objectof.actof.connectorui.ConnectionController;
 import net.objectof.actof.schemaspy.controller.schemaview.SchemaViewController;
+import net.objectof.actof.schemaspy.resource.SchemaFileResource;
 import net.objectof.connector.Connector;
 
 
-public class SchemaSpyController extends AbstractDisplay {
+public class SchemaSpyController extends AbstractDisplay implements ResourceDisplay {
 
     SchemaViewController view;
     private SchemaController schema;
+
+    private SchemaFileResource resource;
 
     public SchemaSpyController() throws IOException, SAXException, ParserConfigurationException, XMLParseException {
 
@@ -54,6 +59,9 @@ public class SchemaSpyController extends AbstractDisplay {
 
         SchemaViewController controller = SchemaViewController.load(getChangeBus());
         controller.setTopController(this);
+        controller.setTop(isTop());
+        controller.setDisplayStage(getDisplayStage());
+        controller.initializeDisplay();
 
         return controller;
     }
@@ -67,11 +75,13 @@ public class SchemaSpyController extends AbstractDisplay {
     }
 
     @Override
-    public void onShow() {}
+    public void onShowDisplay() throws Exception {
+        view.onShowDisplay();
+    }
 
     @Override
     public Node getDisplayNode() {
-        return view.getNode();
+        return view.getDisplayNode();
     }
 
     @Override
@@ -80,9 +90,24 @@ public class SchemaSpyController extends AbstractDisplay {
     }
 
     @Override
-    public void initialize() throws Exception {
+    public void initializeDisplay() throws Exception {
         newSchema();
         view = showSchemaView();
+    }
+
+    @Override
+    public SchemaFileResource getResource() {
+        return resource;
+    }
+
+    @Override
+    public void setResource(Resource resource) {
+        this.resource = (SchemaFileResource) resource;
+    }
+
+    @Override
+    public void loadResource() throws Exception {
+        setSchema(resource.getSchemaFile());
     }
 
 }

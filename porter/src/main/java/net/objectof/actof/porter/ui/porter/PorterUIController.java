@@ -287,10 +287,10 @@ public class PorterUIController extends AbstractLoadedDisplay {
     }
 
     @Override
-    public void initialize() throws Exception {}
+    public void initializeDisplay() throws Exception {}
 
     @Override
-    public void onShow() throws Exception {
+    public void onShowDisplay() throws Exception {
         // hide title component of packages titledpane
         packagesPane.applyCss();
         Pane title = (Pane) packagesPane.lookup(".title");

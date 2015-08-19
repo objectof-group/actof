@@ -21,15 +21,15 @@ public class PorterUIDisplay extends AbstractDisplay {
     }
 
     @Override
-    public void initialize() throws Exception {
+    public void initializeDisplay() throws Exception {
         controller = PorterUIController.load(getChangeBus());
         controller.setDisplayStage(getDisplayStage());
-        controller.initialize();
+        controller.initializeDisplay();
     }
 
     @Override
-    public void onShow() throws Exception {
-        controller.onShow();
+    public void onShowDisplay() throws Exception {
+        controller.onShowDisplay();
     }
 
 }

@@ -19,7 +19,7 @@ public class SchemaSpy extends Application {
         primaryStage.setTitle("ObjectOf SchemaSpy");
         SchemaSpyController spy = new SchemaSpyController();
         spy.setDisplayStage(primaryStage);
-        spy.initialize();
+        spy.initializeDisplay();
 
         primaryStage.getIcons().add(new Image(SchemaSpy.class.getResource("view/icons/SchemaSpy.png").openStream()));
         primaryStage.setOnCloseRequest(event -> {
@@ -42,6 +42,7 @@ public class SchemaSpy extends Application {
         primaryStage.setScene(scene);
 
         primaryStage.show();
+        spy.onShowDisplay();
 
     }
 

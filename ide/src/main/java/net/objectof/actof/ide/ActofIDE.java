@@ -16,11 +16,11 @@ public class ActofIDE extends Application {
         Display ide = ActofIDEController.load(new IChangeController());
 
         ide.setDisplayStage(primaryStage);
-        ide.initialize();
+        ide.initializeDisplay();
 
         primaryStage.setScene(new Scene((Parent) ide.getDisplayNode()));
         primaryStage.show();
-        ide.onShow();
+        ide.onShowDisplay();
 
     }
 
