@@ -11,6 +11,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import net.objectof.actof.common.component.AbstractLoadedDisplay;
 import net.objectof.actof.common.component.Display;
@@ -30,6 +31,8 @@ public class ActofIDEController extends AbstractLoadedDisplay {
     private TabPane tabs;
     @FXML
     private TreeView<Resource> tree;
+    @FXML
+    private HBox toolbar;
 
     private Map<Resource, Tab> resourceTabs = new HashMap<>();
 
@@ -81,6 +84,18 @@ public class ActofIDEController extends AbstractLoadedDisplay {
 
         });
 
+        tabs.getSelectionModel().selectedItemProperty().addListener((obs, o, n) -> {
+            try {
+                if (n == null) { return; }
+                Resource res = getResource(n);
+                toolbar.getChildren().clear();
+                toolbar.getChildren().addAll(res.getDisplay().getToolbars());
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
     }
 
     private void createTab(Resource res) throws Exception {
@@ -105,6 +120,13 @@ public class ActofIDEController extends AbstractLoadedDisplay {
     private Tab getTab(Resource res) throws Exception {
         if (!resourceTabs.containsKey(res)) { return null; }
         return resourceTabs.get(res);
+    }
+
+    private Resource getResource(Tab tab) throws Exception {
+        for (Resource res : resourceTabs.keySet()) {
+            if (getTab(res).equals(tab)) { return res; }
+        }
+        return null;
     }
 
     @Override

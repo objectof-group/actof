@@ -41,8 +41,8 @@ public class RepoSpyController extends AbstractDisplay implements ResourceDispla
 
         navigator.copySettings(this);
         navigator.setTop(false);
-        navigator.initializeDisplay();
         navigator.setTopController(this);
+        navigator.initializeDisplay();
 
     }
 

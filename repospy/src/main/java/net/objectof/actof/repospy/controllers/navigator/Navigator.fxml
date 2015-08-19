@@ -15,78 +15,83 @@
       <BorderPane fx:id="fieldEditor" BorderPane.alignment="CENTER" />
    </center>
    <top>
-      <VBox BorderPane.alignment="CENTER">
+      <VBox fx:id="headerBox" BorderPane.alignment="CENTER">
          <children>
             <HBox fx:id="toolbar" styleClass="tool-bar">
                <children>
-                  <Button fx:id="connect" mnemonicParsing="false" onAction="#doConnect" styleClass="tool-bar-button" text="Connect">
-                     <graphic>
-                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@icons/connect.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                     <tooltip>
-                        <Tooltip text="Connect to an ObjectOf repository" />
-                     </tooltip>
-                  </Button>
-                  <Button fx:id="revert" disable="true" mnemonicParsing="false" onAction="#doRevert" styleClass="tool-bar-button">
-                     <graphic>
-                        <ImageView fx:id="revert_image" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@icons/refresh.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                     <tooltip>
-                        <Tooltip fx:id="revert_tooltip" text="Revert all changes" />
-                     </tooltip>
-                  </Button>
-                  <Button fx:id="review" disable="true" mnemonicParsing="false" onAction="#doReview" styleClass="tool-bar-button">
-                     <graphic>
-                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@icons/review.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                     <tooltip>
-                        <Tooltip text="Review changes" />
-                     </tooltip>
-                  </Button>
-                  <Button fx:id="commit" disable="true" mnemonicParsing="false" onAction="#doCommit" styleClass="tool-bar-button" text="Commit">
-                     <graphic>
-                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@icons/commit.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                     <tooltip>
-                        <Tooltip text="Commit all changes to the repo" />
-                     </tooltip>
-                  </Button>
-                  <HBox fx:id="breadcrumbBox" alignment="CENTER_LEFT" fillHeight="false" HBox.hgrow="ALWAYS" />
-                  <MenuButton mnemonicParsing="false" styleClass="tool-bar-button">
-                    <items>
-                        <CheckMenuItem fx:id="menuItemSearch" mnemonicParsing="false" onAction="#onMenuItemSearch" text="Search" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                      <MenuItem fx:id="dump" mnemonicParsing="false" onAction="#onDump" text="Dump to JSON" />
-                      <MenuItem fx:id="load" mnemonicParsing="false" onAction="#onLoad" text="Load from JSON" />
-                    </items>
-                     <graphic>
-                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@icons/menu.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </MenuButton>
+                  <HBox fx:id="repoToolbar">
+                     <children>
+                        <Button fx:id="connect" mnemonicParsing="false" onAction="#doConnect" styleClass="tool-bar-button" text="Connect">
+                           <graphic>
+                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@icons/connect.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <tooltip>
+                              <Tooltip text="Connect to an ObjectOf repository" />
+                           </tooltip>
+                        </Button>
+                        <Button fx:id="revert" disable="true" mnemonicParsing="false" onAction="#doRevert" styleClass="tool-bar-button">
+                           <graphic>
+                              <ImageView fx:id="revert_image" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@icons/refresh.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <tooltip>
+                              <Tooltip fx:id="revert_tooltip" text="Revert all changes" />
+                           </tooltip>
+                        </Button>
+                        <Button fx:id="commit" disable="true" mnemonicParsing="false" onAction="#doCommit" styleClass="tool-bar-button">
+                           <graphic>
+                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@icons/commit.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <tooltip>
+                              <Tooltip text="Commit all changes to the repo" />
+                           </tooltip>
+                        </Button>
+                     </children>
+                  </HBox>
+                  <HBox fx:id="breadcrumbToolbar" alignment="CENTER_LEFT" fillHeight="false" HBox.hgrow="ALWAYS" />
+                  <HBox fx:id="optionsToolbar">
+                     <children>
+                        <Button fx:id="review" disable="true" mnemonicParsing="false" onAction="#doReview" styleClass="tool-bar-button">
+                           <graphic>
+                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@icons/review.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <tooltip>
+                              <Tooltip text="Review changes" />
+                           </tooltip>
+                        </Button>
+                        <MenuButton mnemonicParsing="false" styleClass="tool-bar-button">
+                          <items>
+                              <CheckMenuItem fx:id="menuItemSearch" mnemonicParsing="false" onAction="#onMenuItemSearch" text="Search" />
+                              <SeparatorMenuItem mnemonicParsing="false" />
+                            <MenuItem fx:id="dump" mnemonicParsing="false" onAction="#onDump" text="Dump to JSON" />
+                            <MenuItem fx:id="load" mnemonicParsing="false" onAction="#onLoad" text="Load from JSON" />
+                          </items>
+                           <graphic>
+                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@icons/menu.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </MenuButton>
+                     </children>
+                  </HBox>
                </children>
-               <padding>
-                  <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
-               </padding>
             </HBox>
             <TitledPane fx:id="searchPane" expanded="false" style="-fx-alignment: center;" styleClass="search-pane" text="Search" textAlignment="CENTER" VBox.vgrow="ALWAYS">
                <font>

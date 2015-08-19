@@ -1,6 +1,7 @@
 package net.objectof.actof.common.component;
 
 
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.stage.Stage;
 import net.objectof.actof.common.controller.change.ChangeController;
@@ -15,6 +16,8 @@ public interface Display {
     Stage getDisplayStage();
 
     void setDisplayStage(Stage stage);
+
+    ObservableList<Node> getToolbars();
 
     ChangeController getChangeBus();
 

@@ -79,9 +79,9 @@ public class NavigatorController extends AbstractLoadedDisplay {
     @FXML
     private BorderPane toppane, fieldEditor;
     @FXML
-    private HBox breadcrumbBox, searchBox, toolbar;
+    private HBox breadcrumbToolbar, repoToolbar, optionsToolbar, searchBox, toolbar;
     @FXML
-    private VBox sidebar;
+    private VBox sidebar, headerBox;
     @FXML
     private Node editorBox;
 
@@ -117,6 +117,97 @@ public class NavigatorController extends AbstractLoadedDisplay {
         getChangeBus().listen(RepositoryReplacedChange.class, this::onRepositoryReplacedChange);
         getChangeBus().listen(QueryChange.class, this::onQueryChange);
         getChangeBus().listen(ResourceSelectedChange.class, this::onResourceSelect);
+
+        if (!repospy.isTop()) {
+            toppane.getChildren().remove(sidebar);
+            repoToolbar.getChildren().remove(connect);
+
+            toolbar.getChildren().removeAll(repoToolbar, breadcrumbToolbar, optionsToolbar);
+            headerBox.getChildren().remove(toolbar);
+
+            repospy.getToolbars().add(repoToolbar);
+            repospy.getToolbars().add(breadcrumbToolbar);
+            repospy.getToolbars().add(optionsToolbar);
+
+        }
+
+        rootNode = new IRootNode(repospy, null);
+        root = new RepoSpyTreeItem(rootNode, repospy);
+
+        breadcrumb = new BreadCrumbBar<>();
+        breadcrumb.setFocusTraversable(false);
+        breadcrumb.setDisable(true);
+        Callback<TreeItem<TreeNode>, Button> breadCrumbFactory = breadcrumb.getCrumbFactory();
+        breadcrumb.setCrumbFactory(item -> {
+            Button b = breadCrumbFactory.call(item);
+            b.getStyleClass().add("bread-crumb-button");
+            b.setPadding(new Insets(0, 2, 0, 2));
+            b.setText("");
+            Label label = new Label();
+
+            if (item.getValue() != null) {
+                label.setText(item.getValue().toString());
+            }
+
+            b.setGraphic(label);
+            label.setPadding(new Insets(3, 10, 3, 10));
+            return b;
+        });
+
+        // breadcrumb
+        breadcrumb.setAutoNavigationEnabled(false);
+        breadcrumb.setOnCrumbAction(event -> {
+            TreeItem<TreeNode> node = event.getSelectedCrumb();
+            repospy.getChangeBus().broadcast(new ResourceSelectedChange((RepoSpyTreeItem) node));
+        });
+        breadcrumb.setSelectedCrumb(root);
+        breadcrumbToolbar.getChildren().add(breadcrumb);
+
+        // sidebar
+        records.setShowRoot(false);
+        records.setRoot(root);
+        records.getSelectionModel().selectedItemProperty().addListener((ov, o, n) -> onRecordSelect(n));
+
+        // Kind selection combobox
+        kindCombo = new ComboBox<>();
+        kindCombo.setMinWidth(150);
+        kindCombo.valueProperty().addListener(change -> {
+            repospy.search.setKind(kindCombo.getValue());
+        });
+        searchBox.getChildren().add(kindCombo);
+
+        // search text field
+        querytext = new CustomTextField();
+        HBox.setHgrow(querytext, Priority.ALWAYS);
+        searchBox.getChildren().add(querytext);
+        querytext.setPromptText("Search Query");
+        querytext.setOnKeyReleased(event -> {
+            if (event.getCode() != KeyCode.ENTER) { return; }
+            repospy.doQuery(querytext.getText());
+        });
+
+        // search clear button
+        Button doclear = new Button("",
+                new ImageView(new Image(NavigatorController.class.getResourceAsStream("icons/clear.png"))));
+        doclear.setStyle("-fx-background-color: null; -fx-padding: 3px;");
+        doclear.setOnAction(event -> {
+            querytext.setText("");
+            repospy.doQuery(querytext.getText());
+        });
+        querytext.setRight(doclear);
+
+        // search query button
+        Button doquery = new Button("", ActofIcons.getIconView(Icon.SEARCH, Size.BUTTON));
+        doquery.getStyleClass().add("tool-bar-button");
+        doquery.setOnAction(event -> {
+            repospy.doQuery(querytext.getText());
+        });
+        searchBox.getChildren().add(doquery);
+
+        shortcut(toppane, () -> showSearchBar(!searchPane.isExpanded()), KeyCode.F, KeyCombination.CONTROL_DOWN);
+        shortcut(searchBox, () -> showSearchBar(false), KeyCode.ESCAPE);
+        shortcut(records, this::recordCopy, KeyCode.C, KeyCombination.CONTROL_DOWN);
+
     }
 
     private void onResourceSelect(ResourceSelectedChange change) {
@@ -377,84 +468,6 @@ public class NavigatorController extends AbstractLoadedDisplay {
     @Override
     public void onShowDisplay() throws Exception {
 
-        if (!repospy.isTop()) {
-            toppane.getChildren().remove(sidebar);
-            toolbar.getChildren().remove(connect);
-        }
-
-        rootNode = new IRootNode(repospy, null);
-        root = new RepoSpyTreeItem(rootNode, repospy);
-
-        breadcrumb = new BreadCrumbBar<>();
-        breadcrumb.setFocusTraversable(false);
-        breadcrumb.setDisable(true);
-        Callback<TreeItem<TreeNode>, Button> breadCrumbFactory = breadcrumb.getCrumbFactory();
-        breadcrumb.setCrumbFactory(item -> {
-            Button b = breadCrumbFactory.call(item);
-            b.getStyleClass().add("bread-crumb-button");
-            b.setPadding(new Insets(0, 2, 0, 2));
-            b.setText("");
-            Label label = new Label();
-
-            if (item.getValue() != null) {
-                label.setText(item.getValue().toString());
-            }
-
-            b.setGraphic(label);
-            label.setPadding(new Insets(3, 10, 3, 10));
-            return b;
-        });
-
-        // breadcrumb
-        breadcrumb.setAutoNavigationEnabled(false);
-        breadcrumb.setOnCrumbAction(event -> {
-            TreeItem<TreeNode> node = event.getSelectedCrumb();
-            repospy.getChangeBus().broadcast(new ResourceSelectedChange((RepoSpyTreeItem) node));
-        });
-        breadcrumb.setSelectedCrumb(root);
-        breadcrumbBox.getChildren().add(breadcrumb);
-
-        // sidebar
-        records.setShowRoot(false);
-        records.setRoot(root);
-        records.getSelectionModel().selectedItemProperty().addListener((ov, o, n) -> onRecordSelect(n));
-
-        // Kind selection combobox
-        kindCombo = new ComboBox<>();
-        kindCombo.setMinWidth(150);
-        kindCombo.valueProperty().addListener(change -> {
-            repospy.search.setKind(kindCombo.getValue());
-        });
-        searchBox.getChildren().add(kindCombo);
-
-        // search text field
-        querytext = new CustomTextField();
-        HBox.setHgrow(querytext, Priority.ALWAYS);
-        searchBox.getChildren().add(querytext);
-        querytext.setPromptText("Search Query");
-        querytext.setOnKeyReleased(event -> {
-            if (event.getCode() != KeyCode.ENTER) { return; }
-            repospy.doQuery(querytext.getText());
-        });
-
-        // search clear button
-        Button doclear = new Button("",
-                new ImageView(new Image(NavigatorController.class.getResourceAsStream("icons/clear.png"))));
-        doclear.setStyle("-fx-background-color: null; -fx-padding: 3px;");
-        doclear.setOnAction(event -> {
-            querytext.setText("");
-            repospy.doQuery(querytext.getText());
-        });
-        querytext.setRight(doclear);
-
-        // search query button
-        Button doquery = new Button("", ActofIcons.getIconView(Icon.SEARCH, Size.BUTTON));
-        doquery.getStyleClass().add("tool-bar-button");
-        doquery.setOnAction(event -> {
-            repospy.doQuery(querytext.getText());
-        });
-        searchBox.getChildren().add(doquery);
-
         // hide title component of search titledpane. We need to force it to
         // apply css before we can look up the title component
         searchPane.applyCss();
@@ -463,10 +476,6 @@ public class NavigatorController extends AbstractLoadedDisplay {
         title.setMinHeight(0);
         title.setPrefHeight(0);
         title.setMaxHeight(0);
-
-        shortcut(toppane, () -> showSearchBar(!searchPane.isExpanded()), KeyCode.F, KeyCombination.CONTROL_DOWN);
-        shortcut(searchBox, () -> showSearchBar(false), KeyCode.ESCAPE);
-        shortcut(records, this::recordCopy, KeyCode.C, KeyCombination.CONTROL_DOWN);
 
     }
 

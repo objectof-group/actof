@@ -43,8 +43,6 @@ public class RepoSpy extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        spy.onShowDisplay();
-
     }
 
     public static void main(String[] args) {

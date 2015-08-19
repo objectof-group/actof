@@ -194,6 +194,11 @@ public class SchemaViewController extends AbstractLoadedDisplay {
             schema.setPackagePath(pkgpath.getText());
         });
 
+        if (!isTop()) {
+            toppane.getChildren().remove(sidebar);
+            toolbar.getChildren().removeAll(open, newschema);
+        }
+
     }
 
     @Override
@@ -520,10 +525,6 @@ public class SchemaViewController extends AbstractLoadedDisplay {
 
     @Override
     public void onShowDisplay() throws Exception {
-        if (!isTop()) {
-            toppane.getChildren().remove(sidebar);
-            toolbar.getChildren().removeAll(open, newschema);
-        }
 
     }
 
