@@ -2,8 +2,8 @@ package net.objectof.actof.porter.ui.porter;
 
 
 import javafx.scene.Node;
-import net.objectof.actof.common.component.AbstractDisplay;
 import net.objectof.actof.common.component.Display;
+import net.objectof.actof.common.component.impl.AbstractDisplay;
 
 
 public class PorterUIDisplay extends AbstractDisplay {

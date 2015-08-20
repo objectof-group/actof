@@ -47,7 +47,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.util.Callback;
-import net.objectof.actof.common.component.AbstractLoadedDisplay;
+import net.objectof.actof.common.component.impl.AbstractLoadedDisplay;
+import net.objectof.actof.common.component.impl.INodePanel;
 import net.objectof.actof.common.controller.change.Change;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.controller.repository.RepositoryReplacedChange;
@@ -123,7 +124,7 @@ public class NavigatorController extends AbstractLoadedDisplay {
         getToolbars().add(repoToolbar);
         getToolbars().add(breadcrumbToolbar);
         getToolbars().add(optionsToolbar);
-        getPanels().add(sidebar);
+        getPanels().add(new INodePanel("Entities", sidebar));
         toppane.getChildren().remove(sidebar);
         if (repospy.isForResource()) {
             repoToolbar.getChildren().remove(connect);

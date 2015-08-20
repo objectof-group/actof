@@ -14,9 +14,10 @@ import org.xml.sax.SAXException;
 
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
-import net.objectof.actof.common.component.AbstractDisplay;
+import net.objectof.actof.common.component.Panel;
 import net.objectof.actof.common.component.Resource;
 import net.objectof.actof.common.component.ResourceDisplay;
+import net.objectof.actof.common.component.impl.AbstractDisplay;
 import net.objectof.actof.common.controller.schema.ISchemaController;
 import net.objectof.actof.common.controller.schema.SchemaController;
 import net.objectof.actof.connectorui.ConnectionController;
@@ -128,7 +129,7 @@ public class SchemaSpyController extends AbstractDisplay implements ResourceDisp
     }
 
     @Override
-    public ObservableList<Node> getPanels() {
+    public ObservableList<Panel> getPanels() {
         return view.getPanels();
     }
 

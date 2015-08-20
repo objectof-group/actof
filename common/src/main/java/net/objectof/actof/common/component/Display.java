@@ -7,11 +7,7 @@ import javafx.stage.Stage;
 import net.objectof.actof.common.controller.change.ChangeController;
 
 
-public interface Display {
-
-    Node getDisplayNode();
-
-    String getTitle();
+public interface Display extends Titled, Noded {
 
     Stage getDisplayStage();
 
@@ -19,7 +15,7 @@ public interface Display {
 
     ObservableList<Node> getToolbars();
 
-    ObservableList<Node> getPanels();
+    ObservableList<Panel> getPanels();
 
     ObservableList<Display> getSubDisplays();
 

@@ -1,8 +1,8 @@
 package net.objectof.actof.repospy.resource;
 
 
-import net.objectof.actof.common.component.AbstractResource;
 import net.objectof.actof.common.component.ResourceDisplay;
+import net.objectof.actof.common.component.impl.AbstractResource;
 import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.connector.Connector;
 

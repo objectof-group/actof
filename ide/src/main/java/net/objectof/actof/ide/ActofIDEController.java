@@ -18,10 +18,12 @@ import javafx.scene.control.TreeView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import net.objectof.actof.common.component.AbstractLoadedDisplay;
 import net.objectof.actof.common.component.Display;
+import net.objectof.actof.common.component.Panel;
 import net.objectof.actof.common.component.Resource;
 import net.objectof.actof.common.component.ResourceDisplay;
+import net.objectof.actof.common.component.impl.AbstractLoadedDisplay;
+import net.objectof.actof.common.component.impl.INodePanel;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.icons.ActofIcons;
 import net.objectof.actof.common.icons.ActofIcons.Icon;
@@ -48,7 +50,7 @@ public class ActofIDEController extends AbstractLoadedDisplay {
 
     private Map<Resource, Tab> resourceTabs = new HashMap<>();
     private List<Node> permanentToolbars = new ArrayList<>();
-    private List<Node> permanentPanels = new ArrayList<>();
+    private List<Panel> permanentPanels = new ArrayList<>();
 
     public static Display load(ChangeController changes) throws IOException {
         return FXUtil.loadDisplay(ActofIDEController.class, "ActofIDEController.fxml", changes);
@@ -145,9 +147,10 @@ public class ActofIDEController extends AbstractLoadedDisplay {
                 getToolbars().addAll(permanentToolbars);
                 getToolbars().addAll(res.getDisplay().getToolbars());
 
-                getPanels().clear();
-                getPanels().addAll(permanentPanels);
-                getPanels().addAll(res.getDisplay().getPanels());
+                List<Panel> panelList = new ArrayList<>();
+                panelList.addAll(permanentPanels);
+                panelList.addAll(res.getDisplay().getPanels());
+                getPanels().setAll(panelList);
 
             }
             catch (Exception e) {
@@ -162,7 +165,7 @@ public class ActofIDEController extends AbstractLoadedDisplay {
         getToolbars().addAll(permanentToolbars);
         toolbar.getChildren().clear();
 
-        permanentPanels.add(tree);
+        permanentPanels.add(new INodePanel("Project", tree));
         getPanels().addAll(permanentPanels);
 
     }

@@ -1,10 +1,12 @@
-package net.objectof.actof.common.component;
+package net.objectof.actof.common.component.impl;
 
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.stage.Stage;
+import net.objectof.actof.common.component.Display;
+import net.objectof.actof.common.component.Panel;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.controller.change.IChangeController;
 
@@ -16,7 +18,7 @@ public abstract class AbstractDisplay implements Display {
     private boolean top = true;
 
     private ObservableList<Node> toolbars = FXCollections.observableArrayList();
-    private ObservableList<Node> panels = FXCollections.observableArrayList();
+    private ObservableList<Panel> panels = FXCollections.observableArrayList();
     private ObservableList<Display> subDisplays = FXCollections.observableArrayList();
 
     public Stage getDisplayStage() {
@@ -49,7 +51,7 @@ public abstract class AbstractDisplay implements Display {
     }
 
     @Override
-    public ObservableList<Node> getPanels() {
+    public ObservableList<Panel> getPanels() {
         return panels;
     }
 

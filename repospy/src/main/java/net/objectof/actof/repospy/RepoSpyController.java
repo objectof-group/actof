@@ -9,9 +9,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import net.objectof.actof.common.component.AbstractDisplay;
+import net.objectof.actof.common.component.Panel;
 import net.objectof.actof.common.component.Resource;
 import net.objectof.actof.common.component.ResourceDisplay;
+import net.objectof.actof.common.component.impl.AbstractDisplay;
 import net.objectof.actof.common.controller.repository.RepositoryController;
 import net.objectof.actof.common.controller.search.SearchController;
 import net.objectof.actof.connectorui.ConnectionController;
@@ -136,7 +137,7 @@ public class RepoSpyController extends AbstractDisplay implements ResourceDispla
     }
 
     @Override
-    public ObservableList<Node> getPanels() {
+    public ObservableList<Panel> getPanels() {
         return navigator.getPanels();
     }
 

@@ -1,8 +1,8 @@
 package net.objectof.actof.ide.resource;
 
 
-import net.objectof.actof.common.component.AbstractResource;
 import net.objectof.actof.common.component.ResourceDisplay;
+import net.objectof.actof.common.component.impl.AbstractResource;
 
 
 public class ProjectResource extends AbstractResource {

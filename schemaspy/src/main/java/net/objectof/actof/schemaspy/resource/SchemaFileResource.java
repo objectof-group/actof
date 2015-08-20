@@ -3,8 +3,8 @@ package net.objectof.actof.schemaspy.resource;
 
 import java.io.File;
 
-import net.objectof.actof.common.component.AbstractResource;
 import net.objectof.actof.common.component.ResourceDisplay;
+import net.objectof.actof.common.component.impl.AbstractResource;
 import net.objectof.actof.schemaspy.SchemaSpyController;
 
 

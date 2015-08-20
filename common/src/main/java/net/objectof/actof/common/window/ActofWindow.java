@@ -3,13 +3,14 @@ package net.objectof.actof.common.window;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -17,8 +18,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import net.objectof.actof.common.component.AbstractLoadedDisplay;
 import net.objectof.actof.common.component.Display;
+import net.objectof.actof.common.component.Panel;
+import net.objectof.actof.common.component.impl.AbstractLoadedDisplay;
 import net.objectof.actof.common.util.FXUtil;
 
 
@@ -36,19 +38,9 @@ public class ActofWindow extends AbstractLoadedDisplay {
     private SplitPane splitPane;
 
     private Display display;
-    private InvalidationListener panelsListener = (Observable change) -> {
+    private InvalidationListener panelsListener = (Observable change) -> layoutPanels();
 
-        if (display == null) {
-            panels.getTabs().clear();
-            return;
-        }
-        if (display.getPanels().size() == 0) {
-            panels.getTabs().clear();
-        } else {
-            layoutPanels();
-        }
-
-    };
+    Map<Panel, Tab> panelTabs = new HashMap<>();
 
     public static ActofWindow load() throws IOException {
         return FXUtil.loadDisplay(ActofWindow.class, "ActofWindow.fxml", null);
@@ -65,6 +57,8 @@ public class ActofWindow extends AbstractLoadedDisplay {
 
     @Override
     public void initializeDisplay() throws Exception {
+
+        panels.setStyle("-fx-open-tab-animation: NONE; -fx-close-tab-animation: NONE;");
 
         SplitPane.setResizableWithParent(panel, false);
 
@@ -101,14 +95,53 @@ public class ActofWindow extends AbstractLoadedDisplay {
 
     private void layoutPanels() {
 
-        List<Tab> newtabs = new ArrayList<>();
-
-        for (Node panel : display.getPanels()) {
-            Tab tab = new Tab("title", panel);
-            newtabs.add(tab);
+        if (display == null) {
+            panels.getTabs().clear();
+            panelTabs.clear();
+            return;
         }
-        panels.getTabs().setAll(newtabs);
-        panel.setCenter(panels);
+        if (display.getPanels().size() == 0) {
+            panels.getTabs().clear();
+            panelTabs.clear();
+        } else if (display.getPanels().size() == 1) {
+            Panel p = display.getPanels().get(0);
+            panel.setCenter(p.getDisplayNode());
+        } else {
+
+            if (panel.getCenter() != panels) {
+                panel.setCenter(panels);
+            }
+
+            // in panels but not tabs
+            List<Panel> toAdd = new ArrayList<>(display.getPanels());
+            toAdd.removeAll(panelTabs.keySet());
+
+            // in tabs but not in panels
+            List<Panel> toRemove = new ArrayList<>(panelTabs.keySet());
+            toRemove.removeAll(display.getPanels());
+
+            // go through all panels for the display. If we haven't created a
+            // tab for it yet, do so now.
+            for (Panel panel : display.getPanels()) {
+                if (panelTabs.containsKey(panel)) {
+                    continue;
+                }
+                Tab tab = new Tab(panel.getTitle(), panel.getDisplayNode());
+                panelTabs.put(panel, tab);
+
+            }
+
+            for (Panel p : toRemove) {
+                Tab t = panelTabs.remove(p);
+                panels.getTabs().remove(t);
+            }
+
+            for (Panel p : toAdd) {
+                panels.getTabs().add(panelTabs.get(p));
+            }
+
+        }
+
     }
 
 }
