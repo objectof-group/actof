@@ -107,7 +107,7 @@
    <left>
       <VBox fx:id="sidebar" prefWidth="250.0" BorderPane.alignment="CENTER">
          <children>
-            <TreeView fx:id="records" prefWidth="200.0" styleClass="entities" VBox.vgrow="ALWAYS" />
+            <TreeView fx:id="records" prefWidth="200.0" style="-fx-padding: 0;" styleClass="entities" VBox.vgrow="ALWAYS" />
          </children>
       </VBox>
    </left>

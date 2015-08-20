@@ -12,6 +12,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
 
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import net.objectof.actof.common.component.AbstractDisplay;
 import net.objectof.actof.common.component.Resource;
@@ -29,6 +30,7 @@ public class SchemaSpyController extends AbstractDisplay implements ResourceDisp
     SchemaViewController view;
     private SchemaController schema;
 
+    private boolean forResource = false;
     private SchemaFileResource resource;
 
     public SchemaSpyController() throws IOException, SAXException, ParserConfigurationException, XMLParseException {
@@ -108,6 +110,26 @@ public class SchemaSpyController extends AbstractDisplay implements ResourceDisp
     @Override
     public void loadResource() throws Exception {
         setSchema(resource.getSchemaFile());
+    }
+
+    @Override
+    public boolean isForResource() {
+        return forResource;
+    }
+
+    @Override
+    public void setForResource(boolean forResource) {
+        this.forResource = forResource;
+    }
+
+    @Override
+    public ObservableList<Node> getToolbars() {
+        return view.getToolbars();
+    }
+
+    @Override
+    public ObservableList<Node> getPanels() {
+        return view.getPanels();
     }
 
 }

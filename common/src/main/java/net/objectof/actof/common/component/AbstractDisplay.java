@@ -16,6 +16,8 @@ public abstract class AbstractDisplay implements Display {
     private boolean top = true;
 
     private ObservableList<Node> toolbars = FXCollections.observableArrayList();
+    private ObservableList<Node> panels = FXCollections.observableArrayList();
+    private ObservableList<Display> subDisplays = FXCollections.observableArrayList();
 
     public Stage getDisplayStage() {
         return displayStage;
@@ -45,4 +47,15 @@ public abstract class AbstractDisplay implements Display {
     public ObservableList<Node> getToolbars() {
         return toolbars;
     }
+
+    @Override
+    public ObservableList<Node> getPanels() {
+        return panels;
+    }
+
+    @Override
+    public ObservableList<Display> getSubDisplays() {
+        return subDisplays;
+    }
+
 }

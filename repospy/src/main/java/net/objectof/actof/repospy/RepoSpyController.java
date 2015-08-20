@@ -3,6 +3,7 @@ package net.objectof.actof.repospy;
 
 import java.io.IOException;
 
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
@@ -30,6 +31,7 @@ public class RepoSpyController extends AbstractDisplay implements ResourceDispla
     public NavigatorController navigator;
     public HistoryController history;
 
+    private boolean forResource = false;
     private RepositoryResource resource;
 
     @Override
@@ -126,6 +128,26 @@ public class RepoSpyController extends AbstractDisplay implements ResourceDispla
     @Override
     public String getTitle() {
         return "RepoSpy";
+    }
+
+    @Override
+    public ObservableList<Node> getToolbars() {
+        return navigator.getToolbars();
+    }
+
+    @Override
+    public ObservableList<Node> getPanels() {
+        return navigator.getPanels();
+    }
+
+    @Override
+    public boolean isForResource() {
+        return forResource;
+    }
+
+    @Override
+    public void setForResource(boolean forResource) {
+        this.forResource = forResource;
     }
 
 }

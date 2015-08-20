@@ -194,20 +194,18 @@ public class SchemaViewController extends AbstractLoadedDisplay {
             schema.setPackagePath(pkgpath.getText());
         });
 
-        if (!isTop()) {
-            toppane.getChildren().remove(sidebar);
+        getPanels().add(sidebar);
+        toppane.getChildren().remove(sidebar);
+        toppane.getChildren().remove(toolbar);
+        if (schemaspy.isForResource()) {
             toolbar.getChildren().removeAll(open, newschema);
         }
+        getToolbars().addAll(toolbar.getChildren());
 
-    }
-
-    @Override
-    public void onDisplayLoad() {
         getChangeBus().listen(this::onSchemaChange);
 
         getChangeBus().listen(change -> {
             change.when(SchemaReplacedChange.class, () -> modified = false);
-
             change.when(SchemaRemovalChange.class, () -> modified = true);
             change.when(SchemaInsertChange.class, () -> modified = true);
             change.when(SchemaStereotypeChange.class, () -> modified = true);
@@ -220,6 +218,11 @@ public class SchemaViewController extends AbstractLoadedDisplay {
         });
 
         save.setDisable(true);
+
+    }
+
+    @Override
+    public void onDisplayLoad() {
 
     }
 

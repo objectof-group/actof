@@ -1,18 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<BorderPane stylesheets="@style.css" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="474.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.ide.ActofIDEController">
+<BorderPane fx:id="top" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="474.0" prefWidth="1000.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.ide.ActofIDEController">
+   <top>
+      <HBox fx:id="toolbar" styleClass="tool-bar" BorderPane.alignment="CENTER">
+         <children>
+            <MenuButton fx:id="newResource" mnemonicParsing="false" styleClass="tool-bar-button" text="New Resource">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Action 1" />
+                <MenuItem mnemonicParsing="false" text="Action 2" />
+              </items>
+            </MenuButton>
+            <Separator orientation="VERTICAL" />
+         </children></HBox>
+   </top>
    <left>
       <TreeView fx:id="tree" prefWidth="200.0" BorderPane.alignment="CENTER" />
    </left>
    <center>
       <TabPane fx:id="tabs" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER" />
    </center>
-   <top>
-      <HBox fx:id="toolbar" styleClass="tool-bar" BorderPane.alignment="CENTER" />
-   </top>
 </BorderPane>

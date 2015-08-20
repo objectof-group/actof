@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="474.0" prefWidth="1000.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.common.window.ActofWindow">
+   <top>
+      <HBox fx:id="toolbar" styleClass="tool-bar" BorderPane.alignment="CENTER" />
+   </top>
+   <center>
+      <SplitPane fx:id="splitPane" dividerPositions="0.25" BorderPane.alignment="CENTER">
+         <items>
+            <Accordion fx:id="panels" />
+            <AnchorPane fx:id="displayPanel" prefHeight="200.0" prefWidth="200.0" />
+         </items></SplitPane>
+   </center>
+</BorderPane>

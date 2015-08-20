@@ -10,12 +10,17 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import net.objectof.actof.common.window.ActofWindow;
 
 
 public class RepoSpy extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
+        ActofWindow window = ActofWindow.load();
+        window.setDisplayStage(primaryStage);
+        window.initializeDisplay();
 
         RepoSpyController spy = new RepoSpyController();
         spy.setDisplayStage(primaryStage);
@@ -39,9 +44,13 @@ public class RepoSpy extends Application {
 
         });
 
-        Scene scene = new Scene((Parent) spy.getDisplayNode());
+        window.getSubDisplays().add(spy);
+
+        Scene scene = new Scene((Parent) window.getDisplayNode());
         primaryStage.setScene(scene);
         primaryStage.show();
+
+        window.onShowDisplay();
 
     }
 

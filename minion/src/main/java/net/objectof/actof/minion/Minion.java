@@ -4,6 +4,7 @@ package net.objectof.actof.minion;
 import java.io.IOException;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -156,7 +157,12 @@ public class Minion extends Application implements Display {
 
     @Override
     public ObservableList<Node> getToolbars() {
-        throw new UnsupportedOperationException();
+        return FXCollections.emptyObservableList();
+    }
+
+    @Override
+    public ObservableList<Node> getPanels() {
+        return FXCollections.emptyObservableList();
     }
 
 }

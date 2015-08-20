@@ -3,14 +3,19 @@ package net.objectof.actof.ide;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.control.MenuButton;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import net.objectof.actof.common.component.AbstractLoadedDisplay;
@@ -18,6 +23,9 @@ import net.objectof.actof.common.component.Display;
 import net.objectof.actof.common.component.Resource;
 import net.objectof.actof.common.component.ResourceDisplay;
 import net.objectof.actof.common.controller.change.ChangeController;
+import net.objectof.actof.common.icons.ActofIcons;
+import net.objectof.actof.common.icons.ActofIcons.Icon;
+import net.objectof.actof.common.icons.ActofIcons.Size;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.connectorui.SavedConnections;
 import net.objectof.actof.ide.resource.ProjectResource;
@@ -28,13 +36,18 @@ import net.objectof.actof.schemaspy.resource.SchemaFileResource;
 public class ActofIDEController extends AbstractLoadedDisplay {
 
     @FXML
+    private BorderPane top;
+    @FXML
     private TabPane tabs;
     @FXML
     private TreeView<Resource> tree;
     @FXML
     private HBox toolbar;
+    @FXML
+    private MenuButton newResource;
 
     private Map<Resource, Tab> resourceTabs = new HashMap<>();
+    private List<Node> permanentToolbars = new ArrayList<>();
 
     public static Display load(ChangeController changes) throws IOException {
         return FXUtil.loadDisplay(ActofIDEController.class, "ActofIDEController.fxml", changes);
@@ -44,66 +57,13 @@ public class ActofIDEController extends AbstractLoadedDisplay {
         setStage(stage);
     }
 
-    public void onShowDisplay() throws Exception {
-        TreeItem<Resource> root = new TreeItem<Resource>(new ProjectResource());
-        tree.setRoot(root);
-
-        SchemaFileResource sch;
-
-        sch = new SchemaFileResource();
-        sch.setSchemaFile(new File("/home/nathaniel/Desktop/REALM Misc/GettingStarted/schema.xml"));
-        root.getChildren().add(new TreeItem<Resource>(sch));
-
-        sch = new SchemaFileResource();
-        sch.setSchemaFile(new File("/home/nathaniel/Desktop/repo/realm.xml"));
-        root.getChildren().add(new TreeItem<Resource>(sch));
-
-        RepositoryResource repo;
-
-        repo = new RepositoryResource();
-        repo.setConnector(SavedConnections.getLastConnector());
-        root.getChildren().add(new TreeItem<Resource>(repo));
-
-        tree.getSelectionModel().selectedItemProperty().addListener(change -> {
-            Resource res = tree.getSelectionModel().getSelectedItem().getValue();
-
-            try {
-                if (res.getDisplay() == null) { return; }
-
-                Tab tab = getTab(res);
-                System.out.println("tab = " + tab);
-                if (tab == null) {
-                    createTab(res);
-                } else {
-                    tabs.getSelectionModel().select(tab);
-                }
-            }
-            catch (Exception e1) {
-                e1.printStackTrace();
-            }
-
-        });
-
-        tabs.getSelectionModel().selectedItemProperty().addListener((obs, o, n) -> {
-            try {
-                if (n == null) { return; }
-                Resource res = getResource(n);
-                toolbar.getChildren().clear();
-                toolbar.getChildren().addAll(res.getDisplay().getToolbars());
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-
-    }
-
     private void createTab(Resource res) throws Exception {
 
         ResourceDisplay display = res.getDisplay();
         display.setDisplayStage(getDisplayStage());
         display.setChangeBus(getChangeBus());
         display.setTop(false);
+        display.setForResource(true);
         display.initializeDisplay();
 
         display.setResource(res);
@@ -135,9 +95,67 @@ public class ActofIDEController extends AbstractLoadedDisplay {
     }
 
     @Override
-    public void initializeDisplay() throws Exception {}
+    public void initializeDisplay() throws Exception {
+        newResource.setGraphic(ActofIcons.getIconView(Icon.ADD, Size.TOOLBAR));
 
-    @Override
-    public void onDisplayLoad() {}
+        TreeItem<Resource> root = new TreeItem<Resource>(new ProjectResource());
+        tree.setRoot(root);
+
+        SchemaFileResource sch;
+
+        sch = new SchemaFileResource();
+        sch.setSchemaFile(new File("/home/nathaniel/Desktop/REALM Misc/GettingStarted/schema.xml"));
+        root.getChildren().add(new TreeItem<Resource>(sch));
+
+        sch = new SchemaFileResource();
+        sch.setSchemaFile(new File("/home/nathaniel/Desktop/repo/realm.xml"));
+        root.getChildren().add(new TreeItem<Resource>(sch));
+
+        RepositoryResource repo;
+
+        repo = new RepositoryResource();
+        repo.setConnector(SavedConnections.getLastConnector());
+        root.getChildren().add(new TreeItem<Resource>(repo));
+
+        tree.getSelectionModel().selectedItemProperty().addListener(change -> {
+            Resource res = tree.getSelectionModel().getSelectedItem().getValue();
+
+            try {
+                if (res.getDisplay() == null) { return; }
+
+                Tab tab = getTab(res);
+                if (tab == null) {
+                    createTab(res);
+                } else {
+                    tabs.getSelectionModel().select(tab);
+                }
+            }
+            catch (Exception e1) {
+                e1.printStackTrace();
+            }
+
+        });
+
+        tabs.getSelectionModel().selectedItemProperty().addListener((obs, o, n) -> {
+            try {
+                if (n == null) { return; }
+                Resource res = getResource(n);
+                getToolbars().clear();
+                getToolbars().addAll(permanentToolbars);
+                getToolbars().addAll(res.getDisplay().getToolbars());
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        top.getChildren().removeAll(toolbar, tree, tabs);
+        getPanels().add(tree);
+        setDisplayNode(tabs);
+        permanentToolbars.addAll(toolbar.getChildren());
+        getToolbars().addAll(permanentToolbars);
+        toolbar.getChildren().clear();
+
+    }
 
 }

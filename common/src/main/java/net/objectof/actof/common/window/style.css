@@ -4,7 +4,7 @@
 
 .entities {
 	-fx-background-insets: 0, 1;
-    -fx-padding: 0 0 0 0;
+    -fx-padding: 0 1 0 0;
 }
 
 .entities:focused {

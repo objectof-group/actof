@@ -47,8 +47,6 @@ public class IChangeController implements ChangeController {
     @Override
     public synchronized void broadcast(final Change message) {
 
-        System.out.println(message);
-
         if (listeners.size() == 0) return;
 
         Platform.runLater(() -> {

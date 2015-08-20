@@ -19,6 +19,10 @@ public interface Display {
 
     ObservableList<Node> getToolbars();
 
+    ObservableList<Node> getPanels();
+
+    ObservableList<Display> getSubDisplays();
+
     ChangeController getChangeBus();
 
     void setChangeBus(ChangeController bus);
@@ -41,7 +45,11 @@ public interface Display {
      * 
      * @throws Exception
      */
-    void onShowDisplay() throws Exception;
+    default void onShowDisplay() throws Exception {
+        for (Display d : getSubDisplays()) {
+            d.onShowDisplay();
+        }
+    }
 
     default void copySettings(Display other) {
         setChangeBus(other.getChangeBus());

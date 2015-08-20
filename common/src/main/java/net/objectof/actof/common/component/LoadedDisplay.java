@@ -11,6 +11,6 @@ public interface LoadedDisplay extends Display {
     /**
      * To be called after the display has been loaded and the node set.
      */
-    void onDisplayLoad();
+    default void onDisplayLoad() {};
 
 }
