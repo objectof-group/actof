@@ -18,9 +18,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import net.objectof.actof.common.component.Display;
-import net.objectof.actof.common.component.Panel;
-import net.objectof.actof.common.component.impl.AbstractLoadedDisplay;
+import net.objectof.actof.common.component.display.Display;
+import net.objectof.actof.common.component.display.Panel;
+import net.objectof.actof.common.component.display.impl.AbstractLoadedDisplay;
 import net.objectof.actof.common.util.FXUtil;
 
 

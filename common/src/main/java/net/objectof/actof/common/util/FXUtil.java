@@ -6,8 +6,8 @@ import java.net.URL;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import net.objectof.actof.common.component.Display;
-import net.objectof.actof.common.component.LoadedDisplay;
+import net.objectof.actof.common.component.display.Display;
+import net.objectof.actof.common.component.display.LoadedDisplay;
 import net.objectof.actof.common.controller.ActofUIController;
 import net.objectof.actof.common.controller.change.ChangeController;
 

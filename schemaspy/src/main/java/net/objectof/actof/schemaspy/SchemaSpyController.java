@@ -14,10 +14,10 @@ import org.xml.sax.SAXException;
 
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
-import net.objectof.actof.common.component.Panel;
-import net.objectof.actof.common.component.Resource;
-import net.objectof.actof.common.component.ResourceDisplay;
-import net.objectof.actof.common.component.impl.AbstractDisplay;
+import net.objectof.actof.common.component.display.Panel;
+import net.objectof.actof.common.component.display.ResourceDisplay;
+import net.objectof.actof.common.component.display.impl.AbstractDisplay;
+import net.objectof.actof.common.component.resource.Resource;
 import net.objectof.actof.common.controller.schema.ISchemaController;
 import net.objectof.actof.common.controller.schema.SchemaController;
 import net.objectof.actof.connectorui.ConnectionController;

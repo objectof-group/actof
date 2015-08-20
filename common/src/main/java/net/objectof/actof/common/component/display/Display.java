@@ -1,9 +1,11 @@
-package net.objectof.actof.common.component;
+package net.objectof.actof.common.component.display;
 
 
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.stage.Stage;
+import net.objectof.actof.common.component.feature.Noded;
+import net.objectof.actof.common.component.feature.Titled;
 import net.objectof.actof.common.controller.change.ChangeController;
 
 

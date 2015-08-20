@@ -1,8 +1,8 @@
-package net.objectof.actof.common.component.impl;
+package net.objectof.actof.common.component.display.impl;
 
 
 import javafx.scene.Node;
-import net.objectof.actof.common.component.Panel;
+import net.objectof.actof.common.component.display.Panel;
 
 
 public class INodePanel implements Panel {

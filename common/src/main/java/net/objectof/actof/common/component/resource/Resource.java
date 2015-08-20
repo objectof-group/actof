@@ -1,5 +1,6 @@
-package net.objectof.actof.common.component;
+package net.objectof.actof.common.component.resource;
 
+import net.objectof.actof.common.component.display.ResourceDisplay;
 
 public interface Resource {
 

@@ -1,7 +1,7 @@
-package net.objectof.actof.common.component.impl;
+package net.objectof.actof.common.component.display.impl;
 
-import net.objectof.actof.common.component.Resource;
-import net.objectof.actof.common.component.ResourceDisplay;
+import net.objectof.actof.common.component.display.ResourceDisplay;
+import net.objectof.actof.common.component.resource.Resource;
 
 public abstract class AbstractResource implements Resource {
 

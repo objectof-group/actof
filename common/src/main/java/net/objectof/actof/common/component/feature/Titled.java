@@ -1,4 +1,4 @@
-package net.objectof.actof.common.component;
+package net.objectof.actof.common.component.feature;
 
 
 public interface Titled {

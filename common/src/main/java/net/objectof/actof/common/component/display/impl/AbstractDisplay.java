@@ -1,12 +1,12 @@
-package net.objectof.actof.common.component.impl;
+package net.objectof.actof.common.component.display.impl;
 
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.stage.Stage;
-import net.objectof.actof.common.component.Display;
-import net.objectof.actof.common.component.Panel;
+import net.objectof.actof.common.component.display.Display;
+import net.objectof.actof.common.component.display.Panel;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.controller.change.IChangeController;
 

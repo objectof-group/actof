@@ -12,7 +12,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import net.objectof.actof.common.component.Display;
+import net.objectof.actof.common.component.display.Display;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.controller.change.IChangeController;
 import net.objectof.actof.minion.components.classpath.ClasspathController;
