@@ -13,7 +13,11 @@
    <center>
       <SplitPane fx:id="splitPane" dividerPositions="0.25" BorderPane.alignment="CENTER">
          <items>
-            <Accordion fx:id="panels" />
+            <BorderPane fx:id="panel">
+               <center>
+                  <TabPane fx:id="panels" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER" />
+               </center>
+            </BorderPane>
             <AnchorPane fx:id="displayPanel" prefHeight="200.0" prefWidth="200.0" />
          </items></SplitPane>
    </center>

@@ -48,6 +48,7 @@ public class ActofIDEController extends AbstractLoadedDisplay {
 
     private Map<Resource, Tab> resourceTabs = new HashMap<>();
     private List<Node> permanentToolbars = new ArrayList<>();
+    private List<Node> permanentPanels = new ArrayList<>();
 
     public static Display load(ChangeController changes) throws IOException {
         return FXUtil.loadDisplay(ActofIDEController.class, "ActofIDEController.fxml", changes);
@@ -143,6 +144,11 @@ public class ActofIDEController extends AbstractLoadedDisplay {
                 getToolbars().clear();
                 getToolbars().addAll(permanentToolbars);
                 getToolbars().addAll(res.getDisplay().getToolbars());
+
+                getPanels().clear();
+                getPanels().addAll(permanentPanels);
+                getPanels().addAll(res.getDisplay().getPanels());
+
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -150,11 +156,14 @@ public class ActofIDEController extends AbstractLoadedDisplay {
         });
 
         top.getChildren().removeAll(toolbar, tree, tabs);
-        getPanels().add(tree);
         setDisplayNode(tabs);
+
         permanentToolbars.addAll(toolbar.getChildren());
         getToolbars().addAll(permanentToolbars);
         toolbar.getChildren().clear();
+
+        permanentPanels.add(tree);
+        getPanels().addAll(permanentPanels);
 
     }
 

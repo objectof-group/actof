@@ -118,15 +118,14 @@ public class NavigatorController extends AbstractLoadedDisplay {
         getChangeBus().listen(QueryChange.class, this::onQueryChange);
         getChangeBus().listen(ResourceSelectedChange.class, this::onResourceSelect);
 
-        getPanels().add(sidebar);
         toolbar.getChildren().removeAll(repoToolbar, breadcrumbToolbar, optionsToolbar);
         headerBox.getChildren().remove(toolbar);
         getToolbars().add(repoToolbar);
         getToolbars().add(breadcrumbToolbar);
         getToolbars().add(optionsToolbar);
-
+        getPanels().add(sidebar);
+        toppane.getChildren().remove(sidebar);
         if (repospy.isForResource()) {
-            toppane.getChildren().remove(sidebar);
             repoToolbar.getChildren().remove(connect);
         }
 
