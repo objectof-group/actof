@@ -25,9 +25,6 @@ import net.objectof.actof.common.component.display.impl.AbstractLoadedDisplay;
 import net.objectof.actof.common.component.display.impl.INodePanel;
 import net.objectof.actof.common.component.resource.Resource;
 import net.objectof.actof.common.controller.change.ChangeController;
-import net.objectof.actof.common.icons.ActofIcons;
-import net.objectof.actof.common.icons.ActofIcons.Icon;
-import net.objectof.actof.common.icons.ActofIcons.Size;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.connectorui.SavedConnections;
 import net.objectof.actof.ide.resource.ProjectResource;
@@ -59,6 +56,10 @@ public class ActofIDEController extends AbstractLoadedDisplay {
     public void setStage(Stage stage) {
         setStage(stage);
     }
+
+    public void onProjectOpen() {}
+
+    public void onProjectSave() {}
 
     private void createTab(Resource res) throws Exception {
 
@@ -99,7 +100,6 @@ public class ActofIDEController extends AbstractLoadedDisplay {
 
     @Override
     public void initializeDisplay() throws Exception {
-        newResource.setGraphic(ActofIcons.getIconView(Icon.ADD, Size.TOOLBAR));
 
         TreeItem<Resource> root = new TreeItem<Resource>(new ProjectResource());
         tree.setRoot(root);

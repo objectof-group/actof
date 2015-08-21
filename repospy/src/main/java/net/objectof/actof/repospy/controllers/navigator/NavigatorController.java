@@ -54,8 +54,8 @@ import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.controller.repository.RepositoryReplacedChange;
 import net.objectof.actof.common.controller.search.QueryChange;
 import net.objectof.actof.common.icons.ActofIcons;
-import net.objectof.actof.common.icons.ActofIcons.Icon;
-import net.objectof.actof.common.icons.ActofIcons.Size;
+import net.objectof.actof.common.icons.Icon;
+import net.objectof.actof.common.icons.Size;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.actof.repospy.changes.EntityCreatedChange;
@@ -96,8 +96,6 @@ public class NavigatorController extends AbstractLoadedDisplay {
     @FXML
     private CheckMenuItem menuItemSearch;
     @FXML
-    private ImageView revert_image;
-    @FXML
     private Tooltip revert_tooltip;
     @FXML
     private TreeView<TreeNode> records;
@@ -118,6 +116,9 @@ public class NavigatorController extends AbstractLoadedDisplay {
         getChangeBus().listen(RepositoryReplacedChange.class, this::onRepositoryReplacedChange);
         getChangeBus().listen(QueryChange.class, this::onQueryChange);
         getChangeBus().listen(ResourceSelectedChange.class, this::onResourceSelect);
+
+        revert.setGraphic(ActofIcons.getIconView(Icon.VIEW_REFRESH, Size.TOOLBAR));
+        commit.setGraphic(ActofIcons.getIconView(Icon.DOCUMENT_SAVE, Size.TOOLBAR));
 
         toolbar.getChildren().removeAll(repoToolbar, breadcrumbToolbar, optionsToolbar);
         headerBox.getChildren().remove(toolbar);
@@ -196,7 +197,7 @@ public class NavigatorController extends AbstractLoadedDisplay {
         querytext.setRight(doclear);
 
         // search query button
-        Button doquery = new Button("", ActofIcons.getIconView(Icon.SEARCH, Size.BUTTON));
+        Button doquery = new Button("", ActofIcons.getIconView(Icon.EDIT_FIND, Size.BUTTON));
         doquery.getStyleClass().add("tool-bar-button");
         doquery.setOnAction(event -> {
             repospy.doQuery(querytext.getText());
@@ -349,14 +350,11 @@ public class NavigatorController extends AbstractLoadedDisplay {
         commit.setDisable(!hasHistory);
         review.setDisable(!hasHistory);
 
-        Image image;
         if (!hasHistory) {
-            image = new Image(getClass().getResourceAsStream("icons/refresh.png"));
-            revert_image.setImage(image);
+            revert.setGraphic(ActofIcons.getIconView(Icon.VIEW_REFRESH, Size.TOOLBAR));
             revert_tooltip.setText("Refresh from repository");
         } else {
-            image = new Image(getClass().getResourceAsStream("icons/revert.png"));
-            revert_image.setImage(image);
+            revert.setGraphic(ActofIcons.getIconView(Icon.GO_FIRST, Size.TOOLBAR));
             revert_tooltip.setText("Revert all changes");
         }
 

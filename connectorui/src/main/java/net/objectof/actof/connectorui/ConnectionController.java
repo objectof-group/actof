@@ -4,6 +4,8 @@ package net.objectof.actof.connectorui;
 import java.io.IOException;
 import java.util.Optional;
 
+import org.controlsfx.dialog.Dialogs;
+
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
@@ -23,6 +25,9 @@ import javafx.stage.Window;
 import net.objectof.actof.common.controller.IActofUIController;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.controller.change.IChangeController;
+import net.objectof.actof.common.icons.ActofIcons;
+import net.objectof.actof.common.icons.Icon;
+import net.objectof.actof.common.icons.Size;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.connectorui.parametereditor.DirectoryParameterEditor;
 import net.objectof.actof.connectorui.parametereditor.FilenameParameterEditor;
@@ -35,8 +40,6 @@ import net.objectof.connector.Connectors;
 import net.objectof.connector.Parameter;
 import net.objectof.connector.sql.AbstractSQLConnector;
 
-import org.controlsfx.dialog.Dialogs;
-
 
 public class ConnectionController extends IActofUIController {
 
@@ -47,6 +50,8 @@ public class ConnectionController extends IActofUIController {
     private ComboBox<String> repoChoice;
     private KeyValuePane grid = new KeyValuePane();
 
+    @FXML
+    private Button add, remove;
     @FXML
     private BorderPane window;
     @FXML
@@ -67,6 +72,9 @@ public class ConnectionController extends IActofUIController {
 
     @Override
     public void ready() {
+
+        add.setGraphic(ActofIcons.getIconView(Icon.ADD, Size.BUTTON));
+        remove.setGraphic(ActofIcons.getIconView(Icon.REMOVE, Size.BUTTON));
 
         grid.setHgap(5);
         grid.setVgap(5);
@@ -143,7 +151,9 @@ public class ConnectionController extends IActofUIController {
     }
 
     public void add() {
-        Optional<String> name = Dialogs.create().title("Connection Name").message("Enter a name for this connection")
+        Optional<String> name = Dialogs.create()
+                .title("Connection Name")
+                .message("Enter a name for this connection")
                 .showTextInput();
         if (!name.isPresent()) { return; }
 

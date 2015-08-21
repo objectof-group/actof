@@ -34,8 +34,8 @@ import javafx.stage.Stage;
 import net.objectof.actof.common.component.display.impl.AbstractLoadedDisplay;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.icons.ActofIcons;
-import net.objectof.actof.common.icons.ActofIcons.Icon;
-import net.objectof.actof.common.icons.ActofIcons.Size;
+import net.objectof.actof.common.icons.Icon;
+import net.objectof.actof.common.icons.Size;
 import net.objectof.actof.common.util.ActofUtil;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.connectorui.ConnectorChooserButton;
@@ -91,9 +91,9 @@ public class PorterUIController extends AbstractLoadedDisplay {
 
         toolbar.getChildren().remove(portButton);
 
-        newButton.setGraphic(ActofIcons.getCustomIcon(getClass(), "../icons/document-new.png"));
-        openButton.setGraphic(ActofIcons.getCustomIcon(getClass(), "../icons/document-open.png"));
-        saveButton.setGraphic(ActofIcons.getCustomIcon(getClass(), "../icons/document-save.png"));
+        newButton.setGraphic(ActofIcons.getIconView(Icon.DOCUMENT_NEW, Size.TOOLBAR));
+        openButton.setGraphic(ActofIcons.getIconView(Icon.DOCUMENT_OPEN, Size.TOOLBAR));
+        saveButton.setGraphic(ActofIcons.getIconView(Icon.DOCUMENT_SAVE, Size.TOOLBAR));
         opButton.setGraphic(ActofIcons.getCustomIcon(getClass(), "../icons/operations.png"));
 
         rulesPane = new MasonryPane(500, Layout.GRID);

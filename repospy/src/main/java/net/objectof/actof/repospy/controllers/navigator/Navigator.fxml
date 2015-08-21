@@ -34,25 +34,11 @@
                            </tooltip>
                         </Button>
                         <Button fx:id="revert" disable="true" mnemonicParsing="false" onAction="#doRevert" styleClass="tool-bar-button">
-                           <graphic>
-                              <ImageView fx:id="revert_image" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@icons/refresh.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
                            <tooltip>
                               <Tooltip fx:id="revert_tooltip" text="Revert all changes" />
                            </tooltip>
                         </Button>
                         <Button fx:id="commit" disable="true" mnemonicParsing="false" onAction="#doCommit" styleClass="tool-bar-button">
-                           <graphic>
-                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@icons/commit.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
                            <tooltip>
                               <Tooltip text="Commit all changes to the repo" />
                            </tooltip>

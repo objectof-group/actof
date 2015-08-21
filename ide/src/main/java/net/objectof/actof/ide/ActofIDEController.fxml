@@ -10,11 +10,36 @@
    <top>
       <HBox fx:id="toolbar" styleClass="tool-bar" BorderPane.alignment="CENTER">
          <children>
-            <MenuButton fx:id="newResource" mnemonicParsing="false" styleClass="tool-bar-button" text="New Resource">
+            <Button fx:id="projectOpen" mnemonicParsing="false" onAction="#onProjectOpen" styleClass="tool-bar-button">
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@icons/project-open.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button fx:id="projectSave" mnemonicParsing="false" onAction="#onProjectSave" styleClass="tool-bar-button">
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@icons/project-save.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <MenuButton fx:id="newResource" mnemonicParsing="false" styleClass="tool-bar-button">
               <items>
                 <MenuItem mnemonicParsing="false" text="Action 1" />
                 <MenuItem mnemonicParsing="false" text="Action 2" />
               </items>
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@icons/resource-add.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
             </MenuButton>
             <Separator orientation="VERTICAL" />
          </children></HBox>
