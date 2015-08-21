@@ -3,27 +3,19 @@ package net.objectof.actof.common.component.display;
 
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
-import javafx.stage.Stage;
+import net.objectof.actof.common.component.feature.ChangeBusAware;
 import net.objectof.actof.common.component.feature.Noded;
+import net.objectof.actof.common.component.feature.StageAware;
 import net.objectof.actof.common.component.feature.Titled;
-import net.objectof.actof.common.controller.change.ChangeController;
 
 
-public interface Display extends Titled, Noded {
-
-    Stage getDisplayStage();
-
-    void setDisplayStage(Stage stage);
+public interface Display extends Titled, Noded, StageAware, ChangeBusAware {
 
     ObservableList<Node> getToolbars();
 
     ObservableList<Panel> getPanels();
 
     ObservableList<Display> getSubDisplays();
-
-    ChangeController getChangeBus();
-
-    void setChangeBus(ChangeController bus);
 
     void setTop(boolean top);
 
