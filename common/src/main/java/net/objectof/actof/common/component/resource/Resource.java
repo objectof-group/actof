@@ -1,6 +1,9 @@
 package net.objectof.actof.common.component.resource;
 
+
+import javafx.collections.ObservableList;
 import net.objectof.actof.common.component.display.ResourceDisplay;
+
 
 public interface Resource {
 
@@ -9,5 +12,7 @@ public interface Resource {
     ResourceDisplay createDisplay() throws Exception;
 
     String getTitle();
+
+    ObservableList<Action> getActions();
 
 }

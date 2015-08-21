@@ -11,6 +11,7 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
+import javafx.scene.control.MenuButton;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -21,6 +22,7 @@ import javafx.stage.Stage;
 import net.objectof.actof.common.component.display.Display;
 import net.objectof.actof.common.component.display.Panel;
 import net.objectof.actof.common.component.display.impl.AbstractLoadedDisplay;
+import net.objectof.actof.common.icons.ActofIcons;
 import net.objectof.actof.common.util.FXUtil;
 
 
@@ -39,6 +41,7 @@ public class ActofWindow extends AbstractLoadedDisplay {
 
     private Display display;
     private InvalidationListener panelsListener = (Observable change) -> layoutPanels();
+    private MenuButton actionsButton;
 
     Map<Panel, Tab> panelTabs = new HashMap<>();
 
@@ -61,6 +64,8 @@ public class ActofWindow extends AbstractLoadedDisplay {
         panels.setStyle("-fx-open-tab-animation: NONE; -fx-close-tab-animation: NONE;");
 
         SplitPane.setResizableWithParent(panel, false);
+
+        actionsButton = new MenuButton("", ActofIcons.getCustomIcon(ActofWindow.class, "icons/menu.png"));
 
         getSubDisplays().addListener((Observable change) -> {
             toolbar.getChildren().clear();

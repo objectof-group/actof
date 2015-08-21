@@ -2,7 +2,7 @@ package net.objectof.actof.repospy.resource;
 
 
 import net.objectof.actof.common.component.display.ResourceDisplay;
-import net.objectof.actof.common.component.display.impl.AbstractResource;
+import net.objectof.actof.common.component.resource.impl.AbstractResource;
 import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.connector.Connector;
 
