@@ -12,11 +12,9 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
 
-import javafx.collections.ObservableList;
-import javafx.scene.Node;
-import net.objectof.actof.common.component.display.Panel;
-import net.objectof.actof.common.component.display.ResourceDisplay;
-import net.objectof.actof.common.component.display.impl.AbstractDisplay;
+import net.objectof.actof.common.component.display.Display;
+import net.objectof.actof.common.component.editor.ResourceEditor;
+import net.objectof.actof.common.component.editor.impl.AbstractEditor;
 import net.objectof.actof.common.component.resource.Resource;
 import net.objectof.actof.common.controller.schema.ISchemaController;
 import net.objectof.actof.common.controller.schema.SchemaController;
@@ -26,7 +24,7 @@ import net.objectof.actof.schemaspy.resource.SchemaFileResource;
 import net.objectof.connector.Connector;
 
 
-public class SchemaSpyController extends AbstractDisplay implements ResourceDisplay {
+public class SchemaSpyController extends AbstractEditor implements ResourceEditor {
 
     SchemaViewController view;
     private SchemaController schema;
@@ -60,11 +58,11 @@ public class SchemaSpyController extends AbstractDisplay implements ResourceDisp
     public SchemaViewController showSchemaView()
             throws IOException, XMLParseException, SAXException, ParserConfigurationException {
 
-        SchemaViewController controller = SchemaViewController.load(getChangeBus());
+        SchemaViewController controller = SchemaViewController.load();
+        controller.setChangeBus(getChangeBus());
         controller.setTopController(this);
-        controller.setTop(isTop());
         controller.setDisplayStage(getDisplayStage());
-        controller.initializeDisplay();
+        controller.construct();
 
         return controller;
     }
@@ -78,22 +76,12 @@ public class SchemaSpyController extends AbstractDisplay implements ResourceDisp
     }
 
     @Override
-    public void onShowDisplay() throws Exception {
-        view.onShowDisplay();
-    }
-
-    @Override
-    public Node getDisplayNode() {
-        return view.getDisplayNode();
-    }
-
-    @Override
     public String getTitle() {
         return "SchemaSpy";
     }
 
     @Override
-    public void initializeDisplay() throws Exception {
+    public void construct() throws Exception {
         newSchema();
         view = showSchemaView();
     }
@@ -124,13 +112,8 @@ public class SchemaSpyController extends AbstractDisplay implements ResourceDisp
     }
 
     @Override
-    public ObservableList<Node> getToolbars() {
-        return view.getToolbars();
-    }
-
-    @Override
-    public ObservableList<Panel> getPanels() {
-        return view.getPanels();
+    public Display getDisplay() {
+        return view;
     }
 
 }

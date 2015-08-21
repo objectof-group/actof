@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.MenuButton;
@@ -20,11 +22,12 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import net.objectof.actof.common.component.display.Display;
 import net.objectof.actof.common.component.display.Panel;
-import net.objectof.actof.common.component.display.ResourceDisplay;
 import net.objectof.actof.common.component.display.impl.AbstractLoadedDisplay;
 import net.objectof.actof.common.component.display.impl.INodePanel;
+import net.objectof.actof.common.component.editor.Editor;
+import net.objectof.actof.common.component.editor.ResourceEditor;
+import net.objectof.actof.common.component.resource.Action;
 import net.objectof.actof.common.component.resource.Resource;
-import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.connectorui.SavedConnections;
 import net.objectof.actof.ide.resource.ProjectResource;
@@ -32,7 +35,7 @@ import net.objectof.actof.repospy.resource.RepositoryResource;
 import net.objectof.actof.schemaspy.resource.SchemaFileResource;
 
 
-public class ActofIDEController extends AbstractLoadedDisplay {
+public class ActofIDEController extends AbstractLoadedDisplay implements Editor {
 
     @FXML
     private BorderPane top;
@@ -49,8 +52,8 @@ public class ActofIDEController extends AbstractLoadedDisplay {
     private List<Node> permanentToolbars = new ArrayList<>();
     private List<Panel> permanentPanels = new ArrayList<>();
 
-    public static Display load(ChangeController changes) throws IOException {
-        return FXUtil.loadDisplay(ActofIDEController.class, "ActofIDEController.fxml", changes);
+    public static Editor load() throws IOException {
+        return FXUtil.loadFX(ActofIDEController.class, "ActofIDEController.fxml");
     }
 
     public void setStage(Stage stage) {
@@ -63,17 +66,18 @@ public class ActofIDEController extends AbstractLoadedDisplay {
 
     private void createTab(Resource res) throws Exception {
 
-        ResourceDisplay display = res.getDisplay();
-        display.setDisplayStage(getDisplayStage());
-        display.setChangeBus(getChangeBus());
-        display.setTop(false);
-        display.setForResource(true);
-        display.initializeDisplay();
+        ResourceEditor editor = res.getEditor();
+        editor.setDisplayStage(getDisplayStage());
+        editor.setChangeBus(getChangeBus());
+        editor.setForResource(true);
+        editor.construct();
 
-        display.setResource(res);
-        display.loadResource();
+        editor.setResource(res);
+        editor.loadResource();
 
-        Tab tab = new Tab(res.getTitle(), display.getDisplayNode());
+        Display display = editor.getDisplay();
+
+        Tab tab = new Tab(res.getTitle(), display.getFXNode());
         resourceTabs.put(res, tab);
         tabs.getTabs().add(tab);
         tabs.getSelectionModel().select(tab);
@@ -99,7 +103,7 @@ public class ActofIDEController extends AbstractLoadedDisplay {
     }
 
     @Override
-    public void initializeDisplay() throws Exception {
+    public void construct() throws Exception {
 
         TreeItem<Resource> root = new TreeItem<Resource>(new ProjectResource());
         tree.setRoot(root);
@@ -124,7 +128,7 @@ public class ActofIDEController extends AbstractLoadedDisplay {
             Resource res = tree.getSelectionModel().getSelectedItem().getValue();
 
             try {
-                if (res.getDisplay() == null) { return; }
+                if (res.getEditor() == null) { return; }
 
                 Tab tab = getTab(res);
                 if (tab == null) {
@@ -143,13 +147,14 @@ public class ActofIDEController extends AbstractLoadedDisplay {
             try {
                 if (n == null) { return; }
                 Resource res = getResource(n);
+                Display display = res.getEditor().getDisplay();
                 getToolbars().clear();
                 getToolbars().addAll(permanentToolbars);
-                getToolbars().addAll(res.getDisplay().getToolbars());
+                getToolbars().addAll(display.getToolbars());
 
                 List<Panel> panelList = new ArrayList<>();
                 panelList.addAll(permanentPanels);
-                panelList.addAll(res.getDisplay().getPanels());
+                panelList.addAll(display.getPanels());
                 getPanels().setAll(panelList);
 
             }
@@ -159,7 +164,7 @@ public class ActofIDEController extends AbstractLoadedDisplay {
         });
 
         top.getChildren().removeAll(toolbar, tree, tabs);
-        setDisplayNode(tabs);
+        setFXNode(tabs);
 
         permanentToolbars.addAll(toolbar.getChildren());
         getToolbars().addAll(permanentToolbars);
@@ -168,6 +173,16 @@ public class ActofIDEController extends AbstractLoadedDisplay {
         permanentPanels.add(new INodePanel("Project", tree));
         getPanels().addAll(permanentPanels);
 
+    }
+
+    @Override
+    public Display getDisplay() {
+        return this;
+    }
+
+    @Override
+    public ObservableList<Action> getActions() {
+        return FXCollections.emptyObservableList();
     }
 
 }

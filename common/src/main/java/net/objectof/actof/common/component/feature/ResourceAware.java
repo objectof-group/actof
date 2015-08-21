@@ -1,8 +1,10 @@
-package net.objectof.actof.common.component.display;
+package net.objectof.actof.common.component.feature;
+
 
 import net.objectof.actof.common.component.resource.Resource;
 
-public interface ResourceDisplay extends Display {
+
+public interface ResourceAware {
 
     boolean isForResource();
 

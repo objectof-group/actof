@@ -2,14 +2,14 @@ package net.objectof.actof.common.component.resource;
 
 
 import javafx.collections.ObservableList;
-import net.objectof.actof.common.component.display.ResourceDisplay;
+import net.objectof.actof.common.component.editor.ResourceEditor;
 
 
 public interface Resource {
 
-    ResourceDisplay getDisplay() throws Exception;
+    ResourceEditor getEditor() throws Exception;
 
-    ResourceDisplay createDisplay() throws Exception;
+    ResourceEditor createDisplay() throws Exception;
 
     String getTitle();
 

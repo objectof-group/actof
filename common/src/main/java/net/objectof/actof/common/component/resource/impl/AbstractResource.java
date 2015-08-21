@@ -3,19 +3,19 @@ package net.objectof.actof.common.component.resource.impl;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import net.objectof.actof.common.component.display.ResourceDisplay;
+import net.objectof.actof.common.component.editor.ResourceEditor;
 import net.objectof.actof.common.component.resource.Action;
 import net.objectof.actof.common.component.resource.Resource;
 
 
 public abstract class AbstractResource implements Resource {
 
-    protected ResourceDisplay display;
+    protected ResourceEditor display;
 
     private ObservableList<Action> actions = FXCollections.observableArrayList();
 
     @Override
-    public ResourceDisplay getDisplay() throws Exception {
+    public ResourceEditor getEditor() throws Exception {
         if (display == null) {
             display = createDisplay();
         }

@@ -6,16 +6,15 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import net.objectof.actof.common.controller.change.IChangeController;
 
 
 public class PorterUI extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        PorterUIController porterController = PorterUIController.load(new IChangeController());
+        PorterUIController porterController = PorterUIController.load();
 
-        Scene scene = new Scene((Parent) porterController.getDisplayNode());
+        Scene scene = new Scene((Parent) porterController.getFXNode());
         primaryStage.getIcons().add(new Image(PorterUI.class.getResource("Porter.png").openStream()));
         primaryStage.setScene(scene);
         primaryStage.setTitle("ObjectOf Porter");

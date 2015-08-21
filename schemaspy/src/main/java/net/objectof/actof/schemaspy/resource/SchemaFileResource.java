@@ -3,7 +3,7 @@ package net.objectof.actof.schemaspy.resource;
 
 import java.io.File;
 
-import net.objectof.actof.common.component.display.ResourceDisplay;
+import net.objectof.actof.common.component.editor.ResourceEditor;
 import net.objectof.actof.common.component.resource.impl.AbstractResource;
 import net.objectof.actof.schemaspy.SchemaSpyController;
 
@@ -13,7 +13,7 @@ public class SchemaFileResource extends AbstractResource {
     private File schemaFile;
 
     @Override
-    public ResourceDisplay createDisplay() throws Exception {
+    public ResourceEditor createDisplay() throws Exception {
         return new SchemaSpyController();
     }
 

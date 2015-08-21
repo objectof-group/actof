@@ -22,7 +22,7 @@ public class INodePanel implements Panel {
     }
 
     @Override
-    public Node getDisplayNode() {
+    public Node getFXNode() {
         return node;
     }
 

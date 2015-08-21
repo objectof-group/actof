@@ -2,20 +2,20 @@ package net.objectof.actof.common.component.display.impl;
 
 
 import javafx.scene.Node;
-import net.objectof.actof.common.component.display.LoadedDisplay;
+import net.objectof.actof.common.component.feature.FXLoaded;
 
 
-public abstract class AbstractLoadedDisplay extends AbstractDisplay implements LoadedDisplay {
+public abstract class AbstractLoadedDisplay extends AbstractDisplay implements FXLoaded {
 
     private Node displayNode;
 
     @Override
-    public Node getDisplayNode() {
+    public Node getFXNode() {
         return displayNode;
     }
 
     @Override
-    public void setDisplayNode(Node node) {
+    public void setFXNode(Node node) {
         this.displayNode = node;
     }
 

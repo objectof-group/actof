@@ -3,15 +3,13 @@ package net.objectof.actof.repospy;
 
 import java.io.IOException;
 
-import javafx.collections.ObservableList;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import net.objectof.actof.common.component.display.Panel;
-import net.objectof.actof.common.component.display.ResourceDisplay;
-import net.objectof.actof.common.component.display.impl.AbstractDisplay;
+import net.objectof.actof.common.component.display.Display;
+import net.objectof.actof.common.component.editor.ResourceEditor;
+import net.objectof.actof.common.component.editor.impl.AbstractEditor;
 import net.objectof.actof.common.component.resource.Resource;
 import net.objectof.actof.common.controller.repository.RepositoryController;
 import net.objectof.actof.common.controller.search.SearchController;
@@ -25,7 +23,7 @@ import net.objectof.model.query.Query;
 import net.objectof.model.query.parser.QueryBuilder;
 
 
-public class RepoSpyController extends AbstractDisplay implements ResourceDisplay {
+public class RepoSpyController extends AbstractEditor implements ResourceEditor {
 
     public RepositoryController repository;
     public SearchController search;
@@ -36,22 +34,18 @@ public class RepoSpyController extends AbstractDisplay implements ResourceDispla
     private RepositoryResource resource;
 
     @Override
-    public void initializeDisplay() throws Exception {
+    public void construct() throws Exception {
         repository = new RepositoryController(getChangeBus());
         search = new SearchController(repository, getChangeBus());
         history = new HistoryController(getChangeBus());
-        navigator = NavigatorController.load(getChangeBus());
+        navigator = NavigatorController.load();
+        navigator.setChangeBus(getChangeBus());
 
-        navigator.copySettings(this);
-        navigator.setTop(false);
+        navigator.setChangeBus(getChangeBus());
+        navigator.setDisplayStage(getDisplayStage());
         navigator.setTopController(this);
-        navigator.initializeDisplay();
+        navigator.construct();
 
-    }
-
-    @Override
-    public void onShowDisplay() throws Exception {
-        navigator.onShowDisplay();
     }
 
     @Override
@@ -122,23 +116,8 @@ public class RepoSpyController extends AbstractDisplay implements ResourceDispla
     }
 
     @Override
-    public Node getDisplayNode() {
-        return navigator.getDisplayNode();
-    }
-
-    @Override
     public String getTitle() {
         return "RepoSpy";
-    }
-
-    @Override
-    public ObservableList<Node> getToolbars() {
-        return navigator.getToolbars();
-    }
-
-    @Override
-    public ObservableList<Panel> getPanels() {
-        return navigator.getPanels();
     }
 
     @Override
@@ -149,6 +128,11 @@ public class RepoSpyController extends AbstractDisplay implements ResourceDispla
     @Override
     public void setForResource(boolean forResource) {
         this.forResource = forResource;
+    }
+
+    @Override
+    public Display getDisplay() {
+        return navigator;
     }
 
 }

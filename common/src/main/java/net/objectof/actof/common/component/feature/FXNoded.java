@@ -4,8 +4,8 @@ package net.objectof.actof.common.component.feature;
 import javafx.scene.Node;
 
 
-public interface Noded {
+public interface FXNoded {
 
-    Node getDisplayNode();
+    Node getFXNode();
 
 }

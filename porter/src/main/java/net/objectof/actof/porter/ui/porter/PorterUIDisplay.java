@@ -11,8 +11,8 @@ public class PorterUIDisplay extends AbstractDisplay {
     private Display controller;
 
     @Override
-    public Node getDisplayNode() {
-        return controller.getDisplayNode();
+    public Node getFXNode() {
+        return controller.getFXNode();
     }
 
     @Override
@@ -21,10 +21,11 @@ public class PorterUIDisplay extends AbstractDisplay {
     }
 
     @Override
-    public void initializeDisplay() throws Exception {
-        controller = PorterUIController.load(getChangeBus());
+    public void construct() throws Exception {
+        controller = PorterUIController.load();
+        controller.setChangeBus(getChangeBus());
         controller.setDisplayStage(getDisplayStage());
-        controller.initializeDisplay();
+        controller.construct();
     }
 
     @Override

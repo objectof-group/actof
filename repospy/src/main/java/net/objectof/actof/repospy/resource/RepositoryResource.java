@@ -1,7 +1,7 @@
 package net.objectof.actof.repospy.resource;
 
 
-import net.objectof.actof.common.component.display.ResourceDisplay;
+import net.objectof.actof.common.component.editor.ResourceEditor;
 import net.objectof.actof.common.component.resource.impl.AbstractResource;
 import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.connector.Connector;
@@ -12,7 +12,7 @@ public class RepositoryResource extends AbstractResource {
     Connector connector;
 
     @Override
-    public ResourceDisplay createDisplay() throws Exception {
+    public ResourceEditor createDisplay() throws Exception {
         return new RepoSpyController();
     }
 

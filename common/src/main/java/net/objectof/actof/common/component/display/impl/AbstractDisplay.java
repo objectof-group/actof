@@ -15,11 +15,9 @@ public abstract class AbstractDisplay implements Display {
 
     private Stage displayStage;
     private ChangeController changeBus = new IChangeController();
-    private boolean top = true;
 
     private ObservableList<Node> toolbars = FXCollections.observableArrayList();
     private ObservableList<Panel> panels = FXCollections.observableArrayList();
-    private ObservableList<Display> subDisplays = FXCollections.observableArrayList();
 
     public Stage getDisplayStage() {
         return displayStage;
@@ -37,14 +35,6 @@ public abstract class AbstractDisplay implements Display {
         this.changeBus = bus;
     }
 
-    public void setTop(boolean top) {
-        this.top = top;
-    }
-
-    public boolean isTop() {
-        return top;
-    }
-
     @Override
     public ObservableList<Node> getToolbars() {
         return toolbars;
@@ -53,11 +43,6 @@ public abstract class AbstractDisplay implements Display {
     @Override
     public ObservableList<Panel> getPanels() {
         return panels;
-    }
-
-    @Override
-    public ObservableList<Display> getSubDisplays() {
-        return subDisplays;
     }
 
 }

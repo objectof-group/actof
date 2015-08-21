@@ -13,6 +13,9 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import net.objectof.actof.common.component.display.Display;
+import net.objectof.actof.common.component.display.Panel;
+import net.objectof.actof.common.component.editor.Editor;
+import net.objectof.actof.common.component.resource.Action;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.controller.change.IChangeController;
 import net.objectof.actof.minion.components.classpath.ClasspathController;
@@ -22,7 +25,7 @@ import net.objectof.actof.minion.components.server.ServerController;
 import net.objectof.actof.minion.components.spring.SpringController;
 
 
-public class Minion extends Application implements Display {
+public class Minion extends Application implements Display, Editor {
 
     public static final String SETTING_PATH = "net.objectof.actof.minion.path";
 
@@ -115,7 +118,7 @@ public class Minion extends Application implements Display {
     }
 
     @Override
-    public Node getDisplayNode() {
+    public Node getFXNode() {
         return displayNode;
     }
 
@@ -140,20 +143,10 @@ public class Minion extends Application implements Display {
     }
 
     @Override
-    public void initializeDisplay() throws Exception {}
+    public void construct() throws Exception {}
 
     @Override
     public void onShowDisplay() throws Exception {}
-
-    @Override
-    public boolean isTop() {
-        return top;
-    }
-
-    @Override
-    public void setTop(boolean top) {
-        this.top = top;
-    }
 
     @Override
     public ObservableList<Node> getToolbars() {
@@ -161,7 +154,17 @@ public class Minion extends Application implements Display {
     }
 
     @Override
-    public ObservableList<Node> getPanels() {
+    public ObservableList<Panel> getPanels() {
+        return FXCollections.emptyObservableList();
+    }
+
+    @Override
+    public Display getDisplay() {
+        return this;
+    }
+
+    @Override
+    public ObservableList<Action> getActions() {
         return FXCollections.emptyObservableList();
     }
 

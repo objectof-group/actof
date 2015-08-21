@@ -50,7 +50,6 @@ import javafx.util.Callback;
 import net.objectof.actof.common.component.display.impl.AbstractLoadedDisplay;
 import net.objectof.actof.common.component.display.impl.INodePanel;
 import net.objectof.actof.common.controller.change.Change;
-import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.controller.repository.RepositoryReplacedChange;
 import net.objectof.actof.common.controller.search.QueryChange;
 import net.objectof.actof.common.icons.ActofIcons;
@@ -111,7 +110,7 @@ public class NavigatorController extends AbstractLoadedDisplay {
     private IRootNode rootNode;
 
     @Override
-    public void initializeDisplay() {
+    public void construct() {
         getChangeBus().listen(this::onChange);
         getChangeBus().listen(RepositoryReplacedChange.class, this::onRepositoryReplacedChange);
         getChangeBus().listen(QueryChange.class, this::onQueryChange);
@@ -448,12 +447,12 @@ public class NavigatorController extends AbstractLoadedDisplay {
         });
     }
 
-    public static NavigatorController load(ChangeController changes) throws IOException {
-        return FXUtil.loadDisplay(NavigatorController.class, "Navigator.fxml", changes);
+    public static NavigatorController load() throws IOException {
+        return FXUtil.loadFX(NavigatorController.class, "Navigator.fxml");
     }
 
     @Override
-    public void onDisplayLoad() {
+    public void onFXLoad() {
 
     }
 

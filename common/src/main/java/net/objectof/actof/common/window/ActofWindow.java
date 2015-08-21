@@ -11,6 +11,7 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
@@ -21,12 +22,17 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import net.objectof.actof.common.component.display.Display;
 import net.objectof.actof.common.component.display.Panel;
-import net.objectof.actof.common.component.display.impl.AbstractLoadedDisplay;
+import net.objectof.actof.common.component.editor.Editor;
+import net.objectof.actof.common.component.feature.DelayedConstruct;
+import net.objectof.actof.common.component.feature.FXLoaded;
+import net.objectof.actof.common.component.feature.FXNoded;
+import net.objectof.actof.common.component.feature.StageAware;
+import net.objectof.actof.common.component.feature.Titled;
 import net.objectof.actof.common.icons.ActofIcons;
 import net.objectof.actof.common.util.FXUtil;
 
 
-public class ActofWindow extends AbstractLoadedDisplay {
+public class ActofWindow implements Titled, FXNoded, FXLoaded, DelayedConstruct, StageAware {
 
     @FXML
     private BorderPane panel;
@@ -39,18 +45,25 @@ public class ActofWindow extends AbstractLoadedDisplay {
     @FXML
     private SplitPane splitPane;
 
-    private Display display;
+    private Node windowNode;
+    private Stage stage;
+
+    private Editor editor;
     private InvalidationListener panelsListener = (Observable change) -> layoutPanels();
     private MenuButton actionsButton;
 
     Map<Panel, Tab> panelTabs = new HashMap<>();
 
     public static ActofWindow load() throws IOException {
-        return FXUtil.loadDisplay(ActofWindow.class, "ActofWindow.fxml", null);
+        return FXUtil.loadFX(ActofWindow.class, "ActofWindow.fxml");
     }
 
-    public void setStage(Stage stage) {
-        setStage(stage);
+    public void setDisplayStage(Stage stage) {
+        this.stage = stage;
+    }
+
+    public Stage getDisplayStage() {
+        return stage;
     }
 
     @Override
@@ -59,58 +72,55 @@ public class ActofWindow extends AbstractLoadedDisplay {
     }
 
     @Override
-    public void initializeDisplay() throws Exception {
-
+    public void construct() throws Exception {
         panels.setStyle("-fx-open-tab-animation: NONE; -fx-close-tab-animation: NONE;");
-
         SplitPane.setResizableWithParent(panel, false);
-
         actionsButton = new MenuButton("", ActofIcons.getCustomIcon(ActofWindow.class, "icons/menu.png"));
+    }
 
-        getSubDisplays().addListener((Observable change) -> {
-            toolbar.getChildren().clear();
+    private void updateDisplay() {
 
-            if (display != null) {
-                Bindings.unbindContent(toolbar.getChildren(), display.getToolbars());
-                display.getPanels().removeListener(panelsListener);
-            }
+        toolbar.getChildren().clear();
 
-            if (getSubDisplays().size() == 0) {
-                display = null;
-                panelsListener.invalidated(null);
-            } else {
+        if (editor == null) { return; }
 
-                display = getSubDisplays().get(0);
-                Bindings.bindContent(toolbar.getChildren(), display.getToolbars());
-                display.getPanels().addListener(panelsListener);
-                layoutPanels();
+        Display display = editor.getDisplay();
 
-                AnchorPane.setBottomAnchor(display.getDisplayNode(), 0d);
-                AnchorPane.setTopAnchor(display.getDisplayNode(), 0d);
-                AnchorPane.setLeftAnchor(display.getDisplayNode(), 0d);
-                AnchorPane.setRightAnchor(display.getDisplayNode(), 0d);
+        if (display != null) {
+            Bindings.unbindContent(toolbar.getChildren(), display.getToolbars());
+            display.getPanels().removeListener(panelsListener);
+        }
 
-                displayPanel.getChildren().clear();
-                displayPanel.getChildren().add(display.getDisplayNode());
+        Bindings.bindContent(toolbar.getChildren(), display.getToolbars());
+        display.getPanels().addListener(panelsListener);
+        layoutPanels();
 
-            }
-        });
+        AnchorPane.setBottomAnchor(display.getFXNode(), 0d);
+        AnchorPane.setTopAnchor(display.getFXNode(), 0d);
+        AnchorPane.setLeftAnchor(display.getFXNode(), 0d);
+        AnchorPane.setRightAnchor(display.getFXNode(), 0d);
+
+        displayPanel.getChildren().clear();
+        displayPanel.getChildren().add(display.getFXNode());
 
     }
 
     private void layoutPanels() {
 
-        if (display == null) {
+        if (editor == null) {
             panels.getTabs().clear();
             panelTabs.clear();
             return;
         }
+
+        Display display = editor.getDisplay();
+
         if (display.getPanels().size() == 0) {
             panels.getTabs().clear();
             panelTabs.clear();
         } else if (display.getPanels().size() == 1) {
             Panel p = display.getPanels().get(0);
-            panel.setCenter(p.getDisplayNode());
+            panel.setCenter(p.getFXNode());
         } else {
 
             if (panel.getCenter() != panels) {
@@ -131,7 +141,7 @@ public class ActofWindow extends AbstractLoadedDisplay {
                 if (panelTabs.containsKey(panel)) {
                     continue;
                 }
-                Tab tab = new Tab(panel.getTitle(), panel.getDisplayNode());
+                Tab tab = new Tab(panel.getTitle(), panel.getFXNode());
                 panelTabs.put(panel, tab);
 
             }
@@ -147,6 +157,26 @@ public class ActofWindow extends AbstractLoadedDisplay {
 
         }
 
+    }
+
+    public Editor getEditor() {
+        return editor;
+    }
+
+    public void setEditor(Editor editor) {
+        this.editor = editor;
+        updateDisplay();
+
+    }
+
+    @Override
+    public void setFXNode(Node node) {
+        this.windowNode = node;
+    }
+
+    @Override
+    public Node getFXNode() {
+        return windowNode;
     }
 
 }

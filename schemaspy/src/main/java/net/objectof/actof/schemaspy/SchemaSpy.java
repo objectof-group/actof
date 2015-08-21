@@ -22,14 +22,13 @@ public class SchemaSpy extends Application {
 
         ActofWindow window = ActofWindow.load();
         window.setDisplayStage(primaryStage);
-        window.setTop(true);
-        window.initializeDisplay();
+        window.construct();
 
         SchemaSpyController spy = new SchemaSpyController();
         spy.setDisplayStage(primaryStage);
-        spy.initializeDisplay();
+        spy.construct();
 
-        window.getSubDisplays().add(spy);
+        window.setEditor(spy);
 
         primaryStage.getIcons().add(new Image(SchemaSpy.class.getResource("view/icons/SchemaSpy.png").openStream()));
         primaryStage.setOnCloseRequest(event -> {
@@ -48,10 +47,9 @@ public class SchemaSpy extends Application {
 
         });
 
-        Scene scene = new Scene((Parent) window.getDisplayNode());
+        Scene scene = new Scene((Parent) window.getFXNode());
         primaryStage.setScene(scene);
         primaryStage.show();
-        window.onShowDisplay();
 
     }
 

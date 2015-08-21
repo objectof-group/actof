@@ -32,7 +32,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import net.objectof.actof.common.component.display.impl.AbstractLoadedDisplay;
-import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.icons.ActofIcons;
 import net.objectof.actof.common.icons.Icon;
 import net.objectof.actof.common.icons.Size;
@@ -87,7 +86,7 @@ public class PorterUIController extends AbstractLoadedDisplay {
     }
 
     @Override
-    public void onDisplayLoad() {
+    public void onFXLoad() {
 
         toolbar.getChildren().remove(portButton);
 
@@ -269,8 +268,8 @@ public class PorterUIController extends AbstractLoadedDisplay {
         rulesPane.getChildren().setAll(rules);
     }
 
-    public static PorterUIController load(ChangeController changes) throws IOException {
-        return FXUtil.loadDisplay(PorterUIController.class, "PorterUI.fxml", changes);
+    public static PorterUIController load() throws IOException {
+        return FXUtil.loadFX(PorterUIController.class, "PorterUI.fxml");
     }
 
     public List<Rule> generateRules() {
@@ -287,7 +286,7 @@ public class PorterUIController extends AbstractLoadedDisplay {
     }
 
     @Override
-    public void initializeDisplay() throws Exception {}
+    public void construct() throws Exception {}
 
     @Override
     public void onShowDisplay() throws Exception {

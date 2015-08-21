@@ -49,7 +49,6 @@ import javafx.util.StringConverter;
 import net.objectof.actof.common.component.display.impl.AbstractLoadedDisplay;
 import net.objectof.actof.common.component.display.impl.INodePanel;
 import net.objectof.actof.common.controller.change.Change;
-import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.controller.schema.AttributeEntry;
 import net.objectof.actof.common.controller.schema.SchemaController;
 import net.objectof.actof.common.controller.schema.changes.AttributeCreationChange;
@@ -119,7 +118,7 @@ public class SchemaViewController extends AbstractLoadedDisplay {
     public File lastschemadir = null;
 
     @Override
-    public void initializeDisplay() throws SAXException, IOException, ParserConfigurationException, XMLParseException {
+    public void construct() throws SAXException, IOException, ParserConfigurationException, XMLParseException {
 
         sidebar.getChildren().remove(namespaceGrid);
         namespacePopover = new PopOver(namespaceGrid);
@@ -223,7 +222,7 @@ public class SchemaViewController extends AbstractLoadedDisplay {
     }
 
     @Override
-    public void onDisplayLoad() {
+    public void onFXLoad() {
 
     }
 
@@ -306,7 +305,7 @@ public class SchemaViewController extends AbstractLoadedDisplay {
             if (action == Dialog.ACTION_YES) {
                 RepoSpyController repospy = new RepoSpyController();
                 repospy.setDisplayStage(new Stage());
-                repospy.initializeDisplay();
+                repospy.construct();
                 repospy.connect(connect);
             }
 
@@ -518,8 +517,8 @@ public class SchemaViewController extends AbstractLoadedDisplay {
 
     }
 
-    public static SchemaViewController load(ChangeController changes) throws IOException {
-        return FXUtil.loadDisplay(SchemaViewController.class, "SchemaView.fxml", changes);
+    public static SchemaViewController load() throws IOException {
+        return FXUtil.loadFX(SchemaViewController.class, "SchemaView.fxml");
     }
 
     @Override

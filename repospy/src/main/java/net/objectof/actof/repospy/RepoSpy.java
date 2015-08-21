@@ -20,11 +20,11 @@ public class RepoSpy extends Application {
 
         ActofWindow window = ActofWindow.load();
         window.setDisplayStage(primaryStage);
-        window.initializeDisplay();
+        window.construct();
 
         RepoSpyController spy = new RepoSpyController();
         spy.setDisplayStage(primaryStage);
-        spy.initializeDisplay();
+        spy.construct();
 
         primaryStage.setTitle(spy.getTitle());
         primaryStage.getIcons().add(new Image(RepoSpy.class.getResource("RepoSpy.png").openStream()));
@@ -44,13 +44,13 @@ public class RepoSpy extends Application {
 
         });
 
-        window.getSubDisplays().add(spy);
+        window.setEditor(spy);
 
-        Scene scene = new Scene((Parent) window.getDisplayNode());
+        Scene scene = new Scene((Parent) window.getFXNode());
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        window.onShowDisplay();
+        window.onFXLoad();
 
     }
 

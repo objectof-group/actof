@@ -5,8 +5,7 @@ import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import net.objectof.actof.common.component.display.Display;
-import net.objectof.actof.common.controller.change.IChangeController;
+import net.objectof.actof.common.component.editor.Editor;
 import net.objectof.actof.common.window.ActofWindow;
 
 
@@ -17,17 +16,17 @@ public class ActofIDE extends Application {
 
         ActofWindow window = ActofWindow.load();
         window.setDisplayStage(primaryStage);
-        window.initializeDisplay();
+        window.construct();
 
-        Display ide = ActofIDEController.load(new IChangeController());
+        Editor ide = ActofIDEController.load();
         ide.setDisplayStage(primaryStage);
-        ide.initializeDisplay();
+        ide.construct();
 
-        window.getSubDisplays().add(ide);
+        window.setEditor(ide);
 
-        primaryStage.setScene(new Scene((Parent) window.getDisplayNode()));
+        primaryStage.setScene(new Scene((Parent) window.getFXNode()));
         primaryStage.show();
-        window.onShowDisplay();
+        window.onFXLoad();
 
     }
 

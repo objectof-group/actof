@@ -6,8 +6,7 @@ import java.net.URL;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import net.objectof.actof.common.component.display.Display;
-import net.objectof.actof.common.component.display.LoadedDisplay;
+import net.objectof.actof.common.component.feature.FXLoaded;
 import net.objectof.actof.common.controller.ActofUIController;
 import net.objectof.actof.common.controller.change.ChangeController;
 
@@ -33,8 +32,7 @@ public class FXUtil {
 
     }
 
-    public static <T extends Display> T loadDisplay(Class<T> cls, String filename, ChangeController changes)
-            throws IOException {
+    public static <T extends FXLoaded> T loadFX(Class<T> cls, String filename) throws IOException {
 
         URL url = cls.getResource(filename);
 
@@ -42,11 +40,10 @@ public class FXUtil {
         loader.setLocation(url);
         Node node = loader.load();
 
-        LoadedDisplay controller = loader.getController();
-        controller.setDisplayNode(node);
-        controller.setChangeBus(changes);
+        FXLoaded controller = loader.getController();
+        controller.setFXNode(node);
 
-        controller.onDisplayLoad();
+        controller.onFXLoad();
 
         return (T) controller;
 
