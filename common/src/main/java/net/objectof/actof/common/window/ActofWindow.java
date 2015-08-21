@@ -9,7 +9,6 @@ import java.util.Map;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
-import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.MenuButton;
@@ -50,6 +49,7 @@ public class ActofWindow implements Titled, FXNoded, FXLoaded, DelayedConstruct,
 
     private Editor editor;
     private InvalidationListener panelsListener = (Observable change) -> layoutPanels();
+    private InvalidationListener toolbarsListener = (Observable change) -> layoutToolbars();
     private MenuButton actionsButton;
 
     Map<Panel, Tab> panelTabs = new HashMap<>();
@@ -87,13 +87,14 @@ public class ActofWindow implements Titled, FXNoded, FXLoaded, DelayedConstruct,
         Display display = editor.getDisplay();
 
         if (display != null) {
-            Bindings.unbindContent(toolbar.getChildren(), display.getToolbars());
             display.getPanels().removeListener(panelsListener);
+            display.getToolbars().removeListener(toolbarsListener);
         }
 
-        Bindings.bindContent(toolbar.getChildren(), display.getToolbars());
         display.getPanels().addListener(panelsListener);
+        display.getToolbars().addListener(toolbarsListener);
         layoutPanels();
+        layoutToolbars();
 
         AnchorPane.setBottomAnchor(display.getFXNode(), 0d);
         AnchorPane.setTopAnchor(display.getFXNode(), 0d);
@@ -103,6 +104,18 @@ public class ActofWindow implements Titled, FXNoded, FXLoaded, DelayedConstruct,
         displayPanel.getChildren().clear();
         displayPanel.getChildren().add(display.getFXNode());
 
+    }
+
+    private void layoutToolbars() {
+
+        toolbar.getChildren().clear();
+
+        if (editor == null) { return; }
+        Display display = editor.getDisplay();
+        if (display == null) { return; }
+
+        toolbar.getChildren().addAll(display.getToolbars());
+        toolbar.getChildren().add(actionsButton);
     }
 
     private void layoutPanels() {
