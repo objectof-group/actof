@@ -60,21 +60,6 @@
                               <Tooltip text="Review changes" />
                            </tooltip>
                         </Button>
-                        <MenuButton mnemonicParsing="false" styleClass="tool-bar-button">
-                          <items>
-                              <CheckMenuItem fx:id="menuItemSearch" mnemonicParsing="false" onAction="#onMenuItemSearch" text="Search" />
-                              <SeparatorMenuItem mnemonicParsing="false" />
-                            <MenuItem fx:id="dump" mnemonicParsing="false" onAction="#onDump" text="Dump to JSON" />
-                            <MenuItem fx:id="load" mnemonicParsing="false" onAction="#onLoad" text="Load from JSON" />
-                          </items>
-                           <graphic>
-                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@icons/menu.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </MenuButton>
                      </children>
                   </HBox>
                </children>

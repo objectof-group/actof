@@ -6,8 +6,6 @@ import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
 
 import javafx.application.Application;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import net.objectof.actof.common.window.ActofWindow;
@@ -44,13 +42,8 @@ public class RepoSpy extends Application {
 
         });
 
+        window.show();
         window.setEditor(spy);
-
-        Scene scene = new Scene((Parent) window.getFXNode());
-        primaryStage.setScene(scene);
-        primaryStage.show();
-
-        window.onFXLoad();
 
     }
 

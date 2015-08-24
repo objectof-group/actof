@@ -3,33 +3,51 @@ package net.objectof.actof.minion.components.server;
 
 import java.io.IOException;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.AbstractHandler;
+import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.server.session.HashSessionIdManager;
+import org.eclipse.jetty.server.session.HashSessionManager;
+import org.eclipse.jetty.server.session.SessionHandler;
+import org.eclipse.jetty.util.component.LifeCycle;
+
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import net.objectof.actof.common.controller.IActofUIController;
-import net.objectof.actof.common.controller.change.ChangeController;
+import net.objectof.actof.common.component.display.Display;
+import net.objectof.actof.common.component.display.impl.AbstractLoadedDisplay;
+import net.objectof.actof.common.component.editor.Editor;
+import net.objectof.actof.common.component.resource.Action;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.minion.components.server.change.ServerStartChange;
 import net.objectof.actof.minion.components.server.change.ServerStopChange;
 import net.objectof.actof.minion.components.spring.change.HandlerChange;
 import net.objectof.actof.widgets.StatusLight;
 import net.objectof.actof.widgets.StatusLight.Status;
-
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.ContextHandler;
-import org.eclipse.jetty.server.session.HashSessionIdManager;
-import org.eclipse.jetty.server.session.HashSessionManager;
-import org.eclipse.jetty.server.session.SessionHandler;
-import org.eclipse.jetty.util.component.LifeCycle;
-import org.eclipse.jetty.webapp.WebAppContext;
+import net.objectof.corc.Handler;
+import net.objectof.corc.web.v2.HttpRequest;
+import net.objectof.corc.web.v2.impl.IHttpRequest;
 
 
-public class ServerController extends IActofUIController {
+public class ServerController extends AbstractLoadedDisplay implements Editor {
 
+    @FXML
+    private BorderPane topPane;
+    @FXML
+    private HBox toolbar;
     @FXML
     private ListView<String> output;
     @FXML
@@ -46,15 +64,14 @@ public class ServerController extends IActofUIController {
     private ContextHandler context;
     private SessionHandler sessions;
     private int counter = 0;
-    private WebAppContext handler;
+    private AbstractHandler handler;
 
     private StatusLight statuslight;
 
     private int port = 8080;
 
     @Override
-    @FXML
-    protected void initialize() {
+    public void construct() {
 
         statuslight = new StatusLight("Server Off");
         topbox.getChildren().add(statuslight);
@@ -64,10 +81,14 @@ public class ServerController extends IActofUIController {
         porttext.setDisable(true);
         portlabel.setDisable(true);
 
+        getToolbars().addAll(toolbar.getChildren());
+        toolbar.getChildren().clear();
+        topbox.getChildren().remove(toolbar);
+
     }
 
     @Override
-    public void ready() {
+    public void onFXLoad() {
 
         getChangeBus().listen(HandlerChange.class, this::setHandler);
 
@@ -132,17 +153,34 @@ public class ServerController extends IActofUIController {
         return port;
     }
 
+    public void setHandler(Handler<HttpRequest> handler) {
+
+        setHandler(new AbstractHandler() {
+
+            @Override
+            public void handle(String target, Request base, HttpServletRequest request, HttpServletResponse response)
+                    throws IOException, ServletException {
+
+                addOutput(request.getMethod() + ": " + request.getPathInfo(), true);
+
+                IHttpRequest req = new IHttpRequest("" + counter++, this, request, response);
+                handler.execute(req, req);
+                base.setHandled(true);
+            }
+        });
+    }
+
+    public void setHandler(AbstractHandler handler) {
+
+        start.setDisable(false);
+        porttext.setDisable(false);
+        portlabel.setDisable(false);
+
+        this.handler = handler;
+    }
+
     public void setHandler(HandlerChange change) {
-
-        if (this.handler == null) {
-            // if the handler was null before this, turn things on
-            start.setDisable(false);
-            porttext.setDisable(false);
-            portlabel.setDisable(false);
-        }
-
-        this.handler = change.getHandler();
-
+        setHandler(change.getHandler());
     }
 
     private void addOutput(String message) {
@@ -193,8 +231,23 @@ public class ServerController extends IActofUIController {
         }
     }
 
-    public static ServerController load(ChangeController changes) throws IOException {
-        return FXUtil.load(ServerController.class, "Server.fxml", changes);
+    public static ServerController load() throws IOException {
+        return FXUtil.loadFX(ServerController.class, "Server.fxml");
+    }
+
+    @Override
+    public Display getDisplay() {
+        return this;
+    }
+
+    @Override
+    public String getTitle() {
+        return "Repository REST Server";
+    }
+
+    @Override
+    public ObservableList<Action> getActions() {
+        return FXCollections.emptyObservableList();
     }
 
 }

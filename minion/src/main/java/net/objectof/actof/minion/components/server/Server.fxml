@@ -8,14 +8,14 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.minion.components.server.ServerController">
+<BorderPane fx:id="topPane" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.minion.components.server.ServerController">
    <center>
       <ListView fx:id="output" BorderPane.alignment="CENTER" />
    </center>
    <top>
       <VBox fx:id="topbox" BorderPane.alignment="CENTER">
          <children>
-            <HBox styleClass="tool-bar">
+            <HBox fx:id="toolbar" styleClass="tool-bar">
                <children>
                   <Button fx:id="start" mnemonicParsing="false" onAction="#start" style="-fx-padding: 5;" styleClass="tool-bar-button">
                      <graphic>

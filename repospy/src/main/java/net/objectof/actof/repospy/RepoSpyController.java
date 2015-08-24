@@ -10,15 +10,23 @@ import javafx.stage.StageStyle;
 import net.objectof.actof.common.component.display.Display;
 import net.objectof.actof.common.component.editor.ResourceEditor;
 import net.objectof.actof.common.component.editor.impl.AbstractEditor;
+import net.objectof.actof.common.component.resource.Action;
 import net.objectof.actof.common.component.resource.Resource;
+import net.objectof.actof.common.component.resource.impl.IAction;
 import net.objectof.actof.common.controller.repository.RepositoryController;
+import net.objectof.actof.common.controller.repository.RepositoryReplacedChange;
 import net.objectof.actof.common.controller.search.SearchController;
+import net.objectof.actof.common.window.ActofWindow;
 import net.objectof.actof.connectorui.ConnectionController;
+import net.objectof.actof.minion.components.server.ServerController;
 import net.objectof.actof.repospy.controllers.history.HistoryController;
 import net.objectof.actof.repospy.controllers.navigator.NavigatorController;
 import net.objectof.actof.repospy.controllers.review.ReviewController;
 import net.objectof.actof.repospy.resource.RepositoryResource;
 import net.objectof.connector.Connector;
+import net.objectof.corc.Handler;
+import net.objectof.corc.web.v2.HttpRequest;
+import net.objectof.model.corc.IRepoHandler;
 import net.objectof.model.query.Query;
 import net.objectof.model.query.parser.QueryBuilder;
 
@@ -33,8 +41,19 @@ public class RepoSpyController extends AbstractEditor implements ResourceEditor 
     private boolean forResource = false;
     private RepositoryResource resource;
 
+    Action searchAction = new IAction("Search", () -> navigator.toggleSearchBar());
+    Action dumpAction = new IAction("Dump to JSON", () -> navigator.onDump());
+    Action loadAction = new IAction("Load from JSON", () -> navigator.onLoad());
+    Action restAction = new IAction("Run REST Server", () -> restServer());
+
     @Override
     public void construct() throws Exception {
+
+        getChangeBus().listen(RepositoryReplacedChange.class, () -> {
+            dumpAction.setEnabled(true);
+            loadAction.setEnabled(true);
+        });
+
         repository = new RepositoryController(getChangeBus());
         search = new SearchController(repository, getChangeBus());
         history = new HistoryController(getChangeBus());
@@ -45,6 +64,14 @@ public class RepoSpyController extends AbstractEditor implements ResourceEditor 
         navigator.setDisplayStage(getDisplayStage());
         navigator.setTopController(this);
         navigator.construct();
+
+        dumpAction.setEnabled(false);
+        loadAction.setEnabled(false);
+
+        getActions().add(searchAction);
+        getActions().add(dumpAction);
+        getActions().add(loadAction);
+        getActions().add(restAction);
 
     }
 
@@ -95,6 +122,26 @@ public class RepoSpyController extends AbstractEditor implements ResourceEditor 
 
     public Connector showConnect() throws IOException {
         return ConnectionController.showConnectDialog(getDisplayStage());
+    }
+
+    public void restServer() {
+        try {
+
+            ServerController server = ServerController.load();
+            server.setChangeBus(getChangeBus());
+            server.construct();
+
+            Handler<HttpRequest> rest = new IRepoHandler(repository.getRepo());
+            server.setHandler(rest);
+
+            ActofWindow window = ActofWindow.load();
+            window.show();
+            window.setEditor(server);
+
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /*************************************************************

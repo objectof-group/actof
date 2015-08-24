@@ -6,9 +6,17 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="474.0" prefWidth="1000.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.common.window.ActofWindow">
+<BorderPane fx:id="topPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="474.0" prefWidth="1000.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.common.window.ActofWindow">
    <top>
-      <HBox fx:id="toolbar" styleClass="tool-bar" BorderPane.alignment="CENTER" />
+      <HBox fx:id="toolbar" styleClass="tool-bar" BorderPane.alignment="CENTER">
+         <children>
+            <MenuButton fx:id="actionsButton" mnemonicParsing="false" styleClass="tool-bar-button">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Action 1" />
+                <MenuItem mnemonicParsing="false" text="Action 2" />
+              </items>
+            </MenuButton>
+         </children></HBox>
    </top>
    <center>
       <SplitPane fx:id="splitPane" dividerPositions="0.25" BorderPane.alignment="CENTER">

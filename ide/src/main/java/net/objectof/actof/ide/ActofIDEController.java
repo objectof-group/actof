@@ -48,6 +48,8 @@ public class ActofIDEController extends AbstractLoadedDisplay implements Editor 
     @FXML
     private MenuButton newResource;
 
+    ObservableList<Action> actions = FXCollections.observableArrayList();
+
     private Map<Resource, Tab> resourceTabs = new HashMap<>();
     private List<Node> permanentToolbars = new ArrayList<>();
     private List<Panel> permanentPanels = new ArrayList<>();
@@ -147,7 +149,11 @@ public class ActofIDEController extends AbstractLoadedDisplay implements Editor 
             try {
                 if (n == null) { return; }
                 Resource res = getResource(n);
-                Display display = res.getEditor().getDisplay();
+
+                Editor editor = res.getEditor();
+                actions.setAll(editor.getActions());
+
+                Display display = editor.getDisplay();
                 getToolbars().clear();
                 getToolbars().addAll(permanentToolbars);
                 getToolbars().addAll(display.getToolbars());
@@ -182,7 +188,7 @@ public class ActofIDEController extends AbstractLoadedDisplay implements Editor 
 
     @Override
     public ObservableList<Action> getActions() {
-        return FXCollections.emptyObservableList();
+        return actions;
     }
 
 }

@@ -22,10 +22,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
@@ -90,10 +88,6 @@ public class NavigatorController extends AbstractLoadedDisplay {
 
     @FXML
     private Button connect, commit, review, revert;
-    @FXML
-    private MenuItem dump, load;
-    @FXML
-    private CheckMenuItem menuItemSearch;
     @FXML
     private Tooltip revert_tooltip;
     @FXML
@@ -260,7 +254,7 @@ public class NavigatorController extends AbstractLoadedDisplay {
         repospy.repository.makeFresh();
     }
 
-    public void onLoad() throws FileNotFoundException {
+    public void onLoad() {
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Import Data");
         ExtensionFilter filter = new ExtensionFilter("JSON Data", "*.json");
@@ -268,7 +262,14 @@ public class NavigatorController extends AbstractLoadedDisplay {
         File file = chooser.showOpenDialog(repospy.getDisplayStage());
         if (file == null) { return; }
 
-        List<Resource<?>> loaded = repospy.repository.load(new Scanner(file));
+        List<Resource<?>> loaded;
+        try {
+            loaded = repospy.repository.load(new Scanner(file));
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return;
+        }
         for (Resource<?> res : loaded) {
             getChangeBus().broadcast(new EntityCreatedChange(res));
         }
@@ -276,7 +277,7 @@ public class NavigatorController extends AbstractLoadedDisplay {
     }
 
     /* FXML Hook */
-    public void onDump() throws IOException {
+    public void onDump() {
 
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Dump Repository");
@@ -285,9 +286,14 @@ public class NavigatorController extends AbstractLoadedDisplay {
         File file = chooser.showOpenDialog(repospy.getDisplayStage());
         if (file == null) { return; }
 
-        Writer writer = new FileWriter(file);
-        writer.write(repospy.repository.dump());
-        writer.close();
+        try {
+            Writer writer = new FileWriter(file);
+            writer.write(repospy.repository.dump());
+            writer.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /* FXML Hook */
@@ -333,12 +339,11 @@ public class NavigatorController extends AbstractLoadedDisplay {
         this.repospy = controller;
     }
 
-    public void onMenuItemSearch() {
-        showSearchBar(menuItemSearch.isSelected());
+    public void toggleSearchBar() {
+        showSearchBar(!searchPane.isExpanded());
     }
 
     private void showSearchBar(boolean show) {
-        menuItemSearch.setSelected(show);
         searchPane.setExpanded(show);
         repospy.doQuery("");
     }
@@ -363,8 +368,6 @@ public class NavigatorController extends AbstractLoadedDisplay {
         populateEntityTree();
         populateQueryEntityChoice();
         revert.setDisable(false);
-        dump.setDisable(false);
-        load.setDisable(false);
         breadcrumb.setDisable(false);
 
         rootNode.setPackageName(repospy.repository.getRepoName());

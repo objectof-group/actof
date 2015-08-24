@@ -87,8 +87,10 @@ public class Minion extends Application implements Display, Editor {
     }
 
     private void serverTab() throws IOException {
-        server = ServerController.load(getChangeBus());
-        window.addTab(server.getNode(), "Server");
+        server = ServerController.load();
+        server.setChangeBus(getChangeBus());
+        server.construct();
+        window.addTab(server.getFXNode(), "Server");
     }
 
     private void springTab() throws IOException {

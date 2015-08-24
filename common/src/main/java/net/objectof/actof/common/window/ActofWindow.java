@@ -11,7 +11,10 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -27,6 +30,7 @@ import net.objectof.actof.common.component.feature.FXLoaded;
 import net.objectof.actof.common.component.feature.FXNoded;
 import net.objectof.actof.common.component.feature.StageAware;
 import net.objectof.actof.common.component.feature.Titled;
+import net.objectof.actof.common.component.resource.Action;
 import net.objectof.actof.common.icons.ActofIcons;
 import net.objectof.actof.common.util.FXUtil;
 
@@ -34,7 +38,7 @@ import net.objectof.actof.common.util.FXUtil;
 public class ActofWindow implements Titled, FXNoded, FXLoaded, DelayedConstruct, StageAware {
 
     @FXML
-    private BorderPane panel;
+    private BorderPane panel, topPane;
     @FXML
     private TabPane panels;
     @FXML
@@ -43,14 +47,18 @@ public class ActofWindow implements Titled, FXNoded, FXLoaded, DelayedConstruct,
     private HBox toolbar;
     @FXML
     private SplitPane splitPane;
+    @FXML
+    private MenuButton actionsButton;
 
     private Node windowNode;
-    private Stage stage;
+    private Stage stage = new Stage();
 
     private Editor editor;
+    private Display display;
+
     private InvalidationListener panelsListener = (Observable change) -> layoutPanels();
     private InvalidationListener toolbarsListener = (Observable change) -> layoutToolbars();
-    private MenuButton actionsButton;
+    private InvalidationListener actionsListener = (Observable change) -> layoutActions();
 
     Map<Panel, Tab> panelTabs = new HashMap<>();
 
@@ -75,27 +83,22 @@ public class ActofWindow implements Titled, FXNoded, FXLoaded, DelayedConstruct,
     public void construct() throws Exception {
         panels.setStyle("-fx-open-tab-animation: NONE; -fx-close-tab-animation: NONE;");
         SplitPane.setResizableWithParent(panel, false);
-        actionsButton = new MenuButton("", ActofIcons.getCustomIcon(ActofWindow.class, "icons/menu.png"));
+        actionsButton.setGraphic(ActofIcons.getCustomIcon(ActofWindow.class, "icons/menu.png"));
+        actionsButton.getStyleClass().add("tool-bar-button");
+        toolbar.getChildren().clear();
+
     }
 
     private void updateDisplay() {
 
-        toolbar.getChildren().clear();
-
-        if (editor == null) { return; }
-
-        Display display = editor.getDisplay();
-
-        if (display != null) {
-            display.getPanels().removeListener(panelsListener);
-            display.getToolbars().removeListener(toolbarsListener);
-        }
-
-        display.getPanels().addListener(panelsListener);
-        display.getToolbars().addListener(toolbarsListener);
         layoutPanels();
         layoutToolbars();
+        layoutActions();
+        layoutDisplay();
 
+    }
+
+    private void layoutDisplay() {
         AnchorPane.setBottomAnchor(display.getFXNode(), 0d);
         AnchorPane.setTopAnchor(display.getFXNode(), 0d);
         AnchorPane.setLeftAnchor(display.getFXNode(), 0d);
@@ -103,6 +106,23 @@ public class ActofWindow implements Titled, FXNoded, FXLoaded, DelayedConstruct,
 
         displayPanel.getChildren().clear();
         displayPanel.getChildren().add(display.getFXNode());
+        try {
+            display.onShowDisplay();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void layoutActions() {
+
+        actionsButton.getItems().clear();
+        for (Action a : editor.getActions()) {
+            MenuItem item = new MenuItem(a.getTitle());
+            item.disableProperty().bind(a.getEnabledProperty().not());
+            item.setOnAction(event -> a.run());
+            actionsButton.getItems().add(item);
+        }
 
     }
 
@@ -115,7 +135,9 @@ public class ActofWindow implements Titled, FXNoded, FXLoaded, DelayedConstruct,
         if (display == null) { return; }
 
         toolbar.getChildren().addAll(display.getToolbars());
-        toolbar.getChildren().add(actionsButton);
+        if (editor.getActions().size() > 0) {
+            toolbar.getChildren().add(actionsButton);
+        }
     }
 
     private void layoutPanels() {
@@ -126,15 +148,16 @@ public class ActofWindow implements Titled, FXNoded, FXLoaded, DelayedConstruct,
             return;
         }
 
-        Display display = editor.getDisplay();
-
         if (display.getPanels().size() == 0) {
+            topPane.setCenter(displayPanel);
             panels.getTabs().clear();
             panelTabs.clear();
         } else if (display.getPanels().size() == 1) {
+            topPane.setCenter(splitPane);
             Panel p = display.getPanels().get(0);
             panel.setCenter(p.getFXNode());
         } else {
+            topPane.setCenter(splitPane);
 
             if (panel.getCenter() != panels) {
                 panel.setCenter(panels);
@@ -177,7 +200,24 @@ public class ActofWindow implements Titled, FXNoded, FXLoaded, DelayedConstruct,
     }
 
     public void setEditor(Editor editor) {
+
+        if (this.editor != null) {
+            this.editor.getActions().removeListener(actionsListener);
+        }
+
+        if (display != null) {
+            display.getPanels().removeListener(panelsListener);
+            display.getToolbars().removeListener(toolbarsListener);
+        }
+
         this.editor = editor;
+        if (editor == null) { return; }
+        this.editor.getActions().addListener(actionsListener);
+
+        this.display = editor.getDisplay();
+        display.getPanels().addListener(panelsListener);
+        display.getToolbars().addListener(toolbarsListener);
+
         updateDisplay();
 
     }
@@ -190,6 +230,12 @@ public class ActofWindow implements Titled, FXNoded, FXLoaded, DelayedConstruct,
     @Override
     public Node getFXNode() {
         return windowNode;
+    }
+
+    public void show() {
+        Scene scene = new Scene((Parent) getFXNode());
+        getDisplayStage().setScene(scene);
+        getDisplayStage().show();
     }
 
 }

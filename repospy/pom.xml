@@ -49,6 +49,16 @@
 			<artifactId>actof-widgets</artifactId>
 			<version>0.2-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>net.objectof.actof</groupId>
+			<artifactId>actof-minion</artifactId>
+			<version>0.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>objectof</groupId>
+			<artifactId>objectof-web</artifactId>
+			<version>0.2-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<build>
