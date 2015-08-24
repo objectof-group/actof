@@ -52,6 +52,7 @@ public class RepoSpyController extends AbstractEditor implements ResourceEditor 
         getChangeBus().listen(RepositoryReplacedChange.class, () -> {
             dumpAction.setEnabled(true);
             loadAction.setEnabled(true);
+            restAction.setEnabled(true);
         });
 
         repository = new RepositoryController(getChangeBus());
@@ -67,6 +68,7 @@ public class RepoSpyController extends AbstractEditor implements ResourceEditor 
 
         dumpAction.setEnabled(false);
         loadAction.setEnabled(false);
+        restAction.setEnabled(false);
 
         getActions().add(searchAction);
         getActions().add(dumpAction);
