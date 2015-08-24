@@ -30,8 +30,8 @@
             </Button>
             <MenuButton fx:id="newResource" mnemonicParsing="false" styleClass="tool-bar-button">
               <items>
-                <MenuItem mnemonicParsing="false" text="Action 1" />
-                <MenuItem mnemonicParsing="false" text="Action 2" />
+                <MenuItem mnemonicParsing="false" onAction="#onAddSchema" text="Schema" />
+                <MenuItem mnemonicParsing="false" onAction="#onAddRepository" text="Repository" />
               </items>
                <graphic>
                   <ImageView pickOnBounds="true" preserveRatio="true">

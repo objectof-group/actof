@@ -12,6 +12,9 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
 
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.stage.Stage;
 import net.objectof.actof.common.component.display.Display;
 import net.objectof.actof.common.component.editor.ResourceEditor;
 import net.objectof.actof.common.component.editor.impl.AbstractEditor;
@@ -114,6 +117,20 @@ public class SchemaSpyController extends AbstractEditor implements ResourceEdito
     @Override
     public Display getDisplay() {
         return view;
+    }
+
+    public static File chooseSchemaFile(File lastschemadir, Stage parent) {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Open Schema File");
+        if (lastschemadir != null) {
+            chooser.setInitialDirectory(lastschemadir);
+        }
+        ExtensionFilter filter = new ExtensionFilter("Schema Files", "*.xml");
+        chooser.setSelectedExtensionFilter(filter);
+        File file = chooser.showOpenDialog(parent);
+        if (file == null) { return null; }
+        return file;
+
     }
 
 }

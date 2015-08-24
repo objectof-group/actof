@@ -333,17 +333,8 @@ public class SchemaViewController extends AbstractLoadedDisplay {
 
     public void onOpen()
             throws FileNotFoundException, SAXException, IOException, ParserConfigurationException, XMLParseException {
-        FileChooser chooser = new FileChooser();
-        chooser.setTitle("Open Schema File");
-        if (lastschemadir != null) {
-            chooser.setInitialDirectory(lastschemadir);
-        }
-        ExtensionFilter filter = new ExtensionFilter("Schema Files", "*.xml");
-        chooser.setSelectedExtensionFilter(filter);
-        File file = chooser.showOpenDialog(schemaspy.getDisplayStage());
-        if (file == null) { return; }
+        File file = SchemaSpyController.chooseSchemaFile(lastschemadir, schemaspy.getDisplayStage());
         lastschemadir = file.getParentFile();
-
         schemaspy.setSchema(file);
     }
 

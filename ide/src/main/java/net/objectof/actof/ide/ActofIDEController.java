@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -29,10 +30,12 @@ import net.objectof.actof.common.component.editor.ResourceEditor;
 import net.objectof.actof.common.component.resource.Action;
 import net.objectof.actof.common.component.resource.Resource;
 import net.objectof.actof.common.util.FXUtil;
-import net.objectof.actof.connectorui.SavedConnections;
 import net.objectof.actof.ide.resource.ProjectResource;
+import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.actof.repospy.resource.RepositoryResource;
+import net.objectof.actof.schemaspy.SchemaSpyController;
 import net.objectof.actof.schemaspy.resource.SchemaFileResource;
+import net.objectof.connector.Connector;
 
 
 public class ActofIDEController extends AbstractLoadedDisplay implements Editor {
@@ -48,7 +51,8 @@ public class ActofIDEController extends AbstractLoadedDisplay implements Editor 
     @FXML
     private MenuButton newResource;
 
-    ObservableList<Action> actions = FXCollections.observableArrayList();
+    private ObservableList<Action> actions = FXCollections.observableArrayList();
+    private ObservableList<Resource> resources = FXCollections.observableArrayList();
 
     private Map<Resource, Tab> resourceTabs = new HashMap<>();
     private List<Node> permanentToolbars = new ArrayList<>();
@@ -109,22 +113,7 @@ public class ActofIDEController extends AbstractLoadedDisplay implements Editor 
 
         TreeItem<Resource> root = new TreeItem<Resource>(new ProjectResource());
         tree.setRoot(root);
-
-        SchemaFileResource sch;
-
-        sch = new SchemaFileResource();
-        sch.setSchemaFile(new File("/home/nathaniel/Desktop/REALM Misc/GettingStarted/schema.xml"));
-        root.getChildren().add(new TreeItem<Resource>(sch));
-
-        sch = new SchemaFileResource();
-        sch.setSchemaFile(new File("/home/nathaniel/Desktop/repo/realm.xml"));
-        root.getChildren().add(new TreeItem<Resource>(sch));
-
-        RepositoryResource repo;
-
-        repo = new RepositoryResource();
-        repo.setConnector(SavedConnections.getLastConnector());
-        root.getChildren().add(new TreeItem<Resource>(repo));
+        getResources().addListener((Observable change) -> updateTree());
 
         tree.getSelectionModel().selectedItemProperty().addListener(change -> {
             Resource res = tree.getSelectionModel().getSelectedItem().getValue();
@@ -181,6 +170,31 @@ public class ActofIDEController extends AbstractLoadedDisplay implements Editor 
 
     }
 
+    private void updateTree() {
+        TreeItem<Resource> root = tree.getRoot();
+        root.getChildren().clear();
+        for (Resource res : getResources()) {
+            TreeItem<Resource> item = new TreeItem<Resource>(res);
+            root.getChildren().add(item);
+        }
+    }
+
+    public void onAddSchema() {
+        File file = SchemaSpyController.chooseSchemaFile(null, getDisplayStage());
+        if (file == null) { return; }
+        SchemaFileResource schema = new SchemaFileResource();
+        schema.setSchemaFile(file);
+        getResources().add(schema);
+
+    }
+
+    public void onAddRepository() throws IOException {
+        Connector conn = RepoSpyController.showConnect(getDisplayStage());
+        RepositoryResource repo = new RepositoryResource();
+        repo.setConnector(conn);
+        getResources().add(repo);
+    }
+
     @Override
     public Display getDisplay() {
         return this;
@@ -189,6 +203,10 @@ public class ActofIDEController extends AbstractLoadedDisplay implements Editor 
     @Override
     public ObservableList<Action> getActions() {
         return actions;
+    }
+
+    public ObservableList<Resource> getResources() {
+        return resources;
     }
 
 }

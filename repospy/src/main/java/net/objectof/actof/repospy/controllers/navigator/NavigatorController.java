@@ -309,7 +309,7 @@ public class NavigatorController extends AbstractLoadedDisplay {
             if (result.get() != ButtonType.OK) { return; }
         }
 
-        Connector conn = repospy.showConnect();
+        Connector conn = RepoSpyController.showConnect(getDisplayStage());
         if (conn == null) { return; }
 
         try {

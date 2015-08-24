@@ -122,8 +122,8 @@ public class RepoSpyController extends AbstractEditor implements ResourceEditor 
 
     }
 
-    public Connector showConnect() throws IOException {
-        return ConnectionController.showConnectDialog(getDisplayStage());
+    public static Connector showConnect(Stage stage) throws IOException {
+        return ConnectionController.showConnectDialog(stage);
     }
 
     public void restServer() {
