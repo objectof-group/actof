@@ -13,7 +13,7 @@ public class SchemaFileResource extends AbstractResource {
     private File schemaFile;
 
     @Override
-    public ResourceEditor createDisplay() throws Exception {
+    public ResourceEditor createEditor() throws Exception {
         return new SchemaSpyController();
     }
 

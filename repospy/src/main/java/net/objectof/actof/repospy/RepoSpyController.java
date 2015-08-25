@@ -11,7 +11,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.objectof.actof.common.component.display.Display;
-import net.objectof.actof.common.component.editor.Editor;
 import net.objectof.actof.common.component.editor.ResourceEditor;
 import net.objectof.actof.common.component.editor.impl.AbstractEditor;
 import net.objectof.actof.common.component.resource.Action;
@@ -22,7 +21,7 @@ import net.objectof.actof.common.controller.repository.RepositoryReplacedChange;
 import net.objectof.actof.common.controller.search.SearchController;
 import net.objectof.actof.common.window.ActofWindow;
 import net.objectof.actof.connectorui.ConnectionController;
-import net.objectof.actof.minion.components.server.ServerController;
+import net.objectof.actof.minion.components.server.MinionServerResource;
 import net.objectof.actof.repospy.controllers.history.HistoryController;
 import net.objectof.actof.repospy.controllers.navigator.NavigatorController;
 import net.objectof.actof.repospy.controllers.review.ReviewController;
@@ -87,10 +86,11 @@ public class RepoSpyController extends AbstractEditor implements ResourceEditor 
                     if (!c.wasAdded()) { return; }
                     for (Resource r : c.getAddedSubList()) {
                         try {
-                            Editor e = r.getEditor();
+                            ResourceEditor e = r.getEditor();
                             if (e == null) {
                                 continue;
                             }
+
                             e.setChangeBus(getChangeBus());
 
                             Stage stage = new Stage(StageStyle.UTILITY);
@@ -101,6 +101,10 @@ public class RepoSpyController extends AbstractEditor implements ResourceEditor 
                             window.construct();
 
                             e.setDisplayStage(stage);
+                            e.construct();
+
+                            e.setResource(r);
+                            e.loadResource();
 
                             window.show();
                             window.setEditor(e);
@@ -167,22 +171,10 @@ public class RepoSpyController extends AbstractEditor implements ResourceEditor 
     }
 
     public Optional<Resource> restServer() {
-        try {
-
-            ServerController server = ServerController.load();
-            server.setChangeBus(getChangeBus());
-            server.construct();
-
-            Handler<HttpRequest> rest = new IRepoHandler(repository.getRepo());
-            server.setHandler(rest);
-
-            return Optional.of(server);
-
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            return Optional.empty();
-        }
+        MinionServerResource res = new MinionServerResource();
+        Handler<HttpRequest> rest = new IRepoHandler(repository.getRepo());
+        res.getServer().setHandler(rest);
+        return Optional.of(res);
     }
 
     /*************************************************************

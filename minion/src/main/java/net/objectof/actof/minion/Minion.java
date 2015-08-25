@@ -22,7 +22,7 @@ import net.objectof.actof.common.controller.change.IChangeController;
 import net.objectof.actof.minion.components.classpath.ClasspathController;
 import net.objectof.actof.minion.components.handlers.HandlerController;
 import net.objectof.actof.minion.components.rest.RestController;
-import net.objectof.actof.minion.components.server.ServerController;
+import net.objectof.actof.minion.components.server.MinionServerEditor;
 import net.objectof.actof.minion.components.spring.SpringController;
 
 
@@ -37,7 +37,7 @@ public class Minion extends Application implements Display, Editor {
 
     private ChangeController change = new IChangeController();
 
-    private ServerController server;
+    private MinionServerEditor server;
     private HandlerController handlers;
     private SpringController spring;
     private RestController rest;
@@ -57,10 +57,6 @@ public class Minion extends Application implements Display, Editor {
         serverTab();
         restTab();
         handlerTab();
-
-        stage.setOnCloseRequest(event -> {
-            server.stop();
-        });
 
         stage.show();
 
@@ -87,8 +83,8 @@ public class Minion extends Application implements Display, Editor {
 
     }
 
-    private void serverTab() throws IOException {
-        server = ServerController.load();
+    private void serverTab() throws Exception {
+        server = MinionServerEditor.load();
         server.setChangeBus(getChangeBus());
         server.construct();
         window.addTab(server.getFXNode(), "Server");

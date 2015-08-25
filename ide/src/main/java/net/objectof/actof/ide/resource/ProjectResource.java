@@ -8,7 +8,7 @@ import net.objectof.actof.common.component.resource.impl.AbstractResource;
 public class ProjectResource extends AbstractResource {
 
     @Override
-    public ResourceEditor createDisplay() throws Exception {
+    public ResourceEditor createEditor() throws Exception {
         return null;
     }
 

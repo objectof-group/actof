@@ -10,21 +10,25 @@ import net.objectof.actof.common.component.resource.Resource;
 
 public abstract class AbstractResource implements Resource {
 
-    protected ResourceEditor display;
+    protected ResourceEditor editor;
 
     private ObservableList<Action> actions = FXCollections.observableArrayList();
 
     @Override
     public ResourceEditor getEditor() throws Exception {
-        if (display == null) {
-            display = createDisplay();
+        if (editor == null) {
+            editor = createEditor();
         }
-        return display;
+        return editor;
     }
 
     @Override
     public ObservableList<Action> getActions() {
         return actions;
+    }
+
+    public String toString() {
+        return getTitle();
     }
 
 }

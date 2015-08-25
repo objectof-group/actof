@@ -12,7 +12,7 @@ public class RepositoryResource extends AbstractResource {
     Connector connector;
 
     @Override
-    public ResourceEditor createDisplay() throws Exception {
+    public ResourceEditor createEditor() throws Exception {
         return new RepoSpyController();
     }
 

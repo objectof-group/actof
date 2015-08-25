@@ -9,7 +9,7 @@ public interface Resource {
 
     ResourceEditor getEditor() throws Exception;
 
-    ResourceEditor createDisplay() throws Exception;
+    ResourceEditor createEditor() throws Exception;
 
     String getTitle();
 
