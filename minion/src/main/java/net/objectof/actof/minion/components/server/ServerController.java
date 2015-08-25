@@ -29,8 +29,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import net.objectof.actof.common.component.display.Display;
 import net.objectof.actof.common.component.display.impl.AbstractLoadedDisplay;
-import net.objectof.actof.common.component.editor.Editor;
+import net.objectof.actof.common.component.editor.ResourceEditor;
 import net.objectof.actof.common.component.resource.Action;
+import net.objectof.actof.common.component.resource.Resource;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.minion.components.server.change.ServerStartChange;
 import net.objectof.actof.minion.components.server.change.ServerStopChange;
@@ -42,7 +43,7 @@ import net.objectof.corc.web.v2.HttpRequest;
 import net.objectof.corc.web.v2.impl.IHttpRequest;
 
 
-public class ServerController extends AbstractLoadedDisplay implements Editor {
+public class ServerController extends AbstractLoadedDisplay implements ResourceEditor, Resource {
 
     @FXML
     private BorderPane topPane;
@@ -85,13 +86,7 @@ public class ServerController extends AbstractLoadedDisplay implements Editor {
         toolbar.getChildren().clear();
         topbox.getChildren().remove(toolbar);
 
-    }
-
-    @Override
-    public void onFXLoad() {
-
         getChangeBus().listen(HandlerChange.class, this::setHandler);
-
     }
 
     private void initServer() {
@@ -248,6 +243,40 @@ public class ServerController extends AbstractLoadedDisplay implements Editor {
     @Override
     public ObservableList<Action> getActions() {
         return FXCollections.emptyObservableList();
+    }
+
+    @Override
+    public ObservableList<Resource> getResources() {
+        return FXCollections.emptyObservableList();
+    }
+
+    @Override
+    public boolean isForResource() {
+        return true;
+    }
+
+    @Override
+    public void setForResource(boolean forResource) {}
+
+    @Override
+    public Resource getResource() {
+        return this;
+    }
+
+    @Override
+    public void setResource(Resource resource) {}
+
+    @Override
+    public void loadResource() throws Exception {}
+
+    @Override
+    public ResourceEditor getEditor() throws Exception {
+        return this;
+    }
+
+    @Override
+    public ResourceEditor createDisplay() throws Exception {
+        return this;
     }
 
 }

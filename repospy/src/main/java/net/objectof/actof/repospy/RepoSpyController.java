@@ -2,12 +2,16 @@ package net.objectof.actof.repospy;
 
 
 import java.io.IOException;
+import java.util.Optional;
 
+import javafx.collections.ListChangeListener;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.objectof.actof.common.component.display.Display;
+import net.objectof.actof.common.component.editor.Editor;
 import net.objectof.actof.common.component.editor.ResourceEditor;
 import net.objectof.actof.common.component.editor.impl.AbstractEditor;
 import net.objectof.actof.common.component.resource.Action;
@@ -41,10 +45,10 @@ public class RepoSpyController extends AbstractEditor implements ResourceEditor 
     private boolean forResource = false;
     private RepositoryResource resource;
 
-    Action searchAction = new IAction("Search", () -> navigator.toggleSearchBar());
-    Action dumpAction = new IAction("Dump to JSON", () -> navigator.onDump());
-    Action loadAction = new IAction("Load from JSON", () -> navigator.onLoad());
-    Action restAction = new IAction("Run REST Server", () -> restServer());
+    Action searchAction = new IAction("Search", navigator::toggleSearchBar);
+    Action dumpAction = new IAction("Dump to JSON", navigator::onDump);
+    Action loadAction = new IAction("Load from JSON", navigator::onLoad);
+    Action restAction = new IAction("Run REST Server", this::restServer);
 
     @Override
     public void construct() throws Exception {
@@ -74,6 +78,42 @@ public class RepoSpyController extends AbstractEditor implements ResourceEditor 
         getActions().add(dumpAction);
         getActions().add(loadAction);
         getActions().add(restAction);
+
+        getResources().addListener(new ListChangeListener<Resource>() {
+
+            @Override
+            public void onChanged(ListChangeListener.Change<? extends Resource> c) {
+                while (c.next()) {
+                    if (!c.wasAdded()) { return; }
+                    for (Resource r : c.getAddedSubList()) {
+                        try {
+                            Editor e = r.getEditor();
+                            if (e == null) {
+                                continue;
+                            }
+                            e.setChangeBus(getChangeBus());
+
+                            Stage stage = new Stage(StageStyle.UTILITY);
+                            stage.initOwner(getDisplayStage());
+                            stage.initModality(Modality.NONE);
+                            ActofWindow window = ActofWindow.load();
+                            window.setDisplayStage(stage);
+                            window.construct();
+
+                            e.setDisplayStage(stage);
+
+                            window.show();
+                            window.setEditor(e);
+
+                        }
+                        catch (Exception e1) {
+                            e1.printStackTrace();
+                            continue;
+                        }
+                    }
+                }
+            }
+        });
 
     }
 
@@ -126,7 +166,7 @@ public class RepoSpyController extends AbstractEditor implements ResourceEditor 
         return ConnectionController.showConnectDialog(stage);
     }
 
-    public void restServer() {
+    public Optional<Resource> restServer() {
         try {
 
             ServerController server = ServerController.load();
@@ -136,13 +176,12 @@ public class RepoSpyController extends AbstractEditor implements ResourceEditor 
             Handler<HttpRequest> rest = new IRepoHandler(repository.getRepo());
             server.setHandler(rest);
 
-            ActofWindow window = ActofWindow.load();
-            window.show();
-            window.setEditor(server);
+            return Optional.of(server);
 
         }
         catch (IOException e) {
             e.printStackTrace();
+            return Optional.empty();
         }
     }
 

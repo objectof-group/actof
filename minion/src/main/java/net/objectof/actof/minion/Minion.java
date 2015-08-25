@@ -16,6 +16,7 @@ import net.objectof.actof.common.component.display.Display;
 import net.objectof.actof.common.component.display.Panel;
 import net.objectof.actof.common.component.editor.Editor;
 import net.objectof.actof.common.component.resource.Action;
+import net.objectof.actof.common.component.resource.Resource;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.controller.change.IChangeController;
 import net.objectof.actof.minion.components.classpath.ClasspathController;
@@ -167,6 +168,11 @@ public class Minion extends Application implements Display, Editor {
 
     @Override
     public ObservableList<Action> getActions() {
+        return FXCollections.emptyObservableList();
+    }
+
+    @Override
+    public ObservableList<Resource> getResources() {
         return FXCollections.emptyObservableList();
     }
 

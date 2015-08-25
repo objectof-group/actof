@@ -24,6 +24,8 @@ public class RepoSpy extends Application {
         spy.setDisplayStage(primaryStage);
         spy.construct();
 
+        window.setEditor(spy);
+
         primaryStage.setTitle(spy.getTitle());
         primaryStage.getIcons().add(new Image(RepoSpy.class.getResource("RepoSpy.png").openStream()));
         primaryStage.setOnCloseRequest(event -> {
@@ -43,7 +45,6 @@ public class RepoSpy extends Application {
         });
 
         window.show();
-        window.setEditor(spy);
 
     }
 

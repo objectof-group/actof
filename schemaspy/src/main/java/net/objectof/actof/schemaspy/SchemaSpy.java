@@ -6,8 +6,6 @@ import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
 
 import javafx.application.Application;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import net.objectof.actof.common.window.ActofWindow;
@@ -28,8 +26,6 @@ public class SchemaSpy extends Application {
         spy.setDisplayStage(primaryStage);
         spy.construct();
 
-        window.setEditor(spy);
-
         primaryStage.getIcons().add(new Image(SchemaSpy.class.getResource("view/icons/SchemaSpy.png").openStream()));
         primaryStage.setOnCloseRequest(event -> {
             if (!spy.view.modified) { return; }
@@ -47,9 +43,8 @@ public class SchemaSpy extends Application {
 
         });
 
-        Scene scene = new Scene((Parent) window.getFXNode());
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        window.setEditor(spy);
+        window.show();
 
     }
 

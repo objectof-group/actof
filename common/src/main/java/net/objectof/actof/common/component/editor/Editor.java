@@ -8,6 +8,7 @@ import net.objectof.actof.common.component.feature.DelayedConstruct;
 import net.objectof.actof.common.component.feature.StageAware;
 import net.objectof.actof.common.component.feature.Titled;
 import net.objectof.actof.common.component.resource.Action;
+import net.objectof.actof.common.component.resource.Resource;
 
 
 public interface Editor extends Titled, ChangeBusAware, StageAware, DelayedConstruct {
@@ -15,5 +16,7 @@ public interface Editor extends Titled, ChangeBusAware, StageAware, DelayedConst
     Display getDisplay();
 
     ObservableList<Action> getActions();
+
+    ObservableList<Resource> getResources();
 
 }

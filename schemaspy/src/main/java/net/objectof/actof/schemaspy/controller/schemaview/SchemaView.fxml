@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<BorderPane fx:id="toppane" prefHeight="480.0" prefWidth="1013.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.schemaspy.controller.schemaview.SchemaViewController">
+<BorderPane fx:id="toppane" prefHeight="480.0" prefWidth="813.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.schemaspy.controller.schemaview.SchemaViewController">
    <center>
       <BorderPane fx:id="editor" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <center>

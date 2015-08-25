@@ -6,6 +6,7 @@ import javafx.collections.ObservableList;
 import javafx.stage.Stage;
 import net.objectof.actof.common.component.editor.Editor;
 import net.objectof.actof.common.component.resource.Action;
+import net.objectof.actof.common.component.resource.Resource;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.controller.change.IChangeController;
 
@@ -16,6 +17,7 @@ public abstract class AbstractEditor implements Editor {
     private ChangeController changeBus = new IChangeController();
 
     private ObservableList<Action> actions = FXCollections.observableArrayList();
+    private ObservableList<Resource> resources = FXCollections.observableArrayList();
 
     @Override
     public ChangeController getChangeBus() {
@@ -40,6 +42,11 @@ public abstract class AbstractEditor implements Editor {
     @Override
     public ObservableList<Action> getActions() {
         return actions;
+    }
+
+    @Override
+    public ObservableList<Resource> getResources() {
+        return resources;
     }
 
 }

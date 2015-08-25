@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -31,6 +32,7 @@ import net.objectof.actof.common.component.feature.FXNoded;
 import net.objectof.actof.common.component.feature.StageAware;
 import net.objectof.actof.common.component.feature.Titled;
 import net.objectof.actof.common.component.resource.Action;
+import net.objectof.actof.common.component.resource.Resource;
 import net.objectof.actof.common.icons.ActofIcons;
 import net.objectof.actof.common.util.FXUtil;
 
@@ -107,7 +109,9 @@ public class ActofWindow implements Titled, FXNoded, FXLoaded, DelayedConstruct,
         displayPanel.getChildren().clear();
         displayPanel.getChildren().add(display.getFXNode());
         try {
-            display.onShowDisplay();
+            if (getDisplayStage().isShowing()) {
+                display.onShowDisplay();
+            }
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -120,7 +124,12 @@ public class ActofWindow implements Titled, FXNoded, FXLoaded, DelayedConstruct,
         for (Action a : editor.getActions()) {
             MenuItem item = new MenuItem(a.getTitle());
             item.disableProperty().bind(a.getEnabledProperty().not());
-            item.setOnAction(event -> a.run());
+            item.setOnAction(event -> {
+                Optional<Resource> result = a.perform();
+                if (result.isPresent()) {
+                    editor.getResources().add(result.get());
+                }
+            });
             actionsButton.getItems().add(item);
         }
 
@@ -158,10 +167,7 @@ public class ActofWindow implements Titled, FXNoded, FXLoaded, DelayedConstruct,
             panel.setCenter(p.getFXNode());
         } else {
             topPane.setCenter(splitPane);
-
-            if (panel.getCenter() != panels) {
-                panel.setCenter(panels);
-            }
+            panel.setCenter(panels);
 
             // in panels but not tabs
             List<Panel> toAdd = new ArrayList<>(display.getPanels());
@@ -220,6 +226,8 @@ public class ActofWindow implements Titled, FXNoded, FXLoaded, DelayedConstruct,
 
         updateDisplay();
 
+        getDisplayStage().sizeToScene();
+
     }
 
     @Override
@@ -236,6 +244,14 @@ public class ActofWindow implements Titled, FXNoded, FXLoaded, DelayedConstruct,
         Scene scene = new Scene((Parent) getFXNode());
         getDisplayStage().setScene(scene);
         getDisplayStage().show();
+        if (display != null) {
+            try {
+                display.onShowDisplay();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }
