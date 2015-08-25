@@ -10,6 +10,7 @@
    <top>
       <HBox fx:id="toolbar" styleClass="tool-bar" BorderPane.alignment="CENTER">
          <children>
+            <Separator fx:id="separator" visible="false" HBox.hgrow="SOMETIMES" />
             <MenuButton fx:id="actionsButton" mnemonicParsing="false" styleClass="tool-bar-button">
               <items>
                 <MenuItem mnemonicParsing="false" text="Action 1" />

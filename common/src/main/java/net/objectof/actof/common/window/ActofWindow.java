@@ -16,6 +16,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Separator;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -51,6 +52,8 @@ public class ActofWindow implements Titled, FXNoded, FXLoaded, DelayedConstruct,
     private SplitPane splitPane;
     @FXML
     private MenuButton actionsButton;
+    @FXML
+    private Separator separator;
 
     private Node windowNode;
     private Stage stage = new Stage();
@@ -145,7 +148,7 @@ public class ActofWindow implements Titled, FXNoded, FXLoaded, DelayedConstruct,
 
         toolbar.getChildren().addAll(display.getToolbars());
         if (editor.getActions().size() > 0) {
-            toolbar.getChildren().add(actionsButton);
+            toolbar.getChildren().addAll(separator, actionsButton);
         }
     }
 

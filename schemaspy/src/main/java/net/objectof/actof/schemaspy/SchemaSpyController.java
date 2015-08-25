@@ -18,9 +18,12 @@ import javafx.stage.Stage;
 import net.objectof.actof.common.component.display.Display;
 import net.objectof.actof.common.component.editor.ResourceEditor;
 import net.objectof.actof.common.component.editor.impl.AbstractEditor;
+import net.objectof.actof.common.component.resource.Action;
 import net.objectof.actof.common.component.resource.Resource;
+import net.objectof.actof.common.component.resource.impl.IAction;
 import net.objectof.actof.common.controller.schema.ISchemaController;
 import net.objectof.actof.common.controller.schema.SchemaController;
+import net.objectof.actof.common.controller.schema.changes.SchemaReplacedChange;
 import net.objectof.actof.connectorui.ConnectionController;
 import net.objectof.actof.schemaspy.controller.schemaview.SchemaViewController;
 import net.objectof.actof.schemaspy.resource.SchemaFileResource;
@@ -35,7 +38,12 @@ public class SchemaSpyController extends AbstractEditor implements ResourceEdito
     private boolean forResource = false;
     private SchemaFileResource resource;
 
-    public SchemaSpyController() throws IOException, SAXException, ParserConfigurationException, XMLParseException {
+    private Action createJar = new IAction("Build Jar File", () -> view.onGenerate());
+    private Action createRepo = new IAction("Create Repository", () -> view.onCreate());
+
+    public SchemaSpyController() throws IOException, SAXException, ParserConfigurationException, XMLParseException
+
+    {
 
     }
 
@@ -87,6 +95,17 @@ public class SchemaSpyController extends AbstractEditor implements ResourceEdito
     public void construct() throws Exception {
         newSchema();
         view = showSchemaView();
+
+        createJar.setEnabled(false);
+        createRepo.setEnabled(false);
+        getActions().add(createJar);
+        getActions().add(createRepo);
+
+        getChangeBus().listen(SchemaReplacedChange.class, () -> {
+            createJar.setEnabled(true);
+            createRepo.setEnabled(true);
+        });
+
     }
 
     @Override

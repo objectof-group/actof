@@ -44,9 +44,9 @@ public class RepoSpyController extends AbstractEditor implements ResourceEditor 
     private boolean forResource = false;
     private RepositoryResource resource;
 
-    Action searchAction = new IAction("Search", navigator::toggleSearchBar);
-    Action dumpAction = new IAction("Dump to JSON", navigator::onDump);
-    Action loadAction = new IAction("Load from JSON", navigator::onLoad);
+    Action searchAction = new IAction("Search", () -> navigator.toggleSearchBar());
+    Action dumpAction = new IAction("Dump to JSON", () -> navigator.onDump());
+    Action loadAction = new IAction("Load from JSON", () -> navigator.onLoad());
     Action restAction = new IAction("Run REST Server", this::restServer);
 
     @Override

@@ -80,7 +80,7 @@ import net.objectof.connector.Connector.Initialize;
 public class SchemaViewController extends AbstractLoadedDisplay {
 
     @FXML
-    private Button open, save, create, generate, namespace, newschema;
+    private Button open, save, namespace, newschema;
 
     @FXML
     private TreeTableView<SchemaEntry> tree;
@@ -288,11 +288,11 @@ public class SchemaViewController extends AbstractLoadedDisplay {
         schemaspy.newSchema();
     }
 
-    public void onCreate() throws Exception {
-        Connector connect = schemaspy.showConnect();
-        if (connect == null) { return; }
-
+    public void onCreate() {
         try {
+            Connector connect = schemaspy.showConnect();
+            if (connect == null) { return; }
+
             Document schema = schemaspy.getSchema().getDocument();
             connect.createPackage(schema, Initialize.WHEN_EMPTY);
 
@@ -319,7 +319,7 @@ public class SchemaViewController extends AbstractLoadedDisplay {
 
     }
 
-    public void onGenerate() throws IOException, TransformerFactoryConfigurationError, TransformerException {
+    public void onGenerate() {
 
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Generate Jar File");
@@ -328,7 +328,12 @@ public class SchemaViewController extends AbstractLoadedDisplay {
         File jarfile = chooser.showSaveDialog(schemaspy.getDisplayStage());
         if (jarfile == null) { return; }
 
-        CodeGen.generate(schemaspy.getSchema(), jarfile);
+        try {
+            CodeGen.generate(schemaspy.getSchema(), jarfile);
+        }
+        catch (IOException | TransformerFactoryConfigurationError | TransformerException e) {
+            e.printStackTrace();
+        }
     }
 
     public void onOpen()
@@ -375,7 +380,6 @@ public class SchemaViewController extends AbstractLoadedDisplay {
     private void onSchemaReplace() {
         populateTree();
         save.setDisable(false);
-        create.setDisable(false);
 
         pkgdomain.setText(schemaspy.getSchema().getPackageDomain());
         pkgversion.setText(schemaspy.getSchema().getPackageVersion());

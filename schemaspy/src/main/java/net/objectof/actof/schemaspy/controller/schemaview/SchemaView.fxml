@@ -105,25 +105,6 @@
                </tooltip>
             </Button>
             <HBox fx:id="breadcrumbBox" />
-            <Separator visible="false" HBox.hgrow="ALWAYS" />
-            <Button fx:id="create" mnemonicParsing="false" onAction="#onCreate" styleClass="tool-bar-button" text="Create Repo">
-               <graphic>
-                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@icons/createrepo.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-            <Button fx:id="generate" mnemonicParsing="false" onAction="#onGenerate" styleClass="tool-bar-button" text="Build Jar">
-               <graphic>
-                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@icons/package.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
          </children>
       </HBox>
    </top>
