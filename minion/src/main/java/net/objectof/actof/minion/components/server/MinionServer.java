@@ -115,7 +115,7 @@ public class MinionServer implements ChangeBusAware {
             public void handle(String target, Request base, HttpServletRequest request, HttpServletResponse response)
                     throws IOException, ServletException {
 
-                log.add(request.getMethod() + ": " + request.getPathInfo());
+                log(request.getMethod() + ": " + request.getPathInfo());
 
                 IHttpRequest req = new IHttpRequest("" + counter++, this, request, response);
                 handler.execute(req, req);
@@ -140,7 +140,7 @@ public class MinionServer implements ChangeBusAware {
 
             if (server != null) {
                 if (server.isRunning()) {
-                    log.add("Shut Down Jetty Server");
+                    log("Shut Down Jetty Server");
                 }
                 server.stop();
             }
@@ -157,7 +157,7 @@ public class MinionServer implements ChangeBusAware {
         try {
             initServer();
             server.start();
-            log.add("Started Jetty Server on Port " + port);
+            log("Started Jetty Server on Port " + port);
             String path = "http://localhost:" + port + "/";
             statusLight.set(Status.GOOD);
             statusMessage.set("Server On: " + path);
@@ -168,6 +168,10 @@ public class MinionServer implements ChangeBusAware {
             statusMessage.set(e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    private synchronized void log(String message) {
+        getLog().add(message);
     }
 
     public ReadOnlyBooleanProperty startableProperty() {

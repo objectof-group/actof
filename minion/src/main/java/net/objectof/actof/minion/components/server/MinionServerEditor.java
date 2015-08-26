@@ -3,7 +3,9 @@ package net.objectof.actof.minion.components.server;
 
 import java.io.IOException;
 
-import javafx.beans.binding.Bindings;
+import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -45,6 +47,10 @@ public class MinionServerEditor extends AbstractLoadedDisplay implements Resourc
 
     private MinionServer minionServer;
     private MinionServerResource resource;
+
+    private InvalidationListener logListener = (Observable list) -> {
+        Platform.runLater(() -> output.getItems().setAll(minionServer.getLog()));
+    };
 
     public MinionServerEditor() {
 
@@ -121,6 +127,8 @@ public class MinionServerEditor extends AbstractLoadedDisplay implements Resourc
     @Override
     public void loadResource() throws Exception {
         minionServer = resource.getServer();
+
+        minionServer.getLog().addListener(logListener);
         minionServer.setChangeBus(getChangeBus());
 
         minionServer.statusMessageProperty().addListener(
@@ -130,7 +138,6 @@ public class MinionServerEditor extends AbstractLoadedDisplay implements Resourc
 
         start.disableProperty().bind(minionServer.startableProperty().not());
         stop.disableProperty().bind(minionServer.stoppableProperty().not());
-        Bindings.bindContent(output.getItems(), minionServer.getLog());
 
     }
 
