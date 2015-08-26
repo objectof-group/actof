@@ -16,6 +16,9 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.util.StringConverter;
+import net.objectof.actof.common.icons.ActofIcons;
+import net.objectof.actof.common.icons.Icon;
+import net.objectof.actof.common.icons.Size;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.ILeafNode;
 import net.objectof.actof.widgets.KeyValuePane;
 import net.objectof.model.impl.IMoment;
@@ -37,7 +40,7 @@ public class MomentCard extends LeafCard {
         minute = new TimeSpinner(0, 59);
         second = new TimeSpinner(0, 59);
 
-        reset = new Button("Reset");
+        reset = new Button("Reset", ActofIcons.getIconView(Icon.VIEW_REFRESH, Size.BUTTON));
         reset.getStyleClass().add("tool-bar-button");
         reset.setPadding(new Insets(6));
         reset.setOnAction(event -> {
