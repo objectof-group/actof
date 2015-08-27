@@ -521,11 +521,6 @@ public class SchemaViewController extends AbstractLoadedDisplay {
         return "SchemaSpy";
     }
 
-    @Override
-    public void onShowDisplay() throws Exception {
-
-    }
-
 }
 
 class StringStringConverter extends StringConverter<String> {

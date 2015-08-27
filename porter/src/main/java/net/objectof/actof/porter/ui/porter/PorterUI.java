@@ -20,7 +20,6 @@ public class PorterUI extends Application {
         primaryStage.setTitle("ObjectOf Porter");
         primaryStage.show();
 
-        porterController.onShowDisplay();
     }
 
     public static void main(String[] args) {

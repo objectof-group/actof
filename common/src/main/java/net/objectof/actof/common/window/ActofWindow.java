@@ -23,6 +23,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import net.objectof.actof.common.component.display.Display;
 import net.objectof.actof.common.component.display.Panel;
@@ -85,12 +86,20 @@ public class ActofWindow implements Titled, FXNoded, FXLoaded, DelayedConstruct,
     }
 
     @Override
+    public void setTitle(String title) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
     public void construct() throws Exception {
         panels.setStyle("-fx-open-tab-animation: NONE; -fx-close-tab-animation: NONE;");
         SplitPane.setResizableWithParent(panel, false);
         actionsButton.setGraphic(ActofIcons.getCustomIcon(ActofWindow.class, "icons/menu.png"));
         actionsButton.getStyleClass().add("tool-bar-button");
         toolbar.getChildren().clear();
+
+        getDisplayStage().showingProperty().addListener(o -> fixTabBar());
 
     }
 
@@ -111,14 +120,6 @@ public class ActofWindow implements Titled, FXNoded, FXLoaded, DelayedConstruct,
 
         displayPanel.getChildren().clear();
         displayPanel.getChildren().add(display.getFXNode());
-        try {
-            if (getDisplayStage().isShowing()) {
-                display.onShowDisplay();
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private void layoutActions() {
@@ -136,6 +137,14 @@ public class ActofWindow implements Titled, FXNoded, FXLoaded, DelayedConstruct,
             actionsButton.getItems().add(item);
         }
 
+    }
+
+    private void fixTabBar() {
+        final StackPane header = (StackPane) panels.lookup(".tab-header-area");
+        if (header != null) {
+            if (panels.getTabs().size() == 1) header.setPrefHeight(0);
+            else header.setPrefHeight(-1);
+        }
     }
 
     private void layoutToolbars() {
@@ -199,8 +208,9 @@ public class ActofWindow implements Titled, FXNoded, FXLoaded, DelayedConstruct,
             for (Panel p : toAdd) {
                 panels.getTabs().add(panelTabs.get(p));
             }
-
         }
+
+        fixTabBar();
 
     }
 
@@ -247,14 +257,6 @@ public class ActofWindow implements Titled, FXNoded, FXLoaded, DelayedConstruct,
         Scene scene = new Scene((Parent) getFXNode());
         getDisplayStage().setScene(scene);
         getDisplayStage().show();
-        if (display != null) {
-            try {
-                display.onShowDisplay();
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
     }
 
 }

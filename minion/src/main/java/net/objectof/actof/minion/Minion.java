@@ -145,9 +145,6 @@ public class Minion extends Application implements Display, Editor {
     public void construct() throws Exception {}
 
     @Override
-    public void onShowDisplay() throws Exception {}
-
-    @Override
     public ObservableList<Node> getToolbars() {
         return FXCollections.emptyObservableList();
     }
@@ -171,5 +168,8 @@ public class Minion extends Application implements Display, Editor {
     public ObservableList<Resource> getResources() {
         return FXCollections.emptyObservableList();
     }
+
+    @Override
+    public void setTitle(String title) {}
 
 }

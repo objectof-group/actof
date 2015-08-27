@@ -2,11 +2,16 @@ package net.objectof.actof.ide;
 
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
+import java.util.stream.Collectors;
 
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
@@ -20,6 +25,7 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import net.objectof.actof.common.component.display.Display;
 import net.objectof.actof.common.component.display.Panel;
@@ -29,8 +35,10 @@ import net.objectof.actof.common.component.editor.Editor;
 import net.objectof.actof.common.component.editor.ResourceEditor;
 import net.objectof.actof.common.component.resource.Action;
 import net.objectof.actof.common.component.resource.Resource;
+import net.objectof.actof.common.util.ActofSerialize;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.ide.resource.ProjectResource;
+import net.objectof.actof.ide.resource.SerializableResource;
 import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.actof.repospy.resource.RepositoryResource;
 import net.objectof.actof.schemaspy.SchemaSpyController;
@@ -66,9 +74,48 @@ public class ActofIDEController extends AbstractLoadedDisplay implements Editor 
         setStage(stage);
     }
 
-    public void onProjectOpen() {}
+    public void onProjectOpen()
+            throws FileNotFoundException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        FileChooser chooser = new FileChooser();
+        File file = chooser.showOpenDialog(getDisplayStage());
+        if (file == null) { return; }
 
-    public void onProjectSave() {}
+        Scanner s = new Scanner(file);
+        s.useDelimiter("\\Z");
+        String contents = s.next();
+
+        List<Object> objList = (List<Object>) ActofSerialize.deserialize(contents);
+
+        getResources().clear();
+        for (Object o : objList) {
+            SerializableResource sr = ActofSerialize.convertObject(o, SerializableResource.class);
+            Class<?> cls = getClass().forName(sr.cls);
+            Resource res = (Resource) cls.newInstance();
+            res.setTitle(sr.title);
+            res.fromSerializableForm(sr.map);
+            getResources().add(res);
+        }
+
+    }
+
+    public void onProjectSave() throws IOException {
+
+        FileChooser chooser = new FileChooser();
+        File file = chooser.showSaveDialog(getDisplayStage());
+        if (file == null) { return; }
+
+        List<Object> serializedResources = getResources().stream()
+                .map(r -> new SerializableResource(r.getTitle(), r.getClass().getCanonicalName(),
+                        r.toSerializableForm()))
+                .collect(Collectors.toList());
+
+        String serialized = ActofSerialize.serialize(serializedResources);
+
+        Writer writer = new FileWriter(file, false);
+        writer.write(serialized);
+        writer.close();
+
+    }
 
     private void createTab(Resource res) throws Exception {
 
@@ -88,7 +135,6 @@ public class ActofIDEController extends AbstractLoadedDisplay implements Editor 
         tabs.getTabs().add(tab);
         tabs.getSelectionModel().select(tab);
 
-        display.onShowDisplay();
     }
 
     private Tab getTab(Resource res) throws Exception {

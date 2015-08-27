@@ -13,6 +13,7 @@ import net.objectof.actof.common.controller.change.IChangeController;
 
 public abstract class AbstractEditor implements Editor {
 
+    private String title;
     private Stage displayStage;
     private ChangeController changeBus = new IChangeController();
 
@@ -47,6 +48,16 @@ public abstract class AbstractEditor implements Editor {
     @Override
     public ObservableList<Resource> getResources() {
         return resources;
+    }
+
+    @Override
+    public String getTitle() {
+        return title;
+    }
+
+    @Override
+    public void setTitle(String title) {
+        this.title = title;
     }
 
 }

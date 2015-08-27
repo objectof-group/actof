@@ -2,6 +2,8 @@ package net.objectof.actof.schemaspy.resource;
 
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.objectof.actof.common.component.editor.ResourceEditor;
 import net.objectof.actof.common.component.resource.impl.AbstractResource;
@@ -33,6 +35,19 @@ public class SchemaFileResource extends AbstractResource {
     @Override
     public String toString() {
         return getTitle();
+    }
+
+    @Override
+    public Map<String, Object> toSerializableForm() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("file", schemaFile.getAbsolutePath());
+        return map;
+    }
+
+    @Override
+    public void fromSerializableForm(Map<String, Object> data) {
+        String filename = data.get("file").toString();
+        schemaFile = new File(filename);
     }
 
 }

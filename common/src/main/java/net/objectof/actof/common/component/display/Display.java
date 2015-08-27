@@ -16,12 +16,4 @@ public interface Display extends Titled, FXNoded, StageAware, ChangeBusAware, De
 
     ObservableList<Panel> getPanels();
 
-    /**
-     * To be called after the component has been shown on screen for the first
-     * time.
-     * 
-     * @throws Exception
-     */
-    default void onShowDisplay() throws Exception {};
-
 }

@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
+import org.eclipse.jetty.webapp.WebAppContext;
+
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Accordion;
@@ -30,6 +32,7 @@ import javafx.stage.FileChooser;
 import net.objectof.actof.common.controller.IActofUIController;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.controller.config.ActofEnv;
+import net.objectof.actof.common.util.ActofSerialize;
 import net.objectof.actof.common.util.ActofUtil;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.minion.Settings;
@@ -40,8 +43,6 @@ import net.objectof.actof.minion.components.classpath.change.ClasspathChange;
 import net.objectof.actof.minion.components.spring.change.HandlerChange;
 import net.objectof.actof.widgets.StatusLight;
 import net.objectof.actof.widgets.StatusLight.Status;
-
-import org.eclipse.jetty.webapp.WebAppContext;
 
 
 public class SpringController extends IActofUIController {
@@ -136,8 +137,11 @@ public class SpringController extends IActofUIController {
             String beansdef = scanner.useDelimiter("\\Z").next();
             scanner.close();
             beansdef = beansdef.replace("[[[rootbean]]]", rootBean.getText());
-            String configFiles = beanList.getItems().stream().map(bean -> "WEB-INF/" + bean.getFile().getName())
-                    .reduce((acc, file) -> acc + "," + file).get();
+            String configFiles = beanList.getItems()
+                    .stream()
+                    .map(bean -> "WEB-INF/" + bean.getFile().getName())
+                    .reduce((acc, file) -> acc + "," + file)
+                    .get();
             beansdef = beansdef.replace("[[[configfiles]]]", configFiles);
 
             // write web.xml
@@ -228,7 +232,7 @@ public class SpringController extends IActofUIController {
         if (file == null) { return; }
 
         String json = ActofUtil.readFile(file);
-        MinionProject project = ActofUtil.deserialize(json, MinionProject.class);
+        MinionProject project = ActofSerialize.deserialize(json, MinionProject.class);
         beanList.getItems().setAll(project.beanDefs);
         // TODO: Fix this
         // jarList.getItems().setAll(project.jars.stream().map(s -> new
@@ -250,7 +254,7 @@ public class SpringController extends IActofUIController {
         // project.jars = jarList.getItems().stream().map(f ->
         // f.toString()).collect(Collectors.toList());
         project.rootbean = rootBean.getText();
-        String json = ActofUtil.serialize(project);
+        String json = ActofSerialize.serialize(project);
         FileWriter writer = new FileWriter(file);
         writer.write(json);
         writer.close();

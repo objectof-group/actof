@@ -35,7 +35,7 @@ import net.objectof.actof.common.component.display.impl.AbstractLoadedDisplay;
 import net.objectof.actof.common.icons.ActofIcons;
 import net.objectof.actof.common.icons.Icon;
 import net.objectof.actof.common.icons.Size;
-import net.objectof.actof.common.util.ActofUtil;
+import net.objectof.actof.common.util.ActofSerialize;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.connectorui.ConnectorChooserButton;
 import net.objectof.actof.porter.Porter;
@@ -216,11 +216,11 @@ public class PorterUIController extends AbstractLoadedDisplay {
         String data = s.next();
         s.close();
 
-        fromMap((Map<String, Object>) ActofUtil.deserialize(data));
+        fromMap((Map<String, Object>) ActofSerialize.deserialize(data));
     }
 
     public void onSaveProject() throws IOException {
-        String data = ActofUtil.serialize(toMap());
+        String data = ActofSerialize.serialize(toMap());
 
         File target = fileChooser.showSaveDialog(null);
         if (target == null) { return; }
@@ -286,17 +286,16 @@ public class PorterUIController extends AbstractLoadedDisplay {
     }
 
     @Override
-    public void construct() throws Exception {}
-
-    @Override
-    public void onShowDisplay() throws Exception {
-        // hide title component of packages titledpane
-        packagesPane.applyCss();
-        Pane title = (Pane) packagesPane.lookup(".title");
-        title.setVisible(false);
-        title.setMinHeight(0);
-        title.setPrefHeight(0);
-        title.setMaxHeight(0);
+    public void construct() throws Exception {
+        getDisplayStage().showingProperty().addListener(event -> {
+            // hide title component of packages titledpane
+            packagesPane.applyCss();
+            Pane title = (Pane) packagesPane.lookup(".title");
+            title.setVisible(false);
+            title.setMinHeight(0);
+            title.setPrefHeight(0);
+            title.setMaxHeight(0);
+        });
     }
 
 }

@@ -63,8 +63,6 @@ public class RepoSpyController extends AbstractEditor implements ResourceEditor 
         history = new HistoryController(getChangeBus());
         navigator = NavigatorController.load();
         navigator.setChangeBus(getChangeBus());
-
-        navigator.setChangeBus(getChangeBus());
         navigator.setDisplayStage(getDisplayStage());
         navigator.setTopController(this);
         navigator.construct();

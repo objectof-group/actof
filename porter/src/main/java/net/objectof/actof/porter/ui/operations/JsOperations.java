@@ -13,7 +13,7 @@ import java.util.Scanner;
 import java.util.stream.Collectors;
 
 import net.objectof.actof.common.controller.config.ActofEnv;
-import net.objectof.actof.common.util.ActofUtil;
+import net.objectof.actof.common.util.ActofSerialize;
 import net.objectof.actof.porter.ui.action.JsAction;
 import net.objectof.actof.porter.ui.condition.Condition;
 import net.objectof.actof.porter.ui.condition.Condition.Input;
@@ -36,12 +36,12 @@ public class JsOperations {
             s = s.useDelimiter("\\Z");
             String contents = s.next();
             s.close();
-            List<Map<Object, Object>> data = (List<Map<Object, Object>>) ActofUtil.deserialize(contents);
+            List<Map<Object, Object>> data = (List<Map<Object, Object>>) ActofSerialize.deserialize(contents);
 
             for (Map<Object, Object> map : data) {
                 Operation op = new Operation();
-                JsAction action = ActofUtil.convert(map.get("action"), JsAction.class);
-                Condition condition = ActofUtil.convert(map.get("condition"), Condition.class);
+                JsAction action = ActofSerialize.convertObject(map.get("action"), JsAction.class);
+                Condition condition = ActofSerialize.convertObject(map.get("condition"), Condition.class);
                 op.setAction(action);
                 op.setCondition(condition);
                 ops.add(op);
@@ -54,7 +54,7 @@ public class JsOperations {
     public static void save(List<Operation> operations) throws IOException {
         operations = operations.stream().filter(op -> op.getAction() instanceof JsAction).collect(Collectors.toList());
         Writer w = new FileWriter(getOperationsFile());
-        w.write(ActofUtil.serialize(operations));
+        w.write(ActofSerialize.serialize(operations));
         w.close();
     }
 

@@ -13,6 +13,7 @@ import net.objectof.actof.common.controller.change.IChangeController;
 
 public abstract class AbstractDisplay implements Display {
 
+    private String title;
     private Stage displayStage;
     private ChangeController changeBus = new IChangeController();
 
@@ -43,6 +44,16 @@ public abstract class AbstractDisplay implements Display {
     @Override
     public ObservableList<Panel> getPanels() {
         return panels;
+    }
+
+    @Override
+    public String getTitle() {
+        return title;
+    }
+
+    @Override
+    public void setTitle(String title) {
+        this.title = title;
     }
 
 }

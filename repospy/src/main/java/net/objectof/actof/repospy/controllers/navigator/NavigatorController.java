@@ -201,6 +201,18 @@ public class NavigatorController extends AbstractLoadedDisplay {
         shortcut(searchBox, () -> showSearchBar(false), KeyCode.ESCAPE);
         shortcut(records, this::recordCopy, KeyCode.C, KeyCombination.CONTROL_DOWN);
 
+        getDisplayStage().showingProperty().addListener(event -> {
+            // hide title component of search titledpane. We need to force it to
+            // apply css before we can look up the title component
+            searchPane.applyCss();
+            Pane title = (Pane) searchPane.lookup(".title");
+            System.out.println(title);
+            title.setVisible(false);
+            title.setMinHeight(0);
+            title.setPrefHeight(0);
+            title.setMaxHeight(0);
+        });
+
     }
 
     private void onResourceSelect(ResourceSelectedChange change) {
@@ -462,20 +474,6 @@ public class NavigatorController extends AbstractLoadedDisplay {
     @Override
     public String getTitle() {
         return "RepoSpy";
-    }
-
-    @Override
-    public void onShowDisplay() throws Exception {
-
-        // hide title component of search titledpane. We need to force it to
-        // apply css before we can look up the title component
-        searchPane.applyCss();
-        Pane title = (Pane) searchPane.lookup(".title");
-        title.setVisible(false);
-        title.setMinHeight(0);
-        title.setPrefHeight(0);
-        title.setMaxHeight(0);
-
     }
 
 }

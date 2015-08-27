@@ -12,6 +12,8 @@ public abstract class AbstractResource implements Resource {
 
     protected ResourceEditor editor;
 
+    protected String title;
+
     private ObservableList<Action> actions = FXCollections.observableArrayList();
 
     @Override
@@ -29,6 +31,15 @@ public abstract class AbstractResource implements Resource {
 
     public String toString() {
         return getTitle();
+    }
+
+    @Override
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
 }

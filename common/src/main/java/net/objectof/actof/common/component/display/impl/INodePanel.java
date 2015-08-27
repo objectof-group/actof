@@ -36,4 +36,9 @@ public class INodePanel implements Panel {
         return timestamp;
     }
 
+    @Override
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
 }

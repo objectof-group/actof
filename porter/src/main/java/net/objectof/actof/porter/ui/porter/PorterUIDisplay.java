@@ -28,9 +28,4 @@ public class PorterUIDisplay extends AbstractDisplay {
         controller.construct();
     }
 
-    @Override
-    public void onShowDisplay() throws Exception {
-        controller.onShowDisplay();
-    }
-
 }

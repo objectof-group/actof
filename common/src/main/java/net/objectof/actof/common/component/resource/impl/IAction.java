@@ -44,4 +44,9 @@ public class IAction implements Action {
         return action.get();
     }
 
+    @Override
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
 }
