@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane prefHeight="480" prefWidth="1013" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.porter.ui.porter.PorterUIController">
+<BorderPane fx:id="topPane" prefHeight="480" prefWidth="1013" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.porter.ui.porter.PorterUIController">
    <center>
       <ScrollPane fx:id="ruleScroller" fitToWidth="true" hbarPolicy="NEVER" styleClass="rules" BorderPane.alignment="CENTER">
          <content>

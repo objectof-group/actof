@@ -201,16 +201,17 @@ public class NavigatorController extends AbstractLoadedDisplay {
         shortcut(searchBox, () -> showSearchBar(false), KeyCode.ESCAPE);
         shortcut(records, this::recordCopy, KeyCode.C, KeyCombination.CONTROL_DOWN);
 
-        getDisplayStage().showingProperty().addListener(event -> {
+        searchPane.sceneProperty().addListener(event -> {
             // hide title component of search titledpane. We need to force it to
             // apply css before we can look up the title component
             searchPane.applyCss();
             Pane title = (Pane) searchPane.lookup(".title");
-            System.out.println(title);
-            title.setVisible(false);
-            title.setMinHeight(0);
-            title.setPrefHeight(0);
-            title.setMaxHeight(0);
+            if (title != null) {
+                title.setVisible(false);
+                title.setMinHeight(0);
+                title.setPrefHeight(0);
+                title.setMaxHeight(0);
+            }
         });
 
     }

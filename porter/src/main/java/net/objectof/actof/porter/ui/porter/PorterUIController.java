@@ -26,6 +26,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
@@ -51,20 +52,17 @@ import net.objectof.model.Package;
 public class PorterUIController extends AbstractLoadedDisplay {
 
     @FXML
+    public BorderPane topPane;
+    @FXML
     public HBox portingControls, buttonBox;
-
     @FXML
     private ScrollPane ruleScroller;
-
     @FXML
     private Button newButton, openButton, saveButton, opButton, portButton;
-
     @FXML
     private HBox toolbar, connectorsBox;
-
     @FXML
     private TitledPane packagesPane;
-
     @FXML
     private ChoiceBox<String> modeChoice;
 
@@ -287,7 +285,8 @@ public class PorterUIController extends AbstractLoadedDisplay {
 
     @Override
     public void construct() throws Exception {
-        getDisplayStage().showingProperty().addListener(event -> {
+
+        topPane.sceneProperty().addListener(event -> {
             // hide title component of packages titledpane
             packagesPane.applyCss();
             Pane title = (Pane) packagesPane.lookup(".title");

@@ -99,7 +99,7 @@ public class ActofWindow implements Titled, FXNoded, FXLoaded, DelayedConstruct,
         actionsButton.getStyleClass().add("tool-bar-button");
         toolbar.getChildren().clear();
 
-        getDisplayStage().showingProperty().addListener(o -> fixTabBar());
+        topPane.sceneProperty().addListener(event -> fixTabBar());
 
     }
 
