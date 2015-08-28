@@ -233,7 +233,7 @@ public class ActofWindow implements Titled, FXRegion, FXLoaded, DelayedConstruct
 
         updateDisplay();
 
-        // getDisplayStage().sizeToScene();
+        getDisplayStage().sizeToScene();
 
     }
 
