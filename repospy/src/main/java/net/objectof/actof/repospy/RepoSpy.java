@@ -16,17 +16,9 @@ public class RepoSpy extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        ActofWindow window = ActofWindow.load();
-        window.setDisplayStage(primaryStage);
-        window.construct();
-        window.getFXRegion().setPrefHeight(470);
-        window.getFXRegion().setPrefWidth(1000);
-
         RepoSpyController spy = new RepoSpyController();
         spy.setDisplayStage(primaryStage);
         spy.construct();
-
-        window.setEditor(spy);
 
         primaryStage.setTitle(spy.getTitle());
         primaryStage.getIcons().add(new Image(RepoSpy.class.getResource("RepoSpy.png").openStream()));
@@ -46,6 +38,8 @@ public class RepoSpy extends Application {
 
         });
 
+        ActofWindow window = new ActofWindow(primaryStage, spy);
+        window.setSize(1000, 470);
         window.show();
 
     }

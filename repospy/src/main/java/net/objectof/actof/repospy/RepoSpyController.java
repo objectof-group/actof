@@ -7,19 +7,18 @@ import java.util.Optional;
 import javafx.collections.ListChangeListener;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.objectof.actof.common.component.display.Display;
 import net.objectof.actof.common.component.editor.ResourceEditor;
 import net.objectof.actof.common.component.editor.impl.AbstractEditor;
+import net.objectof.actof.common.component.editor.impl.EditorPanel;
 import net.objectof.actof.common.component.resource.Action;
 import net.objectof.actof.common.component.resource.Resource;
 import net.objectof.actof.common.component.resource.impl.IAction;
 import net.objectof.actof.common.controller.repository.RepositoryController;
 import net.objectof.actof.common.controller.repository.RepositoryReplacedChange;
 import net.objectof.actof.common.controller.search.SearchController;
-import net.objectof.actof.common.window.ActofWindow;
 import net.objectof.actof.connectorui.ConnectionController;
 import net.objectof.actof.repospy.controllers.history.HistoryController;
 import net.objectof.actof.repospy.controllers.navigator.NavigatorController;
@@ -76,42 +75,46 @@ public class RepoSpyController extends AbstractEditor implements ResourceEditor 
         getActions().add(loadAction);
         getActions().add(restAction);
 
-        getResources().addListener(new ListChangeListener<Resource>() {
-
-            @Override
-            public void onChanged(ListChangeListener.Change<? extends Resource> c) {
-                while (c.next()) {
-                    if (!c.wasAdded()) { return; }
-                    for (Resource r : c.getAddedSubList()) {
-                        try {
-                            ResourceEditor e = r.getEditor();
-                            if (e == null) {
-                                continue;
-                            }
-
-                            e.setChangeBus(getChangeBus());
-
-                            Stage stage = new Stage(StageStyle.UTILITY);
-                            stage.initOwner(getDisplayStage());
-                            stage.initModality(Modality.NONE);
-                            ActofWindow window = ActofWindow.load();
-                            window.setDisplayStage(stage);
-                            window.construct();
-
-                            e.setDisplayStage(stage);
-                            e.construct();
-
-                            e.setResource(r);
-                            e.loadResource();
-
-                            window.show();
-                            window.setEditor(e);
-
-                        }
-                        catch (Exception e1) {
-                            e1.printStackTrace();
+        getResources().addListener((ListChangeListener.Change<? extends Resource> c) -> {
+            while (c.next()) {
+                if (!c.wasAdded()) { return; }
+                for (Resource r : c.getAddedSubList()) {
+                    try {
+                        ResourceEditor e = r.getEditor();
+                        if (e == null) {
                             continue;
                         }
+
+                        e.setChangeBus(getChangeBus());
+
+                        // Stage stage = new Stage(StageStyle.UTILITY);
+                        // stage.initOwner(getDisplayStage());
+                        // stage.initModality(Modality.NONE);
+                        // ActofWindow window = ActofWindow.load();
+                        // window.setDisplayStage(stage);
+                        // window.construct();
+
+                        // e.setDisplayStage(stage);
+                        // e.construct();
+
+                        // e.setResource(r);
+                        // e.loadResource();
+
+                        // window.show();
+                        // window.setEditor(e);
+
+                        e.setDisplayStage(getDisplayStage());
+                        e.construct();
+                        e.setResource(r);
+                        e.loadResource();
+
+                        EditorPanel panel = new EditorPanel(e);
+                        getDisplay().getPanels().add(panel);
+
+                    }
+                    catch (Exception e1) {
+                        e1.printStackTrace();
+                        continue;
                     }
                 }
             }

@@ -18,10 +18,6 @@ public class SchemaSpy extends Application {
 
         primaryStage.setTitle("ObjectOf SchemaSpy");
 
-        ActofWindow window = ActofWindow.load();
-        window.setDisplayStage(primaryStage);
-        window.construct();
-
         SchemaSpyController spy = new SchemaSpyController();
         spy.setDisplayStage(primaryStage);
         spy.construct();
@@ -43,7 +39,8 @@ public class SchemaSpy extends Application {
 
         });
 
-        window.setEditor(spy);
+        ActofWindow window = new ActofWindow(primaryStage, spy);
+        window.setSize(1000, 470);
         window.show();
 
     }

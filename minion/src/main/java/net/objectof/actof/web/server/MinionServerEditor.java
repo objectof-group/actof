@@ -93,7 +93,7 @@ public class MinionServerEditor extends AbstractLoadedDisplay implements Resourc
 
     @Override
     public String getTitle() {
-        return "Repository REST Server";
+        return "Server";
     }
 
     @Override
