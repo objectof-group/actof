@@ -8,9 +8,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import net.objectof.actof.common.component.display.Display;
 import net.objectof.actof.common.component.display.Panel;
@@ -30,7 +30,7 @@ public class Minion extends Application implements Display, Editor {
 
     public static final String SETTING_PATH = "net.objectof.actof.minion.path";
 
-    private Parent displayNode;
+    private Region displayNode;
     private boolean top = true;;
 
     private MinionController window;
@@ -87,7 +87,7 @@ public class Minion extends Application implements Display, Editor {
         server = MinionServerEditor.load();
         server.setChangeBus(getChangeBus());
         server.construct();
-        window.addTab(server.getFXNode(), "Server");
+        window.addTab(server.getFXRegion(), "Server");
     }
 
     private void springTab() throws IOException {
@@ -117,7 +117,7 @@ public class Minion extends Application implements Display, Editor {
     }
 
     @Override
-    public Node getFXNode() {
+    public Region getFXRegion() {
         return displayNode;
     }
 

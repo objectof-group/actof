@@ -6,6 +6,7 @@ import java.net.URL;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.layout.Region;
 import net.objectof.actof.common.component.feature.FXLoaded;
 import net.objectof.actof.common.controller.ActofUIController;
 import net.objectof.actof.common.controller.change.ChangeController;
@@ -38,10 +39,10 @@ public class FXUtil {
 
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(url);
-        Node node = loader.load();
+        Region node = loader.load();
 
         FXLoaded controller = loader.getController();
-        controller.setFXNode(node);
+        controller.setFXRegion(node);
 
         controller.onFXLoad();
 

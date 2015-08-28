@@ -19,6 +19,8 @@ public class RepoSpy extends Application {
         ActofWindow window = ActofWindow.load();
         window.setDisplayStage(primaryStage);
         window.construct();
+        window.getFXRegion().setPrefHeight(470);
+        window.getFXRegion().setPrefWidth(500);
 
         RepoSpyController spy = new RepoSpyController();
         spy.setDisplayStage(primaryStage);

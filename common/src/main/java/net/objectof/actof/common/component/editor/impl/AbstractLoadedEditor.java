@@ -1,23 +1,23 @@
 package net.objectof.actof.common.component.editor.impl;
 
 
-import javafx.scene.Node;
+import javafx.scene.layout.Region;
 import net.objectof.actof.common.component.feature.FXLoaded;
-import net.objectof.actof.common.component.feature.FXNoded;
+import net.objectof.actof.common.component.feature.FXRegion;
 
 
-public abstract class AbstractLoadedEditor extends AbstractEditor implements FXNoded, FXLoaded {
+public abstract class AbstractLoadedEditor extends AbstractEditor implements FXRegion, FXLoaded {
 
-    private Node node;
+    private Region region;
 
     @Override
-    public void setFXNode(Node node) {
-        this.node = node;
+    public void setFXRegion(Region region) {
+        this.region = region;
     }
 
     @Override
-    public Node getFXNode() {
-        return node;
+    public Region getFXRegion() {
+        return region;
     }
 
 }

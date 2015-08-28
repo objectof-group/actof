@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<BorderPane fx:id="topPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.common.window.ActofWindow">
+<BorderPane fx:id="topPane" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.common.window.ActofWindow">
    <top>
       <HBox fx:id="toolbar" styleClass="tool-bar" BorderPane.alignment="CENTER">
          <children>
@@ -17,17 +17,18 @@
                 <MenuItem mnemonicParsing="false" text="Action 2" />
               </items>
             </MenuButton>
-         </children></HBox>
+         </children>
+      </HBox>
    </top>
    <center>
       <SplitPane fx:id="splitPane" dividerPositions="0.25" BorderPane.alignment="CENTER">
          <items>
-            <BorderPane fx:id="panel" minWidth="200.0" prefHeight="450.0" prefWidth="200.0">
+            <BorderPane fx:id="panel" minWidth="200.0" prefWidth="200.0">
                <center>
-                  <TabPane fx:id="panels" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER" />
+                  <TabPane fx:id="panels" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER" />
                </center>
             </BorderPane>
-            <AnchorPane fx:id="displayPanel" />
+            <BorderPane fx:id="displayPanel" />
          </items></SplitPane>
    </center>
 </BorderPane>

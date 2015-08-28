@@ -14,7 +14,7 @@ public class PorterUI extends Application {
     public void start(Stage primaryStage) throws Exception {
         PorterUIController porterController = PorterUIController.load();
 
-        Scene scene = new Scene((Parent) porterController.getFXNode());
+        Scene scene = new Scene((Parent) porterController.getFXRegion());
         primaryStage.getIcons().add(new Image(PorterUI.class.getResource("Porter.png").openStream()));
         primaryStage.setScene(scene);
         primaryStage.setTitle("ObjectOf Porter");

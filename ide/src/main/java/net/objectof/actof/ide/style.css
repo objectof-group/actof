@@ -2,29 +2,6 @@
 	-fx-padding: 5px;
 }
 
-.entities {
-	-fx-background-insets: 0, 1;
-    -fx-padding: 0 1 0 0;
-}
-
-.entities:focused {
-    -fx-background-color: -fx-box-border, -fx-control-inner-background;
-	-fx-background-insets: 0, 1;
-    -fx-padding: 0 1 0 0;
-}
-
-
-.values {
-    -fx-background-insets: 0 0 0 0, 0 0 0 1;
-    -fx-padding: 0 0 0 1;
-}
-
-.values:focused {
-    -fx-background-color: -fx-box-border, -fx-control-inner-background;
-    -fx-background-insets: 0 0 0 0, 0 0 0 1;
-    -fx-padding: 0 0 0 1;
-}
-
 
 .split-pane {
     -fx-background-insets: 0, 0;
@@ -52,16 +29,6 @@
 }
 
 
-
-.entities > .title {
-	-fx-background-insets: -1 0 0 -1, 0 1 1 0, 1 2 2 1;
-    -fx-background-radius: 0 0 0 0, 0 0 0 0, 0 0 0 0;
-}
-
-.entities > *.content {
-    -fx-border-insets: -1 0 -1 -1;
-}
-
 .menu-button > .arrow-button > .arrow {
     -fx-background-color: transparent, transparent;
     -fx-background-insets: 0 0 0 0, 0;
@@ -86,11 +53,3 @@
 	-fx-padding: 0px;
 }
 
-.search-pane {
-	-fx-background: derive(-fx-base,-5%);
-	-fx-border-insets: -1 -1 -1 -1;
-}
-
-.search-pane > *.content {
-    -fx-border-insets: -1 -1 0 -1;
-}

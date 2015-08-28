@@ -1,12 +1,12 @@
 package net.objectof.actof.common.component.feature;
 
 
-import javafx.scene.Node;
+import javafx.scene.layout.Region;
 
 
 public interface FXLoaded {
 
-    void setFXNode(Node node);
+    void setFXRegion(Region region);
 
     /**
      * To be called after the display has been loaded and the node set.

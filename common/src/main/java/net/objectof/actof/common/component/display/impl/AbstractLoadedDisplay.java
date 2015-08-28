@@ -1,21 +1,21 @@
 package net.objectof.actof.common.component.display.impl;
 
 
-import javafx.scene.Node;
+import javafx.scene.layout.Region;
 import net.objectof.actof.common.component.feature.FXLoaded;
 
 
 public abstract class AbstractLoadedDisplay extends AbstractDisplay implements FXLoaded {
 
-    private Node displayNode;
+    private Region displayNode;
 
     @Override
-    public Node getFXNode() {
+    public Region getFXRegion() {
         return displayNode;
     }
 
     @Override
-    public void setFXNode(Node node) {
+    public void setFXRegion(Region node) {
         this.displayNode = node;
     }
 

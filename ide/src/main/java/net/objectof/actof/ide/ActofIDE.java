@@ -15,6 +15,8 @@ public class ActofIDE extends Application {
         ActofWindow window = ActofWindow.load();
         window.setDisplayStage(primaryStage);
         window.construct();
+        window.getFXRegion().setPrefHeight(470);
+        window.getFXRegion().setPrefWidth(1000);
 
         Editor ide = ActofIDEController.load();
         ide.setDisplayStage(primaryStage);

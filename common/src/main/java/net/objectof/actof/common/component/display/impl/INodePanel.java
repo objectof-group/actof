@@ -1,18 +1,18 @@
 package net.objectof.actof.common.component.display.impl;
 
 
-import javafx.scene.Node;
+import javafx.scene.layout.Region;
 import net.objectof.actof.common.component.display.Panel;
 
 
 public class INodePanel implements Panel {
 
-    private Node node;
+    private Region region;
     private String title;
     private long timestamp = System.currentTimeMillis();
 
-    public INodePanel(String title, Node node) {
-        this.node = node;
+    public INodePanel(String title, Region region) {
+        this.region = region;
         this.title = title;
     }
 
@@ -22,8 +22,8 @@ public class INodePanel implements Panel {
     }
 
     @Override
-    public Node getFXNode() {
-        return node;
+    public Region getFXRegion() {
+        return region;
     }
 
     @Override

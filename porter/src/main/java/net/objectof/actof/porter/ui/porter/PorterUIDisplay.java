@@ -1,7 +1,7 @@
 package net.objectof.actof.porter.ui.porter;
 
 
-import javafx.scene.Node;
+import javafx.scene.layout.Region;
 import net.objectof.actof.common.component.display.Display;
 import net.objectof.actof.common.component.display.impl.AbstractDisplay;
 
@@ -11,8 +11,8 @@ public class PorterUIDisplay extends AbstractDisplay {
     private Display controller;
 
     @Override
-    public Node getFXNode() {
-        return controller.getFXNode();
+    public Region getFXRegion() {
+        return controller.getFXRegion();
     }
 
     @Override

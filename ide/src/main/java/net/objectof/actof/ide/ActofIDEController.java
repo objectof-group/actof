@@ -130,7 +130,7 @@ public class ActofIDEController extends AbstractLoadedDisplay implements Editor 
 
         Display display = editor.getDisplay();
 
-        Tab tab = new Tab(res.getTitle(), display.getFXNode());
+        Tab tab = new Tab(res.getTitle(), display.getFXRegion());
         resourceTabs.put(res, tab);
         tabs.getTabs().add(tab);
         tabs.getSelectionModel().select(tab);
@@ -205,7 +205,7 @@ public class ActofIDEController extends AbstractLoadedDisplay implements Editor 
         });
 
         top.getChildren().removeAll(toolbar, tree, tabs);
-        setFXNode(tabs);
+        setFXRegion(tabs);
 
         permanentToolbars.addAll(toolbar.getChildren());
         getToolbars().addAll(permanentToolbars);

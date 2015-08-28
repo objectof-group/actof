@@ -10,6 +10,10 @@ import net.objectof.actof.common.component.resource.impl.AbstractResource;
 
 public class ProjectResource extends AbstractResource {
 
+    public ProjectResource() {
+        setTitle("Project");
+    }
+
     @Override
     public ResourceEditor createEditor() throws Exception {
         return null;
