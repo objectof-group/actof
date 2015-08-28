@@ -1,4 +1,4 @@
-package net.objectof.actof.minion.components.server.change;
+package net.objectof.actof.web.server.change;
 
 
 import net.objectof.actof.common.controller.change.Change;

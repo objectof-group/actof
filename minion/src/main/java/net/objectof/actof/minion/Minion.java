@@ -22,8 +22,8 @@ import net.objectof.actof.common.controller.change.IChangeController;
 import net.objectof.actof.minion.components.classpath.ClasspathController;
 import net.objectof.actof.minion.components.handlers.HandlerController;
 import net.objectof.actof.minion.components.rest.RestController;
-import net.objectof.actof.minion.components.server.MinionServerEditor;
 import net.objectof.actof.minion.components.spring.SpringController;
+import net.objectof.actof.web.server.MinionServerEditor;
 
 
 public class Minion extends Application implements Display, Editor {

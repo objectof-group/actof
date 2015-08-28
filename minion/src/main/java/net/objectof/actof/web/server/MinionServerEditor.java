@@ -1,4 +1,4 @@
-package net.objectof.actof.minion.components.server;
+package net.objectof.actof.web.server;
 
 
 import java.io.IOException;
