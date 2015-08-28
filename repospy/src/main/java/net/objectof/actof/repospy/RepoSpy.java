@@ -20,7 +20,7 @@ public class RepoSpy extends Application {
         window.setDisplayStage(primaryStage);
         window.construct();
         window.getFXRegion().setPrefHeight(470);
-        window.getFXRegion().setPrefWidth(500);
+        window.getFXRegion().setPrefWidth(1000);
 
         RepoSpyController spy = new RepoSpyController();
         spy.setDisplayStage(primaryStage);
