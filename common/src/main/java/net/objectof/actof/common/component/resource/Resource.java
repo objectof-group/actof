@@ -10,7 +10,7 @@ import net.objectof.actof.common.component.feature.Titled;
 
 public interface Resource extends Titled {
 
-    ResourceEditor getEditor() throws Exception;
+    ResourceEditor getEditor();
 
     ResourceEditor createEditor() throws Exception;
 

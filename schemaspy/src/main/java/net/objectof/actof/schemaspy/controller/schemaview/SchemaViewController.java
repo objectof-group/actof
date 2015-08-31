@@ -47,7 +47,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import net.objectof.actof.common.component.display.impl.AbstractLoadedDisplay;
-import net.objectof.actof.common.component.display.impl.INodePanel;
+import net.objectof.actof.common.component.display.impl.IPanel;
 import net.objectof.actof.common.controller.change.Change;
 import net.objectof.actof.common.controller.schema.AttributeEntry;
 import net.objectof.actof.common.controller.schema.SchemaController;
@@ -194,7 +194,7 @@ public class SchemaViewController extends AbstractLoadedDisplay {
             schema.setPackagePath(pkgpath.getText());
         });
 
-        getPanels().add(new INodePanel("Schema Entries", sidebar));
+        getPanels().add(new IPanel("Schema Entries", sidebar));
         toppane.getChildren().remove(sidebar);
         toppane.getChildren().remove(toolbar);
         if (schemaspy.isForResource()) {

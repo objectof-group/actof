@@ -180,6 +180,7 @@ public class EditorPane implements Titled, FXRegion, FXLoaded, DelayedConstruct,
 
             // go through all panels for the display. If we haven't created a
             // tab for it yet, do so now.
+            panels.getTabs().clear();
             for (Panel panel : display.getPanels()) {
                 Tab tab;
                 if (panelTabs.containsKey(panel)) {
@@ -189,16 +190,9 @@ public class EditorPane implements Titled, FXRegion, FXLoaded, DelayedConstruct,
                     tab = new Tab(panel.getTitle(), panel.getFXRegion());
                     panelTabs.put(panel, tab);
                 }
+                panels.getTabs().add(tab);
             }
 
-            for (Panel p : toRemove) {
-                Tab t = panelTabs.remove(p);
-                panels.getTabs().remove(t);
-            }
-
-            for (Panel p : toAdd) {
-                panels.getTabs().add(panelTabs.get(p));
-            }
         }
 
         fixTabBar();

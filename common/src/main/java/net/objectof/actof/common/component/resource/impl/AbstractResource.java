@@ -17,9 +17,14 @@ public abstract class AbstractResource implements Resource {
     private ObservableList<Action> actions = FXCollections.observableArrayList();
 
     @Override
-    public ResourceEditor getEditor() throws Exception {
+    public ResourceEditor getEditor() {
         if (editor == null) {
-            editor = createEditor();
+            try {
+                editor = createEditor();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return editor;
     }

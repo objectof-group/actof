@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
@@ -18,11 +19,15 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
@@ -30,7 +35,7 @@ import javafx.stage.Stage;
 import net.objectof.actof.common.component.display.Display;
 import net.objectof.actof.common.component.display.Panel;
 import net.objectof.actof.common.component.display.impl.AbstractLoadedDisplay;
-import net.objectof.actof.common.component.display.impl.INodePanel;
+import net.objectof.actof.common.component.display.impl.IPanel;
 import net.objectof.actof.common.component.editor.Editor;
 import net.objectof.actof.common.component.editor.ResourceEditor;
 import net.objectof.actof.common.component.resource.Action;
@@ -180,6 +185,32 @@ public class ActofIDEController extends AbstractLoadedDisplay implements Editor 
 
         });
 
+        tree.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+            if (e.getButton() != MouseButton.SECONDARY) { return; }
+
+            Resource res = tree.getSelectionModel().getSelectedItem().getValue();
+            List<Action> actions = new ArrayList<>();
+            actions.addAll(res.getActions());
+            Editor editor = res.getEditor();
+            if (editor != null) {
+                actions.addAll(editor.getActions());
+            }
+            if (actions.size() == 0) { return; }
+
+            ContextMenu menu = new ContextMenu();
+            for (Action action : actions) {
+                MenuItem item = new MenuItem(action.getTitle());
+                item.setOnAction(event -> {
+                    Optional<Resource> result = action.perform();
+                    if (!result.isPresent()) { return; }
+                    getResources().add(result.get());
+                });
+                menu.getItems().add(item);
+            }
+            tree.setContextMenu(menu);
+            // menu.show(tree, e.getScreenX(), e.getScreenY());
+        });
+
         tabs.getSelectionModel().selectedItemProperty().addListener((obs, o, n) -> {
             try {
                 if (n == null) { return; }
@@ -211,7 +242,7 @@ public class ActofIDEController extends AbstractLoadedDisplay implements Editor 
         getToolbars().addAll(permanentToolbars);
         toolbar.getChildren().clear();
 
-        permanentPanels.add(new INodePanel("Project", tree));
+        permanentPanels.add(new IPanel("Project", tree));
         getPanels().addAll(permanentPanels);
 
     }
