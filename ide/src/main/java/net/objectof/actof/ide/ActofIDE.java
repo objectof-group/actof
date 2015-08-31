@@ -17,6 +17,7 @@ public class ActofIDE extends Application {
         ide.construct();
 
         ActofWindow window = new ActofWindow(primaryStage, ide);
+        window.getEditorPane().setAlwaysShowTabs(true);
         window.setSize(1000, 470);
         window.show();
 

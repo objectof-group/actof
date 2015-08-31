@@ -10,6 +10,8 @@ import java.util.Optional;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
@@ -17,12 +19,11 @@ import javafx.scene.control.Separator;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import net.objectof.actof.common.component.display.Display;
 import net.objectof.actof.common.component.display.Panel;
 import net.objectof.actof.common.component.editor.Editor;
 import net.objectof.actof.common.component.feature.DelayedConstruct;
@@ -55,7 +56,7 @@ public class EditorPane implements Titled, FXRegion, FXLoaded, DelayedConstruct,
     private Stage stage = new Stage();
 
     private Editor editor;
-    private Display display;
+    private BooleanProperty alwaysShowTabs = new SimpleBooleanProperty(false);
 
     private InvalidationListener panelsListener = (Observable change) -> layoutPanels();
     private InvalidationListener toolbarsListener = (Observable change) -> layoutToolbars();
@@ -94,8 +95,12 @@ public class EditorPane implements Titled, FXRegion, FXLoaded, DelayedConstruct,
         actionsButton.getStyleClass().add("tool-bar-button");
         toolbar.getChildren().clear();
 
-        topPane.sceneProperty().addListener(event -> fixTabBar());
+        // topPane.sceneProperty().addListener(event -> fixTabBar());
+        alwaysShowTabs.addListener(e -> layoutPanels());
+    }
 
+    public void setTabClosingPolicy(TabClosingPolicy policy) {
+        panels.setTabClosingPolicy(policy);
     }
 
     private void updateDisplay() {
@@ -108,7 +113,7 @@ public class EditorPane implements Titled, FXRegion, FXLoaded, DelayedConstruct,
     }
 
     private void layoutDisplay() {
-        displayPanel.setCenter(display.getFXRegion());
+        displayPanel.setCenter(editor.getDisplay().getFXRegion());
     }
 
     private void layoutActions() {
@@ -128,23 +133,21 @@ public class EditorPane implements Titled, FXRegion, FXLoaded, DelayedConstruct,
 
     }
 
-    private void fixTabBar() {
-        final StackPane header = (StackPane) panels.lookup(".tab-header-area");
-        if (header != null) {
-            if (panels.getTabs().size() == 1) header.setPrefHeight(0);
-            else header.setPrefHeight(-1);
-        }
-    }
+    // private void fixTabBar() {
+    // final StackPane header = (StackPane) panels.lookup(".tab-header-area");
+    // if (header != null) {
+    // if (panels.getTabs().size() == 1) header.setPrefHeight(0);
+    // else header.setPrefHeight(-1);
+    // }
+    // }
 
     private void layoutToolbars() {
 
         toolbar.getChildren().clear();
 
         if (editor == null) { return; }
-        Display display = editor.getDisplay();
-        if (display == null) { return; }
 
-        toolbar.getChildren().addAll(display.getToolbars());
+        toolbar.getChildren().addAll(editor.getToolbars());
         if (editor.getActions().size() > 0) {
             toolbar.getChildren().addAll(separator, actionsButton);
         }
@@ -158,36 +161,40 @@ public class EditorPane implements Titled, FXRegion, FXLoaded, DelayedConstruct,
             return;
         }
 
-        if (display.getPanels().size() == 0) {
+        if (editor.getPanels().size() == 0) {
             topPane.setCenter(displayPanel);
             panels.getTabs().clear();
             panelTabs.clear();
-        } else if (display.getPanels().size() == 1) {
+        } else if ((editor.getPanels().size() == 1) && (!alwaysShowTabs.get())) {
             topPane.setCenter(splitPane);
-            Panel p = display.getPanels().get(0);
+            Panel p = editor.getPanels().get(0);
             panel.setCenter(p.getFXRegion());
         } else {
             topPane.setCenter(splitPane);
             panel.setCenter(panels);
 
             // in panels but not tabs
-            List<Panel> toAdd = new ArrayList<>(display.getPanels());
+            List<Panel> toAdd = new ArrayList<>(editor.getPanels());
             toAdd.removeAll(panelTabs.keySet());
 
             // in tabs but not in panels
             List<Panel> toRemove = new ArrayList<>(panelTabs.keySet());
-            toRemove.removeAll(display.getPanels());
+            toRemove.removeAll(editor.getPanels());
 
             // go through all panels for the display. If we haven't created a
             // tab for it yet, do so now.
             panels.getTabs().clear();
-            for (Panel panel : display.getPanels()) {
+            for (Panel panel : editor.getPanels()) {
                 Tab tab;
                 if (panelTabs.containsKey(panel)) {
                     tab = panelTabs.get(panel);
                     tab.setContent(panel.getFXRegion());
                 } else {
                     tab = new Tab(panel.getTitle(), panel.getFXRegion());
+                    tab.closableProperty().bind(panel.dismissibleProperty());
+                    tab.setOnClosed(event -> {
+                        panel.dismiss();
+                    });
                     panelTabs.put(panel, tab);
                 }
                 panels.getTabs().add(tab);
@@ -195,7 +202,7 @@ public class EditorPane implements Titled, FXRegion, FXLoaded, DelayedConstruct,
 
         }
 
-        fixTabBar();
+        // fixTabBar();
 
     }
 
@@ -207,20 +214,15 @@ public class EditorPane implements Titled, FXRegion, FXLoaded, DelayedConstruct,
 
         if (this.editor != null) {
             this.editor.getActions().removeListener(actionsListener);
-        }
-
-        if (display != null) {
-            display.getPanels().removeListener(panelsListener);
-            display.getToolbars().removeListener(toolbarsListener);
+            this.editor.getPanels().removeListener(panelsListener);
+            this.editor.getToolbars().removeListener(toolbarsListener);
         }
 
         this.editor = editor;
         if (editor == null) { return; }
         this.editor.getActions().addListener(actionsListener);
-
-        this.display = editor.getDisplay();
-        display.getPanels().addListener(panelsListener);
-        display.getToolbars().addListener(toolbarsListener);
+        this.editor.getPanels().addListener(panelsListener);
+        this.editor.getToolbars().addListener(toolbarsListener);
 
         updateDisplay();
 
@@ -236,6 +238,18 @@ public class EditorPane implements Titled, FXRegion, FXLoaded, DelayedConstruct,
     @Override
     public Region getFXRegion() {
         return windowNode;
+    }
+
+    public final BooleanProperty alwaysShowTabsProperty() {
+        return this.alwaysShowTabs;
+    }
+
+    public final boolean isAlwaysShowTabs() {
+        return this.alwaysShowTabsProperty().get();
+    }
+
+    public final void setAlwaysShowTabs(final boolean alwaysShowTabs) {
+        this.alwaysShowTabsProperty().set(alwaysShowTabs);
     }
 
 }

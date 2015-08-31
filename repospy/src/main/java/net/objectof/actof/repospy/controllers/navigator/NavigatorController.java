@@ -45,6 +45,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.util.Callback;
+import net.objectof.actof.common.component.display.Panel;
 import net.objectof.actof.common.component.display.impl.AbstractLoadedDisplay;
 import net.objectof.actof.common.component.display.impl.IPanel;
 import net.objectof.actof.common.controller.change.Change;
@@ -115,10 +116,12 @@ public class NavigatorController extends AbstractLoadedDisplay {
 
         toolbar.getChildren().removeAll(repoToolbar, breadcrumbToolbar, optionsToolbar);
         headerBox.getChildren().remove(toolbar);
-        getToolbars().add(repoToolbar);
-        getToolbars().add(breadcrumbToolbar);
-        getToolbars().add(optionsToolbar);
-        getPanels().add(new IPanel("Entities", sidebar));
+        repospy.getToolbars().add(repoToolbar);
+        repospy.getToolbars().add(breadcrumbToolbar);
+        repospy.getToolbars().add(optionsToolbar);
+        Panel entitiesPanel = new IPanel("Entities", sidebar);
+        entitiesPanel.setDismissible(false);
+        repospy.getPanels().add(entitiesPanel);
         toppane.getChildren().remove(sidebar);
         if (repospy.isForResource()) {
             repoToolbar.getChildren().remove(connect);

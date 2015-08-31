@@ -6,6 +6,7 @@ import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
 
 import javafx.application.Application;
+import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import net.objectof.actof.common.window.ActofWindow;
@@ -40,6 +41,7 @@ public class RepoSpy extends Application {
 
         ActofWindow window = new ActofWindow(primaryStage, spy);
         window.setSize(1000, 470);
+        window.getEditorPane().setTabClosingPolicy(TabClosingPolicy.ALL_TABS);
         window.show();
 
     }

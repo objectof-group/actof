@@ -1,9 +1,13 @@
 package net.objectof.actof.common.component.editor.impl;
 
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.stage.Stage;
+import net.objectof.actof.common.component.display.Panel;
 import net.objectof.actof.common.component.editor.Editor;
 import net.objectof.actof.common.component.resource.Action;
 import net.objectof.actof.common.component.resource.Resource;
@@ -17,8 +21,13 @@ public abstract class AbstractEditor implements Editor {
     private Stage displayStage;
     private ChangeController changeBus = new IChangeController();
 
+    private BooleanProperty dismissible = new SimpleBooleanProperty(true);
+    private BooleanProperty dismissed = new SimpleBooleanProperty(false);
+
     private ObservableList<Action> actions = FXCollections.observableArrayList();
     private ObservableList<Resource> resources = FXCollections.observableArrayList();
+    private ObservableList<Node> toolbars = FXCollections.observableArrayList();
+    private ObservableList<Panel> panels = FXCollections.observableArrayList();
 
     @Override
     public ChangeController getChangeBus() {
@@ -51,6 +60,16 @@ public abstract class AbstractEditor implements Editor {
     }
 
     @Override
+    public ObservableList<Node> getToolbars() {
+        return toolbars;
+    }
+
+    @Override
+    public ObservableList<Panel> getPanels() {
+        return panels;
+    }
+
+    @Override
     public String getTitle() {
         return title;
     }
@@ -58,6 +77,16 @@ public abstract class AbstractEditor implements Editor {
     @Override
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    @Override
+    public BooleanProperty dismissibleProperty() {
+        return dismissible;
+    }
+
+    @Override
+    public BooleanProperty dismissedProperty() {
+        return dismissed;
     }
 
 }

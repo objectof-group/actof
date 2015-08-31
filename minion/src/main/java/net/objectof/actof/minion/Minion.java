@@ -4,6 +4,7 @@ package net.objectof.actof.minion;
 import java.io.IOException;
 
 import javafx.application.Application;
+import javafx.beans.property.BooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
@@ -171,5 +172,15 @@ public class Minion extends Application implements Display, Editor {
 
     @Override
     public void setTitle(String title) {}
+
+    @Override
+    public BooleanProperty dismissibleProperty() {
+        return null;
+    }
+
+    @Override
+    public BooleanProperty dismissedProperty() {
+        return null;
+    }
 
 }

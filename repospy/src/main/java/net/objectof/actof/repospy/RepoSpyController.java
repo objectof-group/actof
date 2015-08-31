@@ -86,30 +86,15 @@ public class RepoSpyController extends AbstractEditor implements ResourceEditor 
                         }
 
                         e.setChangeBus(getChangeBus());
-
-                        // Stage stage = new Stage(StageStyle.UTILITY);
-                        // stage.initOwner(getDisplayStage());
-                        // stage.initModality(Modality.NONE);
-                        // ActofWindow window = ActofWindow.load();
-                        // window.setDisplayStage(stage);
-                        // window.construct();
-
-                        // e.setDisplayStage(stage);
-                        // e.construct();
-
-                        // e.setResource(r);
-                        // e.loadResource();
-
-                        // window.show();
-                        // window.setEditor(e);
-
                         e.setDisplayStage(getDisplayStage());
                         e.construct();
                         e.setResource(r);
                         e.loadResource();
-
                         EditorPanel panel = new EditorPanel(e);
-                        getDisplay().getPanels().add(panel);
+                        getPanels().add(panel);
+
+                        panel.dismissedProperty().addListener(e2 -> getPanels().remove(panel));
+                        e.dismissedProperty().addListener(e2 -> getResources().remove(r));
 
                     }
                     catch (Exception e1) {

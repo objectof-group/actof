@@ -15,8 +15,6 @@ import java.util.Scanner;
 import java.util.stream.Collectors;
 
 import javafx.beans.Observable;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
@@ -34,10 +32,10 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import net.objectof.actof.common.component.display.Display;
 import net.objectof.actof.common.component.display.Panel;
-import net.objectof.actof.common.component.display.impl.AbstractLoadedDisplay;
 import net.objectof.actof.common.component.display.impl.IPanel;
 import net.objectof.actof.common.component.editor.Editor;
 import net.objectof.actof.common.component.editor.ResourceEditor;
+import net.objectof.actof.common.component.editor.impl.AbstractLoadedEditor;
 import net.objectof.actof.common.component.resource.Action;
 import net.objectof.actof.common.component.resource.Resource;
 import net.objectof.actof.common.util.ActofSerialize;
@@ -51,7 +49,7 @@ import net.objectof.actof.schemaspy.resource.SchemaFileResource;
 import net.objectof.connector.Connector;
 
 
-public class ActofIDEController extends AbstractLoadedDisplay implements Editor {
+public class ActofIDEController extends AbstractLoadedEditor implements Display {
 
     @FXML
     private BorderPane top;
@@ -63,9 +61,6 @@ public class ActofIDEController extends AbstractLoadedDisplay implements Editor 
     private HBox toolbar;
     @FXML
     private MenuButton newResource;
-
-    private ObservableList<Action> actions = FXCollections.observableArrayList();
-    private ObservableList<Resource> resources = FXCollections.observableArrayList();
 
     private Map<Resource, Tab> resourceTabs = new HashMap<>();
     private List<Node> permanentToolbars = new ArrayList<>();
@@ -217,16 +212,15 @@ public class ActofIDEController extends AbstractLoadedDisplay implements Editor 
                 Resource res = getResource(n);
 
                 Editor editor = res.getEditor();
-                actions.setAll(editor.getActions());
+                getActions().setAll(editor.getActions());
 
-                Display display = editor.getDisplay();
                 getToolbars().clear();
                 getToolbars().addAll(permanentToolbars);
-                getToolbars().addAll(display.getToolbars());
+                getToolbars().addAll(editor.getToolbars());
 
                 List<Panel> panelList = new ArrayList<>();
                 panelList.addAll(permanentPanels);
-                panelList.addAll(display.getPanels());
+                panelList.addAll(editor.getPanels());
                 getPanels().setAll(panelList);
 
             }
@@ -242,7 +236,9 @@ public class ActofIDEController extends AbstractLoadedDisplay implements Editor 
         getToolbars().addAll(permanentToolbars);
         toolbar.getChildren().clear();
 
-        permanentPanels.add(new IPanel("Project", tree));
+        Panel projectPanel = new IPanel("Project", tree);
+        projectPanel.setDismissible(false);
+        permanentPanels.add(projectPanel);
         getPanels().addAll(permanentPanels);
 
     }
@@ -275,15 +271,6 @@ public class ActofIDEController extends AbstractLoadedDisplay implements Editor 
     @Override
     public Display getDisplay() {
         return this;
-    }
-
-    @Override
-    public ObservableList<Action> getActions() {
-        return actions;
-    }
-
-    public ObservableList<Resource> getResources() {
-        return resources;
     }
 
 }

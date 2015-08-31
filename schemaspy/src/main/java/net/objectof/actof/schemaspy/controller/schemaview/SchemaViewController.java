@@ -194,13 +194,13 @@ public class SchemaViewController extends AbstractLoadedDisplay {
             schema.setPackagePath(pkgpath.getText());
         });
 
-        getPanels().add(new IPanel("Schema Entries", sidebar));
+        schemaspy.getPanels().add(new IPanel("Schema Entries", sidebar));
         toppane.getChildren().remove(sidebar);
         toppane.getChildren().remove(toolbar);
         if (schemaspy.isForResource()) {
             toolbar.getChildren().removeAll(open, newschema);
         }
-        getToolbars().addAll(toolbar.getChildren());
+        schemaspy.getToolbars().addAll(toolbar.getChildren());
 
         getChangeBus().listen(this::onSchemaChange);
 

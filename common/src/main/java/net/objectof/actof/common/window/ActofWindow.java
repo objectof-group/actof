@@ -38,4 +38,8 @@ public class ActofWindow {
         editorPane.getFXRegion().setPrefWidth(width);
     }
 
+    public EditorPane getEditorPane() {
+        return editorPane;
+    }
+
 }

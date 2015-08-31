@@ -1,12 +1,10 @@
 package net.objectof.actof.common.component.display.impl;
 
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.Node;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.stage.Stage;
 import net.objectof.actof.common.component.display.Display;
-import net.objectof.actof.common.component.display.Panel;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.controller.change.IChangeController;
 
@@ -17,8 +15,8 @@ public abstract class AbstractDisplay implements Display {
     private Stage displayStage;
     private ChangeController changeBus = new IChangeController();
 
-    private ObservableList<Node> toolbars = FXCollections.observableArrayList();
-    private ObservableList<Panel> panels = FXCollections.observableArrayList();
+    private BooleanProperty dismissible = new SimpleBooleanProperty(true);
+    private BooleanProperty dismissed = new SimpleBooleanProperty(false);
 
     public Stage getDisplayStage() {
         return displayStage;
@@ -37,16 +35,6 @@ public abstract class AbstractDisplay implements Display {
     }
 
     @Override
-    public ObservableList<Node> getToolbars() {
-        return toolbars;
-    }
-
-    @Override
-    public ObservableList<Panel> getPanels() {
-        return panels;
-    }
-
-    @Override
     public String getTitle() {
         return title;
     }
@@ -54,6 +42,16 @@ public abstract class AbstractDisplay implements Display {
     @Override
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    @Override
+    public BooleanProperty dismissibleProperty() {
+        return dismissible;
+    }
+
+    @Override
+    public BooleanProperty dismissedProperty() {
+        return dismissed;
     }
 
 }

@@ -6,8 +6,6 @@ import java.io.IOException;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -17,16 +15,15 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import net.objectof.actof.common.component.display.Display;
-import net.objectof.actof.common.component.display.impl.AbstractLoadedDisplay;
 import net.objectof.actof.common.component.editor.ResourceEditor;
-import net.objectof.actof.common.component.resource.Action;
+import net.objectof.actof.common.component.editor.impl.AbstractLoadedEditor;
 import net.objectof.actof.common.component.resource.Resource;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.minion.components.spring.change.HandlerChange;
 import net.objectof.actof.widgets.StatusLight;
 
 
-public class MinionServerEditor extends AbstractLoadedDisplay implements ResourceEditor {
+public class MinionServerEditor extends AbstractLoadedEditor implements ResourceEditor, Display {
 
     @FXML
     private BorderPane topPane;
@@ -59,9 +56,7 @@ public class MinionServerEditor extends AbstractLoadedDisplay implements Resourc
     @Override
     public void construct() throws Exception {
 
-        getDisplayStage().setOnCloseRequest(event -> {
-            minionServer.stop();
-        });
+        getDisplayStage().setOnCloseRequest(event -> stop());
 
         getChangeBus().listen(HandlerChange.class, minionServer::setHandler);
 
@@ -71,6 +66,8 @@ public class MinionServerEditor extends AbstractLoadedDisplay implements Resourc
         getToolbars().addAll(toolbar.getChildren());
         toolbar.getChildren().clear();
         topbox.getChildren().remove(toolbar);
+
+        dismissedProperty().addListener(event -> stop());
 
     }
 
@@ -94,16 +91,6 @@ public class MinionServerEditor extends AbstractLoadedDisplay implements Resourc
     @Override
     public String getTitle() {
         return "Server";
-    }
-
-    @Override
-    public ObservableList<Action> getActions() {
-        return FXCollections.emptyObservableList();
-    }
-
-    @Override
-    public ObservableList<Resource> getResources() {
-        return FXCollections.emptyObservableList();
     }
 
     @Override
