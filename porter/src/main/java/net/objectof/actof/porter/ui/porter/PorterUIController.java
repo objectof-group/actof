@@ -26,17 +26,17 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
-import net.objectof.actof.common.controller.IActofUIController;
-import net.objectof.actof.common.controller.change.ChangeController;
+import net.objectof.actof.common.component.display.impl.AbstractLoadedDisplay;
 import net.objectof.actof.common.icons.ActofIcons;
-import net.objectof.actof.common.icons.ActofIcons.Icon;
-import net.objectof.actof.common.icons.ActofIcons.Size;
-import net.objectof.actof.common.util.ActofUtil;
+import net.objectof.actof.common.icons.Icon;
+import net.objectof.actof.common.icons.Size;
+import net.objectof.actof.common.util.ActofSerialize;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.connectorui.ConnectorChooserButton;
 import net.objectof.actof.porter.Porter;
@@ -49,23 +49,20 @@ import net.objectof.actof.widgets.masonry.MasonryPane.Layout;
 import net.objectof.model.Package;
 
 
-public class PorterUIController extends IActofUIController {
+public class PorterUIController extends AbstractLoadedDisplay {
 
+    @FXML
+    public BorderPane topPane;
     @FXML
     public HBox portingControls, buttonBox;
-
     @FXML
     private ScrollPane ruleScroller;
-
     @FXML
     private Button newButton, openButton, saveButton, opButton, portButton;
-
     @FXML
     private HBox toolbar, connectorsBox;
-
     @FXML
     private TitledPane packagesPane;
-
     @FXML
     private ChoiceBox<String> modeChoice;
 
@@ -78,6 +75,7 @@ public class PorterUIController extends IActofUIController {
     private ConnectorChooserButton connection1, connection2;
 
     private FileChooser fileChooser = new FileChooser();
+
     {
         fileChooser.setTitle("Open Project");
         ExtensionFilter filter = new ExtensionFilter("Porter Project Files", "*.ppf");
@@ -86,13 +84,13 @@ public class PorterUIController extends IActofUIController {
     }
 
     @Override
-    public void ready() {
+    public void onFXLoad() {
 
         toolbar.getChildren().remove(portButton);
 
-        newButton.setGraphic(ActofIcons.getCustomIcon(getClass(), "../icons/document-new.png"));
-        openButton.setGraphic(ActofIcons.getCustomIcon(getClass(), "../icons/document-open.png"));
-        saveButton.setGraphic(ActofIcons.getCustomIcon(getClass(), "../icons/document-save.png"));
+        newButton.setGraphic(ActofIcons.getIconView(Icon.DOCUMENT_NEW, Size.TOOLBAR));
+        openButton.setGraphic(ActofIcons.getIconView(Icon.DOCUMENT_OPEN, Size.TOOLBAR));
+        saveButton.setGraphic(ActofIcons.getIconView(Icon.DOCUMENT_SAVE, Size.TOOLBAR));
         opButton.setGraphic(ActofIcons.getCustomIcon(getClass(), "../icons/operations.png"));
 
         rulesPane = new MasonryPane(500, Layout.GRID);
@@ -160,12 +158,6 @@ public class PorterUIController extends IActofUIController {
         portButton.setText("Walk");
     }
 
-    @Override
-    protected void initialize() throws Exception {
-        // TODO Auto-generated method stub
-
-    }
-
     public void onPort() {
         if (isPortMode()) {
             doPort();
@@ -222,11 +214,11 @@ public class PorterUIController extends IActofUIController {
         String data = s.next();
         s.close();
 
-        fromMap((Map<String, Object>) ActofUtil.deserialize(data));
+        fromMap((Map<String, Object>) ActofSerialize.deserialize(data));
     }
 
     public void onSaveProject() throws IOException {
-        String data = ActofUtil.serialize(toMap());
+        String data = ActofSerialize.serialize(toMap());
 
         File target = fileChooser.showSaveDialog(null);
         if (target == null) { return; }
@@ -274,8 +266,8 @@ public class PorterUIController extends IActofUIController {
         rulesPane.getChildren().setAll(rules);
     }
 
-    public static PorterUIController load(ChangeController changes) throws IOException {
-        return FXUtil.load(PorterUIController.class, "PorterUI.fxml", changes);
+    public static PorterUIController load() throws IOException {
+        return FXUtil.loadFX(PorterUIController.class, "PorterUI.fxml");
     }
 
     public List<Rule> generateRules() {
@@ -286,15 +278,23 @@ public class PorterUIController extends IActofUIController {
         return rules;
     }
 
-    public void start() {
-        // hide title component of packages titledpane
-        Pane title = (Pane) packagesPane.lookup(".title");
-        if (title != null) {
+    @Override
+    public String getTitle() {
+        return "Porter";
+    }
+
+    @Override
+    public void construct() throws Exception {
+
+        topPane.sceneProperty().addListener(event -> {
+            // hide title component of packages titledpane
+            packagesPane.applyCss();
+            Pane title = (Pane) packagesPane.lookup(".title");
             title.setVisible(false);
             title.setMinHeight(0);
             title.setPrefHeight(0);
             title.setMaxHeight(0);
-        }
+        });
     }
 
 }

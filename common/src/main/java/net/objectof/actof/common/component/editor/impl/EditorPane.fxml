@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<BorderPane fx:id="topPane" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.common.component.editor.impl.EditorPane">
+   <top>
+      <HBox fx:id="toolbar" styleClass="tool-bar" BorderPane.alignment="CENTER">
+         <children>
+            <Separator fx:id="separator" visible="false" HBox.hgrow="SOMETIMES" />
+            <MenuButton fx:id="actionsButton" mnemonicParsing="false" styleClass="tool-bar-button">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Action 1" />
+                <MenuItem mnemonicParsing="false" text="Action 2" />
+              </items>
+            </MenuButton>
+         </children>
+      </HBox>
+   </top>
+   <center>
+      <SplitPane fx:id="splitPane" dividerPositions="0.25" BorderPane.alignment="CENTER">
+         <items>
+            <BorderPane fx:id="panel" minWidth="200.0" prefWidth="200.0">
+               <center>
+                  <TabPane fx:id="panels" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER" />
+               </center>
+            </BorderPane>
+            <BorderPane fx:id="displayPanel" />
+         </items></SplitPane>
+   </center>
+</BorderPane>

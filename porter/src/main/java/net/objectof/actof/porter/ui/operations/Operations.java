@@ -55,7 +55,7 @@ public class Operations {
                 new JavaAction().setMatcherAct(text -> Matchers.matchStereotype(text))));
         
         operations.add(new Operation(
-                new Condition(Stage.MATCH, "JavaScript", Input.FIELD, JS_MATCH),
+                new Condition(Stage.MATCH, "JavaScript", Input.CODE, JS_MATCH),
                 new JavaAction().setMatcherAct(text -> new IJsMatcher(text))));
 
 
@@ -172,8 +172,11 @@ public class Operations {
     }
 
     public static List<Condition> conditionsFor(Stage stage) {
-        return operations.stream().map(op -> op.getCondition()).filter(a -> a.getStage() == stage)
-                .sorted((a, b) -> a.getName().compareTo(b.getName())).collect(Collectors.toList());
+        return operations.stream()
+                .map(op -> op.getCondition())
+                .filter(a -> a.getStage() == stage)
+                .sorted((a, b) -> a.getName().compareTo(b.getName()))
+                .collect(Collectors.toList());
     }
 
     public static Operation forCondition(Condition condition) {

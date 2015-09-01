@@ -5,6 +5,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation.Builder;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Cookie;
+import javax.ws.rs.core.Response;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.adapter.JavaBeanObjectProperty;
 import javafx.beans.property.adapter.JavaBeanObjectPropertyBuilder;
@@ -25,26 +33,15 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.util.StringConverter;
-
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation.Builder;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Cookie;
-import javax.ws.rs.core.Response;
-
 import net.objectof.actof.common.controller.IActofUIController;
 import net.objectof.actof.common.controller.change.Change;
 import net.objectof.actof.common.controller.change.ChangeController;
+import net.objectof.actof.common.util.ActofSerialize;
 import net.objectof.actof.common.util.FXUtil;
-import net.objectof.actof.minion.components.server.change.ServerStartChange;
-import net.objectof.actof.minion.components.server.change.ServerStopChange;
+import net.objectof.actof.web.server.change.ServerStartChange;
+import net.objectof.actof.web.server.change.ServerStopChange;
 import net.objectof.actof.widgets.StatusLight;
 import net.objectof.actof.widgets.StatusLight.Status;
-import flexjson.JSONDeserializer;
-import flexjson.JSONException;
-import flexjson.JSONSerializer;
 
 
 public class RestController extends IActofUIController {
@@ -251,17 +248,8 @@ public class RestController extends IActofUIController {
     }
 
     private String prettyprint(String json) {
-        try {
-            Object o = new JSONDeserializer<Object>().deserialize(json);
-            return new JSONSerializer().exclude("*.class").prettyPrint(true).deepSerialize(o);
-        }
-        catch (JSONException e) {
-            return "";
-        }
-    }
-
-    public static <T> T deserialize(String json, Class<T> clazz) {
-        return new JSONDeserializer<T>().deserialize(json, clazz);
+        Object o = ActofSerialize.deserialize(json);
+        return ActofSerialize.serialize(o);
     }
 
     private void setPrefix(String prefix) {

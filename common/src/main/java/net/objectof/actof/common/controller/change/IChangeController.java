@@ -25,7 +25,6 @@ public class IChangeController implements ChangeController {
         listeners.add(l);
     }
 
-
     /**
      * @see eventful.IEventfulType#unlisten(eventful.EventfulTypeListener)
      */
@@ -41,7 +40,6 @@ public class IChangeController implements ChangeController {
     public synchronized void clear() {
         listeners.clear();
     }
-
 
     /**
      * @see eventful.IEventfulType#broadcast(T)

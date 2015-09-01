@@ -11,8 +11,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.icons.ActofIcons;
-import net.objectof.actof.common.icons.ActofIcons.Icon;
-import net.objectof.actof.common.icons.ActofIcons.Size;
+import net.objectof.actof.common.icons.Icon;
+import net.objectof.actof.common.icons.Size;
 import net.objectof.actof.common.util.RepoUtils;
 import net.objectof.actof.common.util.RepoUtils.PrintStyle;
 import net.objectof.actof.repospy.changes.EditingChange;
@@ -58,7 +58,7 @@ public class ReviewController extends VBox {
                 AnchorPane.setRightAnchor(desc, 0d);
                 desc = new AnchorPane(desc);
 
-                Button revert = new Button("", ActofIcons.getIconView(Icon.UNDO, Size.BUTTON));
+                Button revert = new Button("", ActofIcons.getIconView(Icon.EDIT_UNDO, Size.BUTTON));
                 revert.getStyleClass().add("tool-bar-button");
                 revert.setOnAction(event -> {
                     if (change instanceof FieldChange) {

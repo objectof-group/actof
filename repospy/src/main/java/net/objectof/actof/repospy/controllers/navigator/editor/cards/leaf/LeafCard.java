@@ -6,8 +6,8 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import net.objectof.actof.common.icons.ActofIcons;
-import net.objectof.actof.common.icons.ActofIcons.Icon;
-import net.objectof.actof.common.icons.ActofIcons.Size;
+import net.objectof.actof.common.icons.Icon;
+import net.objectof.actof.common.icons.Size;
 import net.objectof.actof.common.util.RepoUtils;
 import net.objectof.actof.repospy.changes.EditingChange;
 import net.objectof.actof.repospy.changes.FieldChange;
@@ -38,7 +38,7 @@ public abstract class LeafCard extends Card {
         Node desc = getDescription();
         desc = new AnchorPane(anchor(desc));
 
-        undo = new Button("", ActofIcons.getIconView(Icon.UNDO, Size.BUTTON));
+        undo = new Button("", ActofIcons.getIconView(Icon.EDIT_UNDO, Size.BUTTON));
         undo.getStyleClass().add("tool-bar-button");
         undo.setOnAction(action -> {
             undoable().undo();

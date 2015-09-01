@@ -11,6 +11,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.management.modelmbean.XMLParseException;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+
+import org.controlsfx.control.BreadCrumbBar;
+import org.controlsfx.control.PopOver;
+import org.controlsfx.control.PopOver.ArrowLocation;
+import org.controlsfx.control.action.Action;
+import org.controlsfx.dialog.Dialog;
+import org.controlsfx.dialog.Dialogs;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -18,28 +32,24 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TitledPane;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.control.cell.TextFieldTreeTableCell;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
-
-import javax.management.modelmbean.XMLParseException;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-
-import net.objectof.actof.common.controller.IActofUIController;
+import net.objectof.actof.common.component.display.impl.AbstractLoadedDisplay;
+import net.objectof.actof.common.component.display.impl.IPanel;
 import net.objectof.actof.common.controller.change.Change;
-import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.controller.schema.AttributeEntry;
 import net.objectof.actof.common.controller.schema.SchemaController;
 import net.objectof.actof.common.controller.schema.changes.AttributeCreationChange;
@@ -51,8 +61,8 @@ import net.objectof.actof.common.controller.schema.changes.SchemaReplacedChange;
 import net.objectof.actof.common.controller.schema.changes.SchemaStereotypeChange;
 import net.objectof.actof.common.controller.schema.schemaentry.SchemaEntry;
 import net.objectof.actof.common.icons.ActofIcons;
-import net.objectof.actof.common.icons.ActofIcons.Icon;
-import net.objectof.actof.common.icons.ActofIcons.Size;
+import net.objectof.actof.common.icons.Icon;
+import net.objectof.actof.common.icons.Size;
 import net.objectof.actof.common.util.AlphaNumericComparitor;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.repospy.RepoSpyController;
@@ -67,18 +77,11 @@ import net.objectof.actof.widgets.masonry.MasonryPane.Layout;
 import net.objectof.connector.Connector;
 import net.objectof.connector.Connector.Initialize;
 
-import org.controlsfx.control.BreadCrumbBar;
-import org.controlsfx.control.action.Action;
-import org.controlsfx.dialog.Dialog;
-import org.controlsfx.dialog.Dialogs;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
-
-public class SchemaViewController extends IActofUIController {
+public class SchemaViewController extends AbstractLoadedDisplay {
 
     @FXML
-    private Button open, save, create, generate;
+    private Button open, save, namespace, newschema;
 
     @FXML
     private TreeTableView<SchemaEntry> tree;
@@ -86,7 +89,16 @@ public class SchemaViewController extends IActofUIController {
     private TreeTableColumn<SchemaEntry, String> field;
     private BreadCrumbBar<SchemaEntry> breadcrumb;
     @FXML
-    private HBox breadcrumbBox;
+    private HBox breadcrumbBox, toolbar;
+    @FXML
+    private VBox sidebar;
+    private PopOver namespacePopover;
+
+    @FXML
+    private BorderPane toppane;
+
+    @FXML
+    private GridPane namespaceGrid;
 
     @FXML
     private ScrollPane cardscroller;
@@ -96,9 +108,6 @@ public class SchemaViewController extends IActofUIController {
 
     @FXML
     private TextField pkgdomain, pkgversion, pkgpath;
-
-    @FXML
-    private TitledPane namespacepane;
 
     SchemaSpyController schemaspy;
     Card addChildCard;
@@ -110,8 +119,13 @@ public class SchemaViewController extends IActofUIController {
     public File lastschemadir = null;
 
     @Override
-    @FXML
-    protected void initialize() throws SAXException, IOException, ParserConfigurationException, XMLParseException {
+    public void construct() throws SAXException, IOException, ParserConfigurationException, XMLParseException {
+
+        sidebar.getChildren().remove(namespaceGrid);
+        namespacePopover = new PopOver(namespaceGrid);
+        namespacePopover.setArrowLocation(ArrowLocation.TOP_CENTER);
+        namespacePopover.setHideOnEscape(true);
+        namespacePopover.setAutoHide(true);
 
         cardpane = new MasonryPane(0, Layout.ROUND_ROBIN);
         cardpane.setPadding(new Insets(12, 8, 12, 8));
@@ -163,6 +177,18 @@ public class SchemaViewController extends IActofUIController {
             entry.setName(name);
         });
 
+        tree.sceneProperty().addListener(event -> {
+            tree.applyCss();
+            System.out.println(tree.getChildrenUnmodifiable());
+            Pane title = (Pane) tree.lookup(".column-header-background");
+            if (title != null) {
+                title.setVisible(false);
+                title.setMinHeight(0);
+                title.setPrefHeight(0);
+                title.setMaxHeight(0);
+            }
+        });
+
         pkgdomain.setOnKeyReleased(evnet -> {
             if (schemaspy == null) { return; }
             SchemaController schema = schemaspy.getSchema();
@@ -181,15 +207,18 @@ public class SchemaViewController extends IActofUIController {
             schema.setPackagePath(pkgpath.getText());
         });
 
-    }
+        schemaspy.getPanels().add(new IPanel("Schema Entries", sidebar));
+        toppane.getChildren().remove(sidebar);
+        toppane.getChildren().remove(toolbar);
+        if (schemaspy.isForResource()) {
+            toolbar.getChildren().removeAll(open, newschema);
+        }
+        schemaspy.getToolbars().addAll(toolbar.getChildren());
 
-    @Override
-    public void ready() {
         getChangeBus().listen(this::onSchemaChange);
 
         getChangeBus().listen(change -> {
             change.when(SchemaReplacedChange.class, () -> modified = false);
-
             change.when(SchemaRemovalChange.class, () -> modified = true);
             change.when(SchemaInsertChange.class, () -> modified = true);
             change.when(SchemaStereotypeChange.class, () -> modified = true);
@@ -203,10 +232,17 @@ public class SchemaViewController extends IActofUIController {
 
         save.setDisable(true);
 
+        onNewSchema();
+
     }
 
-    public void setTopController(SchemaSpyController schemaspy) throws XMLParseException, SAXException, IOException,
-            ParserConfigurationException {
+    @Override
+    public void onFXLoad() {
+
+    }
+
+    public void setTopController(SchemaSpyController schemaspy)
+            throws XMLParseException, SAXException, IOException, ParserConfigurationException {
         this.schemaspy = schemaspy;
         onNewSchema();
     }
@@ -267,57 +303,58 @@ public class SchemaViewController extends IActofUIController {
         schemaspy.newSchema();
     }
 
-    public void onCreate() throws Exception {
-        Connector connect = schemaspy.showConnect();
-        if (connect == null) { return; }
-
+    public void onCreate() {
         try {
+            Connector connect = schemaspy.showConnect();
+            if (connect == null) { return; }
+
             Document schema = schemaspy.getSchema().getDocument();
             connect.createPackage(schema, Initialize.WHEN_EMPTY);
 
-            Action action = Dialogs.create().title("Repository Created")
-                    .masthead("This Repository can be viewed in RepoSpy").message("Open RepoSpy now?").showConfirm();
+            Action action = Dialogs.create()
+                    .title("Repository Created")
+                    .masthead("This Repository can be viewed in RepoSpy")
+                    .message("Open RepoSpy now?")
+                    .showConfirm();
 
             if (action == Dialog.ACTION_YES) {
-                RepoSpyController repospy = new RepoSpyController(new Stage());
-                repospy.initUI();
+                RepoSpyController repospy = new RepoSpyController();
+                repospy.setDisplayStage(new Stage());
+                repospy.construct();
                 repospy.connect(connect);
             }
 
         }
         catch (Exception e) {
-            Dialogs.create().title("Repository Creation Failed")
+            Dialogs.create()
+                    .title("Repository Creation Failed")
                     .message("SchemaSpy failed to create the repository. Please check the parameters and try again.")
                     .showException(e);
         }
 
     }
 
-    public void onGenerate() throws IOException, TransformerFactoryConfigurationError, TransformerException {
+    public void onGenerate() {
 
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Generate Jar File");
         ExtensionFilter filter = new ExtensionFilter("Jar Files", "*.jar");
         chooser.setSelectedExtensionFilter(filter);
-        File jarfile = chooser.showSaveDialog(schemaspy.primaryStage);
+        File jarfile = chooser.showSaveDialog(schemaspy.getDisplayStage());
         if (jarfile == null) { return; }
 
-        CodeGen.generate(schemaspy.getSchema(), jarfile);
+        try {
+            CodeGen.generate(schemaspy.getSchema(), jarfile);
+        }
+        catch (IOException | TransformerFactoryConfigurationError | TransformerException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void onOpen() throws FileNotFoundException, SAXException, IOException, ParserConfigurationException,
-            XMLParseException {
-        FileChooser chooser = new FileChooser();
-        chooser.setTitle("Open Schema File");
-        if (lastschemadir != null) {
-            chooser.setInitialDirectory(lastschemadir);
-        }
-        ExtensionFilter filter = new ExtensionFilter("Schema Files", "*.xml");
-        chooser.setSelectedExtensionFilter(filter);
-        File file = chooser.showOpenDialog(schemaspy.primaryStage);
-        if (file == null) { return; }
+    public void onOpen()
+            throws FileNotFoundException, SAXException, IOException, ParserConfigurationException, XMLParseException {
+        File file = SchemaSpyController.chooseSchemaFile(lastschemadir, schemaspy.getDisplayStage());
         lastschemadir = file.getParentFile();
-
         schemaspy.setSchema(file);
     }
 
@@ -329,7 +366,7 @@ public class SchemaViewController extends IActofUIController {
         }
         ExtensionFilter filter = new ExtensionFilter("Schema Files", "xml");
         chooser.setSelectedExtensionFilter(filter);
-        File file = chooser.showSaveDialog(schemaspy.primaryStage);
+        File file = chooser.showSaveDialog(schemaspy.getDisplayStage());
         if (file == null) { return; }
 
         lastschemadir = file.getParentFile();
@@ -341,6 +378,14 @@ public class SchemaViewController extends IActofUIController {
         writer.close();
     }
 
+    public void onNamespace() {
+        if (namespacePopover.isShowing()) {
+            namespacePopover.hide();
+        } else {
+            namespacePopover.show(namespace);
+        }
+    }
+
     private void addEntity(String name) {
         TreeItem<SchemaEntry> treeitem = tree.getSelectionModel().getSelectedItem();
         SchemaEntry entry = treeitem.getValue();
@@ -350,13 +395,10 @@ public class SchemaViewController extends IActofUIController {
     private void onSchemaReplace() {
         populateTree();
         save.setDisable(false);
-        create.setDisable(false);
 
         pkgdomain.setText(schemaspy.getSchema().getPackageDomain());
         pkgversion.setText(schemaspy.getSchema().getPackageVersion());
         pkgpath.setText(schemaspy.getSchema().getPackagePath());
-
-        namespacepane.setExpanded(true);
 
     }
 
@@ -485,8 +527,13 @@ public class SchemaViewController extends IActofUIController {
 
     }
 
-    public static SchemaViewController load(ChangeController changes) throws IOException {
-        return FXUtil.load(SchemaViewController.class, "SchemaView.fxml", changes);
+    public static SchemaViewController load() throws IOException {
+        return FXUtil.loadFX(SchemaViewController.class, "SchemaView.fxml");
+    }
+
+    @Override
+    public String getTitle() {
+        return "SchemaSpy";
     }
 
 }

@@ -11,6 +11,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
+import org.controlsfx.control.BreadCrumbBar;
+import org.controlsfx.control.textfield.CustomTextField;
+import org.controlsfx.dialog.Dialogs;
+
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -18,10 +22,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
@@ -43,14 +45,15 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.util.Callback;
-import net.objectof.actof.common.controller.IActofUIController;
+import net.objectof.actof.common.component.display.Panel;
+import net.objectof.actof.common.component.display.impl.AbstractLoadedDisplay;
+import net.objectof.actof.common.component.display.impl.IPanel;
 import net.objectof.actof.common.controller.change.Change;
-import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.controller.repository.RepositoryReplacedChange;
 import net.objectof.actof.common.controller.search.QueryChange;
 import net.objectof.actof.common.icons.ActofIcons;
-import net.objectof.actof.common.icons.ActofIcons.Icon;
-import net.objectof.actof.common.icons.ActofIcons.Size;
+import net.objectof.actof.common.icons.Icon;
+import net.objectof.actof.common.icons.Size;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.repospy.RepoSpyController;
 import net.objectof.actof.repospy.changes.EntityCreatedChange;
@@ -69,19 +72,15 @@ import net.objectof.model.Kind;
 import net.objectof.model.Resource;
 import net.objectof.model.Stereotype;
 
-import org.controlsfx.control.BreadCrumbBar;
-import org.controlsfx.control.textfield.CustomTextField;
-import org.controlsfx.dialog.Dialogs;
 
-
-public class NavigatorController extends IActofUIController {
+public class NavigatorController extends AbstractLoadedDisplay {
 
     @FXML
     private BorderPane toppane, fieldEditor;
     @FXML
-    private HBox breadcrumbBox, searchBox;
+    private HBox breadcrumbToolbar, repoToolbar, optionsToolbar, searchBox, toolbar;
     @FXML
-    private VBox sidebar;
+    private VBox sidebar, headerBox;
     @FXML
     private Node editorBox;
 
@@ -90,12 +89,6 @@ public class NavigatorController extends IActofUIController {
 
     @FXML
     private Button connect, commit, review, revert;
-    @FXML
-    private MenuItem dump, load;
-    @FXML
-    private CheckMenuItem menuItemSearch;
-    @FXML
-    private ImageView revert_image;
     @FXML
     private Tooltip revert_tooltip;
     @FXML
@@ -112,15 +105,118 @@ public class NavigatorController extends IActofUIController {
     private IRootNode rootNode;
 
     @Override
-    @FXML
-    protected void initialize() {}
-
-    @Override
-    public void ready() {
+    public void construct() {
         getChangeBus().listen(this::onChange);
         getChangeBus().listen(RepositoryReplacedChange.class, this::onRepositoryReplacedChange);
         getChangeBus().listen(QueryChange.class, this::onQueryChange);
         getChangeBus().listen(ResourceSelectedChange.class, this::onResourceSelect);
+
+        revert.setGraphic(ActofIcons.getIconView(Icon.VIEW_REFRESH, Size.TOOLBAR));
+        commit.setGraphic(ActofIcons.getIconView(Icon.DOCUMENT_SAVE, Size.TOOLBAR));
+
+        toolbar.getChildren().removeAll(repoToolbar, breadcrumbToolbar, optionsToolbar);
+        headerBox.getChildren().remove(toolbar);
+        repospy.getToolbars().add(repoToolbar);
+        repospy.getToolbars().add(breadcrumbToolbar);
+        repospy.getToolbars().add(optionsToolbar);
+        Panel entitiesPanel = new IPanel("Entities", sidebar);
+        entitiesPanel.setDismissible(false);
+        repospy.getPanels().add(entitiesPanel);
+        toppane.getChildren().remove(sidebar);
+        if (repospy.isForResource()) {
+            repoToolbar.getChildren().remove(connect);
+        }
+
+        rootNode = new IRootNode(repospy, null);
+        root = new RepoSpyTreeItem(rootNode, repospy);
+
+        breadcrumb = new BreadCrumbBar<>();
+        breadcrumb.setFocusTraversable(false);
+        breadcrumb.setDisable(true);
+        Callback<TreeItem<TreeNode>, Button> breadCrumbFactory = breadcrumb.getCrumbFactory();
+        breadcrumb.setCrumbFactory(item -> {
+            Button b = breadCrumbFactory.call(item);
+            b.getStyleClass().add("bread-crumb-button");
+            b.setPadding(new Insets(0, 2, 0, 2));
+            b.setText("");
+            Label label = new Label();
+
+            if (item.getValue() != null) {
+                label.setText(item.getValue().toString());
+            }
+
+            b.setGraphic(label);
+            label.setPadding(new Insets(3, 10, 3, 10));
+            return b;
+        });
+
+        // breadcrumb
+        breadcrumb.setAutoNavigationEnabled(false);
+        breadcrumb.setOnCrumbAction(event -> {
+            TreeItem<TreeNode> node = event.getSelectedCrumb();
+            repospy.getChangeBus().broadcast(new ResourceSelectedChange((RepoSpyTreeItem) node));
+        });
+        breadcrumb.setSelectedCrumb(root);
+        breadcrumbToolbar.getChildren().add(breadcrumb);
+
+        // sidebar
+        records.setShowRoot(false);
+        records.setRoot(root);
+        records.getSelectionModel().selectedItemProperty().addListener((ov, o, n) -> onRecordSelect(n));
+
+        // Kind selection combobox
+        kindCombo = new ComboBox<>();
+        kindCombo.setMinWidth(150);
+        kindCombo.valueProperty().addListener(change -> {
+            repospy.search.setKind(kindCombo.getValue());
+        });
+        searchBox.getChildren().add(kindCombo);
+
+        // search text field
+        querytext = new CustomTextField();
+        HBox.setHgrow(querytext, Priority.ALWAYS);
+        searchBox.getChildren().add(querytext);
+        querytext.setPromptText("Search Query");
+        querytext.setOnKeyReleased(event -> {
+            if (event.getCode() != KeyCode.ENTER) { return; }
+            repospy.doQuery(querytext.getText());
+        });
+
+        // search clear button
+        Button doclear = new Button("",
+                new ImageView(new Image(NavigatorController.class.getResourceAsStream("icons/clear.png"))));
+        doclear.setStyle("-fx-background-color: null; -fx-padding: 3px;");
+        doclear.setOnAction(event -> {
+            querytext.setText("");
+            repospy.doQuery(querytext.getText());
+        });
+        querytext.setRight(doclear);
+
+        // search query button
+        Button doquery = new Button("", ActofIcons.getIconView(Icon.EDIT_FIND, Size.BUTTON));
+        doquery.getStyleClass().add("tool-bar-button");
+        doquery.setOnAction(event -> {
+            repospy.doQuery(querytext.getText());
+        });
+        searchBox.getChildren().add(doquery);
+
+        shortcut(toppane, () -> showSearchBar(!searchPane.isExpanded()), KeyCode.F, KeyCombination.CONTROL_DOWN);
+        shortcut(searchBox, () -> showSearchBar(false), KeyCode.ESCAPE);
+        shortcut(records, this::recordCopy, KeyCode.C, KeyCombination.CONTROL_DOWN);
+
+        searchPane.sceneProperty().addListener(event -> {
+            // hide title component of search titledpane. We need to force it to
+            // apply css before we can look up the title component
+            searchPane.applyCss();
+            Pane title = (Pane) searchPane.lookup(".title");
+            if (title != null) {
+                title.setVisible(false);
+                title.setMinHeight(0);
+                title.setPrefHeight(0);
+                title.setMaxHeight(0);
+            }
+        });
+
     }
 
     private void onResourceSelect(ResourceSelectedChange change) {
@@ -174,15 +270,22 @@ public class NavigatorController extends IActofUIController {
         repospy.repository.makeFresh();
     }
 
-    public void onLoad() throws FileNotFoundException {
+    public void onLoad() {
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Import Data");
         ExtensionFilter filter = new ExtensionFilter("JSON Data", "*.json");
         chooser.setSelectedExtensionFilter(filter);
-        File file = chooser.showOpenDialog(repospy.primaryStage);
+        File file = chooser.showOpenDialog(repospy.getDisplayStage());
         if (file == null) { return; }
 
-        List<Resource<?>> loaded = repospy.repository.load(new Scanner(file));
+        List<Resource<?>> loaded;
+        try {
+            loaded = repospy.repository.load(new Scanner(file));
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return;
+        }
         for (Resource<?> res : loaded) {
             getChangeBus().broadcast(new EntityCreatedChange(res));
         }
@@ -190,18 +293,23 @@ public class NavigatorController extends IActofUIController {
     }
 
     /* FXML Hook */
-    public void onDump() throws IOException {
+    public void onDump() {
 
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Dump Repository");
         ExtensionFilter filter = new ExtensionFilter("JSON Data", "*.json");
         chooser.setSelectedExtensionFilter(filter);
-        File file = chooser.showOpenDialog(repospy.primaryStage);
+        File file = chooser.showOpenDialog(repospy.getDisplayStage());
         if (file == null) { return; }
 
-        Writer writer = new FileWriter(file);
-        writer.write(repospy.repository.dump());
-        writer.close();
+        try {
+            Writer writer = new FileWriter(file);
+            writer.write(repospy.repository.dump());
+            writer.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /* FXML Hook */
@@ -217,14 +325,16 @@ public class NavigatorController extends IActofUIController {
             if (result.get() != ButtonType.OK) { return; }
         }
 
-        Connector conn = repospy.showConnect();
+        Connector conn = RepoSpyController.showConnect(getDisplayStage());
         if (conn == null) { return; }
 
         try {
             repospy.connect(conn);
         }
         catch (Exception e) {
-            Dialogs.create().title("Connection Failed").message("Failed to connect to the specified repository")
+            Dialogs.create()
+                    .title("Connection Failed")
+                    .message("Failed to connect to the specified repository")
                     .showException(e);
         }
     }
@@ -243,101 +353,13 @@ public class NavigatorController extends IActofUIController {
 
     public void setTopController(RepoSpyController controller) {
         this.repospy = controller;
-
-        rootNode = new IRootNode(controller, null);
-        root = new RepoSpyTreeItem(rootNode, repospy);
-
-        breadcrumb = new BreadCrumbBar<>();
-        breadcrumb.setFocusTraversable(false);
-        breadcrumb.setDisable(true);
-        Callback<TreeItem<TreeNode>, Button> breadCrumbFactory = breadcrumb.getCrumbFactory();
-        breadcrumb.setCrumbFactory(item -> {
-            Button b = breadCrumbFactory.call(item);
-            b.getStyleClass().add("bread-crumb-button");
-            b.setPadding(new Insets(0, 2, 0, 2));
-            b.setText("");
-            Label label = new Label();
-
-            if (item.getValue() != null) {
-                label.setText(item.getValue().toString());
-            }
-
-            b.setGraphic(label);
-            label.setPadding(new Insets(3, 10, 3, 10));
-            return b;
-        });
-
-        // breadcrumb
-        breadcrumb.setAutoNavigationEnabled(false);
-        breadcrumb.setOnCrumbAction(event -> {
-            TreeItem<TreeNode> node = event.getSelectedCrumb();
-            repospy.getChangeBus().broadcast(new ResourceSelectedChange((RepoSpyTreeItem) node));
-        });
-        breadcrumb.setSelectedCrumb(root);
-        breadcrumbBox.getChildren().add(breadcrumb);
-
-        // sidebar
-        records.setShowRoot(false);
-        records.setRoot(root);
-        records.getSelectionModel().selectedItemProperty().addListener((ov, o, n) -> onRecordSelect(n));
-
-        // Kind selection combobox
-        kindCombo = new ComboBox<>();
-        kindCombo.setMinWidth(150);
-        kindCombo.valueProperty().addListener(change -> {
-            repospy.search.setKind(kindCombo.getValue());
-        });
-        searchBox.getChildren().add(kindCombo);
-
-        // search text field
-        querytext = new CustomTextField();
-        HBox.setHgrow(querytext, Priority.ALWAYS);
-        searchBox.getChildren().add(querytext);
-        querytext.setPromptText("Search Query");
-        querytext.setOnKeyReleased(event -> {
-            if (event.getCode() != KeyCode.ENTER) { return; }
-            repospy.doQuery(querytext.getText());
-        });
-
-        // search clear button
-        Button doclear = new Button("", new ImageView(new Image(
-                NavigatorController.class.getResourceAsStream("icons/clear.png"))));
-        doclear.setStyle("-fx-background-color: null; -fx-padding: 3px;");
-        doclear.setOnAction(event -> {
-            querytext.setText("");
-            repospy.doQuery(querytext.getText());
-        });
-        querytext.setRight(doclear);
-
-        // search query button
-        Button doquery = new Button("", ActofIcons.getIconView(Icon.SEARCH, Size.BUTTON));
-        doquery.getStyleClass().add("tool-bar-button");
-        doquery.setOnAction(event -> {
-            repospy.doQuery(querytext.getText());
-        });
-        searchBox.getChildren().add(doquery);
-
-        // hide title component of search titledpane
-        Pane title = (Pane) searchPane.lookup(".title");
-        if (title != null) {
-            title.setVisible(false);
-            title.setMinHeight(0);
-            title.setPrefHeight(0);
-            title.setMaxHeight(0);
-        }
-
-        shortcut(toppane, () -> showSearchBar(!searchPane.isExpanded()), KeyCode.F, KeyCombination.CONTROL_DOWN);
-        shortcut(searchBox, () -> showSearchBar(false), KeyCode.ESCAPE);
-        shortcut(records, this::recordCopy, KeyCode.C, KeyCombination.CONTROL_DOWN);
-
     }
 
-    public void onMenuItemSearch() {
-        showSearchBar(menuItemSearch.isSelected());
+    public void toggleSearchBar() {
+        showSearchBar(!searchPane.isExpanded());
     }
 
     private void showSearchBar(boolean show) {
-        menuItemSearch.setSelected(show);
         searchPane.setExpanded(show);
         repospy.doQuery("");
     }
@@ -348,14 +370,11 @@ public class NavigatorController extends IActofUIController {
         commit.setDisable(!hasHistory);
         review.setDisable(!hasHistory);
 
-        Image image;
         if (!hasHistory) {
-            image = new Image(getClass().getResourceAsStream("icons/refresh.png"));
-            revert_image.setImage(image);
+            revert.setGraphic(ActofIcons.getIconView(Icon.VIEW_REFRESH, Size.TOOLBAR));
             revert_tooltip.setText("Refresh from repository");
         } else {
-            image = new Image(getClass().getResourceAsStream("icons/revert.png"));
-            revert_image.setImage(image);
+            revert.setGraphic(ActofIcons.getIconView(Icon.GO_FIRST, Size.TOOLBAR));
             revert_tooltip.setText("Revert all changes");
         }
 
@@ -365,8 +384,6 @@ public class NavigatorController extends IActofUIController {
         populateEntityTree();
         populateQueryEntityChoice();
         revert.setDisable(false);
-        dump.setDisable(false);
-        load.setDisable(false);
         breadcrumb.setDisable(false);
 
         rootNode.setPackageName(repospy.repository.getRepoName());
@@ -449,8 +466,18 @@ public class NavigatorController extends IActofUIController {
         });
     }
 
-    public static NavigatorController load(ChangeController changes) throws IOException {
-        return FXUtil.load(NavigatorController.class, "Navigator.fxml", changes);
+    public static NavigatorController load() throws IOException {
+        return FXUtil.loadFX(NavigatorController.class, "Navigator.fxml");
+    }
+
+    @Override
+    public void onFXLoad() {
+
+    }
+
+    @Override
+    public String getTitle() {
+        return "RepoSpy";
     }
 
 }

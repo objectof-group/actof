@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<BorderPane fx:id="top" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.ide.ActofIDEController">
+   <top>
+      <HBox fx:id="toolbar" styleClass="tool-bar" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="projectOpen" mnemonicParsing="false" onAction="#onProjectOpen" styleClass="tool-bar-button">
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@icons/project-open.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button fx:id="projectSave" mnemonicParsing="false" onAction="#onProjectSave" styleClass="tool-bar-button">
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@icons/project-save.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <MenuButton fx:id="newResource" mnemonicParsing="false" styleClass="tool-bar-button">
+              <items>
+                <MenuItem mnemonicParsing="false" onAction="#onAddSchema" text="Schema" />
+                <MenuItem mnemonicParsing="false" onAction="#onAddRepository" text="Repository" />
+              </items>
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@icons/resource-add.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </MenuButton>
+            <Separator orientation="VERTICAL" />
+         </children></HBox>
+   </top>
+   <left>
+      <TreeView fx:id="tree" BorderPane.alignment="CENTER" />
+   </left>
+   <center>
+      <TabPane fx:id="tabs" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER" />
+   </center>
+</BorderPane>

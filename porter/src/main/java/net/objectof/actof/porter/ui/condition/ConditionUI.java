@@ -46,7 +46,7 @@ public class ConditionUI extends IActofUIController {
     private HBox hbox;
 
     @FXML
-    private Button remove, up, down;
+    private Button remove, up, down, reset;
 
     private TextInputControl textInput = new TextField();
 
@@ -69,29 +69,32 @@ public class ConditionUI extends IActofUIController {
             }
         });
 
+        hbox.getChildren().setAll(remove, stageChoice, actionChoice, textInput, sep, up, down);
         actionChoice.getSelectionModel().selectedItemProperty().addListener(change -> {
-            Condition conditions = actionChoice.getSelectionModel().getSelectedItem();
+            Condition condition = getCondition();
 
             borderpane.setCenter(null);
-            hbox.getChildren().setAll(remove, stageChoice, actionChoice, sep, up, down);
             hbox.setPadding(new Insets(0, 0, 0, 0));
 
-            if (conditions.getInput() == Input.CODE) {
+            if (condition.getInput() == Input.CODE) {
                 TextArea area = new TextArea(textInput.getText());
                 area.setStyle("-fx-font-family: monospace");
                 area.setPrefColumnCount(40);
                 borderpane.setCenter(area);
                 textInput = area;
+                hbox.getChildren().setAll(remove, stageChoice, actionChoice, reset, sep, up, down);
                 hbox.setPadding(new Insets(0, 0, 6, 0));
-            } else if (conditions.getInput() == Input.FIELD) {
+            } else if (condition.getInput() == Input.FIELD) {
                 textInput = new TextField(textInput.getText());
+                hbox.getChildren().setAll(remove, stageChoice, actionChoice, textInput, reset, sep, up, down);
+            } else if (condition.getInput() == Input.NONE) {
                 hbox.getChildren().setAll(remove, stageChoice, actionChoice, textInput, sep, up, down);
             }
 
-            textInput.setPromptText(conditions.getHint());
+            textInput.setPromptText(condition.getHint());
 
             if (textInput.getText() == null || textInput.getText().length() == 0) {
-                textInput.setText(conditions.getDefaultText());
+                textInput.setText(condition.getDefaultText());
             }
 
         });
@@ -107,20 +110,26 @@ public class ConditionUI extends IActofUIController {
         up.setGraphic(upIcon);
         down.setGraphic(downIcon);
 
+        ImageView resetIcon = ActofIcons.getCustomIcon(RuleUI.class, "../icons/undo-variant-12.png");
+        reset.setGraphic(resetIcon);
+
         remove.setVisible(false);
         up.setVisible(false);
         down.setVisible(false);
+        reset.setVisible(false);
 
         getNode().setOnMouseEntered(event -> {
             remove.setVisible(true);
             up.setVisible(true);
             down.setVisible(true);
+            reset.setVisible(true);
         });
 
         getNode().setOnMouseExited(event -> {
             remove.setVisible(false);
             up.setVisible(false);
             down.setVisible(false);
+            reset.setVisible(false);
         });
 
     }
@@ -137,6 +146,10 @@ public class ConditionUI extends IActofUIController {
         index = Math.min(ruleui.getConditions().size() - 1, index + 1);
         ruleui.getConditions().remove(this);
         ruleui.getConditions().add(index, this);
+    }
+
+    public void onReset() {
+        textInput.setText(getCondition().getDefaultText());
     }
 
     private Condition getCondition() {
@@ -163,7 +176,7 @@ public class ConditionUI extends IActofUIController {
         }
     }
 
-    private Stage getStage() {
+    private Stage getPortStage() {
         return stageChoice.getSelectionModel().getSelectedItem();
     }
 
@@ -198,8 +211,11 @@ public class ConditionUI extends IActofUIController {
 
         String actionName = data.get("action").toString();
         if (actionName.length() > 0 && stage != null) {
-            Condition action = Operations.conditionsFor(stage).stream().filter(a -> a.getName().equals(actionName))
-                    .findFirst().get();
+            Condition action = Operations.conditionsFor(stage)
+                    .stream()
+                    .filter(a -> a.getName().equals(actionName))
+                    .findFirst()
+                    .get();
             actionChoice.getSelectionModel().select(action);
         }
 

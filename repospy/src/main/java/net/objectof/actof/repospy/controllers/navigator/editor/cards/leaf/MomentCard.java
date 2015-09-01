@@ -9,12 +9,16 @@ import java.util.Date;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
+import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.util.StringConverter;
+import net.objectof.actof.common.icons.ActofIcons;
+import net.objectof.actof.common.icons.Icon;
+import net.objectof.actof.common.icons.Size;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.ILeafNode;
 import net.objectof.actof.widgets.KeyValuePane;
 import net.objectof.model.impl.IMoment;
@@ -25,6 +29,7 @@ public class MomentCard extends LeafCard {
     Spinner<Integer> hour, minute, second;
     DatePicker picker = new DatePicker();
     Calendar cal = Calendar.getInstance();
+    Button reset;
 
     KeyValuePane pane = new KeyValuePane();
 
@@ -34,6 +39,13 @@ public class MomentCard extends LeafCard {
         hour = new TimeSpinner(0, 23);
         minute = new TimeSpinner(0, 59);
         second = new TimeSpinner(0, 59);
+
+        reset = new Button("Reset", ActofIcons.getIconView(Icon.VIEW_REFRESH, Size.BUTTON));
+        reset.getStyleClass().add("tool-bar-button");
+        reset.setPadding(new Insets(6));
+        reset.setOnAction(event -> {
+            getEntry().setFieldValue(new IMoment());
+        });
 
         picker.setPromptText("Date");
         picker.setConverter(new StringConverter<LocalDate>() {
@@ -51,7 +63,7 @@ public class MomentCard extends LeafCard {
             }
         });
 
-        HBox timebox = new HBox(0, hour, new Label(":"), minute, new Label(":"), second);
+        HBox timebox = new HBox(3, hour, new Label(":"), minute, new Label(":"), second, reset);
         timebox.setAlignment(Pos.CENTER_LEFT);
 
         pane.setVgap(6);
@@ -78,14 +90,29 @@ public class MomentCard extends LeafCard {
     public void updateUIFromEntry() {
         IMoment moment = (IMoment) getEntry().getFieldValue();
         if (moment == null) {
-            moment = new IMoment();
-        }
+            picker.setDisable(true);
+            hour.setDisable(true);
+            minute.setDisable(true);
+            second.setDisable(true);
 
-        cal.setTime(moment);
-        picker.setValue(fromMoment(moment));
-        hour.getValueFactory().setValue(cal.get(Calendar.HOUR_OF_DAY));
-        minute.getValueFactory().setValue(cal.get(Calendar.MINUTE));
-        second.getValueFactory().setValue(cal.get(Calendar.SECOND));
+            picker.setValue(fromMoment(new IMoment(0)));
+            hour.getValueFactory().setValue(0);
+            minute.getValueFactory().setValue(0);
+            second.getValueFactory().setValue(0);
+
+        } else {
+            picker.setDisable(false);
+            hour.setDisable(false);
+            minute.setDisable(false);
+            second.setDisable(false);
+
+            cal.setTime(moment);
+            picker.setValue(fromMoment(moment));
+            hour.getValueFactory().setValue(cal.get(Calendar.HOUR_OF_DAY));
+            minute.getValueFactory().setValue(cal.get(Calendar.MINUTE));
+            second.getValueFactory().setValue(cal.get(Calendar.SECOND));
+
+        }
 
     }
 

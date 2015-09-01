@@ -10,14 +10,6 @@ import javafx.scene.image.ImageView;
 
 public class ActofIcons {
 
-    public enum Icon {
-        ADD, REMOVE, UNDO, REDO, SEARCH
-    }
-
-    public enum Size {
-        BUTTON, TOOLBAR
-    }
-
     public static ImageView getCustomIcon(Class<?> relativeTo, String name) {
         return new ImageView(new Image(relativeTo.getResourceAsStream(name)));
     }
@@ -31,12 +23,12 @@ public class ActofIcons {
     }
 
     public static URL getIconURL(Icon icon, Size size) {
-        String path = size.toString().toLowerCase() + "/" + icon.toString().toLowerCase() + ".png";
+        String path = size.toString().toLowerCase() + "/" + icon.toString().toLowerCase().replace("_", "-") + ".png";
         return ActofIcons.class.getResource(path);
     }
 
     public static InputStream getIconStream(Icon icon, Size size) {
-        String path = size.toString().toLowerCase() + "/" + icon.toString().toLowerCase() + ".png";
+        String path = size.toString().toLowerCase() + "/" + icon.toString().toLowerCase().replace("_", "-") + ".png";
         return ActofIcons.class.getResourceAsStream(path);
     }
 }
