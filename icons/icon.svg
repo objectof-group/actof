@@ -16,7 +16,7 @@
    version="1.1"
    inkscape:version="0.48.4 r9939"
    sodipodi:docname="icon.svg"
-   inkscape:export-filename="/home/nathaniel/Projects/Realm/Git/actof/icons/Minion.png"
+   inkscape:export-filename="/home/nathaniel/Projects/Realm/Git/actof/icons/Porter.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <defs
@@ -144,10 +144,10 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2"
-     inkscape:cx="-90.620673"
-     inkscape:cy="86.75"
+     inkscape:cx="-24.870673"
+     inkscape:cy="101.25"
      inkscape:document-units="px"
-     inkscape:current-layer="g3045"
+     inkscape:current-layer="g3129"
      showgrid="false"
      inkscape:window-width="1920"
      inkscape:window-height="1016"
@@ -299,6 +299,32 @@
        id="path3051"
        d="m 32,20 c -6.648,0 -12,5.352 -12,12 l 0,4 c 0,-6.648 5.352,-12 12,-12 l 128,0 c 6.648,0 12,5.352 12,12 l 0,-4 c 0,-6.648 -5.352,-12 -12,-12 L 32,20 z"
        style="opacity:0.2;color:#000000;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+  </g>
+  <g
+     style="display:none"
+     inkscape:label="Teal Background"
+     id="g3129"
+     inkscape:groupmode="layer">
+    <rect
+       ry="12"
+       rx="12"
+       y="880.36218"
+       x="20"
+       height="152"
+       width="152"
+       id="rect3131"
+       style="color:#000000;fill:#00796b;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       transform="translate(0,-860.36218)" />
+    <path
+       style="opacity:0.2;color:#000000;fill:#263238;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       d="m 20,156 0,4 c 0,6.648 5.352,12 12,12 l 128,0 c 6.648,0 12,-5.352 12,-12 l 0,-4 c 0,6.648 -5.352,12 -12,12 l -128,0 c -6.648,0 -12,-5.352 -12,-12 z"
+       id="path3133"
+       inkscape:connector-curvature="0" />
+    <path
+       style="opacity:0.2;color:#000000;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       d="m 32,20 c -6.648,0 -12,5.352 -12,12 l 0,4 c 0,-6.648 5.352,-12 12,-12 l 128,0 c 6.648,0 12,5.352 12,12 l 0,-4 c 0,-6.648 -5.352,-12 -12,-12 L 32,20 z"
+       id="path3135"
+       inkscape:connector-curvature="0" />
   </g>
   <g
      style="display:inline"
