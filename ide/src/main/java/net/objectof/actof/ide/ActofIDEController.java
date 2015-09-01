@@ -273,4 +273,7 @@ public class ActofIDEController extends AbstractLoadedEditor implements Display 
         return this;
     }
 
+    @Override
+    protected void onResourceAdded(Resource res) throws Exception {}
+
 }

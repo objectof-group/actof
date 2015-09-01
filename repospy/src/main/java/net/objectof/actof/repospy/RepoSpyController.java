@@ -4,7 +4,6 @@ package net.objectof.actof.repospy;
 import java.io.IOException;
 import java.util.Optional;
 
-import javafx.collections.ListChangeListener;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.stage.Stage;
@@ -75,36 +74,30 @@ public class RepoSpyController extends AbstractEditor implements ResourceEditor 
         getActions().add(loadAction);
         getActions().add(restAction);
 
-        getResources().addListener((ListChangeListener.Change<? extends Resource> c) -> {
-            while (c.next()) {
-                if (!c.wasAdded()) { return; }
-                for (Resource r : c.getAddedSubList()) {
-                    try {
-                        ResourceEditor e = r.getEditor();
-                        if (e == null) {
-                            continue;
-                        }
+    }
 
-                        e.setChangeBus(getChangeBus());
-                        e.setDisplayStage(getDisplayStage());
-                        e.construct();
-                        e.setResource(r);
-                        e.loadResource();
-                        EditorPanel panel = new EditorPanel(e);
-                        getPanels().add(panel);
+    @Override
+    protected void onResourceAdded(Resource res) {
+        try {
+            ResourceEditor e = res.getEditor();
+            if (e == null) { return; }
 
-                        panel.dismissedProperty().addListener(e2 -> getPanels().remove(panel));
-                        e.dismissedProperty().addListener(e2 -> getResources().remove(r));
+            e.setChangeBus(getChangeBus());
+            e.setDisplayStage(getDisplayStage());
+            e.construct();
+            e.setResource(res);
+            e.loadResource();
+            EditorPanel panel = new EditorPanel(e);
+            getPanels().add(panel);
 
-                    }
-                    catch (Exception e1) {
-                        e1.printStackTrace();
-                        continue;
-                    }
-                }
-            }
-        });
+            panel.dismissedProperty().addListener(e2 -> getPanels().remove(panel));
+            e.dismissedProperty().addListener(e2 -> getResources().remove(res));
 
+        }
+        catch (Exception e1) {
+            e1.printStackTrace();
+            return;
+        }
     }
 
     @Override

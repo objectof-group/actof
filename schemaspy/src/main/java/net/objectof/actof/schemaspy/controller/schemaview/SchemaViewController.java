@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.management.modelmbean.XMLParseException;
 import javax.xml.parsers.ParserConfigurationException;
@@ -44,11 +45,11 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
-import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import net.objectof.actof.common.component.display.impl.AbstractLoadedDisplay;
 import net.objectof.actof.common.component.display.impl.IPanel;
+import net.objectof.actof.common.component.resource.Resource;
 import net.objectof.actof.common.controller.change.Change;
 import net.objectof.actof.common.controller.schema.AttributeEntry;
 import net.objectof.actof.common.controller.schema.SchemaController;
@@ -65,7 +66,7 @@ import net.objectof.actof.common.icons.Icon;
 import net.objectof.actof.common.icons.Size;
 import net.objectof.actof.common.util.AlphaNumericComparitor;
 import net.objectof.actof.common.util.FXUtil;
-import net.objectof.actof.repospy.RepoSpyController;
+import net.objectof.actof.repospy.resource.RepositoryResource;
 import net.objectof.actof.schemaspy.SchemaSpyController;
 import net.objectof.actof.schemaspy.controller.cards.attributes.SchemaSpyCard;
 import net.objectof.actof.schemaspy.controller.cards.schemaentry.ChildEntryCard;
@@ -303,10 +304,10 @@ public class SchemaViewController extends AbstractLoadedDisplay {
         schemaspy.newSchema();
     }
 
-    public void onCreate() {
+    public Optional<Resource> onCreate() {
         try {
             Connector connect = schemaspy.showConnect();
-            if (connect == null) { return; }
+            if (connect == null) { return Optional.empty(); }
 
             Document schema = schemaspy.getSchema().getDocument();
             connect.createPackage(schema, Initialize.WHEN_EMPTY);
@@ -318,10 +319,10 @@ public class SchemaViewController extends AbstractLoadedDisplay {
                     .showConfirm();
 
             if (action == Dialog.ACTION_YES) {
-                RepoSpyController repospy = new RepoSpyController();
-                repospy.setDisplayStage(new Stage());
-                repospy.construct();
-                repospy.connect(connect);
+
+                RepositoryResource resource = new RepositoryResource();
+                resource.setConnector(connect);
+                return Optional.of(resource);
             }
 
         }
@@ -331,6 +332,7 @@ public class SchemaViewController extends AbstractLoadedDisplay {
                     .message("SchemaSpy failed to create the repository. Please check the parameters and try again.")
                     .showException(e);
         }
+        return Optional.empty();
 
     }
 

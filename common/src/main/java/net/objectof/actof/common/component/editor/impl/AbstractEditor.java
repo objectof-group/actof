@@ -4,6 +4,7 @@ package net.objectof.actof.common.component.editor.impl;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.stage.Stage;
@@ -28,6 +29,24 @@ public abstract class AbstractEditor implements Editor {
     private ObservableList<Resource> resources = FXCollections.observableArrayList();
     private ObservableList<Node> toolbars = FXCollections.observableArrayList();
     private ObservableList<Panel> panels = FXCollections.observableArrayList();
+
+    public AbstractEditor() {
+        getResources().addListener((ListChangeListener.Change<? extends Resource> c) -> {
+            while (c.next()) {
+                if (!c.wasAdded()) { return; }
+                for (Resource r : c.getAddedSubList()) {
+                    try {
+                        onResourceAdded(r);
+                    }
+                    catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
+    protected abstract void onResourceAdded(Resource res) throws Exception;
 
     @Override
     public ChangeController getChangeBus() {

@@ -12,7 +12,7 @@
 
 <BorderPane fx:id="toppane" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.repospy.controllers.navigator.NavigatorController">
   <center>
-      <BorderPane fx:id="fieldEditor" BorderPane.alignment="CENTER" />
+      <BorderPane fx:id="fieldEditor" prefWidth="800.0" BorderPane.alignment="CENTER" />
    </center>
    <top>
       <VBox fx:id="headerBox" BorderPane.alignment="CENTER">

@@ -132,4 +132,7 @@ public class MinionServerEditor extends AbstractLoadedEditor implements Resource
         return minionServer;
     }
 
+    @Override
+    protected void onResourceAdded(Resource res) throws Exception {}
+
 }

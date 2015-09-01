@@ -24,6 +24,7 @@ import net.objectof.actof.common.component.resource.impl.IAction;
 import net.objectof.actof.common.controller.schema.ISchemaController;
 import net.objectof.actof.common.controller.schema.SchemaController;
 import net.objectof.actof.common.controller.schema.changes.SchemaReplacedChange;
+import net.objectof.actof.common.window.ActofWindow;
 import net.objectof.actof.connectorui.ConnectionController;
 import net.objectof.actof.schemaspy.controller.schemaview.SchemaViewController;
 import net.objectof.actof.schemaspy.resource.SchemaFileResource;
@@ -149,6 +150,21 @@ public class SchemaSpyController extends AbstractEditor implements ResourceEdito
         File file = chooser.showOpenDialog(parent);
         if (file == null) { return null; }
         return file;
+
+    }
+
+    @Override
+    protected void onResourceAdded(Resource res) throws Exception {
+
+        ResourceEditor editor = res.getEditor();
+        editor.setForResource(true);
+        editor.construct();
+
+        editor.setResource(res);
+        editor.loadResource();
+
+        ActofWindow window = new ActofWindow(editor);
+        window.show();
 
     }
 

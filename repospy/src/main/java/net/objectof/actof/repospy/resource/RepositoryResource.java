@@ -20,7 +20,8 @@ public class RepositoryResource extends AbstractResource {
 
     @Override
     public ResourceEditor createEditor() throws Exception {
-        return new RepoSpyController();
+        RepoSpyController controller = new RepoSpyController();
+        return controller;
     }
 
     public Connector getConnector() {
