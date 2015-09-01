@@ -40,6 +40,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -176,6 +177,18 @@ public class SchemaViewController extends AbstractLoadedDisplay {
             entry.setName(name);
         });
 
+        tree.sceneProperty().addListener(event -> {
+            tree.applyCss();
+            System.out.println(tree.getChildrenUnmodifiable());
+            Pane title = (Pane) tree.lookup(".column-header-background");
+            if (title != null) {
+                title.setVisible(false);
+                title.setMinHeight(0);
+                title.setPrefHeight(0);
+                title.setMaxHeight(0);
+            }
+        });
+
         pkgdomain.setOnKeyReleased(evnet -> {
             if (schemaspy == null) { return; }
             SchemaController schema = schemaspy.getSchema();
@@ -218,6 +231,8 @@ public class SchemaViewController extends AbstractLoadedDisplay {
         });
 
         save.setDisable(true);
+
+        onNewSchema();
 
     }
 
