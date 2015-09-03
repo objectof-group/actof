@@ -6,37 +6,37 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.layout.Region;
 import net.objectof.actof.common.component.display.Panel;
-import net.objectof.actof.common.component.editor.Editor;
+import net.objectof.actof.common.component.resource.Resource;
 
 
-public class EditorPanel implements Panel {
+public class ResourcePanel implements Panel {
 
-    private Editor editor;
-    private EditorPane pane;
+    private Resource resource;
+    private ResourceView view;
     private long timestamp = System.currentTimeMillis();
 
     private BooleanProperty dismissible = new SimpleBooleanProperty(true);
     private BooleanProperty dismissed = new SimpleBooleanProperty(false);
 
-    public EditorPanel(Editor editor) throws Exception {
-        this.editor = editor;
-        pane = EditorPane.load();
-        pane.setDisplayStage(editor.getDisplayStage());
-        pane.construct();
-        pane.setEditor(editor);
+    public ResourcePanel(Resource resource) throws Exception {
+        this.resource = resource;
+        view = ResourceView.load();
+        view.setDisplayStage(resource.getEditor().getDisplayStage());
+        view.construct();
+        view.setResource(resource);
         dismissedProperty().addListener(e -> {
-            editor.dismiss();
+            resource.getEditor().dismiss();
         });
     }
 
     @Override
     public StringProperty titleProperty() {
-        return editor.titleProperty();
+        return resource.getEditor().titleProperty();
     }
 
     @Override
     public Region getFXRegion() {
-        return pane.getFXRegion();
+        return view.getFXRegion();
     }
 
     @Override

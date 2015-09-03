@@ -11,7 +11,7 @@ import javafx.stage.StageStyle;
 import net.objectof.actof.common.component.display.Display;
 import net.objectof.actof.common.component.editor.ResourceEditor;
 import net.objectof.actof.common.component.editor.impl.AbstractEditor;
-import net.objectof.actof.common.component.editor.impl.EditorPanel;
+import net.objectof.actof.common.component.editor.impl.ResourcePanel;
 import net.objectof.actof.common.component.resource.Action;
 import net.objectof.actof.common.component.resource.Resource;
 import net.objectof.actof.common.component.resource.impl.IAction;
@@ -87,7 +87,7 @@ public class RepoSpyController extends AbstractEditor implements ResourceEditor 
             e.construct();
             e.setTargetResource(res);
             e.loadResource();
-            EditorPanel panel = new EditorPanel(e);
+            ResourcePanel panel = new ResourcePanel(res);
             getPanels().add(panel);
 
             panel.dismissedProperty().addListener(e2 -> getPanels().remove(panel));

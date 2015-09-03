@@ -38,7 +38,7 @@ import net.objectof.actof.common.icons.ActofIcons;
 import net.objectof.actof.common.util.FXUtil;
 
 
-public class EditorPane implements Titled, FXRegion, FXLoaded, DelayedConstruct, StageAware {
+public class ResourceView implements Titled, FXRegion, FXLoaded, DelayedConstruct, StageAware {
 
     @FXML
     private BorderPane panel, topPane, displayPanel;
@@ -56,7 +56,7 @@ public class EditorPane implements Titled, FXRegion, FXLoaded, DelayedConstruct,
     private Region windowNode;
     private Stage stage = new Stage();
 
-    private Editor editor;
+    private Resource resource;
     private BooleanProperty alwaysShowTabs = new SimpleBooleanProperty(false);
 
     private InvalidationListener panelsListener = (Observable change) -> layoutPanels();
@@ -65,8 +65,8 @@ public class EditorPane implements Titled, FXRegion, FXLoaded, DelayedConstruct,
 
     Map<Panel, Tab> panelTabs = new HashMap<>();
 
-    public static EditorPane load() throws IOException {
-        return FXUtil.loadFX(EditorPane.class, "EditorPane.fxml");
+    public static ResourceView load() throws IOException {
+        return FXUtil.loadFX(ResourceView.class, "ResourceView.fxml");
     }
 
     public void setDisplayStage(Stage stage) {
@@ -79,7 +79,7 @@ public class EditorPane implements Titled, FXRegion, FXLoaded, DelayedConstruct,
 
     @Override
     public StringProperty titleProperty() {
-        return editor.titleProperty();
+        return resource.titleProperty();
     }
 
     @Override
@@ -87,7 +87,7 @@ public class EditorPane implements Titled, FXRegion, FXLoaded, DelayedConstruct,
         panels.setStyle("-fx-open-tab-animation: NONE; -fx-close-tab-animation: NONE;");
         SplitPane.setResizableWithParent(panel, false);
         SplitPane.setResizableWithParent(displayPanel, true);
-        actionsButton.setGraphic(ActofIcons.getCustomIcon(EditorPane.class, "icons/menu.png"));
+        actionsButton.setGraphic(ActofIcons.getCustomIcon(ResourceView.class, "icons/menu.png"));
         actionsButton.getStyleClass().add("tool-bar-button");
         toolbar.getChildren().clear();
 
@@ -109,19 +109,19 @@ public class EditorPane implements Titled, FXRegion, FXLoaded, DelayedConstruct,
     }
 
     private void layoutDisplay() {
-        displayPanel.setCenter(editor.getDisplay().getFXRegion());
+        displayPanel.setCenter(resource.getEditor().getDisplay().getFXRegion());
     }
 
     private void layoutActions() {
 
         actionsButton.getItems().clear();
-        for (Action a : editor.getActions()) {
+        for (Action a : resource.getEditor().getActions()) {
             MenuItem item = new MenuItem(a.getTitle());
             item.disableProperty().bind(a.getEnabledProperty().not());
             item.setOnAction(event -> {
                 Optional<Resource> result = a.perform();
                 if (!result.isPresent()) { return; }
-                editor.getResources().add(result.get());
+                resource.getEditor().getResources().add(result.get());
             });
             actionsButton.getItems().add(item);
         }
@@ -140,15 +140,17 @@ public class EditorPane implements Titled, FXRegion, FXLoaded, DelayedConstruct,
 
         toolbar.getChildren().clear();
 
-        if (editor == null) { return; }
+        if (resource.getEditor() == null) { return; }
 
-        toolbar.getChildren().addAll(editor.getToolbars());
-        if (editor.getActions().size() > 0) {
+        toolbar.getChildren().addAll(resource.getEditor().getToolbars());
+        if (resource.getEditor().getActions().size() > 0) {
             toolbar.getChildren().addAll(separator, actionsButton);
         }
     }
 
     private void layoutPanels() {
+
+        Editor editor = resource.getEditor();
 
         if (editor == null) {
             panels.getTabs().clear();
@@ -202,23 +204,24 @@ public class EditorPane implements Titled, FXRegion, FXLoaded, DelayedConstruct,
 
     }
 
-    public Editor getEditor() {
-        return editor;
+    public Resource getResource() {
+        return resource;
     }
 
-    public void setEditor(Editor editor) {
+    public void setResource(Resource resource) {
 
-        if (this.editor != null) {
-            this.editor.getActions().removeListener(actionsListener);
-            this.editor.getPanels().removeListener(panelsListener);
-            this.editor.getToolbars().removeListener(toolbarsListener);
+        if (this.resource != null && this.resource.getEditor() != null) {
+            this.resource.getEditor().getActions().removeListener(actionsListener);
+            this.resource.getEditor().getPanels().removeListener(panelsListener);
+            this.resource.getEditor().getToolbars().removeListener(toolbarsListener);
         }
 
-        this.editor = editor;
-        if (editor == null) { return; }
-        this.editor.getActions().addListener(actionsListener);
-        this.editor.getPanels().addListener(panelsListener);
-        this.editor.getToolbars().addListener(toolbarsListener);
+        this.resource = resource;
+
+        if (this.resource.getEditor() == null) { return; }
+        this.resource.getEditor().getActions().addListener(actionsListener);
+        this.resource.getEditor().getPanels().addListener(panelsListener);
+        this.resource.getEditor().getToolbars().addListener(toolbarsListener);
 
         updateDisplay();
 
