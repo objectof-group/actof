@@ -3,6 +3,8 @@ package net.objectof.actof.common.component.display.impl;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.scene.layout.Region;
 import net.objectof.actof.common.component.display.Panel;
 
@@ -10,7 +12,7 @@ import net.objectof.actof.common.component.display.Panel;
 public class IPanel implements Panel {
 
     private Region region;
-    private String title;
+    private StringProperty title;
     private long timestamp = System.currentTimeMillis();
 
     private BooleanProperty dismissible = new SimpleBooleanProperty(true);
@@ -18,11 +20,11 @@ public class IPanel implements Panel {
 
     public IPanel(String title, Region region) {
         this.region = region;
-        this.title = title;
+        this.title = new SimpleStringProperty(title);
     }
 
     @Override
-    public String getTitle() {
+    public StringProperty titleProperty() {
         return title;
     }
 
@@ -39,11 +41,6 @@ public class IPanel implements Panel {
     @Override
     public long getTimestamp() {
         return timestamp;
-    }
-
-    @Override
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     @Override

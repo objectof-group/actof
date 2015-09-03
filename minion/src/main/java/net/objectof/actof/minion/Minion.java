@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import javafx.application.Application;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
@@ -22,9 +23,9 @@ import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.controller.change.IChangeController;
 import net.objectof.actof.minion.components.classpath.ClasspathController;
 import net.objectof.actof.minion.components.handlers.HandlerController;
-import net.objectof.actof.minion.components.rest.RestController;
-import net.objectof.actof.minion.components.spring.SpringController;
-import net.objectof.actof.web.server.MinionServerEditor;
+import net.objectof.actof.web.app.SpringController;
+import net.objectof.actof.web.client.WebClient;
+import net.objectof.actof.web.server.WebServerEditor;
 
 
 public class Minion extends Application implements Display, Editor {
@@ -38,10 +39,10 @@ public class Minion extends Application implements Display, Editor {
 
     private ChangeController change = new IChangeController();
 
-    private MinionServerEditor server;
+    private WebServerEditor server;
     private HandlerController handlers;
     private SpringController spring;
-    private RestController rest;
+    private WebClient rest;
     private ClasspathController classpath;
 
     private Stage stage;
@@ -85,7 +86,7 @@ public class Minion extends Application implements Display, Editor {
     }
 
     private void serverTab() throws Exception {
-        server = MinionServerEditor.load();
+        server = WebServerEditor.load();
         server.setChangeBus(getChangeBus());
         server.construct();
         window.addTab(server.getFXRegion(), "Server");
@@ -97,8 +98,8 @@ public class Minion extends Application implements Display, Editor {
     }
 
     private void restTab() throws IOException {
-        rest = RestController.load(getChangeBus());
-        window.addTab(rest.getNode(), "REST");
+        rest = WebClient.load();
+        window.addTab(rest.getFXRegion(), "REST");
     }
 
     private void handlerTab() throws IOException {
@@ -180,6 +181,12 @@ public class Minion extends Application implements Display, Editor {
 
     @Override
     public BooleanProperty dismissedProperty() {
+        return null;
+    }
+
+    @Override
+    public StringProperty titleProperty() {
+        // TODO Auto-generated method stub
         return null;
     }
 

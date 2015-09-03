@@ -30,11 +30,7 @@ public class RepositoryResource extends AbstractResource {
 
     public void setConnector(Connector connector) {
         this.connector = connector;
-    }
-
-    @Override
-    public String getTitle() {
-        return connector.getPackageName();
+        setTitle(connector.getPackageName());
     }
 
     @Override

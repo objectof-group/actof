@@ -20,4 +20,14 @@ public interface Resource extends Titled {
 
     void fromSerializableForm(Map<String, Object> data);
 
+    /**
+     * Indicates if the resource is permanent (ie should be displayed, saved,
+     * etc), or transient (ie just used as a way to create an editor/window)
+     * 
+     * @return true if transient, false otherwise
+     */
+    default boolean isTransient() {
+        return false;
+    }
+
 }

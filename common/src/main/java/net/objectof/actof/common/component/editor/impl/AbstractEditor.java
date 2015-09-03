@@ -3,6 +3,8 @@ package net.objectof.actof.common.component.editor.impl;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -18,7 +20,7 @@ import net.objectof.actof.common.controller.change.IChangeController;
 
 public abstract class AbstractEditor implements Editor {
 
-    private String title;
+    private StringProperty title = new SimpleStringProperty();
     private Stage displayStage;
     private ChangeController changeBus = new IChangeController();
 
@@ -89,13 +91,8 @@ public abstract class AbstractEditor implements Editor {
     }
 
     @Override
-    public String getTitle() {
+    public StringProperty titleProperty() {
         return title;
-    }
-
-    @Override
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     @Override

@@ -3,6 +3,7 @@ package net.objectof.actof.common.component.editor.impl;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.StringProperty;
 import javafx.scene.layout.Region;
 import net.objectof.actof.common.component.display.Panel;
 import net.objectof.actof.common.component.editor.Editor;
@@ -29,13 +30,8 @@ public class EditorPanel implements Panel {
     }
 
     @Override
-    public String getTitle() {
-        return pane.getTitle();
-    }
-
-    @Override
-    public void setTitle(String title) {
-        pane.setTitle(title);
+    public StringProperty titleProperty() {
+        return pane.titleProperty();
     }
 
     @Override

@@ -23,7 +23,7 @@ import net.objectof.actof.repospy.controllers.history.HistoryController;
 import net.objectof.actof.repospy.controllers.navigator.NavigatorController;
 import net.objectof.actof.repospy.controllers.review.ReviewController;
 import net.objectof.actof.repospy.resource.RepositoryResource;
-import net.objectof.actof.web.server.MinionServerResource;
+import net.objectof.actof.web.server.WebServerResource;
 import net.objectof.connector.Connector;
 import net.objectof.corc.Handler;
 import net.objectof.corc.web.v2.HttpRequest;
@@ -85,7 +85,7 @@ public class RepoSpyController extends AbstractEditor implements ResourceEditor 
             e.setChangeBus(getChangeBus());
             e.setDisplayStage(getDisplayStage());
             e.construct();
-            e.setResource(res);
+            e.setTargetResource(res);
             e.loadResource();
             EditorPanel panel = new EditorPanel(e);
             getPanels().add(panel);
@@ -101,12 +101,12 @@ public class RepoSpyController extends AbstractEditor implements ResourceEditor 
     }
 
     @Override
-    public void setResource(Resource resource) {
+    public void setTargetResource(Resource resource) {
         this.resource = (RepositoryResource) resource;
     }
 
     @Override
-    public RepositoryResource getResource() {
+    public RepositoryResource getTargetResource() {
         return resource;
     }
 
@@ -150,7 +150,7 @@ public class RepoSpyController extends AbstractEditor implements ResourceEditor 
     }
 
     public Optional<Resource> restServer() {
-        MinionServerResource res = new MinionServerResource();
+        WebServerResource res = new WebServerResource();
         Handler<HttpRequest> rest = new IRepoHandler(repository.getRepo());
         res.getServer().setHandler(rest);
         return Optional.of(res);

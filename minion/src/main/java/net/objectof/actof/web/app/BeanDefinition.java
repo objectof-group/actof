@@ -1,4 +1,4 @@
-package net.objectof.actof.minion.components.spring;
+package net.objectof.actof.web.app;
 
 
 import java.io.File;

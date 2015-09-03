@@ -12,6 +12,7 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
@@ -77,13 +78,8 @@ public class EditorPane implements Titled, FXRegion, FXLoaded, DelayedConstruct,
     }
 
     @Override
-    public String getTitle() {
-        return editor.getTitle();
-    }
-
-    @Override
-    public void setTitle(String title) {
-        editor.setTitle(title);
+    public StringProperty titleProperty() {
+        return editor.titleProperty();
     }
 
     @Override
@@ -124,9 +120,8 @@ public class EditorPane implements Titled, FXRegion, FXLoaded, DelayedConstruct,
             item.disableProperty().bind(a.getEnabledProperty().not());
             item.setOnAction(event -> {
                 Optional<Resource> result = a.perform();
-                if (result.isPresent()) {
-                    editor.getResources().add(result.get());
-                }
+                if (!result.isPresent()) { return; }
+                editor.getResources().add(result.get());
             });
             actionsButton.getItems().add(item);
         }

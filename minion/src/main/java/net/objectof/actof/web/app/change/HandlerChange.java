@@ -1,4 +1,4 @@
-package net.objectof.actof.minion.components.spring.change;
+package net.objectof.actof.web.app.change;
 
 
 import net.objectof.actof.common.controller.change.Change;

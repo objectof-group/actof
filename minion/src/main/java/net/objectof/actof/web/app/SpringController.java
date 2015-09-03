@@ -1,4 +1,4 @@
-package net.objectof.actof.minion.components.spring;
+package net.objectof.actof.web.app;
 
 
 import java.io.File;
@@ -40,7 +40,7 @@ import net.objectof.actof.minion.common.classpath.IsolatedClassLoader;
 import net.objectof.actof.minion.common.classpath.sources.MinionClasspath;
 import net.objectof.actof.minion.common.classpath.sources.MinionSource;
 import net.objectof.actof.minion.components.classpath.change.ClasspathChange;
-import net.objectof.actof.minion.components.spring.change.HandlerChange;
+import net.objectof.actof.web.app.change.HandlerChange;
 import net.objectof.actof.widgets.StatusLight;
 import net.objectof.actof.widgets.StatusLight.Status;
 

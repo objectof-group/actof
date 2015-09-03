@@ -10,9 +10,9 @@ public interface ResourceAware {
 
     void setForResource(boolean forResource);
 
-    Resource getResource();
+    Resource getTargetResource();
 
-    void setResource(Resource resource);
+    void setTargetResource(Resource resource);
 
     void loadResource() throws Exception;
 

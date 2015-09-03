@@ -110,12 +110,12 @@ public class SchemaSpyController extends AbstractEditor implements ResourceEdito
     }
 
     @Override
-    public SchemaFileResource getResource() {
+    public SchemaFileResource getTargetResource() {
         return resource;
     }
 
     @Override
-    public void setResource(Resource resource) {
+    public void setTargetResource(Resource resource) {
         this.resource = (SchemaFileResource) resource;
     }
 
@@ -160,7 +160,7 @@ public class SchemaSpyController extends AbstractEditor implements ResourceEdito
         editor.setForResource(true);
         editor.construct();
 
-        editor.setResource(res);
+        editor.setTargetResource(res);
         editor.loadResource();
 
         ActofWindow window = new ActofWindow(editor);

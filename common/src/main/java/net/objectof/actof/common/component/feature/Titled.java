@@ -1,10 +1,19 @@
 package net.objectof.actof.common.component.feature;
 
 
+import javafx.beans.property.StringProperty;
+
+
 public interface Titled {
 
-    String getTitle();
+    StringProperty titleProperty();
 
-    void setTitle(String title);
+    default String getTitle() {
+        return titleProperty().get();
+    }
+
+    default void setTitle(String title) {
+        titleProperty().set(title);
+    }
 
 }

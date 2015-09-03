@@ -3,6 +3,8 @@ package net.objectof.actof.common.component.display.impl;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.stage.Stage;
 import net.objectof.actof.common.component.display.Display;
 import net.objectof.actof.common.controller.change.ChangeController;
@@ -11,7 +13,7 @@ import net.objectof.actof.common.controller.change.IChangeController;
 
 public abstract class AbstractDisplay implements Display {
 
-    private String title;
+    private StringProperty title = new SimpleStringProperty();
     private Stage displayStage;
     private ChangeController changeBus = new IChangeController();
 
@@ -35,13 +37,8 @@ public abstract class AbstractDisplay implements Display {
     }
 
     @Override
-    public String getTitle() {
+    public StringProperty titleProperty() {
         return title;
-    }
-
-    @Override
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     @Override

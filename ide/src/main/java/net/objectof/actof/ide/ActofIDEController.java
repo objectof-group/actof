@@ -15,6 +15,8 @@ import java.util.Scanner;
 import java.util.stream.Collectors;
 
 import javafx.beans.Observable;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
@@ -61,6 +63,8 @@ public class ActofIDEController extends AbstractLoadedEditor implements Display 
     private HBox toolbar;
     @FXML
     private MenuButton newResource;
+
+    private StringProperty title = new SimpleStringProperty("Actof IDE");
 
     private Map<Resource, Tab> resourceTabs = new HashMap<>();
     private List<Node> permanentToolbars = new ArrayList<>();
@@ -117,23 +121,31 @@ public class ActofIDEController extends AbstractLoadedEditor implements Display 
 
     }
 
-    private void createTab(Resource res) throws Exception {
+    private void createTab(Resource res) {
 
-        ResourceEditor editor = res.getEditor();
-        editor.setDisplayStage(getDisplayStage());
-        editor.setChangeBus(getChangeBus());
-        editor.setForResource(true);
-        editor.construct();
+        try {
 
-        editor.setResource(res);
-        editor.loadResource();
+            ResourceEditor editor = res.getEditor();
+            editor.setDisplayStage(getDisplayStage());
+            editor.setChangeBus(getChangeBus());
+            editor.setForResource(true);
+            editor.construct();
 
-        Display display = editor.getDisplay();
+            editor.setTargetResource(res);
+            editor.loadResource();
 
-        Tab tab = new Tab(res.getTitle(), display.getFXRegion());
-        resourceTabs.put(res, tab);
-        tabs.getTabs().add(tab);
-        tabs.getSelectionModel().select(tab);
+            Display display = editor.getDisplay();
+
+            Tab tab = new Tab(res.getTitle(), display.getFXRegion());
+            tab.textProperty().bind(res.titleProperty());
+            resourceTabs.put(res, tab);
+            tabs.getTabs().add(tab);
+            tabs.getSelectionModel().select(tab);
+
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -147,11 +159,6 @@ public class ActofIDEController extends AbstractLoadedEditor implements Display 
             if (getTab(res).equals(tab)) { return res; }
         }
         return null;
-    }
-
-    @Override
-    public String getTitle() {
-        return "Actof IDE";
     }
 
     @Override
@@ -246,10 +253,10 @@ public class ActofIDEController extends AbstractLoadedEditor implements Display 
     private void updateTree() {
         TreeItem<Resource> root = tree.getRoot();
         root.getChildren().clear();
-        for (Resource res : getResources()) {
+        getResources().stream().filter(r -> !r.isTransient()).forEachOrdered(res -> {
             TreeItem<Resource> item = new TreeItem<Resource>(res);
             root.getChildren().add(item);
-        }
+        });
     }
 
     public void onAddSchema() {
@@ -274,6 +281,15 @@ public class ActofIDEController extends AbstractLoadedEditor implements Display 
     }
 
     @Override
-    protected void onResourceAdded(Resource res) throws Exception {}
+    protected void onResourceAdded(Resource res) throws Exception {
+        if (res.isTransient()) {
+            createTab(res);
+        }
+    }
+
+    @Override
+    public StringProperty titleProperty() {
+        return title;
+    }
 
 }

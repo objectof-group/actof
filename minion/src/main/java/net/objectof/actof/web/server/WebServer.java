@@ -28,7 +28,7 @@ import javafx.collections.ObservableList;
 import net.objectof.actof.common.component.feature.ChangeBusAware;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.controller.change.IChangeController;
-import net.objectof.actof.minion.components.spring.change.HandlerChange;
+import net.objectof.actof.web.app.change.HandlerChange;
 import net.objectof.actof.web.server.change.ServerStartChange;
 import net.objectof.actof.web.server.change.ServerStopChange;
 import net.objectof.actof.widgets.StatusLight;
@@ -38,7 +38,7 @@ import net.objectof.corc.web.v2.HttpRequest;
 import net.objectof.corc.web.v2.impl.IHttpRequest;
 
 
-public class MinionServer implements ChangeBusAware {
+public class WebServer implements ChangeBusAware {
 
     private ChangeController changebus = new IChangeController();
 
