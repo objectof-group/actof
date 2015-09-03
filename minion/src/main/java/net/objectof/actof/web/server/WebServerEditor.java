@@ -71,6 +71,8 @@ public class WebServerEditor extends AbstractLoadedEditor implements ResourceEdi
     @Override
     public void construct() throws Exception {
 
+        setTitle("Web Server");
+
         getDisplayStage().setOnCloseRequest(event -> stop());
 
         getChangeBus().listen(HandlerChange.class, minionServer::setHandler);

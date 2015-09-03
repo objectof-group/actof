@@ -51,6 +51,9 @@ import net.objectof.actof.widgets.StatusLight.Status;
 public class WebClient extends AbstractLoadedEditor implements Display {
 
     @FXML
+    private BorderPane topPane;
+
+    @FXML
     private TabPane tabpane;
 
     @FXML
@@ -91,7 +94,7 @@ public class WebClient extends AbstractLoadedEditor implements Display {
     public void construct() {
 
         setTitle("REST Client");
-        
+
         responsebodypane.setTop(responsemessage);
 
         method.getItems().addAll("GET");
@@ -157,6 +160,10 @@ public class WebClient extends AbstractLoadedEditor implements Display {
         tabpane.getSelectionModel().select(tabresponse);
 
         go.setGraphic(ActofIcons.getIconView(Icon.MEDIA_PLAYBACK_START, Size.TOOLBAR));
+
+        getToolbars().addAll(toolbar.getChildren());
+        toolbar.getChildren().clear();
+        topPane.setTop(null);
 
         getChangeBus().listen(this::onChange);
 

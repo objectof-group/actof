@@ -8,9 +8,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<BorderPane stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.web.client.WebClient">
+<BorderPane fx:id="topPane" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.web.client.WebClient">
    <top>
-      <HBox styleClass="tool-bar" BorderPane.alignment="CENTER">
+      <HBox fx:id="toolbar" styleClass="tool-bar" BorderPane.alignment="CENTER">
          <children>
             <ChoiceBox fx:id="method" prefWidth="100.0" />
             <Label fx:id="prefixlabel" text="localhost:8080/" />

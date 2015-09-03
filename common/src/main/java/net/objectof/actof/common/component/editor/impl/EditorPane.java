@@ -186,6 +186,7 @@ public class EditorPane implements Titled, FXRegion, FXLoaded, DelayedConstruct,
                     tab.setContent(panel.getFXRegion());
                 } else {
                     tab = new Tab(panel.getTitle(), panel.getFXRegion());
+                    tab.textProperty().bind(panel.titleProperty());
                     tab.closableProperty().bind(panel.dismissibleProperty());
                     tab.setOnClosed(event -> {
                         panel.dismiss();

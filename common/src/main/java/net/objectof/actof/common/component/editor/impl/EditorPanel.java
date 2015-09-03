@@ -31,7 +31,7 @@ public class EditorPanel implements Panel {
 
     @Override
     public StringProperty titleProperty() {
-        return pane.titleProperty();
+        return editor.titleProperty();
     }
 
     @Override
