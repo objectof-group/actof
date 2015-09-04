@@ -25,7 +25,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import net.objectof.actof.common.component.feature.ChangeBusAware;
+import net.objectof.actof.common.component.feature.ChangeBusProperty;
 import net.objectof.actof.common.controller.change.ChangeController;
 import net.objectof.actof.common.controller.change.IChangeController;
 import net.objectof.actof.web.app.change.HandlerChange;
@@ -38,9 +38,9 @@ import net.objectof.corc.web.v2.HttpRequest;
 import net.objectof.corc.web.v2.impl.IHttpRequest;
 
 
-public class WebServer implements ChangeBusAware {
+public class WebServer implements ChangeBusProperty {
 
-    private ChangeController changebus = new IChangeController();
+    private ObjectProperty<ChangeController> changeBusProperty = new SimpleObjectProperty<>(new IChangeController());
 
     // Jetty Server Components
     private Server server;
@@ -174,6 +174,11 @@ public class WebServer implements ChangeBusAware {
         getLog().add(message);
     }
 
+    @Override
+    public ObjectProperty<ChangeController> changeBusProperty() {
+        return changeBusProperty;
+    }
+
     public ReadOnlyBooleanProperty startableProperty() {
         return startable;
     }
@@ -212,16 +217,6 @@ public class WebServer implements ChangeBusAware {
 
     public final void setStatusLight(final net.objectof.actof.widgets.StatusLight.Status statuslight) {
         this.statusLightProperty().set(statuslight);
-    }
-
-    @Override
-    public ChangeController getChangeBus() {
-        return changebus;
-    }
-
-    @Override
-    public void setChangeBus(ChangeController bus) {
-        this.changebus = bus;
     }
 
     public ObservableList<String> getLog() {

@@ -39,7 +39,7 @@ public class Minion extends Application implements Display, Editor {
 
     private MinionController window;
 
-    private ChangeController change = new IChangeController();
+    private ObjectProperty<ChangeController> changeBusProperty = new SimpleObjectProperty<>(new IChangeController());
 
     private WebServerEditor server;
     private HandlerController handlers;
@@ -67,8 +67,8 @@ public class Minion extends Application implements Display, Editor {
     }
 
     @Override
-    public ChangeController getChangeBus() {
-        return change;
+    public ObjectProperty<ChangeController> changeBusProperty() {
+        return changeBusProperty;
     }
 
     private void stage() throws IOException {
@@ -132,11 +132,6 @@ public class Minion extends Application implements Display, Editor {
     @Override
     public ObjectProperty<Stage> stageProperty() {
         return stageProperty;
-    }
-
-    @Override
-    public void setChangeBus(ChangeController bus) {
-        this.change = bus;
     }
 
     @Override

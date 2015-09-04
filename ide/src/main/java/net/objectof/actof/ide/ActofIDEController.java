@@ -31,7 +31,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import net.objectof.actof.common.component.display.Display;
 import net.objectof.actof.common.component.display.Panel;
 import net.objectof.actof.common.component.display.impl.IPanel;
@@ -71,10 +70,6 @@ public class ActofIDEController extends AbstractLoadedEditor implements Display 
 
     public static Editor load() throws IOException {
         return FXUtil.loadFX(ActofIDEController.class, "ActofIDEController.fxml");
-    }
-
-    public void setStage(Stage stage) {
-        setStage(stage);
     }
 
     public void onProjectOpen()

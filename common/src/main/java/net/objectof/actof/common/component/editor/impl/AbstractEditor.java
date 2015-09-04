@@ -24,7 +24,7 @@ public abstract class AbstractEditor implements Editor {
 
     private StringProperty title = new SimpleStringProperty();
     private ObjectProperty<Stage> stageProperty = new SimpleObjectProperty<>(null);
-    private ChangeController changeBus = new IChangeController();
+    private ObjectProperty<ChangeController> changeBusProperty = new SimpleObjectProperty<>(new IChangeController());
 
     private BooleanProperty dismissible = new SimpleBooleanProperty(true);
     private BooleanProperty dismissed = new SimpleBooleanProperty(false);
@@ -55,13 +55,8 @@ public abstract class AbstractEditor implements Editor {
     protected abstract void onResourceAdded(Resource res) throws Exception;
 
     @Override
-    public ChangeController getChangeBus() {
-        return changeBus;
-    }
-
-    @Override
-    public void setChangeBus(ChangeController bus) {
-        this.changeBus = bus;
+    public ObjectProperty<ChangeController> changeBusProperty() {
+        return changeBusProperty;
     }
 
     public ObjectProperty<Resource> resourceProperty() {

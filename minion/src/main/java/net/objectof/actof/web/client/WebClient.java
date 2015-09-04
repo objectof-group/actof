@@ -165,7 +165,14 @@ public class WebClient extends AbstractLoadedEditor implements Display {
         toolbar.getChildren().clear();
         topPane.setTop(null);
 
-        getChangeBus().listen(this::onChange);
+        changeBusProperty().addListener((obs, o, n) -> {
+            if (o != null) {
+                o.unlisten(this::onChange);
+            }
+            if (n != null) {
+                n.listen(this::onChange);
+            }
+        });
 
     }
 

@@ -17,7 +17,7 @@ public abstract class AbstractDisplay implements Display {
 
     private StringProperty title = new SimpleStringProperty();
     private ObjectProperty<Stage> stageProperty = new SimpleObjectProperty<>();
-    private ChangeController changeBus = new IChangeController();
+    private ObjectProperty<ChangeController> changeBusProperty = new SimpleObjectProperty<>(new IChangeController());
 
     private BooleanProperty dismissible = new SimpleBooleanProperty(true);
     private BooleanProperty dismissed = new SimpleBooleanProperty(false);
@@ -26,12 +26,9 @@ public abstract class AbstractDisplay implements Display {
         return stageProperty;
     }
 
-    public ChangeController getChangeBus() {
-        return changeBus;
-    }
-
-    public void setChangeBus(ChangeController bus) {
-        this.changeBus = bus;
+    @Override
+    public ObjectProperty<ChangeController> changeBusProperty() {
+        return changeBusProperty;
     }
 
     @Override
