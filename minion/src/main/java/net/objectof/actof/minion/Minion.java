@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import javafx.application.Application;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -33,7 +34,7 @@ public class Minion extends Application implements Display, Editor {
     public static final String SETTING_PATH = "net.objectof.actof.minion.path";
 
     private Region displayNode;
-    private boolean top = true;;
+    private boolean top = true;
 
     private MinionController window;
 
@@ -186,6 +187,12 @@ public class Minion extends Application implements Display, Editor {
 
     @Override
     public StringProperty titleProperty() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public ObjectProperty<Resource> resourceProperty() {
         // TODO Auto-generated method stub
         return null;
     }

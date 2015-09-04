@@ -5,7 +5,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.objectof.actof.common.component.editor.ResourceEditor;
+import net.objectof.actof.common.component.editor.Editor;
 import net.objectof.actof.common.component.resource.impl.AbstractResource;
 import net.objectof.actof.schemaspy.SchemaSpyController;
 
@@ -15,7 +15,7 @@ public class SchemaFileResource extends AbstractResource {
     private File schemaFile;
 
     @Override
-    public ResourceEditor createEditor() throws Exception {
+    public Editor createEditor() throws Exception {
         return new SchemaSpyController();
     }
 

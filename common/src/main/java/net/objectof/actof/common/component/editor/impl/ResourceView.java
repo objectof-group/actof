@@ -109,6 +109,9 @@ public class ResourceView implements Titled, FXRegion, FXLoaded, DelayedConstruc
     }
 
     private void layoutDisplay() {
+        System.out.println("1: " + resource);
+        System.out.println("2: " + resource.getEditor());
+        System.out.println("3: " + resource.getEditor().getDisplay());
         displayPanel.setCenter(resource.getEditor().getDisplay().getFXRegion());
     }
 

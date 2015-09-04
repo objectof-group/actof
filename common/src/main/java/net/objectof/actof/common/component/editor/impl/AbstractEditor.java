@@ -2,7 +2,9 @@ package net.objectof.actof.common.component.editor.impl;
 
 
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -32,6 +34,8 @@ public abstract class AbstractEditor implements Editor {
     private ObservableList<Node> toolbars = FXCollections.observableArrayList();
     private ObservableList<Panel> panels = FXCollections.observableArrayList();
 
+    private ObjectProperty<Resource> resourceProperty = new SimpleObjectProperty<>(null);
+
     public AbstractEditor() {
         getResources().addListener((ListChangeListener.Change<? extends Resource> c) -> {
             while (c.next()) {
@@ -58,6 +62,10 @@ public abstract class AbstractEditor implements Editor {
     @Override
     public void setChangeBus(ChangeController bus) {
         this.changeBus = bus;
+    }
+
+    public ObjectProperty<Resource> resourceProperty() {
+        return resourceProperty;
     }
 
     @Override

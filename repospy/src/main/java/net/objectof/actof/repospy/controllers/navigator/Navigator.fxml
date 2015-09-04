@@ -21,18 +21,6 @@
                <children>
                   <HBox fx:id="repoToolbar">
                      <children>
-                        <Button fx:id="connect" mnemonicParsing="false" onAction="#doConnect" styleClass="tool-bar-button" text="Connect">
-                           <graphic>
-                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@icons/connect.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                           <tooltip>
-                              <Tooltip text="Connect to an ObjectOf repository" />
-                           </tooltip>
-                        </Button>
                         <Button fx:id="revert" disable="true" mnemonicParsing="false" onAction="#doRevert" styleClass="tool-bar-button">
                            <tooltip>
                               <Tooltip fx:id="revert_tooltip" text="Revert all changes" />

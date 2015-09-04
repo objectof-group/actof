@@ -16,7 +16,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import net.objectof.actof.common.component.display.Display;
-import net.objectof.actof.common.component.editor.ResourceEditor;
 import net.objectof.actof.common.component.editor.impl.AbstractLoadedEditor;
 import net.objectof.actof.common.component.resource.Action;
 import net.objectof.actof.common.component.resource.Resource;
@@ -28,7 +27,7 @@ import net.objectof.actof.web.client.WebClient;
 import net.objectof.actof.widgets.StatusLight;
 
 
-public class WebServerEditor extends AbstractLoadedEditor implements ResourceEditor, Display {
+public class WebServerEditor extends AbstractLoadedEditor implements Display {
 
     @FXML
     private BorderPane topPane;
@@ -48,7 +47,6 @@ public class WebServerEditor extends AbstractLoadedEditor implements ResourceEdi
     private StatusLight statuslight;
 
     private WebServer minionServer;
-    private WebServerResource resource;
 
     private Action actionShowClient = new IAction("REST Client", () -> {
         try {
@@ -88,6 +86,8 @@ public class WebServerEditor extends AbstractLoadedEditor implements ResourceEdi
 
         getActions().add(actionShowClient);
 
+        resourceProperty().addListener(event -> loadResource());
+
     }
 
     public void start() {
@@ -112,26 +112,8 @@ public class WebServerEditor extends AbstractLoadedEditor implements ResourceEdi
         return "Server";
     }
 
-    @Override
-    public boolean isForResource() {
-        return true;
-    }
-
-    @Override
-    public void setForResource(boolean forResource) {}
-
-    @Override
-    public Resource getTargetResource() {
-        return resource;
-    }
-
-    @Override
-    public void setTargetResource(Resource resource) {
-        this.resource = (WebServerResource) resource;
-    }
-
-    @Override
-    public void loadResource() throws Exception {
+    private void loadResource() {
+        WebServerResource resource = (WebServerResource) getResource();
         minionServer = resource.getServer();
 
         minionServer.getLog().addListener(logListener);

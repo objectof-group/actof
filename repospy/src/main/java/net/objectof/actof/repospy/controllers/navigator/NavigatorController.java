@@ -13,7 +13,6 @@ import java.util.Scanner;
 
 import org.controlsfx.control.BreadCrumbBar;
 import org.controlsfx.control.textfield.CustomTextField;
-import org.controlsfx.dialog.Dialogs;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -67,7 +66,6 @@ import net.objectof.actof.repospy.controllers.navigator.treemodel.TreeNode;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.IAggregateNode;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.IKindNode;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.IRootNode;
-import net.objectof.connector.Connector;
 import net.objectof.model.Kind;
 import net.objectof.model.Resource;
 import net.objectof.model.Stereotype;
@@ -88,7 +86,7 @@ public class NavigatorController extends AbstractLoadedDisplay {
     private ComboBox<String> kindCombo;
 
     @FXML
-    private Button connect, commit, review, revert;
+    private Button commit, review, revert;
     @FXML
     private Tooltip revert_tooltip;
     @FXML
@@ -123,9 +121,6 @@ public class NavigatorController extends AbstractLoadedDisplay {
         entitiesPanel.setDismissible(false);
         repospy.getPanels().add(entitiesPanel);
         toppane.getChildren().remove(sidebar);
-        if (repospy.isForResource()) {
-            repoToolbar.getChildren().remove(connect);
-        }
 
         rootNode = new IRootNode(repospy, null);
         root = new RepoSpyTreeItem(rootNode, repospy);
@@ -314,29 +309,7 @@ public class NavigatorController extends AbstractLoadedDisplay {
 
     /* FXML Hook */
     public void doConnect() throws Exception {
-
-        if (repospy.history.hasHistory()) {
-            Alert alert = new Alert(AlertType.CONFIRMATION);
-            alert.setTitle("Discard Changes?");
-            alert.setHeaderText("Discard uncommitted changes?");
-            alert.setContentText("You cannot undo this operation.");
-
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() != ButtonType.OK) { return; }
-        }
-
-        Connector conn = RepoSpyController.showConnect(getDisplayStage());
-        if (conn == null) { return; }
-
-        try {
-            repospy.connect(conn);
-        }
-        catch (Exception e) {
-            Dialogs.create()
-                    .title("Connection Failed")
-                    .message("Failed to connect to the specified repository")
-                    .showException(e);
-        }
+        repospy.onConnect();
     }
 
     public void recordCopy() {

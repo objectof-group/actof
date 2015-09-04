@@ -36,7 +36,6 @@ import net.objectof.actof.common.component.display.Display;
 import net.objectof.actof.common.component.display.Panel;
 import net.objectof.actof.common.component.display.impl.IPanel;
 import net.objectof.actof.common.component.editor.Editor;
-import net.objectof.actof.common.component.editor.ResourceEditor;
 import net.objectof.actof.common.component.editor.impl.AbstractLoadedEditor;
 import net.objectof.actof.common.component.resource.Action;
 import net.objectof.actof.common.component.resource.Resource;
@@ -125,14 +124,12 @@ public class ActofIDEController extends AbstractLoadedEditor implements Display 
 
         try {
 
-            ResourceEditor editor = res.getEditor();
+            Editor editor = res.getEditor();
             editor.setDisplayStage(getDisplayStage());
             editor.setChangeBus(getChangeBus());
-            editor.setForResource(true);
             editor.construct();
 
-            editor.setTargetResource(res);
-            editor.loadResource();
+            editor.setResource(res);
 
             Display display = editor.getDisplay();
 

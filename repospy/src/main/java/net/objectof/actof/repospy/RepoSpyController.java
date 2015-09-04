@@ -4,12 +4,17 @@ package net.objectof.actof.repospy;
 import java.io.IOException;
 import java.util.Optional;
 
+import org.controlsfx.dialog.Dialogs;
+
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ScrollPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.objectof.actof.common.component.display.Display;
-import net.objectof.actof.common.component.editor.ResourceEditor;
+import net.objectof.actof.common.component.editor.Editor;
 import net.objectof.actof.common.component.editor.impl.AbstractEditor;
 import net.objectof.actof.common.component.editor.impl.ResourcePanel;
 import net.objectof.actof.common.component.resource.Action;
@@ -32,15 +37,12 @@ import net.objectof.model.query.Query;
 import net.objectof.model.query.parser.QueryBuilder;
 
 
-public class RepoSpyController extends AbstractEditor implements ResourceEditor {
+public class RepoSpyController extends AbstractEditor {
 
     public RepositoryController repository;
     public SearchController search;
     public NavigatorController navigator;
     public HistoryController history;
-
-    private boolean forResource = false;
-    private RepositoryResource resource;
 
     Action searchAction = new IAction("Search", () -> navigator.toggleSearchBar());
     Action dumpAction = new IAction("Dump to JSON", () -> navigator.onDump());
@@ -74,19 +76,20 @@ public class RepoSpyController extends AbstractEditor implements ResourceEditor 
         getActions().add(loadAction);
         getActions().add(restAction);
 
+        resourceProperty().addListener(event -> loadResource());
+
     }
 
     @Override
     protected void onResourceAdded(Resource res) {
         try {
-            ResourceEditor e = res.getEditor();
+            Editor e = res.getEditor();
             if (e == null) { return; }
 
             e.setChangeBus(getChangeBus());
             e.setDisplayStage(getDisplayStage());
             e.construct();
-            e.setTargetResource(res);
-            e.loadResource();
+            e.setResource(res);
             ResourcePanel panel = new ResourcePanel(res);
             getPanels().add(panel);
 
@@ -100,19 +103,14 @@ public class RepoSpyController extends AbstractEditor implements ResourceEditor 
         }
     }
 
-    @Override
-    public void setTargetResource(Resource resource) {
-        this.resource = (RepositoryResource) resource;
-    }
-
-    @Override
-    public RepositoryResource getTargetResource() {
-        return resource;
-    }
-
-    @Override
-    public void loadResource() throws Exception {
-        connect(resource.getConnector());
+    private void loadResource() {
+        RepositoryResource res = (RepositoryResource) getResource();
+        try {
+            connect(res.getConnector());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /*************************************************************
@@ -180,18 +178,33 @@ public class RepoSpyController extends AbstractEditor implements ResourceEditor 
     }
 
     @Override
-    public boolean isForResource() {
-        return forResource;
-    }
-
-    @Override
-    public void setForResource(boolean forResource) {
-        this.forResource = forResource;
-    }
-
-    @Override
     public Display getDisplay() {
         return navigator;
+    }
+
+    public void onConnect() {
+
+        if (history.hasHistory()) {
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            alert.setTitle("Discard Changes?");
+            alert.setHeaderText("Discard uncommitted changes?");
+            alert.setContentText("You cannot undo this operation.");
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() != ButtonType.OK) { return; }
+        }
+
+        try {
+            Connector conn = RepoSpyController.showConnect(getDisplayStage());
+            if (conn == null) { return; }
+            connect(conn);
+        }
+        catch (Exception e) {
+            Dialogs.create()
+                    .title("Connection Failed")
+                    .message("Failed to connect to the specified repository")
+                    .showException(e);
+        }
     }
 
 }

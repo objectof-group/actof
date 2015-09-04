@@ -4,7 +4,7 @@ package net.objectof.actof.web.server;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.objectof.actof.common.component.editor.ResourceEditor;
+import net.objectof.actof.common.component.editor.Editor;
 import net.objectof.actof.common.component.resource.impl.AbstractResource;
 
 
@@ -17,7 +17,7 @@ public class WebServerResource extends AbstractResource {
     }
 
     @Override
-    public ResourceEditor createEditor() throws Exception {
+    public Editor createEditor() throws Exception {
         return WebServerEditor.load();
     }
 

@@ -4,21 +4,19 @@ package net.objectof.actof.common.component.resource.impl;
 import java.util.Map;
 
 import net.objectof.actof.common.component.editor.Editor;
-import net.objectof.actof.common.component.editor.ResourceEditor;
-import net.objectof.actof.common.component.editor.impl.ResourceEditorDecorator;
 
 
 public class TransientResource extends AbstractResource {
 
-    private ResourceEditor editor;
+    private Editor editor;
 
     public TransientResource(Editor editor) {
-        this.editor = new ResourceEditorDecorator(editor);
+        this.editor = editor;
         titleProperty().bind(this.editor.titleProperty());
     }
 
     @Override
-    public ResourceEditor createEditor() throws Exception {
+    public Editor createEditor() throws Exception {
         return editor;
     }
 
