@@ -91,7 +91,7 @@ public class WebClient extends AbstractLoadedEditor implements Display {
     private String prefix;
 
     @Override
-    public void construct() {
+    public void onFXLoad() {
 
         setTitle("REST Client");
 

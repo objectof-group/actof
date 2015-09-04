@@ -11,7 +11,9 @@ import java.util.Optional;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuButton;
@@ -27,10 +29,9 @@ import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import net.objectof.actof.common.component.display.Panel;
 import net.objectof.actof.common.component.editor.Editor;
-import net.objectof.actof.common.component.feature.DelayedConstruct;
 import net.objectof.actof.common.component.feature.FXLoaded;
 import net.objectof.actof.common.component.feature.FXRegion;
-import net.objectof.actof.common.component.feature.StageAware;
+import net.objectof.actof.common.component.feature.StageProperty;
 import net.objectof.actof.common.component.feature.Titled;
 import net.objectof.actof.common.component.resource.Action;
 import net.objectof.actof.common.component.resource.Resource;
@@ -38,7 +39,7 @@ import net.objectof.actof.common.icons.ActofIcons;
 import net.objectof.actof.common.util.FXUtil;
 
 
-public class ResourceView implements Titled, FXRegion, FXLoaded, DelayedConstruct, StageAware {
+public class ResourceView implements Titled, FXRegion, FXLoaded, StageProperty {
 
     @FXML
     private BorderPane panel, topPane, displayPanel;
@@ -54,7 +55,7 @@ public class ResourceView implements Titled, FXRegion, FXLoaded, DelayedConstruc
     private Separator separator;
 
     private Region windowNode;
-    private Stage stage = new Stage();
+    private ObjectProperty<Stage> stageProperty = new SimpleObjectProperty<>(new Stage());
 
     private Resource resource;
     private BooleanProperty alwaysShowTabs = new SimpleBooleanProperty(false);
@@ -69,12 +70,9 @@ public class ResourceView implements Titled, FXRegion, FXLoaded, DelayedConstruc
         return FXUtil.loadFX(ResourceView.class, "ResourceView.fxml");
     }
 
-    public void setDisplayStage(Stage stage) {
-        this.stage = stage;
-    }
-
-    public Stage getDisplayStage() {
-        return stage;
+    @Override
+    public ObjectProperty<Stage> stageProperty() {
+        return stageProperty;
     }
 
     @Override
@@ -82,8 +80,7 @@ public class ResourceView implements Titled, FXRegion, FXLoaded, DelayedConstruc
         return resource.titleProperty();
     }
 
-    @Override
-    public void construct() throws Exception {
+    public void onFXLoad() {
         panels.setStyle("-fx-open-tab-animation: NONE; -fx-close-tab-animation: NONE;");
         SplitPane.setResizableWithParent(panel, false);
         SplitPane.setResizableWithParent(displayPanel, true);
@@ -93,7 +90,7 @@ public class ResourceView implements Titled, FXRegion, FXLoaded, DelayedConstruc
 
         // topPane.sceneProperty().addListener(event -> fixTabBar());
         alwaysShowTabs.addListener(e -> layoutPanels());
-    }
+    };
 
     public void setTabClosingPolicy(TabClosingPolicy policy) {
         panels.setTabClosingPolicy(policy);
@@ -228,7 +225,7 @@ public class ResourceView implements Titled, FXRegion, FXLoaded, DelayedConstruc
 
         updateDisplay();
 
-        getDisplayStage().sizeToScene();
+        getStage().sizeToScene();
 
     }
 

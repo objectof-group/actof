@@ -120,7 +120,13 @@ public class SchemaViewController extends AbstractLoadedDisplay {
     public File lastschemadir = null;
 
     @Override
-    public void construct() throws SAXException, IOException, ParserConfigurationException, XMLParseException {
+    public void onFXLoad() {
+
+    }
+
+    public void setTopController(SchemaSpyController schemaspy)
+            throws XMLParseException, SAXException, IOException, ParserConfigurationException {
+        this.schemaspy = schemaspy;
 
         sidebar.getChildren().remove(namespaceGrid);
         namespacePopover = new PopOver(namespaceGrid);
@@ -234,17 +240,6 @@ public class SchemaViewController extends AbstractLoadedDisplay {
 
     }
 
-    @Override
-    public void onFXLoad() {
-
-    }
-
-    public void setTopController(SchemaSpyController schemaspy)
-            throws XMLParseException, SAXException, IOException, ParserConfigurationException {
-        this.schemaspy = schemaspy;
-        onNewSchema();
-    }
-
     private void createAddChildBar() {
         addChildCard = new Card();
         addChildCard.setRadius(0);
@@ -339,7 +334,7 @@ public class SchemaViewController extends AbstractLoadedDisplay {
         chooser.setTitle("Generate Jar File");
         ExtensionFilter filter = new ExtensionFilter("Jar Files", "*.jar");
         chooser.setSelectedExtensionFilter(filter);
-        File jarfile = chooser.showSaveDialog(schemaspy.getDisplayStage());
+        File jarfile = chooser.showSaveDialog(schemaspy.getStage());
         if (jarfile == null) { return; }
 
         try {
@@ -352,7 +347,7 @@ public class SchemaViewController extends AbstractLoadedDisplay {
 
     public void onOpen()
             throws FileNotFoundException, SAXException, IOException, ParserConfigurationException, XMLParseException {
-        File file = SchemaSpyController.chooseSchemaFile(lastschemadir, schemaspy.getDisplayStage());
+        File file = SchemaSpyController.chooseSchemaFile(lastschemadir, schemaspy.getStage());
         lastschemadir = file.getParentFile();
         schemaspy.setSchema(file);
     }
@@ -365,7 +360,7 @@ public class SchemaViewController extends AbstractLoadedDisplay {
         }
         ExtensionFilter filter = new ExtensionFilter("Schema Files", "xml");
         chooser.setSelectedExtensionFilter(filter);
-        File file = chooser.showSaveDialog(schemaspy.getDisplayStage());
+        File file = chooser.showSaveDialog(schemaspy.getStage());
         if (file == null) { return; }
 
         lastschemadir = file.getParentFile();

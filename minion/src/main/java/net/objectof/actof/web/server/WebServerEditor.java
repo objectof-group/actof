@@ -67,11 +67,11 @@ public class WebServerEditor extends AbstractLoadedEditor implements Display {
     }
 
     @Override
-    public void construct() throws Exception {
+    public void onFXLoad() {
 
         setTitle("Web Server");
 
-        getDisplayStage().setOnCloseRequest(event -> stop());
+        dismissedProperty().addListener(event -> stop());
 
         getChangeBus().listen(HandlerChange.class, minionServer::setHandler);
 

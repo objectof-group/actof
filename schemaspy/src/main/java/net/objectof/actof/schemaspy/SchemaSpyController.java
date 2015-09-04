@@ -39,6 +39,23 @@ public class SchemaSpyController extends AbstractEditor {
     private Action createJar = new IAction("Build Jar File", () -> view.onGenerate());
     private Action createRepo = new IAction("Create Repository", () -> view.onCreate());
 
+    public SchemaSpyController() throws SAXException, IOException, ParserConfigurationException, XMLParseException {
+        newSchema();
+        view = showSchemaView();
+
+        createJar.setEnabled(false);
+        createRepo.setEnabled(false);
+        getActions().add(createJar);
+        getActions().add(createRepo);
+
+        getChangeBus().listen(SchemaReplacedChange.class, () -> {
+            createJar.setEnabled(true);
+            createRepo.setEnabled(true);
+        });
+
+        resourceProperty().addListener(event -> loadResource());
+    }
+
     public void newSchema() throws SAXException, IOException, ParserConfigurationException, XMLParseException {
         setSchema(new ISchemaController(getChangeBus()));
     }
@@ -64,14 +81,13 @@ public class SchemaSpyController extends AbstractEditor {
         SchemaViewController controller = SchemaViewController.load();
         controller.setChangeBus(getChangeBus());
         controller.setTopController(this);
-        controller.setDisplayStage(getDisplayStage());
-        controller.construct();
+        controller.setStage(getStage());
 
         return controller;
     }
 
     public Connector showConnect() throws IOException {
-        return ConnectionController.showDialog(getDisplayStage(), true);
+        return ConnectionController.showDialog(getStage(), true);
     }
 
     public SchemaController getSchema() {
@@ -81,25 +97,6 @@ public class SchemaSpyController extends AbstractEditor {
     @Override
     public String getTitle() {
         return "SchemaSpy";
-    }
-
-    @Override
-    public void construct() throws Exception {
-        newSchema();
-        view = showSchemaView();
-
-        createJar.setEnabled(false);
-        createRepo.setEnabled(false);
-        getActions().add(createJar);
-        getActions().add(createRepo);
-
-        getChangeBus().listen(SchemaReplacedChange.class, () -> {
-            createJar.setEnabled(true);
-            createRepo.setEnabled(true);
-        });
-
-        resourceProperty().addListener(event -> loadResource());
-
     }
 
     private void loadResource() {
@@ -135,7 +132,6 @@ public class SchemaSpyController extends AbstractEditor {
     protected void onResourceAdded(Resource res) throws Exception {
 
         Editor editor = res.getEditor();
-        editor.construct();
         editor.setResource(res);
 
         ActofWindow window = new ActofWindow(editor);

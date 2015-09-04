@@ -6,6 +6,7 @@ import java.io.IOException;
 import javafx.application.Application;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -46,12 +47,12 @@ public class Minion extends Application implements Display, Editor {
     private WebClient rest;
     private ClasspathController classpath;
 
-    private Stage stage;
+    private ObjectProperty<Stage> stageProperty = new SimpleObjectProperty<>();
 
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        stage = primaryStage;
+        setStage(primaryStage);
         stage();
         minionWindow();
 
@@ -61,7 +62,7 @@ public class Minion extends Application implements Display, Editor {
         restTab();
         handlerTab();
 
-        stage.show();
+        getStage().show();
 
     }
 
@@ -71,8 +72,8 @@ public class Minion extends Application implements Display, Editor {
     }
 
     private void stage() throws IOException {
-        stage.setTitle("Minion Web Server");
-        stage.getIcons().add(new Image(Minion.class.getResource("view/Minion.png").openStream()));
+        getStage().setTitle("Minion Web Server");
+        getStage().getIcons().add(new Image(Minion.class.getResource("view/Minion.png").openStream()));
     }
 
     private void minionWindow() throws IOException {
@@ -80,7 +81,7 @@ public class Minion extends Application implements Display, Editor {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("view/Minion.fxml"));
         displayNode = loader.load();
-        stage.setScene(new Scene(displayNode));
+        getStage().setScene(new Scene(displayNode));
 
         window = loader.getController();
 
@@ -89,7 +90,6 @@ public class Minion extends Application implements Display, Editor {
     private void serverTab() throws Exception {
         server = WebServerEditor.load();
         server.setChangeBus(getChangeBus());
-        server.construct();
         window.addTab(server.getFXRegion(), "Server");
     }
 
@@ -130,22 +130,14 @@ public class Minion extends Application implements Display, Editor {
     }
 
     @Override
-    public Stage getDisplayStage() {
-        return stage;
-    }
-
-    @Override
-    public void setDisplayStage(Stage stage) {
-        this.stage = stage;
+    public ObjectProperty<Stage> stageProperty() {
+        return stageProperty;
     }
 
     @Override
     public void setChangeBus(ChangeController bus) {
         this.change = bus;
     }
-
-    @Override
-    public void construct() throws Exception {}
 
     @Override
     public ObservableList<Node> getToolbars() {

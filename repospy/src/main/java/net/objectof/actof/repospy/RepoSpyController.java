@@ -49,8 +49,7 @@ public class RepoSpyController extends AbstractEditor {
     Action loadAction = new IAction("Load from JSON", () -> navigator.onLoad());
     Action restAction = new IAction("Run REST Server", this::restServer);
 
-    @Override
-    public void construct() throws Exception {
+    public RepoSpyController() throws IOException {
 
         getChangeBus().listen(RepositoryReplacedChange.class, () -> {
             dumpAction.setEnabled(true);
@@ -63,9 +62,8 @@ public class RepoSpyController extends AbstractEditor {
         history = new HistoryController(getChangeBus());
         navigator = NavigatorController.load();
         navigator.setChangeBus(getChangeBus());
-        navigator.setDisplayStage(getDisplayStage());
+        navigator.setStage(getStage());
         navigator.setTopController(this);
-        navigator.construct();
 
         dumpAction.setEnabled(false);
         loadAction.setEnabled(false);
@@ -87,8 +85,7 @@ public class RepoSpyController extends AbstractEditor {
             if (e == null) { return; }
 
             e.setChangeBus(getChangeBus());
-            e.setDisplayStage(getDisplayStage());
-            e.construct();
+            e.setStage(getStage());
             e.setResource(res);
             ResourcePanel panel = new ResourcePanel(res);
             getPanels().add(panel);
@@ -137,7 +134,7 @@ public class RepoSpyController extends AbstractEditor {
         Stage connectStage = new Stage(StageStyle.UTILITY);
         connectStage.setTitle("Review Changes");
         // connectStage.initModality(Modality.NONE);
-        connectStage.initOwner(getDisplayStage());
+        connectStage.initOwner(getStage());
         connectStage.setScene(new Scene(scroll));
         connectStage.showAndWait();
 
@@ -195,7 +192,7 @@ public class RepoSpyController extends AbstractEditor {
         }
 
         try {
-            Connector conn = RepoSpyController.showConnect(getDisplayStage());
+            Connector conn = RepoSpyController.showConnect(getStage());
             if (conn == null) { return; }
             connect(conn);
         }

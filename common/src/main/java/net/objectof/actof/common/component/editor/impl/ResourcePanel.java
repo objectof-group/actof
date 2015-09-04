@@ -21,8 +21,7 @@ public class ResourcePanel implements Panel {
     public ResourcePanel(Resource resource) throws Exception {
         this.resource = resource;
         view = ResourceView.load();
-        view.setDisplayStage(resource.getEditor().getDisplayStage());
-        view.construct();
+        view.setStage(resource.getEditor().getStage());
         view.setResource(resource);
         dismissedProperty().addListener(e -> {
             resource.getEditor().dismiss();

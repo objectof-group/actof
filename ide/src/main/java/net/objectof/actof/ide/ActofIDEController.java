@@ -80,7 +80,7 @@ public class ActofIDEController extends AbstractLoadedEditor implements Display 
     public void onProjectOpen()
             throws FileNotFoundException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         FileChooser chooser = new FileChooser();
-        File file = chooser.showOpenDialog(getDisplayStage());
+        File file = chooser.showOpenDialog(getStage());
         if (file == null) { return; }
 
         Scanner s = new Scanner(file);
@@ -104,7 +104,7 @@ public class ActofIDEController extends AbstractLoadedEditor implements Display 
     public void onProjectSave() throws IOException {
 
         FileChooser chooser = new FileChooser();
-        File file = chooser.showSaveDialog(getDisplayStage());
+        File file = chooser.showSaveDialog(getStage());
         if (file == null) { return; }
 
         List<Object> serializedResources = getResources().stream()
@@ -125,10 +125,8 @@ public class ActofIDEController extends AbstractLoadedEditor implements Display 
         try {
 
             Editor editor = res.getEditor();
-            editor.setDisplayStage(getDisplayStage());
+            editor.setStage(getStage());
             editor.setChangeBus(getChangeBus());
-            editor.construct();
-
             editor.setResource(res);
 
             Display display = editor.getDisplay();
@@ -159,7 +157,7 @@ public class ActofIDEController extends AbstractLoadedEditor implements Display 
     }
 
     @Override
-    public void construct() throws Exception {
+    public void onFXLoad() {
 
         TreeItem<Resource> root = new TreeItem<Resource>(new ProjectResource());
         tree.setRoot(root);
@@ -257,7 +255,7 @@ public class ActofIDEController extends AbstractLoadedEditor implements Display 
     }
 
     public void onAddSchema() {
-        File file = SchemaSpyController.chooseSchemaFile(null, getDisplayStage());
+        File file = SchemaSpyController.chooseSchemaFile(null, getStage());
         if (file == null) { return; }
         SchemaFileResource schema = new SchemaFileResource();
         schema.setSchemaFile(file);
@@ -266,7 +264,7 @@ public class ActofIDEController extends AbstractLoadedEditor implements Display 
     }
 
     public void onAddRepository() throws IOException {
-        Connector conn = RepoSpyController.showConnect(getDisplayStage());
+        Connector conn = RepoSpyController.showConnect(getStage());
         RepositoryResource repo = new RepositoryResource();
         repo.setConnector(conn);
         getResources().add(repo);

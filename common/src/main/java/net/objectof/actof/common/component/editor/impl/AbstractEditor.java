@@ -23,7 +23,7 @@ import net.objectof.actof.common.controller.change.IChangeController;
 public abstract class AbstractEditor implements Editor {
 
     private StringProperty title = new SimpleStringProperty();
-    private Stage displayStage;
+    private ObjectProperty<Stage> stageProperty = new SimpleObjectProperty<>(null);
     private ChangeController changeBus = new IChangeController();
 
     private BooleanProperty dismissible = new SimpleBooleanProperty(true);
@@ -69,13 +69,8 @@ public abstract class AbstractEditor implements Editor {
     }
 
     @Override
-    public Stage getDisplayStage() {
-        return displayStage;
-    }
-
-    @Override
-    public void setDisplayStage(Stage stage) {
-        this.displayStage = stage;
+    public ObjectProperty<Stage> stageProperty() {
+        return stageProperty;
     }
 
     @Override

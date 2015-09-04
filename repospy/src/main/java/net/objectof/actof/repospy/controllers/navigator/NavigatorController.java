@@ -103,7 +103,123 @@ public class NavigatorController extends AbstractLoadedDisplay {
     private IRootNode rootNode;
 
     @Override
-    public void construct() {
+    public void onFXLoad() {
+
+    }
+
+    private void onResourceSelect(ResourceSelectedChange change) {
+
+        breadcrumb.setSelectedCrumb(change.getEntry());
+        records.getSelectionModel().select(change.getEntry());
+
+        RepoSpyTreeItem treeitem = change.getEntry();
+        TreeNode node = treeitem.getValue();
+        if (node instanceof IAggregateNode) {
+            IAggregateNode resnode = (IAggregateNode) node;
+
+            if (resnode.getStereotype() == Stereotype.INDEXED) {
+                editorBox = new IndexedLayout(treeitem, repospy);
+            } else if (resnode.getStereotype() == Stereotype.MAPPED) {
+                editorBox = new MappedLayout(treeitem, repospy);
+            } else {
+                editorBox = new CompositeLayout(treeitem, repospy);
+            }
+        } else if (node instanceof IKindNode) {
+            editorBox = new KindLayout(treeitem, repospy);
+        } else if (node instanceof IRootNode) {
+            editorBox = new PackageLayout(treeitem, repospy);
+        } else {
+            editorBox = null;
+        }
+        fieldEditor.setCenter(editorBox);
+    }
+
+    /* FXML Hook */
+    public void doReview() throws IOException {
+        repospy.showReview();
+    }
+
+    /* FXML Hook */
+    public void doCommit() {
+        repospy.repository.post();
+    }
+
+    /* FXML Hook */
+    public void doRevert() {
+        if (repospy.history.hasHistory()) {
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            alert.setTitle("Discard Changes?");
+            alert.setHeaderText("Discard uncommitted changes?");
+            alert.setContentText("You cannot undo this operation.");
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() != ButtonType.OK) { return; }
+        }
+        repospy.repository.makeFresh();
+    }
+
+    public void onLoad() {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Import Data");
+        ExtensionFilter filter = new ExtensionFilter("JSON Data", "*.json");
+        chooser.setSelectedExtensionFilter(filter);
+        File file = chooser.showOpenDialog(repospy.getStage());
+        if (file == null) { return; }
+
+        List<Resource<?>> loaded;
+        try {
+            loaded = repospy.repository.load(new Scanner(file));
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return;
+        }
+        for (Resource<?> res : loaded) {
+            getChangeBus().broadcast(new EntityCreatedChange(res));
+        }
+
+    }
+
+    /* FXML Hook */
+    public void onDump() {
+
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Dump Repository");
+        ExtensionFilter filter = new ExtensionFilter("JSON Data", "*.json");
+        chooser.setSelectedExtensionFilter(filter);
+        File file = chooser.showOpenDialog(repospy.getStage());
+        if (file == null) { return; }
+
+        try {
+            Writer writer = new FileWriter(file);
+            writer.write(repospy.repository.dump());
+            writer.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /* FXML Hook */
+    public void doConnect() throws Exception {
+        repospy.onConnect();
+    }
+
+    public void recordCopy() {
+        TreeItem<TreeNode> item = records.getSelectionModel().getSelectedItem();
+        if (item == null) { return; }
+        TreeNode entry = item.getValue();
+        if (entry == null) { return; }
+        Resource<?> res = entry.getRes();
+        if (res == null) { return; }
+
+        toClipboard(entry.getRes());
+
+    }
+
+    public void setTopController(RepoSpyController controller) {
+        this.repospy = controller;
+
         getChangeBus().listen(this::onChange);
         getChangeBus().listen(RepositoryReplacedChange.class, this::onRepositoryReplacedChange);
         getChangeBus().listen(QueryChange.class, this::onQueryChange);
@@ -212,120 +328,6 @@ public class NavigatorController extends AbstractLoadedDisplay {
             }
         });
 
-    }
-
-    private void onResourceSelect(ResourceSelectedChange change) {
-
-        breadcrumb.setSelectedCrumb(change.getEntry());
-        records.getSelectionModel().select(change.getEntry());
-
-        RepoSpyTreeItem treeitem = change.getEntry();
-        TreeNode node = treeitem.getValue();
-        if (node instanceof IAggregateNode) {
-            IAggregateNode resnode = (IAggregateNode) node;
-
-            if (resnode.getStereotype() == Stereotype.INDEXED) {
-                editorBox = new IndexedLayout(treeitem, repospy);
-            } else if (resnode.getStereotype() == Stereotype.MAPPED) {
-                editorBox = new MappedLayout(treeitem, repospy);
-            } else {
-                editorBox = new CompositeLayout(treeitem, repospy);
-            }
-        } else if (node instanceof IKindNode) {
-            editorBox = new KindLayout(treeitem, repospy);
-        } else if (node instanceof IRootNode) {
-            editorBox = new PackageLayout(treeitem, repospy);
-        } else {
-            editorBox = null;
-        }
-        fieldEditor.setCenter(editorBox);
-    }
-
-    /* FXML Hook */
-    public void doReview() throws IOException {
-        repospy.showReview();
-    }
-
-    /* FXML Hook */
-    public void doCommit() {
-        repospy.repository.post();
-    }
-
-    /* FXML Hook */
-    public void doRevert() {
-        if (repospy.history.hasHistory()) {
-            Alert alert = new Alert(AlertType.CONFIRMATION);
-            alert.setTitle("Discard Changes?");
-            alert.setHeaderText("Discard uncommitted changes?");
-            alert.setContentText("You cannot undo this operation.");
-
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() != ButtonType.OK) { return; }
-        }
-        repospy.repository.makeFresh();
-    }
-
-    public void onLoad() {
-        FileChooser chooser = new FileChooser();
-        chooser.setTitle("Import Data");
-        ExtensionFilter filter = new ExtensionFilter("JSON Data", "*.json");
-        chooser.setSelectedExtensionFilter(filter);
-        File file = chooser.showOpenDialog(repospy.getDisplayStage());
-        if (file == null) { return; }
-
-        List<Resource<?>> loaded;
-        try {
-            loaded = repospy.repository.load(new Scanner(file));
-        }
-        catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return;
-        }
-        for (Resource<?> res : loaded) {
-            getChangeBus().broadcast(new EntityCreatedChange(res));
-        }
-
-    }
-
-    /* FXML Hook */
-    public void onDump() {
-
-        FileChooser chooser = new FileChooser();
-        chooser.setTitle("Dump Repository");
-        ExtensionFilter filter = new ExtensionFilter("JSON Data", "*.json");
-        chooser.setSelectedExtensionFilter(filter);
-        File file = chooser.showOpenDialog(repospy.getDisplayStage());
-        if (file == null) { return; }
-
-        try {
-            Writer writer = new FileWriter(file);
-            writer.write(repospy.repository.dump());
-            writer.close();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /* FXML Hook */
-    public void doConnect() throws Exception {
-        repospy.onConnect();
-    }
-
-    public void recordCopy() {
-        TreeItem<TreeNode> item = records.getSelectionModel().getSelectedItem();
-        if (item == null) { return; }
-        TreeNode entry = item.getValue();
-        if (entry == null) { return; }
-        Resource<?> res = entry.getRes();
-        if (res == null) { return; }
-
-        toClipboard(entry.getRes());
-
-    }
-
-    public void setTopController(RepoSpyController controller) {
-        this.repospy = controller;
     }
 
     public void toggleSearchBar() {
@@ -441,11 +443,6 @@ public class NavigatorController extends AbstractLoadedDisplay {
 
     public static NavigatorController load() throws IOException {
         return FXUtil.loadFX(NavigatorController.class, "Navigator.fxml");
-    }
-
-    @Override
-    public void onFXLoad() {
-
     }
 
     @Override

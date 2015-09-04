@@ -23,11 +23,13 @@ public class RepoSpy extends Application {
 
         RepositoryResource spy = new RepositoryResource();
         RepoSpyController editor = (RepoSpyController) spy.getEditor();
+        editor.getToolbars();
 
         Button connect = new Button("Connect", ActofIcons.getCustomIcon(RepoSpy.class, "icons/connect.png"));
         connect.setTooltip(new Tooltip("Connect to an objectof repository"));
         connect.getStyleClass().add("tool-bar-button");
         connect.setOnAction(event -> editor.onConnect());
+
         editor.getToolbars().add(0, connect);
 
         primaryStage.setTitle(spy.getTitle());
@@ -48,8 +50,7 @@ public class RepoSpy extends Application {
 
         });
 
-        editor.setDisplayStage(primaryStage);
-        editor.construct();
+        editor.setStage(primaryStage);
 
         ActofWindow window = new ActofWindow(primaryStage, spy);
         window.setSize(1000, 470);
