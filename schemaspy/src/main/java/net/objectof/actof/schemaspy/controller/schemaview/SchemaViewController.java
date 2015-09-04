@@ -20,8 +20,6 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import org.controlsfx.control.BreadCrumbBar;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.PopOver.ArrowLocation;
-import org.controlsfx.control.action.Action;
-import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -29,7 +27,10 @@ import org.xml.sax.SAXException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
@@ -304,14 +305,15 @@ public class SchemaViewController extends AbstractLoadedDisplay {
             Document schema = schemaspy.getSchema().getDocument();
             connect.createPackage(schema, Initialize.WHEN_EMPTY);
 
-            Action action = Dialogs.create()
-                    .title("Repository Created")
-                    .masthead("This Repository can be viewed in RepoSpy")
-                    .message("Open RepoSpy now?")
-                    .showConfirm();
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            alert.setTitle("Repository Created");
+            alert.setHeaderText("This Repository can be viewed in RepoSpy");
+            alert.setContentText("Open new repository now?");
+            alert.getButtonTypes().clear();
+            alert.getButtonTypes().addAll(ButtonType.YES, ButtonType.NO);
+            Optional<ButtonType> result = alert.showAndWait();
 
-            if (action == Dialog.ACTION_YES) {
-
+            if (result.get() == ButtonType.YES) {
                 RepositoryResource resource = new RepositoryResource();
                 resource.setConnector(connect);
                 return Optional.of(resource);

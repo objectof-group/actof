@@ -25,11 +25,7 @@ public class SchemaFileResource extends AbstractResource {
 
     public void setSchemaFile(File schemaFile) {
         this.schemaFile = schemaFile;
-    }
-
-    @Override
-    public String getTitle() {
-        return schemaFile.getName();
+        setTitle(schemaFile.getName());
     }
 
     @Override
