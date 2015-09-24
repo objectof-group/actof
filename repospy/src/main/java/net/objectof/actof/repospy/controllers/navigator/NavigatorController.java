@@ -13,7 +13,6 @@ import java.util.Scanner;
 
 import org.controlsfx.control.BreadCrumbBar;
 import org.controlsfx.control.textfield.CustomTextField;
-import org.controlsfx.dialog.Dialogs;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -67,6 +66,7 @@ import net.objectof.actof.repospy.controllers.navigator.treemodel.TreeNode;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.IAggregateNode;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.IKindNode;
 import net.objectof.actof.repospy.controllers.navigator.treemodel.nodes.IRootNode;
+import net.objectof.actof.widgets.ActofDialogs;
 import net.objectof.connector.Connector;
 import net.objectof.model.Kind;
 import net.objectof.model.Resource;
@@ -332,10 +332,7 @@ public class NavigatorController extends AbstractLoadedDisplay {
             repospy.connect(conn);
         }
         catch (Exception e) {
-            Dialogs.create()
-                    .title("Connection Failed")
-                    .message("Failed to connect to the specified repository")
-                    .showException(e);
+            ActofDialogs.exceptionDialog(e);
         }
     }
 
@@ -374,6 +371,7 @@ public class NavigatorController extends AbstractLoadedDisplay {
             revert.setGraphic(ActofIcons.getIconView(Icon.VIEW_REFRESH, Size.TOOLBAR));
             revert_tooltip.setText("Refresh from repository");
         } else {
+            // TODO: Fix -- this causes null pointer exception?
             revert.setGraphic(ActofIcons.getIconView(Icon.GO_FIRST, Size.TOOLBAR));
             revert_tooltip.setText("Revert all changes");
         }

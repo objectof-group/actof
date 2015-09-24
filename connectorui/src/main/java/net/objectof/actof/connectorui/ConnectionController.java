@@ -4,8 +4,6 @@ package net.objectof.actof.connectorui;
 import java.io.IOException;
 import java.util.Optional;
 
-import org.controlsfx.dialog.Dialogs;
-
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
@@ -13,6 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -151,10 +150,13 @@ public class ConnectionController extends IActofUIController {
     }
 
     public void add() {
-        Optional<String> name = Dialogs.create()
-                .title("Connection Name")
-                .message("Enter a name for this connection")
-                .showTextInput();
+
+        TextInputDialog dialog = new TextInputDialog(null);
+        dialog.setTitle("Connection Name");
+        dialog.setHeaderText("Enter a name for this connection");
+        dialog.setContentText("");
+
+        Optional<String> name = dialog.showAndWait();
         if (!name.isPresent()) { return; }
 
         Connector connector = getConnector();

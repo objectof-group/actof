@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.management.modelmbean.XMLParseException;
 import javax.xml.parsers.ParserConfigurationException;
@@ -19,16 +20,16 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import org.controlsfx.control.BreadCrumbBar;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.PopOver.ArrowLocation;
-import org.controlsfx.control.action.Action;
-import org.controlsfx.dialog.Dialog;
-import org.controlsfx.dialog.Dialogs;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
@@ -71,6 +72,7 @@ import net.objectof.actof.schemaspy.controller.cards.attributes.SchemaSpyCard;
 import net.objectof.actof.schemaspy.controller.cards.schemaentry.ChildEntryCard;
 import net.objectof.actof.schemaspy.controller.cards.schemaentry.ChildEntryLine;
 import net.objectof.actof.schemaspy.util.CodeGen;
+import net.objectof.actof.widgets.ActofDialogs;
 import net.objectof.actof.widgets.card.Card;
 import net.objectof.actof.widgets.masonry.MasonryPane;
 import net.objectof.actof.widgets.masonry.MasonryPane.Layout;
@@ -311,25 +313,28 @@ public class SchemaViewController extends AbstractLoadedDisplay {
             Document schema = schemaspy.getSchema().getDocument();
             connect.createPackage(schema, Initialize.WHEN_EMPTY);
 
-            Action action = Dialogs.create()
-                    .title("Repository Created")
-                    .masthead("This Repository can be viewed in RepoSpy")
-                    .message("Open RepoSpy now?")
-                    .showConfirm();
+            Alert createdDialog = new Alert(AlertType.CONFIRMATION);
+            createdDialog.setTitle("Repository Created");
+            createdDialog.setHeaderText("This Repository can be viewed in RepoSpy");
+            createdDialog.setContentText("Open RepoSpy now?");
 
-            if (action == Dialog.ACTION_YES) {
+            Optional<ButtonType> result = createdDialog.showAndWait();
+            if (result.get() == ButtonType.OK) {
+
+                Stage stage = new Stage();
                 RepoSpyController repospy = new RepoSpyController();
-                repospy.setDisplayStage(new Stage());
+                repospy.setDisplayStage(stage);
                 repospy.construct();
                 repospy.connect(connect);
+                stage.show();
+
+            } else {
+                // ... user chose CANCEL or closed the dialog
             }
 
         }
         catch (Exception e) {
-            Dialogs.create()
-                    .title("Repository Creation Failed")
-                    .message("SchemaSpy failed to create the repository. Please check the parameters and try again.")
-                    .showException(e);
+            ActofDialogs.exceptionDialog(e);
         }
 
     }

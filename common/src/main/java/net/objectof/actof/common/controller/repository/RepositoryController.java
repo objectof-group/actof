@@ -101,7 +101,8 @@ public class RepositoryController extends IActofController {
     }
 
     public List<Resource<?>> getTransientsForKind(String kind) {
-        return model.transients.stream().filter(res -> res.id().kind().getComponentName().equals(kind))
+        return model.transients.stream()
+                .filter(res -> res.id().kind().getComponentName().equals(kind))
                 .collect(Collectors.toList());
 
     }
@@ -131,6 +132,10 @@ public class RepositoryController extends IActofController {
         List<Resource<?>> loaded = new ArrayList<>();
         while (scanner.hasNext()) {
             String str = scanner.next();
+            // ignore blank lines, including null terminator at end of file
+            if (str.trim().length() == 0) {
+                continue;
+            }
             StringReader reader = new StringReader(str);
             Object received = model.stagingTx.receive("application/json", reader);
             loaded.add((Resource<?>) received);
