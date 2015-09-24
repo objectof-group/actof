@@ -4,28 +4,28 @@ package net.objectof.actof.web.server;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.objectof.actof.common.component.editor.ResourceEditor;
+import net.objectof.actof.common.component.editor.Editor;
 import net.objectof.actof.common.component.resource.impl.AbstractResource;
 
 
-public class MinionServerResource extends AbstractResource {
+public class WebServerResource extends AbstractResource {
 
-    private MinionServer server = new MinionServer();
+    private WebServer server = new WebServer();
 
-    public MinionServerResource() {
-        title = "Minion Server";
+    public WebServerResource() {
+        titleProperty().set("Minion Server");
     }
 
     @Override
-    public ResourceEditor createEditor() throws Exception {
-        return MinionServerEditor.load();
+    public Editor createEditor() throws Exception {
+        return WebServerEditor.load();
     }
 
-    public MinionServer getServer() {
+    public WebServer getServer() {
         return server;
     }
 
-    public void setServer(MinionServer server) {
+    public void setServer(WebServer server) {
         this.server = server;
     }
 

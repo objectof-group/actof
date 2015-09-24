@@ -2,6 +2,7 @@ package net.objectof.actof.web.server;
 
 
 import java.io.IOException;
+import java.util.Optional;
 
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
@@ -15,15 +16,18 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import net.objectof.actof.common.component.display.Display;
-import net.objectof.actof.common.component.editor.ResourceEditor;
 import net.objectof.actof.common.component.editor.impl.AbstractLoadedEditor;
+import net.objectof.actof.common.component.resource.Action;
 import net.objectof.actof.common.component.resource.Resource;
+import net.objectof.actof.common.component.resource.impl.IAction;
+import net.objectof.actof.common.component.resource.impl.TransientResource;
 import net.objectof.actof.common.util.FXUtil;
-import net.objectof.actof.minion.components.spring.change.HandlerChange;
+import net.objectof.actof.web.app.change.HandlerChange;
+import net.objectof.actof.web.client.WebClient;
 import net.objectof.actof.widgets.StatusLight;
 
 
-public class MinionServerEditor extends AbstractLoadedEditor implements ResourceEditor, Display {
+public class WebServerEditor extends AbstractLoadedEditor implements Display {
 
     @FXML
     private BorderPane topPane;
@@ -42,21 +46,32 @@ public class MinionServerEditor extends AbstractLoadedEditor implements Resource
 
     private StatusLight statuslight;
 
-    private MinionServer minionServer;
-    private MinionServerResource resource;
+    private WebServer minionServer;
+
+    private Action actionShowClient = new IAction("REST Client", () -> {
+        try {
+            WebClient client = WebClient.load();
+            return Optional.of(new TransientResource(client));
+        }
+        catch (Exception e) {
+            return Optional.empty();
+        }
+    });
 
     private InvalidationListener logListener = (Observable list) -> {
         Platform.runLater(() -> output.getItems().setAll(minionServer.getLog()));
     };
 
-    public MinionServerEditor() {
+    public WebServerEditor() {
 
     }
 
     @Override
-    public void construct() throws Exception {
+    public void onFXLoad() {
 
-        getDisplayStage().setOnCloseRequest(event -> stop());
+        setTitle("Web Server");
+
+        dismissedProperty().addListener(event -> stop());
 
         getChangeBus().listen(HandlerChange.class, minionServer::setHandler);
 
@@ -69,6 +84,10 @@ public class MinionServerEditor extends AbstractLoadedEditor implements Resource
 
         dismissedProperty().addListener(event -> stop());
 
+        getActions().add(actionShowClient);
+
+        resourceProperty().addListener(event -> loadResource());
+
     }
 
     public void start() {
@@ -79,8 +98,8 @@ public class MinionServerEditor extends AbstractLoadedEditor implements Resource
         minionServer.stop();
     }
 
-    public static MinionServerEditor load() throws IOException {
-        return FXUtil.loadFX(MinionServerEditor.class, "MinionServerEditor.fxml");
+    public static WebServerEditor load() throws IOException {
+        return FXUtil.loadFX(WebServerEditor.class, "WebServerEditor.fxml");
     }
 
     @Override
@@ -93,26 +112,8 @@ public class MinionServerEditor extends AbstractLoadedEditor implements Resource
         return "Server";
     }
 
-    @Override
-    public boolean isForResource() {
-        return true;
-    }
-
-    @Override
-    public void setForResource(boolean forResource) {}
-
-    @Override
-    public Resource getResource() {
-        return resource;
-    }
-
-    @Override
-    public void setResource(Resource resource) {
-        this.resource = (MinionServerResource) resource;
-    }
-
-    @Override
-    public void loadResource() throws Exception {
+    private void loadResource() {
+        WebServerResource resource = (WebServerResource) getResource();
         minionServer = resource.getServer();
 
         minionServer.getLog().addListener(logListener);
@@ -128,8 +129,11 @@ public class MinionServerEditor extends AbstractLoadedEditor implements Resource
 
     }
 
-    public MinionServer getMinionServer() {
+    public WebServer getMinionServer() {
         return minionServer;
     }
+
+    @Override
+    protected void onResourceAdded(Resource res) throws Exception {}
 
 }

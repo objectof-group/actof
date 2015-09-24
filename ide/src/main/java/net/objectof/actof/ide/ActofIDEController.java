@@ -15,6 +15,8 @@ import java.util.Scanner;
 import java.util.stream.Collectors;
 
 import javafx.beans.Observable;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
@@ -29,12 +31,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import net.objectof.actof.common.component.display.Display;
 import net.objectof.actof.common.component.display.Panel;
 import net.objectof.actof.common.component.display.impl.IPanel;
 import net.objectof.actof.common.component.editor.Editor;
-import net.objectof.actof.common.component.editor.ResourceEditor;
 import net.objectof.actof.common.component.editor.impl.AbstractLoadedEditor;
 import net.objectof.actof.common.component.resource.Action;
 import net.objectof.actof.common.component.resource.Resource;
@@ -62,6 +62,8 @@ public class ActofIDEController extends AbstractLoadedEditor implements Display 
     @FXML
     private MenuButton newResource;
 
+    private StringProperty title = new SimpleStringProperty("Actof IDE");
+
     private Map<Resource, Tab> resourceTabs = new HashMap<>();
     private List<Node> permanentToolbars = new ArrayList<>();
     private List<Panel> permanentPanels = new ArrayList<>();
@@ -70,14 +72,10 @@ public class ActofIDEController extends AbstractLoadedEditor implements Display 
         return FXUtil.loadFX(ActofIDEController.class, "ActofIDEController.fxml");
     }
 
-    public void setStage(Stage stage) {
-        setStage(stage);
-    }
-
     public void onProjectOpen()
             throws FileNotFoundException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         FileChooser chooser = new FileChooser();
-        File file = chooser.showOpenDialog(getDisplayStage());
+        File file = chooser.showOpenDialog(getStage());
         if (file == null) { return; }
 
         Scanner s = new Scanner(file);
@@ -101,7 +99,7 @@ public class ActofIDEController extends AbstractLoadedEditor implements Display 
     public void onProjectSave() throws IOException {
 
         FileChooser chooser = new FileChooser();
-        File file = chooser.showSaveDialog(getDisplayStage());
+        File file = chooser.showSaveDialog(getStage());
         if (file == null) { return; }
 
         List<Object> serializedResources = getResources().stream()
@@ -117,23 +115,27 @@ public class ActofIDEController extends AbstractLoadedEditor implements Display 
 
     }
 
-    private void createTab(Resource res) throws Exception {
+    private void createTab(Resource res) {
 
-        ResourceEditor editor = res.getEditor();
-        editor.setDisplayStage(getDisplayStage());
-        editor.setChangeBus(getChangeBus());
-        editor.setForResource(true);
-        editor.construct();
+        try {
 
-        editor.setResource(res);
-        editor.loadResource();
+            Editor editor = res.getEditor();
+            editor.setStage(getStage());
+            editor.setChangeBus(getChangeBus());
+            editor.setResource(res);
 
-        Display display = editor.getDisplay();
+            Display display = editor.getDisplay();
 
-        Tab tab = new Tab(res.getTitle(), display.getFXRegion());
-        resourceTabs.put(res, tab);
-        tabs.getTabs().add(tab);
-        tabs.getSelectionModel().select(tab);
+            Tab tab = new Tab(res.getTitle(), display.getFXRegion());
+            tab.textProperty().bind(res.titleProperty());
+            resourceTabs.put(res, tab);
+            tabs.getTabs().add(tab);
+            tabs.getSelectionModel().select(tab);
+
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -150,12 +152,7 @@ public class ActofIDEController extends AbstractLoadedEditor implements Display 
     }
 
     @Override
-    public String getTitle() {
-        return "Actof IDE";
-    }
-
-    @Override
-    public void construct() throws Exception {
+    public void onFXLoad() {
 
         TreeItem<Resource> root = new TreeItem<Resource>(new ProjectResource());
         tree.setRoot(root);
@@ -246,14 +243,14 @@ public class ActofIDEController extends AbstractLoadedEditor implements Display 
     private void updateTree() {
         TreeItem<Resource> root = tree.getRoot();
         root.getChildren().clear();
-        for (Resource res : getResources()) {
+        getResources().stream().filter(r -> !r.isTransient()).forEachOrdered(res -> {
             TreeItem<Resource> item = new TreeItem<Resource>(res);
             root.getChildren().add(item);
-        }
+        });
     }
 
     public void onAddSchema() {
-        File file = SchemaSpyController.chooseSchemaFile(null, getDisplayStage());
+        File file = SchemaSpyController.chooseSchemaFile(null, getStage());
         if (file == null) { return; }
         SchemaFileResource schema = new SchemaFileResource();
         schema.setSchemaFile(file);
@@ -262,7 +259,7 @@ public class ActofIDEController extends AbstractLoadedEditor implements Display 
     }
 
     public void onAddRepository() throws IOException {
-        Connector conn = RepoSpyController.showConnect(getDisplayStage());
+        Connector conn = RepoSpyController.showConnect(getStage());
         RepositoryResource repo = new RepositoryResource();
         repo.setConnector(conn);
         getResources().add(repo);
@@ -271,6 +268,18 @@ public class ActofIDEController extends AbstractLoadedEditor implements Display 
     @Override
     public Display getDisplay() {
         return this;
+    }
+
+    @Override
+    protected void onResourceAdded(Resource res) throws Exception {
+        if (res.isTransient()) {
+            createTab(res);
+        }
+    }
+
+    @Override
+    public StringProperty titleProperty() {
+        return title;
     }
 
 }

@@ -2,8 +2,13 @@ package net.objectof.actof.common.component.editor.impl;
 
 
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.stage.Stage;
@@ -17,9 +22,9 @@ import net.objectof.actof.common.controller.change.IChangeController;
 
 public abstract class AbstractEditor implements Editor {
 
-    private String title;
-    private Stage displayStage;
-    private ChangeController changeBus = new IChangeController();
+    private StringProperty title = new SimpleStringProperty();
+    private ObjectProperty<Stage> stageProperty = new SimpleObjectProperty<>(null);
+    private ObjectProperty<ChangeController> changeBusProperty = new SimpleObjectProperty<>(new IChangeController());
 
     private BooleanProperty dismissible = new SimpleBooleanProperty(true);
     private BooleanProperty dismissed = new SimpleBooleanProperty(false);
@@ -29,24 +34,38 @@ public abstract class AbstractEditor implements Editor {
     private ObservableList<Node> toolbars = FXCollections.observableArrayList();
     private ObservableList<Panel> panels = FXCollections.observableArrayList();
 
+    private ObjectProperty<Resource> resourceProperty = new SimpleObjectProperty<>(null);
+
+    public AbstractEditor() {
+        getResources().addListener((ListChangeListener.Change<? extends Resource> c) -> {
+            while (c.next()) {
+                if (!c.wasAdded()) { return; }
+                for (Resource r : c.getAddedSubList()) {
+                    try {
+                        onResourceAdded(r);
+                    }
+                    catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
+    protected abstract void onResourceAdded(Resource res) throws Exception;
+
     @Override
-    public ChangeController getChangeBus() {
-        return changeBus;
+    public ObjectProperty<ChangeController> changeBusProperty() {
+        return changeBusProperty;
+    }
+
+    public ObjectProperty<Resource> resourceProperty() {
+        return resourceProperty;
     }
 
     @Override
-    public void setChangeBus(ChangeController bus) {
-        this.changeBus = bus;
-    }
-
-    @Override
-    public Stage getDisplayStage() {
-        return displayStage;
-    }
-
-    @Override
-    public void setDisplayStage(Stage stage) {
-        this.displayStage = stage;
+    public ObjectProperty<Stage> stageProperty() {
+        return stageProperty;
     }
 
     @Override
@@ -70,13 +89,8 @@ public abstract class AbstractEditor implements Editor {
     }
 
     @Override
-    public String getTitle() {
+    public StringProperty titleProperty() {
         return title;
-    }
-
-    @Override
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     @Override

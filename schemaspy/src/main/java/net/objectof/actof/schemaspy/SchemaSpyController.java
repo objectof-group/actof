@@ -16,7 +16,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import net.objectof.actof.common.component.display.Display;
-import net.objectof.actof.common.component.editor.ResourceEditor;
+import net.objectof.actof.common.component.editor.Editor;
 import net.objectof.actof.common.component.editor.impl.AbstractEditor;
 import net.objectof.actof.common.component.resource.Action;
 import net.objectof.actof.common.component.resource.Resource;
@@ -24,27 +24,36 @@ import net.objectof.actof.common.component.resource.impl.IAction;
 import net.objectof.actof.common.controller.schema.ISchemaController;
 import net.objectof.actof.common.controller.schema.SchemaController;
 import net.objectof.actof.common.controller.schema.changes.SchemaReplacedChange;
+import net.objectof.actof.common.window.ActofWindow;
 import net.objectof.actof.connectorui.ConnectionController;
 import net.objectof.actof.schemaspy.controller.schemaview.SchemaViewController;
 import net.objectof.actof.schemaspy.resource.SchemaFileResource;
 import net.objectof.connector.Connector;
 
 
-public class SchemaSpyController extends AbstractEditor implements ResourceEditor {
+public class SchemaSpyController extends AbstractEditor {
 
     SchemaViewController view;
     private SchemaController schema;
 
-    private boolean forResource = false;
-    private SchemaFileResource resource;
-
     private Action createJar = new IAction("Build Jar File", () -> view.onGenerate());
     private Action createRepo = new IAction("Create Repository", () -> view.onCreate());
 
-    public SchemaSpyController() throws IOException, SAXException, ParserConfigurationException, XMLParseException
+    public SchemaSpyController() throws SAXException, IOException, ParserConfigurationException, XMLParseException {
+        newSchema();
+        view = showSchemaView();
 
-    {
+        createJar.setEnabled(false);
+        createRepo.setEnabled(false);
+        getActions().add(createJar);
+        getActions().add(createRepo);
 
+        getChangeBus().listen(SchemaReplacedChange.class, () -> {
+            createJar.setEnabled(true);
+            createRepo.setEnabled(true);
+        });
+
+        resourceProperty().addListener(event -> loadResource());
     }
 
     public void newSchema() throws SAXException, IOException, ParserConfigurationException, XMLParseException {
@@ -72,14 +81,13 @@ public class SchemaSpyController extends AbstractEditor implements ResourceEdito
         SchemaViewController controller = SchemaViewController.load();
         controller.setChangeBus(getChangeBus());
         controller.setTopController(this);
-        controller.setDisplayStage(getDisplayStage());
-        controller.construct();
+        controller.setStage(getStage());
 
         return controller;
     }
 
     public Connector showConnect() throws IOException {
-        return ConnectionController.showDialog(getDisplayStage(), true);
+        return ConnectionController.showDialog(getStage(), true);
     }
 
     public SchemaController getSchema() {
@@ -91,46 +99,14 @@ public class SchemaSpyController extends AbstractEditor implements ResourceEdito
         return "SchemaSpy";
     }
 
-    @Override
-    public void construct() throws Exception {
-        newSchema();
-        view = showSchemaView();
-
-        createJar.setEnabled(false);
-        createRepo.setEnabled(false);
-        getActions().add(createJar);
-        getActions().add(createRepo);
-
-        getChangeBus().listen(SchemaReplacedChange.class, () -> {
-            createJar.setEnabled(true);
-            createRepo.setEnabled(true);
-        });
-
-    }
-
-    @Override
-    public SchemaFileResource getResource() {
-        return resource;
-    }
-
-    @Override
-    public void setResource(Resource resource) {
-        this.resource = (SchemaFileResource) resource;
-    }
-
-    @Override
-    public void loadResource() throws Exception {
-        setSchema(resource.getSchemaFile());
-    }
-
-    @Override
-    public boolean isForResource() {
-        return forResource;
-    }
-
-    @Override
-    public void setForResource(boolean forResource) {
-        this.forResource = forResource;
+    private void loadResource() {
+        SchemaFileResource res = (SchemaFileResource) getResource();
+        try {
+            setSchema(res.getSchemaFile());
+        }
+        catch (SAXException | IOException | ParserConfigurationException | XMLParseException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -149,6 +125,17 @@ public class SchemaSpyController extends AbstractEditor implements ResourceEdito
         File file = chooser.showOpenDialog(parent);
         if (file == null) { return null; }
         return file;
+
+    }
+
+    @Override
+    protected void onResourceAdded(Resource res) throws Exception {
+
+        Editor editor = res.getEditor();
+        editor.setResource(res);
+
+        ActofWindow window = new ActofWindow(editor);
+        window.show();
 
     }
 

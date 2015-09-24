@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<BorderPane fx:id="topPane" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.common.component.editor.impl.EditorPane">
+<BorderPane fx:id="topPane" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.common.component.editor.impl.ResourceView">
    <top>
       <HBox fx:id="toolbar" styleClass="tool-bar" BorderPane.alignment="CENTER">
          <children>

@@ -4,15 +4,17 @@ package net.objectof.actof.repospy;
 import java.io.IOException;
 import java.util.Optional;
 
-import javafx.collections.ListChangeListener;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ScrollPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.objectof.actof.common.component.display.Display;
-import net.objectof.actof.common.component.editor.ResourceEditor;
+import net.objectof.actof.common.component.editor.Editor;
 import net.objectof.actof.common.component.editor.impl.AbstractEditor;
-import net.objectof.actof.common.component.editor.impl.EditorPanel;
+import net.objectof.actof.common.component.editor.impl.ResourcePanel;
 import net.objectof.actof.common.component.resource.Action;
 import net.objectof.actof.common.component.resource.Resource;
 import net.objectof.actof.common.component.resource.impl.IAction;
@@ -24,7 +26,8 @@ import net.objectof.actof.repospy.controllers.history.HistoryController;
 import net.objectof.actof.repospy.controllers.navigator.NavigatorController;
 import net.objectof.actof.repospy.controllers.review.ReviewController;
 import net.objectof.actof.repospy.resource.RepositoryResource;
-import net.objectof.actof.web.server.MinionServerResource;
+import net.objectof.actof.web.server.WebServerResource;
+import net.objectof.actof.widgets.ActofDialogs;
 import net.objectof.connector.Connector;
 import net.objectof.corc.Handler;
 import net.objectof.corc.web.v2.HttpRequest;
@@ -33,23 +36,19 @@ import net.objectof.model.query.Query;
 import net.objectof.model.query.parser.QueryBuilder;
 
 
-public class RepoSpyController extends AbstractEditor implements ResourceEditor {
+public class RepoSpyController extends AbstractEditor {
 
     public RepositoryController repository;
     public SearchController search;
     public NavigatorController navigator;
     public HistoryController history;
 
-    private boolean forResource = false;
-    private RepositoryResource resource;
-
     Action searchAction = new IAction("Search", () -> navigator.toggleSearchBar());
     Action dumpAction = new IAction("Dump to JSON", () -> navigator.onDump());
     Action loadAction = new IAction("Load from JSON", () -> navigator.onLoad());
     Action restAction = new IAction("Run REST Server", this::restServer);
 
-    @Override
-    public void construct() throws Exception {
+    public RepoSpyController() throws IOException {
 
         getChangeBus().listen(RepositoryReplacedChange.class, () -> {
             dumpAction.setEnabled(true);
@@ -62,9 +61,8 @@ public class RepoSpyController extends AbstractEditor implements ResourceEditor 
         history = new HistoryController(getChangeBus());
         navigator = NavigatorController.load();
         navigator.setChangeBus(getChangeBus());
-        navigator.setDisplayStage(getDisplayStage());
+        navigator.setStage(getStage());
         navigator.setTopController(this);
-        navigator.construct();
 
         dumpAction.setEnabled(false);
         loadAction.setEnabled(false);
@@ -75,51 +73,40 @@ public class RepoSpyController extends AbstractEditor implements ResourceEditor 
         getActions().add(loadAction);
         getActions().add(restAction);
 
-        getResources().addListener((ListChangeListener.Change<? extends Resource> c) -> {
-            while (c.next()) {
-                if (!c.wasAdded()) { return; }
-                for (Resource r : c.getAddedSubList()) {
-                    try {
-                        ResourceEditor e = r.getEditor();
-                        if (e == null) {
-                            continue;
-                        }
-
-                        e.setChangeBus(getChangeBus());
-                        e.setDisplayStage(getDisplayStage());
-                        e.construct();
-                        e.setResource(r);
-                        e.loadResource();
-                        EditorPanel panel = new EditorPanel(e);
-                        getPanels().add(panel);
-
-                        panel.dismissedProperty().addListener(e2 -> getPanels().remove(panel));
-                        e.dismissedProperty().addListener(e2 -> getResources().remove(r));
-
-                    }
-                    catch (Exception e1) {
-                        e1.printStackTrace();
-                        continue;
-                    }
-                }
-            }
-        });
+        resourceProperty().addListener(event -> loadResource());
 
     }
 
     @Override
-    public void setResource(Resource resource) {
-        this.resource = (RepositoryResource) resource;
+    protected void onResourceAdded(Resource res) {
+        try {
+            Editor e = res.getEditor();
+            if (e == null) { return; }
+
+            e.setChangeBus(getChangeBus());
+            e.setStage(getStage());
+            e.setResource(res);
+            ResourcePanel panel = new ResourcePanel(res);
+            getPanels().add(panel);
+
+            panel.dismissedProperty().addListener(e2 -> getPanels().remove(panel));
+            e.dismissedProperty().addListener(e2 -> getResources().remove(res));
+
+        }
+        catch (Exception e1) {
+            e1.printStackTrace();
+            return;
+        }
     }
 
-    @Override
-    public RepositoryResource getResource() {
-        return resource;
-    }
-
-    @Override
-    public void loadResource() throws Exception {
-        connect(resource.getConnector());
+    private void loadResource() {
+        RepositoryResource res = (RepositoryResource) getResource();
+        try {
+            connect(res.getConnector());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /*************************************************************
@@ -146,7 +133,7 @@ public class RepoSpyController extends AbstractEditor implements ResourceEditor 
         Stage connectStage = new Stage(StageStyle.UTILITY);
         connectStage.setTitle("Review Changes");
         // connectStage.initModality(Modality.NONE);
-        connectStage.initOwner(getDisplayStage());
+        connectStage.initOwner(getStage());
         connectStage.setScene(new Scene(scroll));
         connectStage.showAndWait();
 
@@ -157,7 +144,7 @@ public class RepoSpyController extends AbstractEditor implements ResourceEditor 
     }
 
     public Optional<Resource> restServer() {
-        MinionServerResource res = new MinionServerResource();
+        WebServerResource res = new WebServerResource();
         Handler<HttpRequest> rest = new IRepoHandler(repository.getRepo());
         res.getServer().setHandler(rest);
         return Optional.of(res);
@@ -187,18 +174,30 @@ public class RepoSpyController extends AbstractEditor implements ResourceEditor 
     }
 
     @Override
-    public boolean isForResource() {
-        return forResource;
-    }
-
-    @Override
-    public void setForResource(boolean forResource) {
-        this.forResource = forResource;
-    }
-
-    @Override
     public Display getDisplay() {
         return navigator;
+    }
+
+    public void onConnect() {
+
+        if (history.hasHistory()) {
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            alert.setTitle("Discard Changes?");
+            alert.setHeaderText("Discard uncommitted changes?");
+            alert.setContentText("You cannot undo this operation.");
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() != ButtonType.OK) { return; }
+        }
+
+        try {
+            Connector conn = RepoSpyController.showConnect(getStage());
+            if (conn == null) { return; }
+            connect(conn);
+        }
+        catch (Exception e) {
+            ActofDialogs.exceptionDialog(e);
+        }
     }
 
 }

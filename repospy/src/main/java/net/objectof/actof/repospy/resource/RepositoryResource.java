@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.objectof.actof.common.component.editor.ResourceEditor;
+import net.objectof.actof.common.component.editor.Editor;
 import net.objectof.actof.common.component.resource.impl.AbstractResource;
 import net.objectof.actof.common.util.ActofSerialize;
 import net.objectof.actof.repospy.RepoSpyController;
@@ -19,8 +19,9 @@ public class RepositoryResource extends AbstractResource {
     Connector connector;
 
     @Override
-    public ResourceEditor createEditor() throws Exception {
-        return new RepoSpyController();
+    public Editor createEditor() throws Exception {
+        RepoSpyController controller = new RepoSpyController();
+        return controller;
     }
 
     public Connector getConnector() {
@@ -29,11 +30,7 @@ public class RepositoryResource extends AbstractResource {
 
     public void setConnector(Connector connector) {
         this.connector = connector;
-    }
-
-    @Override
-    public String getTitle() {
-        return connector.getPackageName();
+        setTitle(connector.getPackageName());
     }
 
     @Override

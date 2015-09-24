@@ -12,7 +12,7 @@
 
 <BorderPane fx:id="toppane" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.objectof.actof.repospy.controllers.navigator.NavigatorController">
   <center>
-      <BorderPane fx:id="fieldEditor" BorderPane.alignment="CENTER" />
+      <BorderPane fx:id="fieldEditor" prefWidth="800.0" BorderPane.alignment="CENTER" />
    </center>
    <top>
       <VBox fx:id="headerBox" BorderPane.alignment="CENTER">
@@ -21,18 +21,6 @@
                <children>
                   <HBox fx:id="repoToolbar">
                      <children>
-                        <Button fx:id="connect" mnemonicParsing="false" onAction="#doConnect" styleClass="tool-bar-button" text="Connect">
-                           <graphic>
-                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@icons/connect.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                           <tooltip>
-                              <Tooltip text="Connect to an ObjectOf repository" />
-                           </tooltip>
-                        </Button>
                         <Button fx:id="revert" disable="true" mnemonicParsing="false" onAction="#doRevert" styleClass="tool-bar-button">
                            <tooltip>
                               <Tooltip fx:id="revert_tooltip" text="Revert all changes" />

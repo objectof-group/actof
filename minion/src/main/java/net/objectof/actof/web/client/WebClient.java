@@ -1,4 +1,4 @@
-package net.objectof.actof.minion.components.rest;
+package net.objectof.actof.web.client;
 
 
 import java.io.IOException;
@@ -33,9 +33,13 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.util.StringConverter;
-import net.objectof.actof.common.controller.IActofUIController;
+import net.objectof.actof.common.component.display.Display;
+import net.objectof.actof.common.component.editor.impl.AbstractLoadedEditor;
+import net.objectof.actof.common.component.resource.Resource;
 import net.objectof.actof.common.controller.change.Change;
-import net.objectof.actof.common.controller.change.ChangeController;
+import net.objectof.actof.common.icons.ActofIcons;
+import net.objectof.actof.common.icons.Icon;
+import net.objectof.actof.common.icons.Size;
 import net.objectof.actof.common.util.ActofSerialize;
 import net.objectof.actof.common.util.FXUtil;
 import net.objectof.actof.web.server.change.ServerStartChange;
@@ -44,7 +48,10 @@ import net.objectof.actof.widgets.StatusLight;
 import net.objectof.actof.widgets.StatusLight.Status;
 
 
-public class RestController extends IActofUIController {
+public class WebClient extends AbstractLoadedEditor implements Display {
+
+    @FXML
+    private BorderPane topPane;
 
     @FXML
     private TabPane tabpane;
@@ -84,8 +91,9 @@ public class RestController extends IActofUIController {
     private String prefix;
 
     @Override
-    @FXML
-    protected void initialize() {
+    public void onFXLoad() {
+
+        setTitle("REST Client");
 
         responsebodypane.setTop(responsemessage);
 
@@ -151,11 +159,21 @@ public class RestController extends IActofUIController {
         serverStopped(new ServerStopChange());
         tabpane.getSelectionModel().select(tabresponse);
 
-    }
+        go.setGraphic(ActofIcons.getIconView(Icon.MEDIA_PLAYBACK_START, Size.TOOLBAR));
 
-    @Override
-    public void ready() {
-        getChangeBus().listen(this::onChange);
+        getToolbars().addAll(toolbar.getChildren());
+        toolbar.getChildren().clear();
+        topPane.setTop(null);
+
+        changeBusProperty().addListener((obs, o, n) -> {
+            if (o != null) {
+                o.unlisten(this::onChange);
+            }
+            if (n != null) {
+                n.listen(this::onChange);
+            }
+        });
+
     }
 
     private void onChange(Change change) {
@@ -267,8 +285,8 @@ public class RestController extends IActofUIController {
         cookies.getRoot().getChildren().add(new TreeItem<KV>(cookie));
     }
 
-    public static RestController load(ChangeController changes) throws IOException {
-        return FXUtil.load(RestController.class, "Rest.fxml", changes);
+    public static WebClient load() throws IOException {
+        return FXUtil.loadFX(WebClient.class, "WebClient.fxml");
     }
 
     private <T> JavaBeanObjectProperty<T> wrap(Object bean, String field) {
@@ -310,5 +328,13 @@ public class RestController extends IActofUIController {
         }
 
     }
+
+    @Override
+    public Display getDisplay() {
+        return this;
+    }
+
+    @Override
+    protected void onResourceAdded(Resource res) throws Exception {}
 
 }

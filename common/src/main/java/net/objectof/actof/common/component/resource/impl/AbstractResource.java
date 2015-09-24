@@ -1,23 +1,25 @@
 package net.objectof.actof.common.component.resource.impl;
 
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import net.objectof.actof.common.component.editor.ResourceEditor;
+import net.objectof.actof.common.component.editor.Editor;
 import net.objectof.actof.common.component.resource.Action;
 import net.objectof.actof.common.component.resource.Resource;
 
 
 public abstract class AbstractResource implements Resource {
 
-    protected ResourceEditor editor;
+    protected Editor editor;
 
-    protected String title;
+    protected StringProperty title = new SimpleStringProperty("");
 
     private ObservableList<Action> actions = FXCollections.observableArrayList();
 
     @Override
-    public ResourceEditor getEditor() {
+    public Editor getEditor() {
         if (editor == null) {
             try {
                 editor = createEditor();
@@ -39,12 +41,8 @@ public abstract class AbstractResource implements Resource {
     }
 
     @Override
-    public String getTitle() {
+    public StringProperty titleProperty() {
         return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
 }

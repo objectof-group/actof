@@ -16,7 +16,7 @@
    version="1.1"
    inkscape:version="0.48.4 r9939"
    sodipodi:docname="icon.svg"
-   inkscape:export-filename="/home/nathaniel/Projects/Realm/Git/actof/icons/SchemaSpy.png"
+   inkscape:export-filename="/home/nathaniel/Projects/Realm/Git/actof/icons/Porter.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <defs
@@ -127,6 +127,14 @@
          stdDeviation="3.2175"
          id="feGaussianBlur3836" />
     </filter>
+    <filter
+       inkscape:collect="always"
+       id="filter3832">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="3.0502186"
+         id="feGaussianBlur3834" />
+    </filter>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -136,15 +144,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2"
-     inkscape:cx="88.129327"
-     inkscape:cy="188.25"
+     inkscape:cx="-24.870673"
+     inkscape:cy="101.25"
      inkscape:document-units="px"
-     inkscape:current-layer="g3021"
+     inkscape:current-layer="g3129"
      showgrid="false"
      inkscape:window-width="1920"
-     inkscape:window-height="1043"
-     inkscape:window-x="1920"
-     inkscape:window-y="0"
+     inkscape:window-height="1016"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
      inkscape:window-maximized="1" />
   <metadata
      id="metadata3128">
@@ -159,7 +167,7 @@
     </rdf:RDF>
   </metadata>
   <g
-     inkscape:label="SchemaSpy Background"
+     inkscape:label="Red Background"
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(0,-860.36218)"
@@ -190,7 +198,7 @@
      transform="translate(0,-860.36218)"
      id="g4010"
      inkscape:groupmode="layer"
-     inkscape:label="RepoSpy Background"
+     inkscape:label="Yelow Background"
      sodipodi:insensitive="true">
     <rect
        ry="12"
@@ -215,7 +223,7 @@
   <g
      inkscape:groupmode="layer"
      id="layer6"
-     inkscape:label="Minion Background"
+     inkscape:label="Green Background"
      style="display:none"
      sodipodi:insensitive="true">
     <rect
@@ -241,7 +249,7 @@
   </g>
   <g
      style="display:none"
-     inkscape:label="Porter Background"
+     inkscape:label="Blue Background"
      id="g3035"
      inkscape:groupmode="layer"
      sodipodi:insensitive="true">
@@ -264,6 +272,58 @@
        style="opacity:0.2;color:#000000;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
        d="m 32,20 c -6.648,0 -12,5.352 -12,12 l 0,4 c 0,-6.648 5.352,-12 12,-12 l 128,0 c 6.648,0 12,5.352 12,12 l 0,-4 c 0,-6.648 -5.352,-12 -12,-12 L 32,20 z"
        id="path3042"
+       inkscape:connector-curvature="0" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="g3045"
+     inkscape:label="Purple Background"
+     style="display:none">
+    <rect
+       transform="translate(0,-860.36218)"
+       style="color:#000000;fill:#512da8;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       id="rect3047"
+       width="152"
+       height="152"
+       x="20"
+       y="880.36218"
+       rx="12"
+       ry="12" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path3049"
+       d="m 20,156 0,4 c 0,6.648 5.352,12 12,12 l 128,0 c 6.648,0 12,-5.352 12,-12 l 0,-4 c 0,6.648 -5.352,12 -12,12 l -128,0 c -6.648,0 -12,-5.352 -12,-12 z"
+       style="opacity:0.2;color:#000000;fill:#263238;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path3051"
+       d="m 32,20 c -6.648,0 -12,5.352 -12,12 l 0,4 c 0,-6.648 5.352,-12 12,-12 l 128,0 c 6.648,0 12,5.352 12,12 l 0,-4 c 0,-6.648 -5.352,-12 -12,-12 L 32,20 z"
+       style="opacity:0.2;color:#000000;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+  </g>
+  <g
+     style="display:none"
+     inkscape:label="Teal Background"
+     id="g3129"
+     inkscape:groupmode="layer">
+    <rect
+       ry="12"
+       rx="12"
+       y="880.36218"
+       x="20"
+       height="152"
+       width="152"
+       id="rect3131"
+       style="color:#000000;fill:#00796b;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       transform="translate(0,-860.36218)" />
+    <path
+       style="opacity:0.2;color:#000000;fill:#263238;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       d="m 20,156 0,4 c 0,6.648 5.352,12 12,12 l 128,0 c 6.648,0 12,-5.352 12,-12 l 0,-4 c 0,6.648 -5.352,12 -12,12 l -128,0 c -6.648,0 -12,-5.352 -12,-12 z"
+       id="path3133"
+       inkscape:connector-curvature="0" />
+    <path
+       style="opacity:0.2;color:#000000;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       d="m 32,20 c -6.648,0 -12,5.352 -12,12 l 0,4 c 0,-6.648 5.352,-12 12,-12 l 128,0 c 6.648,0 12,5.352 12,12 l 0,-4 c 0,-6.648 -5.352,-12 -12,-12 L 32,20 z"
+       id="path3135"
        inkscape:connector-curvature="0" />
   </g>
   <g
@@ -385,8 +445,7 @@
      inkscape:groupmode="layer"
      id="layer8"
      inkscape:label="Porter Icon"
-     style="display:none"
-     sodipodi:insensitive="true">
+     style="display:none">
     <path
        style="opacity:0.2;fill:#000000;fill-opacity:1;filter:url(#filter3834)"
        id="path3820"
@@ -397,6 +456,22 @@
        d="m 85,43.75 -11,11 0,11 -9.96875,0 0,82.5 63.9375,0 0,-82.5 -9.96875,0 0,-11 -11,-11 -22,0 z m 0,11 22,0 0,11 -22,0 0,-11 z m -33,11 c -6.105,0 -11,4.895 -11,11 l 0,60.5 a 11,11 0 0 0 11,11 l 4.46875,0 0,-82.5 -4.46875,0 z m 83.53125,0 0,82.5 4.46875,0 a 11,11 0 0 0 11,-11 l 0,-60.5 c 0,-6.105 -4.95,-11 -11,-11 l -4.46875,0 z"
        id="path4"
        style="fill:#ffffff;fill-opacity:1" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer10"
+     inkscape:label="IDE Icon"
+     style="display:none">
+    <path
+       style="opacity:0.2;color:#000000;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.99999988;marker:none;visibility:visible;display:inline;overflow:visible;filter:url(#filter3832);enable-background:accumulate"
+       id="path3830"
+       inkscape:connector-curvature="0"
+       d="m 112.55196,50.065982 c -7.85613,-4.046529 -20.226295,-5.162783 -39.162645,3.420791 0,0 37.344715,-2.848508 22.58839,22.710201 L 83.498095,97.812296 79.035575,95.235858 49.326045,146.69425 67.176115,157 l 29.70953,-51.4584 -4.46252,-2.57643 12.479615,-21.615323 0.80513,-1.394536 c 1.74797,-2.879749 7.10739,-10.213797 14.56679,-5.907114 l 2.31443,9.517526 8.08833,4.66979 11.99653,-20.778589 -8.08833,-4.66979 -9.23861,2.47548 c 0,0 -2.69434,-9.993958 -12.79505,-15.196632 z" />
+    <path
+       d="m 112.55196,44.065982 c -7.85613,-4.046529 -20.226295,-5.162783 -39.162645,3.420791 0,0 37.344715,-2.848508 22.58839,22.710201 L 83.498095,91.812296 79.035575,89.235858 49.326045,140.69425 67.176115,151 l 29.70953,-51.4584 -4.46252,-2.576434 12.479615,-21.615319 0.80513,-1.394536 c 1.74797,-2.879749 7.10739,-10.213797 14.56679,-5.907114 l 2.31443,9.517526 8.08833,4.66979 11.99653,-20.778589 -8.08833,-4.66979 -9.23861,2.47548 c 0,0 -2.69434,-9.993958 -12.79505,-15.196632 z"
+       inkscape:connector-curvature="0"
+       id="rect4740"
+       style="color:#000000;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.99999988;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
   </g>
   <g
      inkscape:groupmode="layer"

@@ -45,11 +45,11 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
-import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import net.objectof.actof.common.component.display.impl.AbstractLoadedDisplay;
 import net.objectof.actof.common.component.display.impl.IPanel;
+import net.objectof.actof.common.component.resource.Resource;
 import net.objectof.actof.common.controller.change.Change;
 import net.objectof.actof.common.controller.schema.AttributeEntry;
 import net.objectof.actof.common.controller.schema.SchemaController;
@@ -66,7 +66,7 @@ import net.objectof.actof.common.icons.Icon;
 import net.objectof.actof.common.icons.Size;
 import net.objectof.actof.common.util.AlphaNumericComparitor;
 import net.objectof.actof.common.util.FXUtil;
-import net.objectof.actof.repospy.RepoSpyController;
+import net.objectof.actof.repospy.resource.RepositoryResource;
 import net.objectof.actof.schemaspy.SchemaSpyController;
 import net.objectof.actof.schemaspy.controller.cards.attributes.SchemaSpyCard;
 import net.objectof.actof.schemaspy.controller.cards.schemaentry.ChildEntryCard;
@@ -121,7 +121,13 @@ public class SchemaViewController extends AbstractLoadedDisplay {
     public File lastschemadir = null;
 
     @Override
-    public void construct() throws SAXException, IOException, ParserConfigurationException, XMLParseException {
+    public void onFXLoad() {
+
+    }
+
+    public void setTopController(SchemaSpyController schemaspy)
+            throws XMLParseException, SAXException, IOException, ParserConfigurationException {
+        this.schemaspy = schemaspy;
 
         sidebar.getChildren().remove(namespaceGrid);
         namespacePopover = new PopOver(namespaceGrid);
@@ -212,9 +218,6 @@ public class SchemaViewController extends AbstractLoadedDisplay {
         schemaspy.getPanels().add(new IPanel("Schema Entries", sidebar));
         toppane.getChildren().remove(sidebar);
         toppane.getChildren().remove(toolbar);
-        if (schemaspy.isForResource()) {
-            toolbar.getChildren().removeAll(open, newschema);
-        }
         schemaspy.getToolbars().addAll(toolbar.getChildren());
 
         getChangeBus().listen(this::onSchemaChange);
@@ -236,17 +239,6 @@ public class SchemaViewController extends AbstractLoadedDisplay {
 
         onNewSchema();
 
-    }
-
-    @Override
-    public void onFXLoad() {
-
-    }
-
-    public void setTopController(SchemaSpyController schemaspy)
-            throws XMLParseException, SAXException, IOException, ParserConfigurationException {
-        this.schemaspy = schemaspy;
-        onNewSchema();
     }
 
     private void createAddChildBar() {
@@ -305,37 +297,33 @@ public class SchemaViewController extends AbstractLoadedDisplay {
         schemaspy.newSchema();
     }
 
-    public void onCreate() {
+    public Optional<Resource> onCreate() {
         try {
             Connector connect = schemaspy.showConnect();
-            if (connect == null) { return; }
+            if (connect == null) { return Optional.empty(); }
 
             Document schema = schemaspy.getSchema().getDocument();
             connect.createPackage(schema, Initialize.WHEN_EMPTY);
 
-            Alert createdDialog = new Alert(AlertType.CONFIRMATION);
-            createdDialog.setTitle("Repository Created");
-            createdDialog.setHeaderText("This Repository can be viewed in RepoSpy");
-            createdDialog.setContentText("Open RepoSpy now?");
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            alert.setTitle("Repository Created");
+            alert.setHeaderText("This Repository can be viewed in RepoSpy");
+            alert.setContentText("Open new repository now?");
+            alert.getButtonTypes().clear();
+            alert.getButtonTypes().addAll(ButtonType.YES, ButtonType.NO);
+            Optional<ButtonType> result = alert.showAndWait();
 
-            Optional<ButtonType> result = createdDialog.showAndWait();
-            if (result.get() == ButtonType.OK) {
-
-                Stage stage = new Stage();
-                RepoSpyController repospy = new RepoSpyController();
-                repospy.setDisplayStage(stage);
-                repospy.construct();
-                repospy.connect(connect);
-                stage.show();
-
-            } else {
-                // ... user chose CANCEL or closed the dialog
+            if (result.get() == ButtonType.YES) {
+                RepositoryResource resource = new RepositoryResource();
+                resource.setConnector(connect);
+                return Optional.of(resource);
             }
 
         }
         catch (Exception e) {
             ActofDialogs.exceptionDialog(e);
         }
+        return Optional.empty();
 
     }
 
@@ -345,7 +333,7 @@ public class SchemaViewController extends AbstractLoadedDisplay {
         chooser.setTitle("Generate Jar File");
         ExtensionFilter filter = new ExtensionFilter("Jar Files", "*.jar");
         chooser.setSelectedExtensionFilter(filter);
-        File jarfile = chooser.showSaveDialog(schemaspy.getDisplayStage());
+        File jarfile = chooser.showSaveDialog(schemaspy.getStage());
         if (jarfile == null) { return; }
 
         try {
@@ -358,7 +346,7 @@ public class SchemaViewController extends AbstractLoadedDisplay {
 
     public void onOpen()
             throws FileNotFoundException, SAXException, IOException, ParserConfigurationException, XMLParseException {
-        File file = SchemaSpyController.chooseSchemaFile(lastschemadir, schemaspy.getDisplayStage());
+        File file = SchemaSpyController.chooseSchemaFile(lastschemadir, schemaspy.getStage());
         lastschemadir = file.getParentFile();
         schemaspy.setSchema(file);
     }
@@ -371,7 +359,7 @@ public class SchemaViewController extends AbstractLoadedDisplay {
         }
         ExtensionFilter filter = new ExtensionFilter("Schema Files", "xml");
         chooser.setSelectedExtensionFilter(filter);
-        File file = chooser.showSaveDialog(schemaspy.getDisplayStage());
+        File file = chooser.showSaveDialog(schemaspy.getStage());
         if (file == null) { return; }
 
         lastschemadir = file.getParentFile();

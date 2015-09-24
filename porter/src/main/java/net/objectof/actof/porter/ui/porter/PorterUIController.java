@@ -128,6 +128,16 @@ public class PorterUIController extends AbstractLoadedDisplay {
         RuleUI rule = new RuleUI(getChangeBus(), this);
         rules.add(rule);
 
+        topPane.sceneProperty().addListener(event -> {
+            // hide title component of packages titledpane
+            packagesPane.applyCss();
+            Pane title = (Pane) packagesPane.lookup(".title");
+            title.setVisible(false);
+            title.setMinHeight(0);
+            title.setPrefHeight(0);
+            title.setMaxHeight(0);
+        });
+
     }
 
     private String getMode() {
@@ -281,20 +291,6 @@ public class PorterUIController extends AbstractLoadedDisplay {
     @Override
     public String getTitle() {
         return "Porter";
-    }
-
-    @Override
-    public void construct() throws Exception {
-
-        topPane.sceneProperty().addListener(event -> {
-            // hide title component of packages titledpane
-            packagesPane.applyCss();
-            Pane title = (Pane) packagesPane.lookup(".title");
-            title.setVisible(false);
-            title.setMinHeight(0);
-            title.setPrefHeight(0);
-            title.setMaxHeight(0);
-        });
     }
 
 }

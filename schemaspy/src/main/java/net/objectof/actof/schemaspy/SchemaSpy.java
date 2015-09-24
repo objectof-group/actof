@@ -19,8 +19,7 @@ public class SchemaSpy extends Application {
         primaryStage.setTitle("ObjectOf SchemaSpy");
 
         SchemaSpyController spy = new SchemaSpyController();
-        spy.setDisplayStage(primaryStage);
-        spy.construct();
+        spy.setStage(primaryStage);
 
         primaryStage.getIcons().add(new Image(SchemaSpy.class.getResource("view/icons/SchemaSpy.png").openStream()));
         primaryStage.setOnCloseRequest(event -> {

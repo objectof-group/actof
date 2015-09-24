@@ -11,7 +11,10 @@ import java.util.Optional;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
@@ -26,10 +29,9 @@ import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import net.objectof.actof.common.component.display.Panel;
 import net.objectof.actof.common.component.editor.Editor;
-import net.objectof.actof.common.component.feature.DelayedConstruct;
 import net.objectof.actof.common.component.feature.FXLoaded;
 import net.objectof.actof.common.component.feature.FXRegion;
-import net.objectof.actof.common.component.feature.StageAware;
+import net.objectof.actof.common.component.feature.StageProperty;
 import net.objectof.actof.common.component.feature.Titled;
 import net.objectof.actof.common.component.resource.Action;
 import net.objectof.actof.common.component.resource.Resource;
@@ -37,7 +39,7 @@ import net.objectof.actof.common.icons.ActofIcons;
 import net.objectof.actof.common.util.FXUtil;
 
 
-public class EditorPane implements Titled, FXRegion, FXLoaded, DelayedConstruct, StageAware {
+public class ResourceView implements Titled, FXRegion, FXLoaded, StageProperty {
 
     @FXML
     private BorderPane panel, topPane, displayPanel;
@@ -53,9 +55,9 @@ public class EditorPane implements Titled, FXRegion, FXLoaded, DelayedConstruct,
     private Separator separator;
 
     private Region windowNode;
-    private Stage stage = new Stage();
+    private ObjectProperty<Stage> stageProperty = new SimpleObjectProperty<>(new Stage());
 
-    private Editor editor;
+    private Resource resource;
     private BooleanProperty alwaysShowTabs = new SimpleBooleanProperty(false);
 
     private InvalidationListener panelsListener = (Observable change) -> layoutPanels();
@@ -64,40 +66,31 @@ public class EditorPane implements Titled, FXRegion, FXLoaded, DelayedConstruct,
 
     Map<Panel, Tab> panelTabs = new HashMap<>();
 
-    public static EditorPane load() throws IOException {
-        return FXUtil.loadFX(EditorPane.class, "EditorPane.fxml");
-    }
-
-    public void setDisplayStage(Stage stage) {
-        this.stage = stage;
-    }
-
-    public Stage getDisplayStage() {
-        return stage;
+    public static ResourceView load() throws IOException {
+        return FXUtil.loadFX(ResourceView.class, "ResourceView.fxml");
     }
 
     @Override
-    public String getTitle() {
-        return editor.getTitle();
+    public ObjectProperty<Stage> stageProperty() {
+        return stageProperty;
     }
 
     @Override
-    public void setTitle(String title) {
-        editor.setTitle(title);
+    public StringProperty titleProperty() {
+        return resource.titleProperty();
     }
 
-    @Override
-    public void construct() throws Exception {
+    public void onFXLoad() {
         panels.setStyle("-fx-open-tab-animation: NONE; -fx-close-tab-animation: NONE;");
         SplitPane.setResizableWithParent(panel, false);
         SplitPane.setResizableWithParent(displayPanel, true);
-        actionsButton.setGraphic(ActofIcons.getCustomIcon(EditorPane.class, "icons/menu.png"));
+        actionsButton.setGraphic(ActofIcons.getCustomIcon(ResourceView.class, "icons/menu.png"));
         actionsButton.getStyleClass().add("tool-bar-button");
         toolbar.getChildren().clear();
 
         // topPane.sceneProperty().addListener(event -> fixTabBar());
         alwaysShowTabs.addListener(e -> layoutPanels());
-    }
+    };
 
     public void setTabClosingPolicy(TabClosingPolicy policy) {
         panels.setTabClosingPolicy(policy);
@@ -113,20 +106,22 @@ public class EditorPane implements Titled, FXRegion, FXLoaded, DelayedConstruct,
     }
 
     private void layoutDisplay() {
-        displayPanel.setCenter(editor.getDisplay().getFXRegion());
+        System.out.println("1: " + resource);
+        System.out.println("2: " + resource.getEditor());
+        System.out.println("3: " + resource.getEditor().getDisplay());
+        displayPanel.setCenter(resource.getEditor().getDisplay().getFXRegion());
     }
 
     private void layoutActions() {
 
         actionsButton.getItems().clear();
-        for (Action a : editor.getActions()) {
+        for (Action a : resource.getEditor().getActions()) {
             MenuItem item = new MenuItem(a.getTitle());
             item.disableProperty().bind(a.getEnabledProperty().not());
             item.setOnAction(event -> {
                 Optional<Resource> result = a.perform();
-                if (result.isPresent()) {
-                    editor.getResources().add(result.get());
-                }
+                if (!result.isPresent()) { return; }
+                resource.getEditor().getResources().add(result.get());
             });
             actionsButton.getItems().add(item);
         }
@@ -145,15 +140,17 @@ public class EditorPane implements Titled, FXRegion, FXLoaded, DelayedConstruct,
 
         toolbar.getChildren().clear();
 
-        if (editor == null) { return; }
+        if (resource.getEditor() == null) { return; }
 
-        toolbar.getChildren().addAll(editor.getToolbars());
-        if (editor.getActions().size() > 0) {
+        toolbar.getChildren().addAll(resource.getEditor().getToolbars());
+        if (resource.getEditor().getActions().size() > 0) {
             toolbar.getChildren().addAll(separator, actionsButton);
         }
     }
 
     private void layoutPanels() {
+
+        Editor editor = resource.getEditor();
 
         if (editor == null) {
             panels.getTabs().clear();
@@ -191,6 +188,7 @@ public class EditorPane implements Titled, FXRegion, FXLoaded, DelayedConstruct,
                     tab.setContent(panel.getFXRegion());
                 } else {
                     tab = new Tab(panel.getTitle(), panel.getFXRegion());
+                    tab.textProperty().bind(panel.titleProperty());
                     tab.closableProperty().bind(panel.dismissibleProperty());
                     tab.setOnClosed(event -> {
                         panel.dismiss();
@@ -206,27 +204,28 @@ public class EditorPane implements Titled, FXRegion, FXLoaded, DelayedConstruct,
 
     }
 
-    public Editor getEditor() {
-        return editor;
+    public Resource getResource() {
+        return resource;
     }
 
-    public void setEditor(Editor editor) {
+    public void setResource(Resource resource) {
 
-        if (this.editor != null) {
-            this.editor.getActions().removeListener(actionsListener);
-            this.editor.getPanels().removeListener(panelsListener);
-            this.editor.getToolbars().removeListener(toolbarsListener);
+        if (this.resource != null && this.resource.getEditor() != null) {
+            this.resource.getEditor().getActions().removeListener(actionsListener);
+            this.resource.getEditor().getPanels().removeListener(panelsListener);
+            this.resource.getEditor().getToolbars().removeListener(toolbarsListener);
         }
 
-        this.editor = editor;
-        if (editor == null) { return; }
-        this.editor.getActions().addListener(actionsListener);
-        this.editor.getPanels().addListener(panelsListener);
-        this.editor.getToolbars().addListener(toolbarsListener);
+        this.resource = resource;
+
+        if (this.resource.getEditor() == null) { return; }
+        this.resource.getEditor().getActions().addListener(actionsListener);
+        this.resource.getEditor().getPanels().addListener(panelsListener);
+        this.resource.getEditor().getToolbars().addListener(toolbarsListener);
 
         updateDisplay();
 
-        getDisplayStage().sizeToScene();
+        getStage().sizeToScene();
 
     }
 

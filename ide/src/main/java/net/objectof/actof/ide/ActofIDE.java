@@ -13,8 +13,7 @@ public class ActofIDE extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         Editor ide = ActofIDEController.load();
-        ide.setDisplayStage(primaryStage);
-        ide.construct();
+        ide.setStage(primaryStage);
 
         ActofWindow window = new ActofWindow(primaryStage, ide);
         window.getEditorPane().setAlwaysShowTabs(true);
