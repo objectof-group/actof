@@ -90,6 +90,12 @@ public class ResourceView implements Titled, FXRegion, FXLoaded, StageProperty {
 
         // topPane.sceneProperty().addListener(event -> fixTabBar());
         alwaysShowTabs.addListener(e -> layoutPanels());
+
+        stageProperty.addListener(event -> {
+            if (resource != null && resource.getEditor() != null) {
+                resource.getEditor().setStage(getStage());
+            }
+        });
     };
 
     public void setTabClosingPolicy(TabClosingPolicy policy) {
@@ -106,9 +112,6 @@ public class ResourceView implements Titled, FXRegion, FXLoaded, StageProperty {
     }
 
     private void layoutDisplay() {
-        System.out.println("1: " + resource);
-        System.out.println("2: " + resource.getEditor());
-        System.out.println("3: " + resource.getEditor().getDisplay());
         displayPanel.setCenter(resource.getEditor().getDisplay().getFXRegion());
     }
 
@@ -217,6 +220,7 @@ public class ResourceView implements Titled, FXRegion, FXLoaded, StageProperty {
         }
 
         this.resource = resource;
+        resource.getEditor().setStage(getStage());
 
         if (this.resource.getEditor() == null) { return; }
         this.resource.getEditor().getActions().addListener(actionsListener);

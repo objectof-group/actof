@@ -33,6 +33,8 @@ public class ActofWindow implements ResourceProperty {
     public ActofWindow(Stage stage, Resource resource) throws Exception {
         this.stage = stage;
 
+        resource.getEditor().setStage(stage);
+
         editorPane = ResourceView.load();
         editorPane.setStage(stage);
         editorPane.setResource(resource);
