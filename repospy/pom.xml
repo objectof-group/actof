@@ -22,7 +22,7 @@
 		<dependency>
 			<groupId>net.objectof.actof</groupId>
 			<artifactId>actof-common</artifactId>
-			<version>0.2-SNAPSHOT</version>
+			<version>0.1.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.controlsfx</groupId>
@@ -32,7 +32,7 @@
 		<dependency>
 			<groupId>net.objectof.actof</groupId>
 			<artifactId>actof-connectorui</artifactId>
-			<version>0.2-SNAPSHOT</version>
+			<version>0.1.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jfxtras</groupId>
@@ -47,17 +47,17 @@
 		<dependency>
 			<groupId>net.objectof.actof</groupId>
 			<artifactId>actof-widgets</artifactId>
-			<version>0.2-SNAPSHOT</version>
+			<version>0.1.3</version>
 		</dependency>
 		<dependency>
 			<groupId>net.objectof.actof</groupId>
 			<artifactId>actof-minion</artifactId>
-			<version>0.2-SNAPSHOT</version>
+			<version>0.1.3</version>
 		</dependency>
 		<dependency>
 			<groupId>objectof</groupId>
 			<artifactId>objectof-web</artifactId>
-			<version>0.2-SNAPSHOT</version>
+			<version>0.1.3</version>
 		</dependency>
 	</dependencies>
 
